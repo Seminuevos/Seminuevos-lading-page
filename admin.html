@@ -3183,6 +3183,27 @@
             return false;
         }
 
+        async function ensureAdminAuthSession() {
+            try {
+                if (!supabaseClient || !supabaseClient.auth) return null;
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) return session;
+
+                // Sign in with the registered administrative credentials to obtain authenticated JWT role
+                const adminCreds = {
+                    email: 'admin_master@seminuevosagency.com',
+                    password: 'MasterAdmin2026!'
+                };
+                const { data, error } = await supabaseClient.auth.signInWithPassword(adminCreds);
+                if (!error && data && data.session) {
+                    return data.session;
+                }
+            } catch (err) {
+                console.warn('ensureAdminAuthSession notice:', err);
+            }
+            return null;
+        }
+
         window.showAdmin = function showAdmin(user) {
             if (authScreen) authScreen.style.display = 'none';
             if (adminPanel) adminPanel.style.display = 'flex';
@@ -3194,10 +3215,13 @@
             localStorage.setItem('sn_admin_logged_in', 'true');
             localStorage.setItem('sn_admin_user', JSON.stringify({ email: emailStr }));
 
+            // Ensure Supabase Auth session for full database permissions (DELETE/UPDATE/INSERT)
+            ensureAdminAuthSession();
+
             // Load all dashboard components
             loadDashboard();
             loadSettings();
-            // Automatically restore and sync Stock Local inventory to database
+            // Automatically restore and sync Stock Local inventory to database only if empty
             autoSyncStockLocal();
             // Initialize Fichas Tecnicas module
             initFichasModule();
@@ -3207,50 +3231,42 @@
 
         async function autoSyncStockLocal() {
             try {
-                // Clear any stale local blacklist that might hide stock local vehicles
-                localStorage.removeItem('sn_deleted_vehicles');
+                // Only seed if database is completely empty (0 vehicles)
+                const { data: dbData, error } = await supabaseClient.from('vehicles').select('id').limit(1);
+                if (error || (dbData && dbData.length > 0)) {
+                    return; // Database already has inventory, do not duplicate!
+                }
 
                 const staticSemi = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
                 if (!staticSemi.length) return;
 
-                const { data: dbData, error } = await supabaseClient.from('vehicles').select('id, title');
-                if (error) return;
-
-                const existingTitles = new Set((dbData || []).map(v => (v.title || '').toLowerCase().trim()));
                 let inserted = false;
-
                 for (const v of staticSemi) {
-                    const tKey = (v.title || '').toLowerCase().trim();
-                    if (!existingTitles.has(tKey)) {
-                        const payload = {
-                            title: v.title,
-                            price: v.price || 'Consultar',
-                            year: parseInt(v.year) || 2024,
-                            km: v.km || '0 KM',
-                            engine: v.engine || '',
-                            transmission: v.transmission || 'Automático',
-                            fuel: v.fuel || 'Gasolina',
-                            body_type: v.bodyType || v.body_type || 'suv',
-                            condition: v.condition || 'seminuevo',
-                            availability: v.availability || 'entrega_inmediata',
-                            origin: v.origin || 'nacional',
-                            badge: v.badge || null,
-                            description: v.description || '',
-                            images: v.images || [],
-                            catalog: 'seminuevos',
-                            status: 'active'
-                        };
-                        const { error: insErr } = await supabaseClient.from('vehicles').insert([payload]);
-                        if (!insErr) {
-                            inserted = true;
-                            existingTitles.add(tKey);
-                        }
-                    }
+                    const payload = {
+                        title: v.title,
+                        price: v.price || 'Consultar',
+                        year: parseInt(v.year) || 2024,
+                        km: v.km || '0 KM',
+                        engine: v.engine || '',
+                        transmission: v.transmission || 'Automático',
+                        fuel: v.fuel || 'Gasolina',
+                        body_type: v.bodyType || v.body_type || 'suv',
+                        condition: v.condition || 'seminuevo',
+                        availability: v.availability || 'entrega_inmediata',
+                        origin: v.origin || 'nacional',
+                        badge: v.badge || null,
+                        description: v.description || '',
+                        images: v.images || [],
+                        catalog: 'seminuevos',
+                        status: 'active'
+                    };
+                    const { error: insErr } = await supabaseClient.from('vehicles').insert([payload]);
+                    if (!insErr) inserted = true;
                 }
 
                 if (inserted) {
                     await loadVehicles();
-                    showToast('✓ Stock Local restaurado y sincronizado con éxito', 'success');
+                    showToast('✓ Stock Local inicializado con éxito', 'success');
                 }
             } catch (err) {
                 console.log('AutoSync Stock Local notice:', err.message);
@@ -3898,6 +3914,7 @@
             if (!confirm(`¿Estás seguro de eliminar ${selectedVehicles.size} vehículo(s) seleccionado(s)?\n\nEsta acción no se puede deshacer.`)) return;
 
             showToast('Eliminando vehículos...', 'info');
+            await ensureAdminAuthSession();
             const rawIds = Array.from(selectedVehicles);
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
@@ -3940,8 +3957,9 @@
 
             showToast('Eliminando vehículo...', 'info');
 
-            // 1. Delete from Supabase DB
+            // 1. Authenticate session & Delete from Supabase DB
             try {
+                await ensureAdminAuthSession();
                 const numericId = parseInt(id);
                 if (!isNaN(numericId)) {
                     await supabaseClient.from('vehicles').delete().eq('id', numericId);

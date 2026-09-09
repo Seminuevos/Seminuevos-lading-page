@@ -51,7 +51,7 @@ const vehiclesSeminuevos = [
     },
     {
         id: 2,
-        title: "Honda HR-V Sport 2024 FWD",
+        title: "Honda HR-V 2024 Sport",
         price: "$33,000",
         year: 2024,
         km: "45,000 KM",
@@ -132,7 +132,7 @@ const vehiclesSeminuevos = [
     },
     {
         id: 4,
-        title: "Nissan Rogue Sport 2019 FWD",
+        title: "Nissan Rogue Sport 2019",
         price: "$22,000",
         year: 2019,
         km: "50,000 KM",

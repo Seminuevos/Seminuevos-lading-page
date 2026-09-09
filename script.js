@@ -607,25 +607,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
 
-            // Combine DB & Static vehicles without duplicating DB vehicles against each other
-            const mergeByTitle = (dbArr, staticArr) => {
-                const list = [...dbArr]; // Include ALL database vehicles
-                const dbTitles = new Set(dbArr.map(item => (item.title || '').toLowerCase().trim()));
-                const dbIds = new Set(dbArr.map(item => String(item.id || '')));
-
-                staticArr.forEach(item => {
+            // If DB returned vehicles, DB is the single source of truth for that panel!
+            // Only fallback to static data if DB returned 0 vehicles or was unreachable.
+            const resolveVehicles = (dbArr, staticArr) => {
+                if (dbArr && dbArr.length > 0) {
+                    return dbArr.filter(item => {
+                        const titleKey = (item.title || '').toLowerCase().trim();
+                        const idKey = String(item.id || '');
+                        return !deleted.includes(titleKey) && !deleted.includes(idKey);
+                    });
+                }
+                return staticArr.filter(item => {
                     const titleKey = (item.title || '').toLowerCase().trim();
                     const idKey = String(item.id || '');
-                    if (titleKey && !deleted.includes(titleKey) && !deleted.includes(idKey) && !dbTitles.has(titleKey) && !dbIds.has(idKey)) {
-                        list.push(item);
-                    }
+                    return !deleted.includes(titleKey) && !deleted.includes(idKey);
                 });
-                return list;
             };
 
-            appVehiclesSeminuevos = mergeByTitle(dbSemi, staticSemi);
-            appVehiclesPorPedido = mergeByTitle(dbPorPedido, staticPorPedido);
-            appVehicles0km = mergeByTitle(db0km, staticZeroKm);
+            appVehiclesSeminuevos = resolveVehicles(dbSemi, staticSemi);
+            appVehiclesPorPedido = resolveVehicles(dbPorPedido, staticPorPedido);
+            appVehicles0km = resolveVehicles(db0km, staticZeroKm);
 
             // Render all grids with data
             renderAllPanels();
