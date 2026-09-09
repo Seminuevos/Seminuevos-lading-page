@@ -11,6 +11,7 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Robots-Tag = "all"
     Cache-Control = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
 
 [[headers]]

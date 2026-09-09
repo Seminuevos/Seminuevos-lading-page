@@ -38,6 +38,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('carDetailContainer').innerHTML = '<h2 style="color:white; text-align:center;">Vehículo no encontrado</h2>';
         return;
     }
+
+    // Dynamic SEO update for specific vehicle
+    try {
+        if (car.title) {
+            document.title = `${car.title} | Semi Nuevo Autos Venezuela`;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) {
+                const descText = `${car.title} en venta en Venezuela. Año ${car.year || ''}, ${car.km || '0 km'}, motor ${car.engine || ''}. Certificación e inspección MasterTech.`.substring(0, 155);
+                metaDesc.setAttribute('content', descText);
+            }
+            const canonicalEl = document.querySelector('link[rel="canonical"]');
+            if (canonicalEl) {
+                canonicalEl.setAttribute('href', `https://seminuevoautos.com/vehiculo?id=${car.id}`);
+            }
+        }
+    } catch(e) {}
+
     window.currentCarImages = car.images || [];
     window.currentImageIndex = 0;
 
