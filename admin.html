@@ -3805,6 +3805,8 @@
                     localStorage.setItem('sn_deleted_vehicles', JSON.stringify(del));
                 } catch(e) {}
 
+                try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
+
                 await loadVehicles();
                 if (window.parent) window.parent.postMessage("CargaBD", "*"); // trigger frontend refresh if framed
                 isSaving = false;
@@ -3944,6 +3946,7 @@
             }
 
             localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
+            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
             showToast(`${rawIds.length} vehículo(s) eliminado(s)`, 'success');
             logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehículos eliminados en lote.`);
             selectedVehicles.clear();
@@ -3981,6 +3984,7 @@
             }
             if (!deleted.includes(targetIdStr)) deleted.push(targetIdStr);
             localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
+            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
 
             // 3. Remove locally from memory vehicles array & update UI immediately
             vehicles = vehicles.filter(item => String(item.id) !== targetIdStr && (!v || item.title !== v.title));
@@ -4435,6 +4439,7 @@
             for (const [key, val] of Object.entries(settings)) {
                 await supabaseClient.from('site_settings').upsert({ key, value: JSON.stringify(val), updated_at: new Date().toISOString() });
             }
+            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
             showToast('Configuración guardada', 'success');
             logSecurityEvent('SETTINGS_UPDATE', 'info', 'Actualización de configuración global del sitio');
         });

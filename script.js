@@ -526,11 +526,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return; // Skip full catalog query on single vehicle detail page for maximum speed
         }
         try {
-            // Load vehicles and site_settings concurrently in PARALLEL (Zero 404 console errors)
-            const [vDataRes, sDataRes] = await Promise.all([
-                supabaseClient.from('vehicles').select('*').eq('status', 'active'),
-                supabaseClient.from('site_settings').select('*')
-            ]);
+            // ===== TTL CACHE (5 minutes Time-To-Live) =====
+            const SUPABASE_CACHE_TTL_MS = 5 * 60 * 1000;
+            const cacheKey = 'sn_supabase_cache';
+            let cachedData = null;
+            try {
+                const raw = localStorage.getItem(cacheKey);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < SUPABASE_CACHE_TTL_MS) && parsed.vehicles) {
+                        cachedData = parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('Cache check notice:', e);
+            }
+
+            let vData = null;
+            let sData = null;
+
+            if (cachedData) {
+                vData = cachedData.vehicles;
+                sData = cachedData.settings;
+            } else {
+                // Fetch fresh data concurrently in parallel
+                const [vDataRes, sDataRes] = await Promise.all([
+                    supabaseClient.from('vehicles').select('*').eq('status', 'active'),
+                    supabaseClient.from('site_settings').select('*')
+                ]);
+                vData = vDataRes?.data || [];
+                sData = sDataRes?.data || [];
+
+                // Store in cache with TTL timestamp
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        timestamp: Date.now(),
+                        vehicles: vData,
+                        settings: sData
+                    }));
+                } catch (e) {
+                    console.warn('Cache write notice:', e);
+                }
+            }
 
             const allStatic = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
             
@@ -598,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let localVehs = [];
             try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
-            const combinedRaw = [...(vDataRes.data || []), ...localVehs];
+            const combinedRaw = [...(vData || []), ...localVehs];
 
             const dbSemi = combinedRaw.filter(isStockLocalVehicle);
             const dbPorPedido = combinedRaw.filter(isImportedOrAuctionVehicle);
@@ -632,7 +669,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAllPanels();
 
             // Load settings
-            const sData = sDataRes.data;
             const map = {};
             if (sData) {
                 sData.forEach(s => {
