@@ -745,7 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctaSecondary: 'Más Info'
                     },
                     {
-                        image: 'images/gallery/toyota-4runner-2021-sr5/1.jpg',
+                        image: 'images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2',
                         tag: 'ESTATUS INMEDIATO',
                         title: 'Toyota 4Runner 2021 SR5',
                         originalPrice: 39990,
@@ -864,7 +864,7 @@ document.addEventListener('DOMContentLoaded', () => {
             discount_text: '$2,000 OFF',
             cta_text: 'Ver Oferta',
             cta_url: '/catalogo',
-            image_url: 'images/gallery/toyota-4runner-2021-sr5/1.jpg',
+            image_url: 'images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2',
             bg_color: '#275CEA',
             is_featured: true,
             status: 'active'

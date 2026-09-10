@@ -27,7 +27,7 @@
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=2592000, s-maxage=31536000, immutable"
+    Cache-Control = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
 
 [[headers]]
   for = "/*.css"

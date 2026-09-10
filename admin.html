@@ -3102,6 +3102,10 @@
                                             class="fas fa-eraser"></i> Quitar Edición</button>
                                     <button class="btn btn-ghost btn-sm" id="editorReset" type="button"><i
                                             class="fas fa-undo"></i> Reiniciar</button>
+                                    <button class="btn btn-ghost btn-sm" id="editorRotateLeft" type="button" title="Girar 90° a la izquierda"><i
+                                            class="fas fa-undo-alt"></i> Girar -90°</button>
+                                    <button class="btn btn-ghost btn-sm" id="editorRotateRight" type="button" title="Girar 90° a la derecha"><i
+                                            class="fas fa-redo-alt"></i> Girar +90°</button>
                                     <button class="btn btn-primary btn-sm" id="editorBlur" type="button"
                                         style="background:var(--success); color:#000;"><i class="fas fa-eye-slash"></i>
                                         Censurar Placa</button>
@@ -3702,10 +3706,13 @@
                 document.getElementById('vDescription').value = vehicle.description || '';
                 document.getElementById('vMastertech').checked = !!vehicle.mastertech;
 
-                // Cargar imágenes existentes como miniaturas
+                // Cargar imágenes existentes como miniaturas con cache-buster para evitar versiones antiguas del navegador
                 document.getElementById('vImage').value = '';
                 (vehicle.images || []).forEach(imgSrc => {
-                    uploadedImages.push({ src: imgSrc, edited: null, isExisting: true });
+                    const freshSrc = (!imgSrc.startsWith('data:') && !imgSrc.includes('_cb='))
+                        ? `${imgSrc}${imgSrc.includes('?') ? '&' : '?'}_cb=${Date.now()}`
+                        : imgSrc;
+                    uploadedImages.push({ src: freshSrc, rawSrc: imgSrc, edited: null, isExisting: true });
                 });
                 renderImagePreviews();
             } else {
@@ -3760,7 +3767,8 @@
             try {
                 // Subir o mantener imágenes
                 for (let i = 0; i < snapshotImages.length; i++) {
-                    const data = snapshotImages[i].edited || snapshotImages[i].src;
+                    const rawSrc = snapshotImages[i].rawSrc || snapshotImages[i].src;
+                    const data = snapshotImages[i].edited || (rawSrc ? rawSrc.replace(/[?&]_cb=\d+/g, '') : snapshotImages[i].src);
                     if (data.startsWith('data:')) {
                         const blob = await (await fetch(data)).blob();
                         const fname = `vehicle-${Date.now()}-${i}.jpg`;
@@ -4091,16 +4099,17 @@
             currentEditIndex = i;
             document.getElementById('imageEditorSection').style.display = 'block';
             const editorImg = document.getElementById('editorImage');
-            if (uploadedImages[i].src.startsWith('http') && !uploadedImages[i].src.includes('supabase.co')) {
+            const targetSrc = uploadedImages[i].edited || uploadedImages[i].src;
+            if (targetSrc.startsWith('http') && !targetSrc.includes('supabase.co')) {
                 editorImg.crossOrigin = "anonymous";
-                editorImg.src = `/api/scrape?proxy=${encodeURIComponent(uploadedImages[i].src)}`;
+                editorImg.src = `/api/scrape?proxy=${encodeURIComponent(targetSrc)}`;
             } else {
-                if (uploadedImages[i].src.startsWith('http')) {
+                if (targetSrc.startsWith('http')) {
                     editorImg.crossOrigin = "anonymous";
                 } else {
                     editorImg.removeAttribute('crossOrigin');
                 }
-                editorImg.src = uploadedImages[i].src;
+                editorImg.src = targetSrc;
             }
 
             if (currentCropper) {
@@ -4113,6 +4122,7 @@
                     viewMode: 2,
                     dragMode: 'crop',
                     autoCropArea: 0.2,
+                    checkOrientation: false,
                     restore: false,
                     modal: true,
                     guides: true,
@@ -4128,6 +4138,14 @@
 
         document.getElementById('editorReset')?.addEventListener('click', () => {
             if (currentCropper) currentCropper.reset();
+        });
+
+        document.getElementById('editorRotateLeft')?.addEventListener('click', () => {
+            if (currentCropper) currentCropper.rotate(-90);
+        });
+
+        document.getElementById('editorRotateRight')?.addEventListener('click', () => {
+            if (currentCropper) currentCropper.rotate(90);
         });
 
         document.getElementById('editorBlur')?.addEventListener('click', () => {
@@ -4204,7 +4222,7 @@
             if (currentEditIndex < 0 || !currentCropper) return;
             const croppedCanvas = currentCropper.getCroppedCanvas({
                 maxWidth: 1920,
-                maxHeight: 1080
+                maxHeight: 1920
             });
             if (!croppedCanvas) return;
             uploadedImages[currentEditIndex].edited = croppedCanvas.toDataURL('image/jpeg', 0.85);
