@@ -809,9 +809,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="hero-tag" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;">
                                 <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-star' : 'fa-car')}" style="color: var(--primary);"></i> ${s.tag}
                             </div>
-                            <h1 class="hero-title" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;">
+                            <${isFirst ? 'h1' : 'p'} class="hero-title" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;">
                                 ${s.title.includes('<span') ? s.title : s.title.replace('0KM', '<span class="text-accent">0KM</span>')}
-                            </h1>
+                            </${isFirst ? 'h1' : 'p'}>
                             <div class="hero-subtitle" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;">
                                 ${subtitleHtml}
                             </div><div class="hero-buttons" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;">
