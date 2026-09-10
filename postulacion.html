@@ -647,6 +647,15 @@
             });
         }
 
+        function getVisitorId() {
+            let vid = localStorage.getItem('sn_visitor_id');
+            if (!vid) {
+                vid = 'v-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('sn_visitor_id', vid);
+            }
+            return vid;
+        }
+
         // Form submission handling
         const form = document.getElementById('postulacionForm');
         const submitBtn = document.getElementById('btnSubmitPostulacion');
@@ -679,7 +688,7 @@
 
             const formattedMessage = `POSTULACIÓN OFICIAL DE VENDEDOR / ASESOR COMERCIAL:
 • Cédula/ID: ${idNumber}
-• Ciudad/Ubicación: ${city}
+• Sector/Municipio: ${city}
 • Experiencia en Ventas: ${experience}
 • Experiencia Automotriz: ${autoExp}
 • Modalidad: ${modality}
@@ -690,7 +699,8 @@ ${aboutMe}`;
 
             try {
                 if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    await supabaseClient
+                    const visitorId = getVisitorId();
+                    const { error } = await supabaseClient
                         .from('inquiries')
                         .insert([{
                             name: name,
@@ -698,8 +708,12 @@ ${aboutMe}`;
                             email: email,
                             service: 'Postulación Vendedor',
                             message: formattedMessage,
-                            status: 'new'
+                            status: 'new',
+                            visitor_id: visitorId
                         }]);
+                    if (error) {
+                        console.error("Supabase insert error:", error);
+                    }
                 }
             } catch (err) {
                 console.warn("Supabase notice:", err);
