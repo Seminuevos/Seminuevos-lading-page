@@ -1762,6 +1762,149 @@
                 background-color: #000000;
             }
         }
+
+        /* ===== SIMULADOR DE FINANCIAMIENTO (USO INTERNO) ===== */
+        .fin-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 1100px) {
+            .fin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .fin-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .fin-card-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #ffffff;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .fin-field-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+        .fin-input {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            color: #ffffff;
+            font-family: 'Mina', sans-serif;
+            font-size: 0.92rem;
+            transition: border-color 0.2s;
+        }
+        .fin-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .fin-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .fin-kpi-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .fin-kpi-card:hover {
+            border-color: var(--border-accent);
+        }
+        .fin-kpi-value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-top: 6px;
+            color: #ffffff;
+        }
+        .fin-kpi-label {
+            font-size: 0.72rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+        .fin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            text-align: center;
+        }
+        .fin-table th {
+            background: var(--bg3);
+            color: #ffffff;
+            padding: 12px 10px;
+            border: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .fin-table td {
+            padding: 11px 10px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        .fin-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .fin-table tr:hover {
+            background: rgba(39, 92, 234, 0.05);
+        }
+        .fin-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .fin-badge-low {
+            background: rgba(39, 92, 234, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(39, 92, 234, 0.4);
+        }
+        .fin-badge-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+        .fin-alert-banner {
+            background: rgba(39, 92, 234, 0.08);
+            border: 1px solid rgba(39, 92, 234, 0.3);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.85rem;
+            color: #c7d2fe;
+        }
     </style>
 </head>
 
@@ -1816,6 +1959,7 @@
                 <button class="sidebar-link active" data-tab="vehicles"><i class="fas fa-car"></i> Vehículos</button>
                 <button class="sidebar-link" data-tab="promotions"><i class="fas fa-tags"></i> Promociones</button>
                 <button class="sidebar-link" data-tab="fichas"><i class="fas fa-file-invoice"></i> Fichas Técnicas</button>
+                <button class="sidebar-link" data-tab="financing"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
@@ -2839,6 +2983,183 @@
                         class="bookmarklet-btn"><i class="fas fa-rocket"></i> ⚡ Importar a SemiNuvo</a>
                 </div>
                 <div id="bulkStatus" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- FINANCING TAB (USO INTERNO) -->
+            <div class="tab-content" id="tab-financing">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Simulador de <span>Financiamiento</span></h1>
+                        <p style="color:var(--text2); font-size:0.9rem; margin-top:4px;">
+                            <i class="fas fa-lock" style="color:var(--accent); margin-right:6px;"></i>
+                            Mesa de Dinero & Estructuración de Crédito Vehicular (Uso Interno)
+                        </p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-ghost" type="button" onclick="resetFinancingDefaults()">
+                            <i class="fas fa-undo"></i> Restaurar Valores
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="copyFinancingSummary()">
+                            <i class="fas fa-copy"></i> Copiar Cotización
+                        </button>
+                    </div>
+                </div>
+
+                <div class="fin-alert-banner">
+                    <i class="fas fa-user-shield" style="font-size: 1.4rem; color: var(--accent);"></i>
+                    <div>
+                        <strong style="color:#ffffff;">Módulo Confidencial / Solo Perfilamiento Interno:</strong>
+                        Herramienta de estructuración financiera y cotizaciones para asesores de crédito. Modela el desembolso inicial, capital financiado, seguro vehicular, fondo de mantenimiento y comisiones por riesgo según el perfil crediticio (Tier 1 vs Tier 2).
+                    </div>
+                </div>
+
+                <div class="fin-grid">
+                    <!-- Columna Izquierda: Parámetros del Vehículo y Tasas -->
+                    <div class="fin-card">
+                        <div class="fin-card-title">
+                            <span><i class="fas fa-sliders-h" style="color:var(--accent); margin-right:8px;"></i> Parámetros de Entrada</span>
+                        </div>
+
+                        <!-- Selector rápido desde inventario -->
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label class="form-label" style="font-size:0.78rem;">
+                                <i class="fas fa-car"></i> Cargar desde Inventario (Opcional):
+                            </label>
+                            <select id="finVehicleSelect" class="form-select" style="padding:8px 10px; font-size:0.85rem;" onchange="onFinVehicleSelected(this)">
+                                <option value="">-- Seleccionar vehículo del inventario --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div class="fin-field-label">
+                                <span>Precio de Lista ($ USD):</span>
+                            </div>
+                            <input type="number" id="fin_price" class="fin-input" value="75000" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div class="fin-field-label">
+                                <span>Gastos Admin / Apertura ($):</span>
+                            </div>
+                            <input type="number" id="fin_admin_fee" class="fin-input" value="2000" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div class="fin-field-label">
+                                <span>GPS y Rastreo 3 Años ($):</span>
+                            </div>
+                            <input type="number" id="fin_gps_fee" class="fin-input" value="650" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div class="fin-field-label">
+                                <span>Notaría, Placas y Matrícula ($):</span>
+                            </div>
+                            <input type="number" id="fin_notary_fee" class="fin-input" value="370" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div class="fin-field-label">
+                                <span>Seguro Anual Vehicular ($/año):</span>
+                            </div>
+                            <input type="number" id="fin_insurance_annual" class="fin-input" value="2625" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <div class="fin-field-label">
+                                <span>Fondo Mantenimiento ($/año crédito):</span>
+                            </div>
+                            <input type="number" id="fin_maint_annual" class="fin-input" value="1000" oninput="calculateFinancingPlans()">
+                        </div>
+
+                        <div class="fin-card-title" style="margin-top:16px; margin-bottom:12px;">
+                            <span><i class="fas fa-percentage" style="color:var(--accent); margin-right:8px;"></i> Tasas Mensuales (%)</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:18px;">
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 1 (12M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_l12" class="fin-input" value="1.5" oninput="calculateFinancingPlans()">
+                            </div>
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 2 (12M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_h12" class="fin-input" value="3.0" oninput="calculateFinancingPlans()">
+                            </div>
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 1 (24M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_l24" class="fin-input" value="2.0" oninput="calculateFinancingPlans()">
+                            </div>
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 2 (24M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_h24" class="fin-input" value="3.5" oninput="calculateFinancingPlans()">
+                            </div>
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 1 (36M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_l36" class="fin-input" value="2.5" oninput="calculateFinancingPlans()">
+                            </div>
+                            <div class="form-group">
+                                <label class="fin-field-label"><span>Tier 2 (36M):</span></label>
+                                <input type="number" step="0.1" id="fin_rate_h36" class="fin-input" value="4.0" oninput="calculateFinancingPlans()">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" type="button" onclick="calculateFinancingPlans()" style="justify-content:center;">
+                            <i class="fas fa-sync-alt"></i> Actualizar Proyecciones
+                        </button>
+                    </div>
+
+                    <!-- Columna Derecha: KPIs y Matriz de Resultados -->
+                    <div>
+                        <div class="fin-kpi-grid">
+                            <div class="fin-kpi-card">
+                                <div class="fin-kpi-label"><i class="fas fa-tag"></i> Precio Vehículo Base</div>
+                                <div class="fin-kpi-value" id="fin-kpi-price">$75,000.00</div>
+                            </div>
+                            <div class="fin-kpi-card">
+                                <div class="fin-kpi-label"><i class="fas fa-file-invoice-dollar"></i> Gastos Fijos Apertura</div>
+                                <div class="fin-kpi-value" id="fin-kpi-fixed-fees" style="color: #60a5fa;">$3,020.00</div>
+                            </div>
+                            <div class="fin-kpi-card">
+                                <div class="fin-kpi-label"><i class="fas fa-shield-alt"></i> Seguro Mensual (Cuota)</div>
+                                <div class="fin-kpi-value" id="fin-kpi-insurance" style="color: #f59e0b;">$218.75</div>
+                            </div>
+                        </div>
+
+                        <div class="table-container" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                            <div class="table-header">
+                                <h3><i class="fas fa-table" style="color:var(--accent); margin-right:8px;"></i> Matriz de Proyecciones - SEMINUEVOS AUTOS</h3>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <span class="fin-badge fin-badge-low">Tier 1: Bajo Riesgo</span>
+                                    <span class="fin-badge fin-badge-high">Tier 2: Alto Riesgo</span>
+                                </div>
+                            </div>
+                            <div style="overflow-x:auto;">
+                                <table class="fin-table" id="finResultsTable">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:left;">Plan / Perfil</th>
+                                            <th>Inicial %</th>
+                                            <th>Desembolso Inicial</th>
+                                            <th>Capital Financiado</th>
+                                            <th>Tasa Mens.</th>
+                                            <th>Cuota Total / Mes</th>
+                                            <th>Intereses Totales</th>
+                                            <th>Costo Total Final</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Generado dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 14px; font-size: 0.78rem; color: var(--text3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                            <span><i class="fas fa-info-circle"></i> <strong>Desembolso Inicial:</strong> Inicial del vehículo + Gastos Fijos de Apertura + Fondo de Mantenimiento proporcional + Comisión por Riesgo (en planes Tier 2).</span>
+                            <span>SEMINUEVOS AUTOS © 2026 - Uso Interno</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -7951,12 +8272,218 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             window.print();
         }
 
+        // ===== SIMULADOR DE FINANCIAMIENTO (USO INTERNO) =====
+        function pmtFin(rate, nper, pv) {
+            if (rate === 0) return -(pv) / nper;
+            const pvif = Math.pow(1 + rate, nper);
+            return rate * pv * pvif / (pvif - 1);
+        }
+
+        function fmtFin(num) {
+            return '$' + (num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function calculateFinancingPlans() {
+            const price = parseFloat(document.getElementById('fin_price')?.value) || 0;
+            const admin = parseFloat(document.getElementById('fin_admin_fee')?.value) || 0;
+            const gps = parseFloat(document.getElementById('fin_gps_fee')?.value) || 0;
+            const notary = parseFloat(document.getElementById('fin_notary_fee')?.value) || 0;
+            const insuranceAnn = parseFloat(document.getElementById('fin_insurance_annual')?.value) || 0;
+            const maintAnn = parseFloat(document.getElementById('fin_maint_annual')?.value) || 0;
+
+            const fixedFees = admin + gps + notary;
+            const insuranceMonthly = insuranceAnn / 12;
+
+            const kpiPrice = document.getElementById('fin-kpi-price');
+            const kpiFixed = document.getElementById('fin-kpi-fixed-fees');
+            const kpiIns = document.getElementById('fin-kpi-insurance');
+
+            if (kpiPrice) kpiPrice.innerText = fmtFin(price);
+            if (kpiFixed) kpiFixed.innerText = fmtFin(fixedFees);
+            if (kpiIns) kpiIns.innerText = fmtFin(insuranceMonthly);
+
+            const r_l12 = (parseFloat(document.getElementById('fin_rate_l12')?.value) || 1.5) / 100;
+            const r_h12 = (parseFloat(document.getElementById('fin_rate_h12')?.value) || 3.0) / 100;
+            const r_l24 = (parseFloat(document.getElementById('fin_rate_l24')?.value) || 2.0) / 100;
+            const r_h24 = (parseFloat(document.getElementById('fin_rate_h24')?.value) || 3.5) / 100;
+            const r_l36 = (parseFloat(document.getElementById('fin_rate_l36')?.value) || 2.5) / 100;
+            const r_h36 = (parseFloat(document.getElementById('fin_rate_h36')?.value) || 4.0) / 100;
+
+            const plans = [
+                { name: "12M Preferencial", tier: "low", months: 12, downPct: 0.50, rate: r_l12, riskComm: 0 },
+                { name: "24M Corporativo", tier: "low", months: 24, downPct: 0.33333333, rate: r_l24, riskComm: 0 },
+                { name: "36M Holgado", tier: "low", months: 36, downPct: 0.30, rate: r_l36, riskComm: 0 },
+                { name: "12M Recup. Rápida", tier: "high", months: 12, downPct: 0.20, rate: r_h12, riskComm: 3000 },
+                { name: "24M Inicial Baja", tier: "high", months: 24, downPct: 0.20, rate: r_h24, riskComm: 3000 },
+                { name: "36M Retail Agresivo", tier: "high", months: 36, downPct: 0.20, rate: r_h36, riskComm: 3000 }
+            ];
+
+            const tbody = document.querySelector('#finResultsTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            window._currentFinPlans = [];
+
+            plans.forEach(p => {
+                const downCar = price * p.downPct;
+                const maintFund = (p.months / 12) * maintAnn;
+                const upfrontTotal = downCar + fixedFees + maintFund + p.riskComm;
+
+                const capital = Math.max(0, price - downCar);
+                const pmtCar = capital > 0 ? pmtFin(p.rate, p.months, capital) : 0;
+                const pmtTotal = pmtCar + insuranceMonthly;
+
+                const totalInterest = Math.max(0, (pmtCar * p.months) - capital);
+                const costoTotal = upfrontTotal + (pmtTotal * p.months);
+
+                const badgeClass = p.tier === 'low' ? 'fin-badge-low' : 'fin-badge-high';
+                const tierLabel = p.tier === 'low' ? 'Bajo Riesgo' : 'Alto Riesgo';
+
+                window._currentFinPlans.push({
+                    name: p.name,
+                    tierLabel,
+                    months: p.months,
+                    downPct: (p.downPct * 100).toFixed(1),
+                    upfrontTotal: fmtFin(upfrontTotal),
+                    capital: fmtFin(capital),
+                    ratePct: (p.rate * 100).toFixed(2),
+                    pmtTotal: fmtFin(pmtTotal),
+                    totalInterest: fmtFin(totalInterest),
+                    costoTotal: fmtFin(costoTotal)
+                });
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: left;">
+                        <span class="fin-badge ${badgeClass}">${tierLabel}</span><br>
+                        <strong style="color:#ffffff; font-size:0.88rem;">${p.name}</strong>
+                    </td>
+                    <td><span style="font-weight:700;">${(p.downPct * 100).toFixed(1)}%</span></td>
+                    <td style="font-weight:700; color:#ffffff;">${fmtFin(upfrontTotal)}</td>
+                    <td style="color:var(--text2);">${fmtFin(capital)}</td>
+                    <td><span style="background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">${(p.rate * 100).toFixed(2)}%</span></td>
+                    <td style="font-weight:800; color:#f59e0b; font-size:0.95rem;">${fmtFin(pmtTotal)}</td>
+                    <td style="color:#34d399;">${fmtFin(totalInterest)}</td>
+                    <td style="font-weight:700; color:#60a5fa;">${fmtFin(costoTotal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function populateFinancingVehicles() {
+            const select = document.getElementById('finVehicleSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Cargar precio desde inventario (Opcional) --</option>';
+
+            if (Array.isArray(vehicles) && vehicles.length > 0) {
+                vehicles.forEach(v => {
+                    const priceRaw = String(v.price || '').replace(/[^0-9.]/g, '');
+                    const numPrice = parseFloat(priceRaw) || 0;
+                    if (numPrice > 0) {
+                        const opt = document.createElement('option');
+                        opt.value = numPrice;
+                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        select.appendChild(opt);
+                    }
+                });
+            }
+            if (currentVal) select.value = currentVal;
+        }
+
+        function onFinVehicleSelected(selectElem) {
+            const val = parseFloat(selectElem.value);
+            if (!isNaN(val) && val > 0) {
+                const priceInput = document.getElementById('fin_price');
+                if (priceInput) {
+                    priceInput.value = val;
+                    const insInput = document.getElementById('fin_insurance_annual');
+                    if (insInput) {
+                        insInput.value = Math.round(val * 0.035);
+                    }
+                    calculateFinancingPlans();
+                    showToast('Precio del vehículo cargado: $' + val.toLocaleString('en-US'), 'success');
+                }
+            }
+        }
+
+        function resetFinancingDefaults() {
+            const defaults = {
+                fin_price: 75000,
+                fin_admin_fee: 2000,
+                fin_gps_fee: 650,
+                fin_notary_fee: 370,
+                fin_insurance_annual: 2625,
+                fin_maint_annual: 1000,
+                fin_rate_l12: 1.5,
+                fin_rate_h12: 3.0,
+                fin_rate_l24: 2.0,
+                fin_rate_h24: 3.5,
+                fin_rate_l36: 2.5,
+                fin_rate_h36: 4.0
+            };
+            for (const [id, val] of Object.entries(defaults)) {
+                const el = document.getElementById(id);
+                if (el) el.value = val;
+            }
+            const sel = document.getElementById('finVehicleSelect');
+            if (sel) sel.value = '';
+            calculateFinancingPlans();
+            showToast('Valores restablecidos por defecto', 'info');
+        }
+
+        function copyFinancingSummary() {
+            const price = parseFloat(document.getElementById('fin_price')?.value) || 0;
+            const fixedFees = (parseFloat(document.getElementById('fin_admin_fee')?.value) || 0) +
+                              (parseFloat(document.getElementById('fin_gps_fee')?.value) || 0) +
+                              (parseFloat(document.getElementById('fin_notary_fee')?.value) || 0);
+            const insAnn = parseFloat(document.getElementById('fin_insurance_annual')?.value) || 0;
+
+            let text = `💼 *SEMINUEVOS AUTOS | PROYECCIÓN DE FINANCIAMIENTO*\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `🚗 *Precio Vehículo Base:* ${fmtFin(price)}\n`;
+            text += `📄 *Gastos Fijos Apertura:* ${fmtFin(fixedFees)} (Admin + GPS + Matrícula)\n`;
+            text += `🛡️ *Seguro Anual:* ${fmtFin(insAnn)} (${fmtFin(insAnn/12)}/mes)\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `📊 *ESTRUCTURA DE PLANES DISPONIBLES:*\n\n`;
+
+            if (window._currentFinPlans && window._currentFinPlans.length > 0) {
+                window._currentFinPlans.forEach(p => {
+                    text += `🔹 *${p.name}* [${p.tierLabel}]\n`;
+                    text += `   • Inicial %: ${p.downPct}%\n`;
+                    text += `   • Desembolso Inicial: ${p.upfrontTotal}\n`;
+                    text += `   • Capital Financiado: ${p.capital}\n`;
+                    text += `   • Tasa Mensual: ${p.ratePct}%\n`;
+                    text += `   • Cuota Mensual Total: ${p.pmtTotal}\n`;
+                    text += `   • Costo Final Total: ${p.costoTotal}\n\n`;
+                });
+            }
+
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `📍 *Uso Interno - Mesa de Dinero & Estructuración*\n`;
+            text += `SEMINUEVOS AUTOS © 2026`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✓ Resumen de financiamiento copiado al portapapeles', 'success');
+            }).catch(() => {
+                showToast('No se pudo copiar automáticamente', 'warning');
+            });
+        }
+
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
             document.querySelectorAll('.sidebar-link[data-tab="fichas"]').forEach(btn => {
                 btn.addEventListener('click', () => initFichasModule());
             });
+            document.querySelectorAll('.sidebar-link[data-tab="financing"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    populateFinancingVehicles();
+                    calculateFinancingPlans();
+                });
+            });
+            // Initial calculations
+            calculateFinancingPlans();
         }
 
         if (document.readyState === 'loading') {
