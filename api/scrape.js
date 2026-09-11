@@ -874,7 +874,7 @@ async function scrapeJinaIAAI(url) {
 
         if (titleMatch) {
             fullTitle = (titleMatch[1] || titleMatch[0]).replace(/^#\s*/, '').replace(/for Auction/i, '').trim();
-            const ymMatch = fullTitle.match(/\b(19|20)\d{2}\b\s+([A-Za-z0-9]+)(?:\s+([A-Za-z0-9]+))?(?:\s+(.*))?/i);
+            const ymMatch = fullTitle.match(/\b((?:19|20)\d{2})\b\s+([A-Za-z0-9]+)(?:\s+([A-Za-z0-9]+))?(?:\s+(.*))?/i);
             if (ymMatch) {
                 year = ymMatch[1];
                 make = ymMatch[2];

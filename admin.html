@@ -4876,24 +4876,104 @@
                     let rawItem = null;
                     if (liveTimerEl) liveTimerEl.innerHTML = `⚡ [${index + 1}/${links.length}] Consultando servidor para ${label}...`;
                     
-                    try {
-                        const proxyRes = await fetch('/api/scrape', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ url: cleanUrl, proxyKey: token })
-                        });
+                    // 1. Probar endpoints de la API (local y producción en Vercel)
+                    const candidateEndpoints = [
+                        '/api/scrape',
+                        'https://seminuevos-lading-page.vercel.app/api/scrape',
+                        'https://seminuevoautos.com/api/scrape'
+                    ];
 
-                        if (proxyRes.ok) {
-                            const proxyJson = await proxyRes.json();
-                            if (proxyJson && proxyJson.success && proxyJson.data) {
-                                rawItem = proxyJson.data;
+                    for (const ep of candidateEndpoints) {
+                        if (rawItem && (rawItem.make || rawItem.title || rawItem.year)) break;
+                        try {
+                            const proxyRes = await fetch(ep, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ url: cleanUrl, proxyKey: token }),
+                                signal: AbortSignal.timeout(12000)
+                            });
+
+                            if (proxyRes.ok) {
+                                const proxyJson = await proxyRes.json();
+                                if (proxyJson && proxyJson.success && proxyJson.data) {
+                                    rawItem = proxyJson.data;
+                                    break;
+                                }
                             }
+                        } catch (epErr) {
+                            console.warn(`Scrape endpoint ${ep} aviso:`, epErr);
                         }
-                    } catch (proxyErr) {
-                        console.warn("Backend proxy scraper fallback error:", proxyErr);
                     }
 
-                    // 3. Fallback check: if no make/model was extracted, notify user to use Manual HTML Mode or Apify Token
+                    // 2. Respaldo directo en cliente via Jina Reader (100% bypass sin proxy requerido)
+                    if (!rawItem || (!rawItem.make && !rawItem.title && !rawItem.year)) {
+                        try {
+                            if (liveTimerEl) liveTimerEl.innerHTML = `⚡ [${index + 1}/${links.length}] Extrayendo datos directamente de subasta para ${label}...`;
+                            const jinaRes = await fetch(`https://r.jina.ai/${cleanUrl}`, {
+                                headers: { 'User-Agent': 'Mozilla/5.0' },
+                                signal: AbortSignal.timeout(15000)
+                            });
+
+                            if (jinaRes.ok) {
+                                const jinaText = await jinaRes.text();
+                                if (jinaText && jinaText.length > 300) {
+                                    const titleM = jinaText.match(/Title:\s*(.*?)(?:\s+for\s+Auction|\s+for\s+Sale|\n|$)/i) || 
+                                                   jinaText.match(/#\s*(19\d{2}|20\d{2})\s+([A-Za-z0-9]+)\s+([A-Za-z0-9\s]+)/i);
+                                    let jTitle = '';
+                                    let jYear = '';
+                                    let jMake = '';
+                                    let jModel = '';
+                                    let jSeries = '';
+                                    if (titleM) {
+                                        jTitle = (titleM[1] || titleM[0]).replace(/^#\s*/, '').replace(/for Auction/i, '').trim();
+                                        const ym = jTitle.match(/\b((?:19|20)\d{2})\b\s+([A-Za-z0-9]+)(?:\s+([A-Za-z0-9]+))?(?:\s+(.*))?/i);
+                                        if (ym) {
+                                            jYear = ym[1];
+                                            jMake = ym[2];
+                                            jModel = ym[3] || '';
+                                            jSeries = ym[4] || '';
+                                        }
+                                    }
+                                    const odoM = jinaText.match(/Odometer:\s*([^\n\r]+)/i);
+                                    const vinM = jinaText.match(/VIN\s*(?:\([^)]+\))?:\s*([A-Z0-9*]{11,17})/i);
+                                    const engM = jinaText.match(/Engine:\s*([^\n\r]+)/i);
+                                    const transM = jinaText.match(/Transmission:\s*([^\n\r]+)/i);
+                                    const bodyM = jinaText.match(/Body Style:\s*([^\n\r]+)/i);
+                                    const dmgM = jinaText.match(/Primary Damage:\s*([^\n\r]+)/i);
+                                    const locM = jinaText.match(/Selling Branch:\s*([^\n\r]+)/i);
+
+                                    let jImages = [];
+                                    if (lotId && isIaai) {
+                                        for (let i = 1; i <= 15; i++) {
+                                            jImages.push(`https://vis.iaai.com/resizer?imageKeys=${lotId}~SID~S0~I${i}`);
+                                        }
+                                    }
+
+                                    if (jTitle || jMake || jYear) {
+                                        rawItem = {
+                                            title: jTitle,
+                                            year: jYear || new Date().getFullYear().toString(),
+                                            make: jMake,
+                                            model: jModel,
+                                            series: jSeries,
+                                            km: odoM ? odoM[1].trim() : '0 KM',
+                                            vin: vinM ? vinM[1].trim() : '',
+                                            engine: engM ? engM[1].trim() : '',
+                                            transmission: transM ? transM[1].trim() : 'Automático',
+                                            bodyType: bodyM ? bodyM[1].trim() : 'SUV',
+                                            damage: dmgM ? dmgM[1].trim() : 'Sin daño mayor',
+                                            location: locM ? locM[1].trim() : 'EE. UU. (Subasta)',
+                                            images: jImages
+                                        };
+                                    }
+                                }
+                            }
+                        } catch (jinaErr) {
+                            console.warn("Direct Jina fallback error:", jinaErr);
+                        }
+                    }
+
+                    // 3. Verificación de extracción
                     if (!rawItem || (!rawItem.make && !rawItem.title && !rawItem.year)) {
                         throw new Error(`IAAI bloqueó el acceso directo. Por favor usa la pestaña "Modo Manual" (pega el HTML de la página) o ingresa un Token de Apify en Ajustes.`);
                     }
