@@ -1905,6 +1905,259 @@
             font-size: 0.85rem;
             color: #c7d2fe;
         }
+
+        /* ===== COTIZADOR Y PLANES DE FINANCIAMIENTO (CON CÓDIGO DE CONTROL & PDF) ===== */
+        .cp-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .cp-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .cp-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .cp-section-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .cp-range-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cp-range-container input[type="range"] {
+            flex-grow: 1;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .cp-results-box {
+            background: var(--bg3);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 16px 18px;
+        }
+        .cp-result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 0.9rem;
+            color: var(--text2);
+        }
+        .cp-result-row:last-child {
+            border-bottom: none;
+        }
+        .cp-result-row.total {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #38bdf8;
+            border-top: 2px solid var(--accent);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+        .cp-result-val {
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .cp-btn-pdf {
+            width: 100%;
+            padding: 13px;
+            background: var(--gradient);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(39, 92, 234, 0.3);
+            font-family: 'Unbounded', sans-serif;
+        }
+        .cp-btn-pdf:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(39, 92, 234, 0.4);
+        }
+
+        /* ESTILOS DEL PDF EXPORTABLE */
+        #cpPdfTemplateWrapper {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .cp-pdf-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 18mm 18mm;
+            background-color: #ffffff;
+            color: #0f172a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            position: relative;
+        }
+        .cp-pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+        }
+        .cp-pdf-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .cp-pdf-logo-svg {
+            width: 50px;
+            height: 50px;
+        }
+        .cp-pdf-title-main {
+            font-size: 22pt;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .cp-pdf-title-sub {
+            font-size: 8.5pt;
+            color: #2563eb;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        .cp-pdf-header-right {
+            text-align: right;
+        }
+        .cp-pdf-rif-badge {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 8.5pt;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        .cp-pdf-control-num {
+            font-size: 9pt;
+            font-weight: 800;
+            color: #2563eb;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .cp-pdf-doc-title {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #2563eb;
+            padding: 10px 14px;
+            font-size: 12pt;
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cp-pdf-card {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 18px;
+            background-color: #ffffff;
+        }
+        .cp-pdf-card-title {
+            font-size: 10.5pt;
+            font-weight: 800;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+        .cp-pdf-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 0;
+            font-size: 9.8pt;
+        }
+        .cp-pdf-row.highlight {
+            background-color: #eff6ff;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #2563eb;
+            font-size: 12pt;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-top: 10px;
+        }
+        .cp-pdf-includes-title {
+            font-size: 9.2pt;
+            font-weight: 700;
+            color: #334155;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .cp-pdf-includes-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 4px;
+        }
+        .cp-pdf-includes-list li {
+            font-size: 9.2pt;
+            color: #334155;
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cp-pdf-includes-list li::before {
+            content: "✓";
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .cp-pdf-footer {
+            position: absolute;
+            bottom: 16mm;
+            left: 18mm;
+            right: 18mm;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 8pt;
+            color: #64748b;
+        }
     </style>
 </head>
 
@@ -1960,6 +2213,7 @@
                 <button class="sidebar-link" data-tab="promotions"><i class="fas fa-tags"></i> Promociones</button>
                 <button class="sidebar-link" data-tab="fichas"><i class="fas fa-file-invoice"></i> Fichas Técnicas</button>
                 <button class="sidebar-link" data-tab="financing"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
+                <button class="sidebar-link" data-tab="credit-plans"><i class="fas fa-file-invoice-dollar"></i> Planes de Financiamiento</button>
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
@@ -3161,7 +3415,271 @@
                     </div>
                 </div>
             </div>
+
+            <!-- PLANES DE FINANCIAMIENTO TAB (COTIZADOR CON CÓDIGO DE CONTROL & PDF) -->
+            <div class="tab-content" id="tab-credit-plans">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Planes de <span>Financiamiento</span></h1>
+                        <p style="color:var(--text2); font-size:0.9rem; margin-top:4px;">
+                            <i class="fas fa-file-contract" style="color:var(--accent); margin-right:6px;"></i>
+                            Cotizador Formal con Emisión de Ofertas & Código de Control (RIF: J-504364380)
+                        </p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-ghost" type="button" onclick="resetCreditPlansDefaults()">
+                            <i class="fas fa-undo"></i> Restaurar Valores
+                        </button>
+                        <button class="btn btn-ghost" type="button" onclick="copiarCreditoWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> Copiar Cotización
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="exportarPdfCredito()">
+                            <i class="fas fa-file-pdf"></i> Exportar en PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cp-grid">
+                    <!-- EDICIÓN DE PARÁMETROS -->
+                    <div class="cp-card">
+                        <div class="cp-section-title">
+                            <span><i class="fas fa-edit" style="margin-right:6px;"></i> Edición de Parámetros de Operación</span>
+                        </div>
+
+                        <!-- Selector rápido desde inventario -->
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label class="form-label" style="font-size:0.78rem;">
+                                <i class="fas fa-car"></i> Cargar desde Inventario (Opcional):
+                            </label>
+                            <select id="cpVehicleSelect" class="form-select" style="padding:8px 10px; font-size:0.85rem;" onchange="onCpVehicleSelected(this)">
+                                <option value="">-- Seleccionar vehículo del inventario --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_precioLista">Precio de Lista ($ USD):</label>
+                            <input type="number" id="cp_precioLista" class="form-input" value="22000" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <label class="form-label" for="cp_porcentajeInicial" style="margin-bottom:0;">Porcentaje de Inicial (%):</label>
+                                <span id="cpInicialPctDisplay" style="font-weight:700; color:var(--accent); font-size:0.85rem;">30%</span>
+                            </div>
+                            <div class="cp-range-container">
+                                <input type="range" id="cp_rangeInicial" min="10" max="80" value="30" step="5" oninput="sincronizarCpInicialRange(this.value)">
+                                <input type="number" id="cp_porcentajeInicial" class="form-input" value="30" style="width: 85px; padding:6px 10px;" min="0" max="100" oninput="sincronizarCpInicialNum(this.value)">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_plazoMeses">Plazo de Pago (Meses):</label>
+                            <select id="cp_plazoMeses" class="form-select" onchange="calcularCreditoPlan()">
+                                <option value="12">12 Meses (1 Año)</option>
+                                <option value="24" selected>24 Meses (2 Años)</option>
+                                <option value="36">36 Meses (3 Años)</option>
+                                <option value="48">48 Meses (4 Años)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_tasaMensual">Tasa de Interés Mensual (%):</label>
+                            <input type="number" id="cp_tasaMensual" class="form-input" value="1.5" step="0.1" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_gastosAdmin">Gastos Administrativos ($ USD):</label>
+                            <input type="number" id="cp_gastosAdmin" class="form-input" value="350" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_gpsAnual">Servicio GPS y Rastreo ($ USD / Año):</label>
+                            <input type="number" id="cp_gpsAnual" class="form-input" value="180" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_notariaPlacas">Notaría, Placas y Matriculación ($ USD):</label>
+                            <input type="number" id="cp_notariaPlacas" class="form-input" value="450" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label class="form-label" for="cp_seguroAnual">Seguro a Todo Riesgo ($ USD / Año):</label>
+                            <input type="number" id="cp_seguroAnual" class="form-input" value="600" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label class="form-label" for="cp_fondoMantenimiento">Mantenimientos y Servicios Preventivos ($ USD / Año):</label>
+                            <input type="number" id="cp_fondoMantenimiento" class="form-input" value="250" oninput="calcularCreditoPlan()">
+                        </div>
+
+                        <button class="btn btn-primary btn-block" type="button" onclick="calcularCreditoPlan()" style="justify-content:center; margin-top:10px;">
+                            <i class="fas fa-sync-alt"></i> Actualizar Cálculos
+                        </button>
+                    </div>
+
+                    <!-- RESUMEN LOCAL & EXPORTACIÓN -->
+                    <div>
+                        <div class="cp-card">
+                            <div class="cp-section-title">
+                                <span><i class="fas fa-eye" style="margin-right:6px;"></i> Vista Previa de Estructuración</span>
+                            </div>
+
+                            <div class="cp-results-box">
+                                <div class="cp-result-row">
+                                    <span>Monto Inicial Base:</span>
+                                    <span class="cp-result-val" id="cp_resMontoInicial">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Gastos Administrativos:</span>
+                                    <span class="cp-result-val" id="cp_resGastosAdmin">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Notaría, Placas y Matriculación:</span>
+                                    <span class="cp-result-val" id="cp_resNotaria">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>GPS y Rastreo Total:</span>
+                                    <span class="cp-result-val" id="cp_resGpsTotal">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Seguro a Todo Riesgo Total:</span>
+                                    <span class="cp-result-val" id="cp_resSeguroTotal">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Mantenimiento Preventivo Total:</span>
+                                    <span class="cp-result-val" id="cp_resMantenimientoTotal">$0.00</span>
+                                </div>
+                                <div class="cp-result-row total">
+                                    <span>DESEMBOLSO INICIAL TOTAL:</span>
+                                    <span class="cp-result-val" id="cp_resDesembolsoInicial">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="cp-section-title" style="margin-top: 24px;">
+                                <span><i class="fas fa-coins" style="margin-right:6px;"></i> Condiciones del Crédito</span>
+                            </div>
+
+                            <div class="cp-results-box">
+                                <div class="cp-result-row">
+                                    <span>Monto Neto a Financiar:</span>
+                                    <span class="cp-result-val" id="cp_resMontoFinanciado">$0.00</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Tasa de Interés Mensual:</span>
+                                    <span class="cp-result-val" id="cp_resTasaAplicada">0%</span>
+                                </div>
+                                <div class="cp-result-row">
+                                    <span>Plazo de Pago:</span>
+                                    <span class="cp-result-val" id="cp_resPlazoAplicado">0 meses</span>
+                                </div>
+                                <div class="cp-result-row total" style="color: #4ade80;">
+                                    <span>CUOTA MENSUAL ESTIMADA:</span>
+                                    <span class="cp-result-val" id="cp_resCuotaMensual" style="color:#4ade80; font-size:1.25rem;">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div style="display:flex; gap:10px; margin-top:20px;">
+                                <button class="cp-btn-pdf" type="button" onclick="exportarPdfCredito()">
+                                    <i class="fas fa-file-pdf"></i> Exportar Cotización en PDF
+                                </button>
+                                <button class="btn btn-ghost" type="button" onclick="copiarCreditoWhatsApp()" title="Copiar cotización para WhatsApp">
+                                    <i class="fab fa-whatsapp" style="font-size:1.1rem; color:var(--success);"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- PLANTILLA EXPORTABLE PDF PARA PLANES DE FINANCIAMIENTO -->
+    <div id="cpPdfTemplateWrapper">
+        <div id="cpPdfContent" class="cp-pdf-page">
+            <!-- HEADER EN PDF -->
+            <div class="cp-pdf-header">
+                <div class="cp-pdf-brand">
+                    <svg class="cp-pdf-logo-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 65 35 L 75 10 L 100 35 H 80 A 55 55 0 0 1 135 90 H 115 A 35 35 0 0 0 80 55 V 35 Z" fill="#2563eb"/>
+                        <path d="M 135 165 L 125 190 L 100 165 H 120 A 55 55 0 0 1 65 110 H 85 A 35 35 0 0 0 120 145 V 165 Z" fill="#2563eb"/>
+                        <path d="M 130 45 L 150 65 L 70 155 L 50 135 Z" fill="#2563eb"/>
+                    </svg>
+                    <div>
+                        <div class="cp-pdf-title-main">semi<span style="font-weight: 900;">NUEVOS</span></div>
+                        <div class="cp-pdf-title-sub">Estructuración & Financiamiento Vehicular</div>
+                    </div>
+                </div>
+                <div class="cp-pdf-header-right">
+                    <div class="cp-pdf-rif-badge">RIF: J-504364380</div><br>
+                    <div class="cp-pdf-control-num" id="cpPdfNumControl">PCRED-DDMMAAHHMMSS</div>
+                </div>
+            </div>
+
+            <div class="cp-pdf-doc-title">
+                <span>Cotización Oficial de Financiamiento</span>
+                <span id="cpPdfVehiculoLabel" style="font-size:10pt; font-weight:600; color:#475569;"></span>
+            </div>
+
+            <!-- SECCIÓN DESEMBOLSO INICIAL -->
+            <div class="cp-pdf-card">
+                <div class="cp-pdf-card-title">1. Desembolso de Contratación & Entrega</div>
+                
+                <div class="cp-pdf-includes-title">Este paquete de contratación incluye por los <span id="cpPdfAnosCobertura" style="color:#2563eb; font-weight:bold;">2</span> años de financiamiento:</div>
+                <ul class="cp-pdf-includes-list">
+                    <li>Gastos administrativos</li>
+                    <li>Servicio de GPS y rastreo</li>
+                    <li>Seguro a todo riesgo</li>
+                    <li>Mantenimientos y servicios preventivos</li>
+                    <li>Atención post venta</li>
+                    <li>Soporte de revisiones gratuitas</li>
+                </ul>
+
+                <div class="cp-pdf-row highlight">
+                    <span>DESEMBOLSO INICIAL TOTAL:</span>
+                    <span id="cpPdfDesembolsoInicialVal">$0.00</span>
+                </div>
+            </div>
+
+            <!-- SECCIÓN CRÉDITO -->
+            <div class="cp-pdf-card">
+                <div class="cp-pdf-card-title">2. Proyección Financiera del Crédito</div>
+                <div class="cp-pdf-row">
+                    <span>Precio de Lista del Vehículo:</span>
+                    <span id="cpPdfPrecioListaVal" style="font-weight: 700;">$0.00</span>
+                </div>
+                <div class="cp-pdf-row">
+                    <span>Monto Inicial Base (<span id="cpPdfPctInicialLabel">30%</span>):</span>
+                    <span id="cpPdfMontoInicialVal" style="font-weight: 700;">$0.00</span>
+                </div>
+                <div class="cp-pdf-row">
+                    <span>Monto Neto a Financiar:</span>
+                    <span id="cpPdfMontoFinanciadoVal" style="font-weight: 700;">$0.00</span>
+                </div>
+                <div class="cp-pdf-row">
+                    <span>Tasa de Interés Mensual:</span>
+                    <span id="cpPdfTasaMensualVal" style="font-weight: 700;">0%</span>
+                </div>
+                <div class="cp-pdf-row">
+                    <span>Plazo de Pago Indicado:</span>
+                    <span id="cpPdfPlazoPagoVal" style="font-weight: 700;">0 Meses</span>
+                </div>
+                <div class="cp-pdf-row highlight" style="background-color: #f0fdf4; border-left-color: #16a34a; color: #14532d;">
+                    <span>CUOTA MENSUAL ESTIMADA:</span>
+                    <span id="cpPdfCuotaMensualVal">$0.00</span>
+                </div>
+            </div>
+
+            <div class="cp-pdf-footer">
+                <div>
+                    <strong>SEMINUEVOS AUTOS | RIF J-504364380</strong><br>
+                    Isla de Margarita, Estado Nueva Esparta, Venezuela.
+                </div>
+                <div style="text-align: right;">
+                    Documento formal emitido para fines de cotización.<br>
+                    Válido por 15 días continuos.
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- VEHICLE FORM MODAL -->
@@ -8470,6 +8988,281 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             });
         }
 
+        // ===== PLANES DE FINANCIAMIENTO (COTIZADOR CON CÓDIGO DE CONTROL & PDF) =====
+        function sincronizarCpInicialRange(val) {
+            const numInput = document.getElementById('cp_porcentajeInicial');
+            const display = document.getElementById('cpInicialPctDisplay');
+            if (numInput) numInput.value = val;
+            if (display) display.innerText = val + '%';
+            calcularCreditoPlan();
+        }
+
+        function sincronizarCpInicialNum(val) {
+            const rangeInput = document.getElementById('cp_rangeInicial');
+            const display = document.getElementById('cpInicialPctDisplay');
+            if (rangeInput) rangeInput.value = val;
+            if (display) display.innerText = val + '%';
+            calcularCreditoPlan();
+        }
+
+        function generarCodigoControlCredito() {
+            const ahora = new Date();
+            const dia = String(ahora.getDate()).padStart(2, '0');
+            const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+            const ano = String(ahora.getFullYear()).slice(-2);
+            const hora = String(ahora.getHours()).padStart(2, '0');
+            const min = String(ahora.getMinutes()).padStart(2, '0');
+            const seg = String(ahora.getSeconds()).padStart(2, '0');
+            return `PCRED-${dia}${mes}${ano}${hora}${min}${seg}`;
+        }
+
+        function calcularCreditoPlan() {
+            const precioLista = parseFloat(document.getElementById('cp_precioLista')?.value) || 0;
+            const pctInicial = parseFloat(document.getElementById('cp_porcentajeInicial')?.value) || 0;
+            const plazoMeses = parseInt(document.getElementById('cp_plazoMeses')?.value) || 12;
+            const tasaMensualPct = parseFloat(document.getElementById('cp_tasaMensual')?.value) || 0;
+
+            const gastosAdmin = parseFloat(document.getElementById('cp_gastosAdmin')?.value) || 0;
+            const gpsAnual = parseFloat(document.getElementById('cp_gpsAnual')?.value) || 0;
+            const notariaPlacas = parseFloat(document.getElementById('cp_notariaPlacas')?.value) || 0;
+            const seguroAnual = parseFloat(document.getElementById('cp_seguroAnual')?.value) || 0;
+            const fondoMantenimiento = parseFloat(document.getElementById('cp_fondoMantenimiento')?.value) || 0;
+
+            const anosPlazo = plazoMeses / 12;
+
+            const montoInicialBase = precioLista * (pctInicial / 100);
+            const montoFinanciado = Math.max(0, precioLista - montoInicialBase);
+
+            const gpsTotal = gpsAnual * anosPlazo;
+            const seguroTotal = seguroAnual * anosPlazo;
+            const mantenimientoTotal = fondoMantenimiento * anosPlazo;
+
+            const desembolsoInicialTotal = montoInicialBase + gastosAdmin + notariaPlacas + gpsTotal + seguroTotal + mantenimientoTotal;
+
+            // Amortización Cuota Francesa
+            let cuotaMensual = 0;
+            const i = tasaMensualPct / 100;
+            if (i > 0 && montoFinanciado > 0) {
+                cuotaMensual = montoFinanciado * (i * Math.pow(1 + i, plazoMeses)) / (Math.pow(1 + i, plazoMeses) - 1);
+            } else if (montoFinanciado > 0) {
+                cuotaMensual = montoFinanciado / plazoMeses;
+            }
+
+            const fmt = (v) => `$ ${(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            // Asignación a Vista Previa Web
+            const elResMontoInicial = document.getElementById('cp_resMontoInicial');
+            if (elResMontoInicial) elResMontoInicial.innerText = fmt(montoInicialBase);
+            const elResGastosAdmin = document.getElementById('cp_resGastosAdmin');
+            if (elResGastosAdmin) elResGastosAdmin.innerText = fmt(gastosAdmin);
+            const elResNotaria = document.getElementById('cp_resNotaria');
+            if (elResNotaria) elResNotaria.innerText = fmt(notariaPlacas);
+            const elResGpsTotal = document.getElementById('cp_resGpsTotal');
+            if (elResGpsTotal) elResGpsTotal.innerText = fmt(gpsTotal);
+            const elResSeguroTotal = document.getElementById('cp_resSeguroTotal');
+            if (elResSeguroTotal) elResSeguroTotal.innerText = fmt(seguroTotal);
+            const elResMttoTotal = document.getElementById('cp_resMantenimientoTotal');
+            if (elResMttoTotal) elResMttoTotal.innerText = fmt(mantenimientoTotal);
+            const elResDesembolso = document.getElementById('cp_resDesembolsoInicial');
+            if (elResDesembolso) elResDesembolso.innerText = fmt(desembolsoInicialTotal);
+
+            const elResFinanciado = document.getElementById('cp_resMontoFinanciado');
+            if (elResFinanciado) elResFinanciado.innerText = fmt(montoFinanciado);
+            const elResTasa = document.getElementById('cp_resTasaAplicada');
+            if (elResTasa) elResTasa.innerText = `${tasaMensualPct}%`;
+            const elResPlazo = document.getElementById('cp_resPlazoAplicado');
+            if (elResPlazo) elResPlazo.innerText = `${plazoMeses} Meses (${anosPlazo} ${anosPlazo === 1 ? 'Año' : 'Años'})`;
+            const elResCuota = document.getElementById('cp_resCuotaMensual');
+            if (elResCuota) elResCuota.innerText = fmt(cuotaMensual);
+
+            // Asignación a la Plantilla PDF
+            const pdfAnos = document.getElementById('cpPdfAnosCobertura');
+            if (pdfAnos) pdfAnos.innerText = anosPlazo;
+            const pdfDesembolso = document.getElementById('cpPdfDesembolsoInicialVal');
+            if (pdfDesembolso) pdfDesembolso.innerText = fmt(desembolsoInicialTotal);
+            const pdfPrecioLista = document.getElementById('cpPdfPrecioListaVal');
+            if (pdfPrecioLista) pdfPrecioLista.innerText = fmt(precioLista);
+            const pdfPctInicial = document.getElementById('cpPdfPctInicialLabel');
+            if (pdfPctInicial) pdfPctInicial.innerText = `${pctInicial}%`;
+            const pdfMontoInicial = document.getElementById('cpPdfMontoInicialVal');
+            if (pdfMontoInicial) pdfMontoInicial.innerText = fmt(montoInicialBase);
+            const pdfFinanciado = document.getElementById('cpPdfMontoFinanciadoVal');
+            if (pdfFinanciado) pdfFinanciado.innerText = fmt(montoFinanciado);
+            const pdfTasa = document.getElementById('cpPdfTasaMensualVal');
+            if (pdfTasa) pdfTasa.innerText = `${tasaMensualPct}%`;
+            const pdfPlazo = document.getElementById('cpPdfPlazoPagoVal');
+            if (pdfPlazo) pdfPlazo.innerText = `${plazoMeses} Meses (${anosPlazo} ${anosPlazo === 1 ? 'Año' : 'Años'})`;
+            const pdfCuota = document.getElementById('cpPdfCuotaMensualVal');
+            if (pdfCuota) pdfCuota.innerText = fmt(cuotaMensual);
+
+            // Guardar en objeto global para exportar/compartir
+            window._currentCreditQuote = {
+                precioLista: fmt(precioLista),
+                pctInicial: `${pctInicial}%`,
+                montoInicialBase: fmt(montoInicialBase),
+                gastosAdmin: fmt(gastosAdmin),
+                notariaPlacas: fmt(notariaPlacas),
+                gpsTotal: fmt(gpsTotal),
+                seguroTotal: fmt(seguroTotal),
+                mantenimientoTotal: fmt(mantenimientoTotal),
+                desembolsoInicialTotal: fmt(desembolsoInicialTotal),
+                montoFinanciado: fmt(montoFinanciado),
+                tasaMensualPct: `${tasaMensualPct}%`,
+                plazoTexto: `${plazoMeses} Meses (${anosPlazo} ${anosPlazo === 1 ? 'Año' : 'Años'})`,
+                cuotaMensual: fmt(cuotaMensual),
+                anosPlazo
+            };
+        }
+
+        function populateCreditPlansVehicles() {
+            const select = document.getElementById('cpVehicleSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Cargar desde Inventario (Opcional) --</option>';
+
+            if (Array.isArray(vehicles) && vehicles.length > 0) {
+                vehicles.forEach(v => {
+                    const priceRaw = String(v.price || '').replace(/[^0-9.]/g, '');
+                    const numPrice = parseFloat(priceRaw) || 0;
+                    if (numPrice > 0) {
+                        const opt = document.createElement('option');
+                        opt.value = numPrice;
+                        opt.dataset.title = v.title || 'Vehículo';
+                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        select.appendChild(opt);
+                    }
+                });
+            }
+            if (currentVal) select.value = currentVal;
+        }
+
+        function onCpVehicleSelected(selectElem) {
+            const val = parseFloat(selectElem.value);
+            if (!isNaN(val) && val > 0) {
+                const priceInput = document.getElementById('cp_precioLista');
+                if (priceInput) {
+                    priceInput.value = val;
+                    const selectedOpt = selectElem.options[selectElem.selectedIndex];
+                    const vTitle = selectedOpt?.dataset?.title || selectedOpt?.textContent || '';
+                    const pdfVehiculoLabel = document.getElementById('cpPdfVehiculoLabel');
+                    if (pdfVehiculoLabel && vTitle) {
+                        pdfVehiculoLabel.innerText = `| ${vTitle}`;
+                    }
+                    calcularCreditoPlan();
+                    showToast('Vehículo y precio cargados: $' + val.toLocaleString('en-US'), 'success');
+                }
+            } else {
+                const pdfVehiculoLabel = document.getElementById('cpPdfVehiculoLabel');
+                if (pdfVehiculoLabel) pdfVehiculoLabel.innerText = '';
+            }
+        }
+
+        function resetCreditPlansDefaults() {
+            const elPrice = document.getElementById('cp_precioLista');
+            if (elPrice) elPrice.value = 22000;
+            const elRange = document.getElementById('cp_rangeInicial');
+            if (elRange) elRange.value = 30;
+            const elPct = document.getElementById('cp_porcentajeInicial');
+            if (elPct) elPct.value = 30;
+            const elDisplay = document.getElementById('cpInicialPctDisplay');
+            if (elDisplay) elDisplay.innerText = '30%';
+            const elPlazo = document.getElementById('cp_plazoMeses');
+            if (elPlazo) elPlazo.value = '24';
+            const elTasa = document.getElementById('cp_tasaMensual');
+            if (elTasa) elTasa.value = 1.5;
+            const elAdmin = document.getElementById('cp_gastosAdmin');
+            if (elAdmin) elAdmin.value = 350;
+            const elGps = document.getElementById('cp_gpsAnual');
+            if (elGps) elGps.value = 180;
+            const elNotaria = document.getElementById('cp_notariaPlacas');
+            if (elNotaria) elNotaria.value = 450;
+            const elSeguro = document.getElementById('cp_seguroAnual');
+            if (elSeguro) elSeguro.value = 600;
+            const elMtto = document.getElementById('cp_fondoMantenimiento');
+            if (elMtto) elMtto.value = 250;
+
+            const sel = document.getElementById('cpVehicleSelect');
+            if (sel) sel.value = '';
+            const pdfVehiculoLabel = document.getElementById('cpPdfVehiculoLabel');
+            if (pdfVehiculoLabel) pdfVehiculoLabel.innerText = '';
+
+            calcularCreditoPlan();
+            showToast('Valores restablecidos por defecto', 'info');
+        }
+
+        function exportarPdfCredito() {
+            const numControl = generarCodigoControlCredito();
+            const elNumControl = document.getElementById('cpPdfNumControl');
+            if (elNumControl) elNumControl.innerText = numControl;
+
+            calcularCreditoPlan();
+
+            const element = document.getElementById('cpPdfContent');
+            if (!element) {
+                showToast('Plantilla PDF no encontrada', 'danger');
+                return;
+            }
+
+            showToast('Generando Cotización en PDF con código ' + numControl + '...', 'info');
+
+            const opt = {
+                margin:       0,
+                filename:     `Cotizacion_${numControl}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, logging: false, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf === 'function') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showToast('✓ PDF descargado exitosamente (' + numControl + ')', 'success');
+                }).catch(err => {
+                    console.error('Error al exportar PDF:', err);
+                    showToast('Error al exportar PDF', 'danger');
+                });
+            } else {
+                showToast('html2pdf no está cargado', 'danger');
+            }
+        }
+
+        function copiarCreditoWhatsApp() {
+            const q = window._currentCreditQuote || {};
+            const numControl = generarCodigoControlCredito();
+            const vehiculo = document.getElementById('cpPdfVehiculoLabel')?.innerText.replace(/^\|\s*/, '') || 'Vehículo Seminuevo';
+
+            let wa = `🚗 *COTIZACIÓN OFICIAL DE FINANCIAMIENTO - SEMINUEVOS* 📋\n`;
+            wa += `🔖 *Código de Control:* \`${numControl}\`\n`;
+            wa += `🏢 *RIF:* J-504364380 | Porlamar, Isla de Margarita\n`;
+            if (vehiculo && vehiculo !== 'Vehículo Seminuevo') {
+                wa += `📌 *Unidad:* ${vehiculo}\n`;
+            }
+            wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+            wa += `1️⃣ *DESEMBOLSO DE CONTRATACIÓN & ENTREGA:*\n`;
+            wa += `   • Precio de Lista: ${q.precioLista || '$0.00'}\n`;
+            wa += `   • Inicial Base (${q.pctInicial || '30%'}): ${q.montoInicialBase || '$0.00'}\n`;
+            wa += `   • Gastos Administrativos: ${q.gastosAdmin || '$0.00'}\n`;
+            wa += `   • Notaría, Placas y Matrícula: ${q.notariaPlacas || '$0.00'}\n`;
+            wa += `   • GPS & Rastreo (${q.anosPlazo || 2} años): ${q.gpsTotal || '$0.00'}\n`;
+            wa += `   • Seguro a Todo Riesgo (${q.anosPlazo || 2} años): ${q.seguroTotal || '$0.00'}\n`;
+            wa += `   • Fondo Mtto. Preventivo (${q.anosPlazo || 2} años): ${q.mantenimientoTotal || '$0.00'}\n`;
+            wa += `   ✨ *DESEMBOLSO INICIAL TOTAL:* *${q.desembolsoInicialTotal || '$0.00'}*\n\n`;
+            wa += `2️⃣ *CONDICIONES DEL CRÉDITO:*\n`;
+            wa += `   • Monto Neto Financiado: ${q.montoFinanciado || '$0.00'}\n`;
+            wa += `   • Tasa de Interés Mensual: ${q.tasaMensualPct || '1.5%'}\n`;
+            wa += `   • Plazo de Pago: ${q.plazoTexto || '24 Meses'}\n`;
+            wa += `   💵 *CUOTA MENSUAL ESTIMADA:* *${q.cuotaMensual || '$0.00'}*\n`;
+            wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+            wa += `📲 *Para procesar tu solicitud contáctanos:*\n`;
+            wa += `📞 WhatsApp: +58 424-870-0438\n`;
+            wa += `📍 *Válido por 15 días continuos*`;
+
+            navigator.clipboard.writeText(wa).then(() => {
+                showToast('✓ Cotización copiada para WhatsApp (' + numControl + ')', 'success');
+            }).catch(() => {
+                showToast('No se pudo copiar automáticamente', 'warning');
+            });
+        }
+
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
@@ -8482,8 +9275,15 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     calculateFinancingPlans();
                 });
             });
+            document.querySelectorAll('.sidebar-link[data-tab="credit-plans"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    populateCreditPlansVehicles();
+                    calcularCreditoPlan();
+                });
+            });
             // Initial calculations
             calculateFinancingPlans();
+            calcularCreditoPlan();
         }
 
         if (document.readyState === 'loading') {
