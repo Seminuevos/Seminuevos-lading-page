@@ -2142,6 +2142,13 @@
             width: 50px;
             height: 50px;
         }
+        .pdf-brand-logo {
+            height: 48px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
+            display: block;
+        }
         .cp-pdf-title-main {
             font-size: 22pt;
             font-weight: 900;
@@ -4307,15 +4314,16 @@
     <div id="avaluoPdfWrapper">
         <div id="avaluoPdfContent" class="av-pdf-page">
             <div class="av-pdf-header">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; fill: #2563eb;"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/><circle cx="7.5" cy="15" r="1.5"/><circle cx="16.5" cy="15" r="1.5"/></svg>
-                    <div>
-                        <div style="font-size:1.45rem; font-weight:900; color:#0f172a; text-transform:uppercase; letter-spacing:-0.5px;">SEMINUEVOS</div>
-                        <div style="font-size:0.75rem; color:#2563eb; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Valuación & Recepción Comercial (Trade-In)</div>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="pdf-brand-logo">
+                    <div style="border-left: 2px solid #e2e8f0; padding-left: 12px;">
+                        <div style="font-size:0.75rem; color:#2563eb; font-weight:800; text-transform:uppercase; letter-spacing:1px;">Valuación & Recepción Comercial</div>
+                        <div style="font-size:0.70rem; color:#64748b; font-weight:600;">Trade-In & Tasación Técnica Vehicular</div>
                     </div>
                 </div>
                 <div style="text-align:right; font-size:0.82rem; color:#64748b;">
-                    <strong style="color:#0f172a; font-size:0.9rem;">INFORME DE RECEPCIÓN TRADE-IN</strong><br>
+                    <div style="display:inline-block; background:#eff6ff; color:#1d4ed8; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:4px; margin-bottom:4px; border:1px solid #bfdbfe;">RIF: J-504364380</div><br>
+                    <strong style="color:#0f172a; font-size:0.88rem;">INFORME DE RECEPCIÓN TRADE-IN</strong><br>
                     N° Control: <span id="avPdfControlCode" style="font-family:monospace; font-weight:700; color:#2563eb;">TRD-000000</span><br>
                     Fecha: <span id="avPdfDate">--</span>
                 </div>
@@ -4380,15 +4388,16 @@
     <div id="cronPdfWrapper">
         <div id="cronPdfContent" class="cron-pdf-page">
             <div class="cron-pdf-header">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <svg viewBox="0 0 24 24" style="width: 34px; height: 34px; fill: #1d4ed8;"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/><circle cx="7.5" cy="15" r="1.5"/><circle cx="16.5" cy="15" r="1.5"/></svg>
-                    <div>
-                        <div style="font-size:1.4rem; font-weight:900; color:#0f172a; text-transform:uppercase;">SEMINUEVOS</div>
-                        <div style="font-size:0.75rem; color:#1d4ed8; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Estructuración & Amortización Vehicular</div>
+                <div style="display:flex; align-items:center; gap:14px;">
+                    <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="pdf-brand-logo">
+                    <div style="border-left: 2px solid #e2e8f0; padding-left: 12px;">
+                        <div style="font-size:0.75rem; color:#1d4ed8; font-weight:800; text-transform:uppercase; letter-spacing:1px;">Estructuración & Amortización Vehicular</div>
+                        <div style="font-size:0.70rem; color:#64748b; font-weight:600;">Simulación Dinámica de Cuotas</div>
                     </div>
                 </div>
                 <div style="text-align:right; font-size:0.82rem; color:#64748b;">
-                    <strong style="color:#0f172a;">PROYECCIÓN DE CRONOGRAMA DE PAGOS</strong><br>
+                    <div style="display:inline-block; background:#eff6ff; color:#1d4ed8; font-weight:800; font-size:0.75rem; padding:2px 8px; border-radius:4px; margin-bottom:4px; border:1px solid #bfdbfe;">RIF: J-504364380</div><br>
+                    <strong style="color:#0f172a; font-size:0.88rem;">PROYECCIÓN DE CRONOGRAMA DE PAGOS</strong><br>
                     N° Control: <span id="cronPdfControlNum" style="font-family:monospace; font-weight:700; color:#1d4ed8;">SN-0000</span><br>
                     Fecha: <span id="cronPdfFecha">--</span>
                 </div>
@@ -4453,14 +4462,10 @@
             <!-- HEADER EN PDF -->
             <div class="cp-pdf-header">
                 <div class="cp-pdf-brand">
-                    <svg class="cp-pdf-logo-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M 65 35 L 75 10 L 100 35 H 80 A 55 55 0 0 1 135 90 H 115 A 35 35 0 0 0 80 55 V 35 Z" fill="#2563eb"/>
-                        <path d="M 135 165 L 125 190 L 100 165 H 120 A 55 55 0 0 1 65 110 H 85 A 35 35 0 0 0 120 145 V 165 Z" fill="#2563eb"/>
-                        <path d="M 130 45 L 150 65 L 70 155 L 50 135 Z" fill="#2563eb"/>
-                    </svg>
-                    <div>
-                        <div class="cp-pdf-title-main">semi<span style="font-weight: 900;">NUEVOS</span></div>
-                        <div class="cp-pdf-title-sub">Estructuración & Financiamiento Vehicular</div>
+                    <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="pdf-brand-logo">
+                    <div style="border-left: 2px solid #e2e8f0; padding-left: 12px;">
+                        <div style="font-size:0.75rem; color:#2563eb; font-weight:800; text-transform:uppercase; letter-spacing:1px;">Estructuración & Financiamiento Vehicular</div>
+                        <div style="font-size:0.70rem; color:#64748b; font-weight:600;">Cotización Formal de Crédito</div>
                     </div>
                 </div>
                 <div class="cp-pdf-header-right">
@@ -10068,7 +10073,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             showToast('Valores restablecidos por defecto', 'info');
         }
 
-        function exportarPdfCredito() {
+        async function exportarPdfCredito() {
             const numControl = generarCodigoControlCredito();
             const elNumControl = document.getElementById('cpPdfNumControl');
             if (elNumControl) elNumControl.innerText = numControl;
@@ -10082,6 +10087,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             }
 
             showToast('Generando Cotización en PDF con código ' + numControl + '...', 'info');
+
+            // Asegurar que el logo y recursos de imagen estén completamente listos
+            const imgs = Array.from(element.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
 
             const opt = {
                 margin:       0,
@@ -10388,7 +10397,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             showToast('Valores de cronograma restablecidos', 'info');
         }
 
-        function exportarPdfCronograma() {
+        async function exportarPdfCronograma() {
             const numControl = generarNumeroControlCron();
             const elControl = document.getElementById('cronPdfControlNum');
             if (elControl) elControl.innerText = numControl;
@@ -10404,6 +10413,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             }
 
             showToast('Generando PDF de Cronograma de Pagos...', 'info');
+
+            // Asegurar que el logo y recursos de imagen estén completamente listos
+            const imgs = Array.from(element.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
 
             const opt = {
                 margin:       [8, 8, 8, 8],
@@ -10718,7 +10731,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             showToast('Valores de avalúo restablecidos a los valores base', 'info');
         }
 
-        function exportTradeInPDF() {
+        async function exportTradeInPDF() {
             const data = calculateTradeIn();
             const controlCode = generateTradeInControlNumber();
 
@@ -10776,26 +10789,28 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             showToast('Generando Informe de Recepción Trade-In (PDF)...', 'info');
 
-            setTimeout(() => {
-                const opt = {
-                    margin:       [8, 8, 8, 8],
-                    filename:     `Informe_Recepcion_${controlCode}_${data.brand}_${data.model}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
+            // Asegurar que el logo y gráfica estén listos
+            const imgs = Array.from(element.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
 
-                if (typeof html2pdf === 'function') {
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        showToast('✓ Informe PDF descargado (' + controlCode + ')', 'success');
-                    }).catch(err => {
-                        console.error('Error al exportar PDF:', err);
-                        showToast('Error al exportar PDF', 'danger');
-                    });
-                } else {
-                    showToast('html2pdf no está disponible', 'danger');
-                }
-            }, 200);
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     `Informe_Recepcion_${controlCode}_${data.brand}_${data.model}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf === 'function') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showToast('✓ Informe PDF descargado (' + controlCode + ')', 'success');
+                }).catch(err => {
+                    console.error('Error al exportar PDF:', err);
+                    showToast('Error al exportar PDF', 'danger');
+                });
+            } else {
+                showToast('html2pdf no está disponible', 'danger');
+            }
         }
 
         function copyTradeInWhatsApp() {
