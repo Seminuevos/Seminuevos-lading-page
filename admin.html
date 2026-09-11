@@ -2111,19 +2111,33 @@
         }
 
         /* ESTILOS DEL PDF EXPORTABLE */
-        #cpPdfTemplateWrapper {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
+        #cpPdfTemplateWrapper,
+        #cronPdfWrapper,
+        #avaluoPdfWrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 210mm;
+            max-width: 210mm;
+            z-index: -9999;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
         .cp-pdf-page {
             width: 210mm;
+            max-width: 210mm;
             min-height: 297mm;
-            padding: 18mm 18mm;
+            box-sizing: border-box;
+            padding: 12mm 14mm;
             background-color: #ffffff;
             color: #0f172a;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             position: relative;
+            overflow: hidden;
+        }
+        .cp-pdf-page * {
+            box-sizing: border-box;
         }
         .cp-pdf-header {
             display: flex;
@@ -2354,17 +2368,19 @@
             border: 1px solid var(--border);
         }
         /* PDF Export Styling for Cronograma */
-        #cronPdfWrapper {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-        }
         .cron-pdf-page {
             width: 210mm;
-            padding: 16mm 14mm;
+            max-width: 210mm;
+            box-sizing: border-box;
+            padding: 10mm 12mm;
             background: #ffffff;
             color: #0f172a;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .cron-pdf-page * {
+            box-sizing: border-box;
         }
         .cron-pdf-header {
             display: flex;
@@ -2399,27 +2415,46 @@
         }
         .cron-pdf-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             text-align: right;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
+            box-sizing: border-box;
         }
         .cron-pdf-table th {
             background-color: #0f172a;
             color: #ffffff;
-            padding: 7px 10px;
+            padding: 6px 8px;
             font-weight: 700;
-            font-size: 0.72rem;
+            font-size: 0.70rem;
             text-transform: uppercase;
             border: 1px solid #cbd5e1;
+            box-sizing: border-box;
+            word-break: break-word;
         }
         .cron-pdf-table th:nth-child(1), .cron-pdf-table td:nth-child(1) {
             text-align: center;
+            width: 10%;
+        }
+        .cron-pdf-table th:nth-child(2), .cron-pdf-table td:nth-child(2) {
+            width: 22%;
+        }
+        .cron-pdf-table th:nth-child(3), .cron-pdf-table td:nth-child(3) {
+            width: 22%;
+        }
+        .cron-pdf-table th:nth-child(4), .cron-pdf-table td:nth-child(4) {
+            width: 23%;
+        }
+        .cron-pdf-table th:nth-child(5), .cron-pdf-table td:nth-child(5) {
+            width: 23%;
         }
         .cron-pdf-table td {
-            padding: 6px 10px;
+            padding: 5px 8px;
             border: 1px solid #e2e8f0;
             color: #334155;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
+            box-sizing: border-box;
+            word-break: break-word;
         }
         .cron-pdf-table tr:nth-child(even) td {
             background-color: #f8fafc;
@@ -2526,17 +2561,19 @@
         }
 
         /* PDF Avalúo */
-        #avaluoPdfWrapper {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-        }
         .av-pdf-page {
             width: 210mm;
-            padding: 18mm 16mm;
+            max-width: 210mm;
+            box-sizing: border-box;
+            padding: 10mm 12mm;
             background: #ffffff;
             color: #0f172a;
             font-family: 'Segoe UI', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .av-pdf-page * {
+            box-sizing: border-box;
         }
         .av-pdf-header {
             display: flex;
@@ -2548,21 +2585,25 @@
         }
         .av-pdf-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             margin-top: 6px;
             margin-bottom: 14px;
+            box-sizing: border-box;
         }
         .av-pdf-table th, .av-pdf-table td {
             border: 1px solid #cbd5e1;
-            padding: 7px 10px;
+            padding: 6px 8px;
             text-align: left;
-            font-size: 0.82rem;
+            font-size: 0.80rem;
+            box-sizing: border-box;
+            word-break: break-word;
         }
         .av-pdf-table th {
             background: #f1f5f9;
             color: #0f172a;
             font-weight: 700;
-            width: 30%;
+            width: 28%;
         }
     </style>
 </head>
@@ -10096,7 +10137,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 margin:       0,
                 filename:     `Cotizacion_${numControl}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true },
+                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
@@ -10419,10 +10460,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
 
             const opt = {
-                margin:       [8, 8, 8, 8],
+                margin:       0,
                 filename:     `Cronograma_${numControl}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: 794 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
@@ -10794,10 +10835,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             await Promise.all(imgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
 
             const opt = {
-                margin:       [8, 8, 8, 8],
+                margin:       0,
                 filename:     `Informe_Recepcion_${controlCode}_${data.brand}_${data.model}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: 794 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
