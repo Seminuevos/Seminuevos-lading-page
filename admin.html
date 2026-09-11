@@ -1941,12 +1941,121 @@
         .cp-range-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            margin-top: 6px;
         }
-        .cp-range-container input[type="range"] {
+        .cp-range-slider {
+            -webkit-appearance: none;
+            appearance: none;
             flex-grow: 1;
-            accent-color: var(--accent);
+            height: 12px;
+            border-radius: 100px;
+            background: linear-gradient(to right, #275CEA 0%, #275CEA 28.5%, #1e293b 28.5%, #1e293b 100%);
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.25);
             cursor: pointer;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            transition: background 0.1s ease;
+        }
+        .cp-range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 4px solid #275CEA;
+            cursor: grab;
+            box-shadow: 0 0 16px rgba(39, 92, 234, 0.9), 0 2px 8px rgba(0, 0, 0, 0.7);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .cp-range-slider::-webkit-slider-thumb:hover,
+        .cp-range-slider:active::-webkit-slider-thumb {
+            transform: scale(1.2);
+            cursor: grabbing;
+            box-shadow: 0 0 24px rgba(39, 92, 234, 1), 0 4px 12px rgba(0, 0, 0, 0.9);
+            border-color: #3b82f6;
+        }
+        .cp-range-slider::-moz-range-track {
+            height: 12px;
+            border-radius: 100px;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .cp-range-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 4px solid #275CEA;
+            cursor: grab;
+            box-shadow: 0 0 16px rgba(39, 92, 234, 0.9);
+        }
+        .cp-range-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+        .cp-quick-pills {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .cp-pill-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text2);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Unbounded', sans-serif;
+            flex: 1;
+            text-align: center;
+        }
+        .cp-pill-btn:hover {
+            background: rgba(39, 92, 234, 0.2);
+            border-color: var(--accent);
+            color: #60a5fa;
+            transform: translateY(-1px);
+        }
+        .cp-pill-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(39, 92, 234, 0.4);
+        }
+        .cp-num-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg3);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0 8px;
+            transition: border-color 0.2s;
+        }
+        .cp-num-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(39, 92, 234, 0.25);
+        }
+        .cp-num-box input {
+            width: 44px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-align: right;
+            outline: none;
+            padding: 7px 2px;
+        }
+        .cp-num-box span {
+            color: var(--accent);
+            font-weight: 900;
+            font-size: 0.95rem;
+            margin-left: 2px;
         }
         .cp-results-box {
             background: var(--bg3);
@@ -3461,14 +3570,29 @@
                             <input type="number" id="cp_precioLista" class="form-input" value="22000" oninput="calcularCreditoPlan()">
                         </div>
 
-                        <div class="form-group" style="margin-bottom:12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <label class="form-label" for="cp_porcentajeInicial" style="margin-bottom:0;">Porcentaje de Inicial (%):</label>
-                                <span id="cpInicialPctDisplay" style="font-weight:700; color:var(--accent); font-size:0.85rem;">30%</span>
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <label class="form-label" for="cp_porcentajeInicial" style="margin-bottom:0; font-weight:700;">
+                                    <i class="fas fa-percentage" style="color:var(--accent); margin-right:4px;"></i> Porcentaje de Inicial:
+                                </label>
+                                <span id="cpInicialPctDisplay" style="font-family:'Unbounded',sans-serif; font-weight:800; background:rgba(39,92,234,0.2); border:1px solid rgba(39,92,234,0.4); color:#60a5fa; padding:2px 10px; border-radius:20px; font-size:0.85rem;">30%</span>
                             </div>
                             <div class="cp-range-container">
-                                <input type="range" id="cp_rangeInicial" min="10" max="80" value="30" step="5" oninput="sincronizarCpInicialRange(this.value)">
-                                <input type="number" id="cp_porcentajeInicial" class="form-input" value="30" style="width: 85px; padding:6px 10px;" min="0" max="100" oninput="sincronizarCpInicialNum(this.value)">
+                                <input type="range" id="cp_rangeInicial" class="cp-range-slider" min="10" max="80" value="30" step="5" oninput="sincronizarCpInicialRange(this.value)">
+                                <div class="cp-num-box">
+                                    <input type="number" id="cp_porcentajeInicial" value="30" min="0" max="100" oninput="sincronizarCpInicialNum(this.value)">
+                                    <span>%</span>
+                                </div>
+                            </div>
+                            <div class="cp-quick-pills">
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(10)">10%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(20)">20%</button>
+                                <button type="button" class="cp-pill-btn active" onclick="sincronizarCpInicialRange(30)">30%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(40)">40%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(50)">50%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(60)">60%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(70)">70%</button>
+                                <button type="button" class="cp-pill-btn" onclick="sincronizarCpInicialRange(80)">80%</button>
                             </div>
                         </div>
 
@@ -8989,19 +9113,42 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         // ===== PLANES DE FINANCIAMIENTO (COTIZADOR CON CÓDIGO DE CONTROL & PDF) =====
+        function actualizarProgresoSlider(val) {
+            const slider = document.getElementById('cp_rangeInicial');
+            if (slider) {
+                const min = parseFloat(slider.min) || 10;
+                const max = parseFloat(slider.max) || 80;
+                const clamped = Math.min(Math.max(val, min), max);
+                const pct = ((clamped - min) / (max - min)) * 100;
+                slider.style.background = `linear-gradient(to right, #275CEA 0%, #275CEA ${pct}%, #1e293b ${pct}%, #1e293b 100%)`;
+            }
+            document.querySelectorAll('.cp-pill-btn').forEach(btn => {
+                const pillVal = parseInt(btn.textContent);
+                if (pillVal === parseInt(val)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
         function sincronizarCpInicialRange(val) {
+            val = parseFloat(val) || 10;
             const numInput = document.getElementById('cp_porcentajeInicial');
             const display = document.getElementById('cpInicialPctDisplay');
             if (numInput) numInput.value = val;
             if (display) display.innerText = val + '%';
+            actualizarProgresoSlider(val);
             calcularCreditoPlan();
         }
 
         function sincronizarCpInicialNum(val) {
+            val = parseFloat(val) || 10;
             const rangeInput = document.getElementById('cp_rangeInicial');
             const display = document.getElementById('cpInicialPctDisplay');
             if (rangeInput) rangeInput.value = val;
             if (display) display.innerText = val + '%';
+            actualizarProgresoSlider(val);
             calcularCreditoPlan();
         }
 
@@ -9187,6 +9334,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             if (pdfVehiculoLabel) pdfVehiculoLabel.innerText = '';
 
             calcularCreditoPlan();
+            actualizarProgresoSlider(30);
             showToast('Valores restablecidos por defecto', 'info');
         }
 
@@ -9279,11 +9427,14 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 btn.addEventListener('click', () => {
                     populateCreditPlansVehicles();
                     calcularCreditoPlan();
+                    const curVal = parseFloat(document.getElementById('cp_rangeInicial')?.value) || 30;
+                    actualizarProgresoSlider(curVal);
                 });
             });
             // Initial calculations
             calculateFinancingPlans();
             calcularCreditoPlan();
+            actualizarProgresoSlider(30);
         }
 
         if (document.readyState === 'loading') {
