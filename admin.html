@@ -1950,12 +1950,12 @@
             flex-grow: 1;
             height: 12px;
             border-radius: 100px;
-            background: linear-gradient(to right, #275CEA 0%, #275CEA 28.5%, #1e293b 28.5%, #1e293b 100%);
+            background: linear-gradient(to right, #275CEA 0%, #275CEA calc(13px + (100% - 26px) * 0.2857), #1e293b calc(13px + (100% - 26px) * 0.2857), #1e293b 100%);
             outline: none;
             border: 1px solid rgba(255, 255, 255, 0.25);
             cursor: pointer;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-            transition: background 0.1s ease;
+            transition: none;
         }
         .cp-range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -3918,7 +3918,7 @@
                                 <span id="cpInicialPctDisplay" style="font-family:'Unbounded',sans-serif; font-weight:800; background:rgba(39,92,234,0.2); border:1px solid rgba(39,92,234,0.4); color:#60a5fa; padding:2px 10px; border-radius:20px; font-size:0.85rem;">30%</span>
                             </div>
                             <div class="cp-range-container">
-                                <input type="range" id="cp_rangeInicial" class="cp-range-slider" min="10" max="80" value="30" step="5" oninput="sincronizarCpInicialRange(this.value)">
+                                <input type="range" id="cp_rangeInicial" class="cp-range-slider" min="10" max="80" value="30" step="1" oninput="sincronizarCpInicialRange(this.value)">
                                 <div class="cp-num-box">
                                     <input type="number" id="cp_porcentajeInicial" value="30" min="0" max="100" oninput="sincronizarCpInicialNum(this.value)">
                                     <span>%</span>
@@ -9890,13 +9890,19 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
         // ===== PLANES DE FINANCIAMIENTO (COTIZADOR CON CÓDIGO DE CONTROL & PDF) =====
         function actualizarProgresoSlider(val) {
+            val = parseFloat(val);
+            if (isNaN(val)) val = 30;
             const slider = document.getElementById('cp_rangeInicial');
             if (slider) {
                 const min = parseFloat(slider.min) || 10;
                 const max = parseFloat(slider.max) || 80;
                 const clamped = Math.min(Math.max(val, min), max);
+                if (parseFloat(slider.value) !== clamped) {
+                    slider.value = clamped;
+                }
                 const pct = ((clamped - min) / (max - min)) * 100;
-                slider.style.background = `linear-gradient(to right, #275CEA 0%, #275CEA ${pct}%, #1e293b ${pct}%, #1e293b 100%)`;
+                const ratio = Math.max(0, Math.min(1, pct / 100));
+                slider.style.background = `linear-gradient(to right, #275CEA 0%, #275CEA calc(13px + (100% - 26px) * ${ratio}), #1e293b calc(13px + (100% - 26px) * ${ratio}), #1e293b 100%)`;
             }
             document.querySelectorAll('.cp-pill-btn').forEach(btn => {
                 const pillVal = parseInt(btn.textContent);
@@ -9909,20 +9915,30 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         function sincronizarCpInicialRange(val) {
-            val = parseFloat(val) || 10;
+            val = parseFloat(val);
+            if (isNaN(val)) val = 10;
+            const slider = document.getElementById('cp_rangeInicial');
             const numInput = document.getElementById('cp_porcentajeInicial');
             const display = document.getElementById('cpInicialPctDisplay');
-            if (numInput) numInput.value = val;
+            if (slider && parseFloat(slider.value) !== val) {
+                slider.value = val;
+            }
+            if (numInput && parseFloat(numInput.value) !== val) {
+                numInput.value = val;
+            }
             if (display) display.innerText = val + '%';
             actualizarProgresoSlider(val);
             calcularCreditoPlan();
         }
 
         function sincronizarCpInicialNum(val) {
-            val = parseFloat(val) || 10;
+            val = parseFloat(val);
+            if (isNaN(val)) val = 10;
             const rangeInput = document.getElementById('cp_rangeInicial');
             const display = document.getElementById('cpInicialPctDisplay');
-            if (rangeInput) rangeInput.value = val;
+            if (rangeInput && parseFloat(rangeInput.value) !== val) {
+                rangeInput.value = val;
+            }
             if (display) display.innerText = val + '%';
             actualizarProgresoSlider(val);
             calcularCreditoPlan();
