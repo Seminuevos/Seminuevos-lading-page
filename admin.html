@@ -2087,7 +2087,7 @@
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
                                     <div>
                                         <label class="form-label" style="font-size:0.65rem; color:#94a3b8; margin-bottom:2px;">1. Tracción (Badge 1)</label>
-                                        <input type="text" class="form-input" id="f_drivetrain" placeholder="Ej: 4WD / AWD / FWD" oninput="updateFichaLive()" style="font-size:0.75rem; padding:5px 7px; background:#060a12;">
+                                        <input type="text" class="form-input" id="f_drivetrain_badge_input" placeholder="Ej: 4WD / AWD / FWD" oninput="updateFichaLive()" style="font-size:0.75rem; padding:5px 7px; background:#060a12;">
                                     </div>
                                     <div>
                                         <label class="form-label" style="font-size:0.65rem; color:#94a3b8; margin-bottom:2px;">2. Inspección (Badge 2)</label>
@@ -6137,16 +6137,27 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             return 'Gasolina';
         }
 
-        function formatBody(body, doors, passengers) {
+        function formatBody(body, doors, passengers, contextTitle = '') {
             let bName = 'SUV';
-            const s = String(body || '').toLowerCase();
-            if (s.includes('sedan') || s.includes('saloon')) bName = 'Sedán';
-            else if (s.includes('suv') || s.includes('crossover') || s.includes('utility') || s.includes('mpv')) bName = 'SUV';
-            else if (s.includes('pickup') || s.includes('truck') || s.includes('cab')) bName = 'Pickup';
-            else if (s.includes('coupe') || s.includes('coupé')) bName = 'Coupé';
-            else if (s.includes('hatchback') || s.includes('hatch')) bName = 'Hatchback';
-            else if (s.includes('convertible') || s.includes('cabrio')) bName = 'Convertible';
-            else if (s.includes('van') || s.includes('minivan')) bName = 'Van';
+            // Normalizar acentos y pasar a minúsculas
+            const s = String(body || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const t = String(contextTitle || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (s.includes('sedan') || s.includes('saloon') || t.includes('sentra') || t.includes('corolla') || t.includes('civic') || t.includes('yaris') || t.includes('camry') || t.includes('accord') || t.includes('elantra') || t.includes('forte') || t.includes('optima') || t.includes('sonata') || t.includes('jetta') || t.includes('mazda 3 sedan') || t.includes('mazda 6') || t.includes('cruze') || t.includes('malibu') || t.includes('versa')) {
+                bName = 'Sedán';
+            } else if (s.includes('pickup') || s.includes('truck') || s.includes('cab') || t.includes('tacoma') || t.includes('hilux') || t.includes('silverado') || t.includes('f-150') || t.includes('f150') || t.includes('ram 1500') || t.includes('ram 2500') || t.includes('frontier') || t.includes('ranger') || t.includes('colorado') || t.includes('tundra') || t.includes('gladiator') || t.includes('sierra')) {
+                bName = 'Pickup';
+            } else if (s.includes('coupe') || t.includes('mustang') || t.includes('camaro') || t.includes('challenger') || t.includes('brz') || t.includes('gt86') || t.includes('gr86')) {
+                bName = 'Coupé';
+            } else if (s.includes('hatchback') || s.includes('hatch') || t.includes('golf') || t.includes('fit') || t.includes('rio 5') || t.includes('yaris hatchback')) {
+                bName = 'Hatchback';
+            } else if (s.includes('convertible') || s.includes('cabrio') || s.includes('spyder') || s.includes('spider') || t.includes('miata')) {
+                bName = 'Convertible';
+            } else if (s.includes('van') || s.includes('minivan') || t.includes('sienna') || t.includes('odyssey') || t.includes('pacifica') || t.includes('carnival')) {
+                bName = 'Van';
+            } else if (s.includes('suv') || s.includes('crossover') || s.includes('utility') || s.includes('mpv') || s.includes('wagon')) {
+                bName = 'SUV';
+            }
 
             const numDoors = doors || (bName === 'Coupé' || bName === 'Convertible' ? '2' : (bName === 'Pickup' ? '4' : '4'));
             const numPass = passengers || (bName === 'Pickup' ? '5' : (bName === 'Coupé' ? '4' : '5'));
@@ -6167,6 +6178,30 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 return 'Discos ventilados x4 + ABS + EBD + Control de Tracción';
             }
             return 'Discos ventilados x4 + ABS + EBD + Asistencia Electrónica';
+        }
+
+        function detectVehicleMake(title = '', explicitMake = '') {
+            if (explicitMake && String(explicitMake).trim() && !/^\d{4}$/.test(String(explicitMake).trim())) {
+                return String(explicitMake).trim();
+            }
+            const cleanTitle = String(title || '').trim();
+            const knownMakes = [
+                'Mercedes-Benz', 'Mercedes', 'Alfa Romeo', 'Aston Martin', 'Land Rover',
+                'Toyota', 'Nissan', 'Ford', 'Chevrolet', 'Jeep', 'Honda', 'Hyundai',
+                'Kia', 'Mazda', 'BMW', 'Audi', 'Dodge', 'RAM', 'Volkswagen', 'VW',
+                'Mitsubishi', 'Subaru', 'Lexus', 'GMC', 'Cadillac', 'Chrysler', 'Volvo',
+                'Porsche', 'Acura', 'Infiniti', 'Lincoln', 'Buick', 'Mini', 'Tesla',
+                'Fiat', 'Peugeot', 'Renault', 'Suzuki', 'Jaguar', 'Chery', 'BYD', 'Changan', 'Great Wall'
+            ];
+            for (const m of knownMakes) {
+                const regex = new RegExp(`(^|\\s|\\b)${m.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}(\\b|\\s|$)`, 'i');
+                if (regex.test(cleanTitle)) {
+                    return m;
+                }
+            }
+            // Fallback si no está en la lista: omitir el año si viene al principio
+            const words = cleanTitle.split(/\s+/).filter(w => !/^\d{4}$/.test(w));
+            return words[0] || '';
         }
 
         // =========================================================================
@@ -6732,19 +6767,30 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             }
 
             const title = v.title || '';
+            const detectedMake = detectVehicleMake(title, v.make);
+            let detectedTrim = v.trim || '';
+            if (!detectedTrim && title) {
+                // Si no hay trim explícito pero el título es p.ej. "Nissan Sentra SV 2025"
+                const cleanT = title.replace(/\b(19\d\d|20\d\d)\b/g, '').replace(new RegExp(`\\b${detectedMake}\\b`, 'i'), '').trim();
+                const parts = cleanT.split(/\s+/);
+                if (parts.length > 1) {
+                    detectedTrim = parts.slice(1).join(' '); // Sentra SV -> SV
+                }
+            }
             const isAwd = title.toLowerCase().includes('awd') || title.toLowerCase().includes('4x4') || title.toLowerCase().includes('4wd');
             const driveStr = isAwd ? 'Tracción Integral (AWD)' : formatDriveType(v.drivetrain, title);
-            const hpStr = v.hp || estimateAccurateHp(v.make || title.split(' ')[0], title, v.engine, 4, v.year);
+            const hpStr = v.hp || estimateAccurateHp(detectedMake, title, v.engine, 4, v.year);
 
             document.getElementById('fichaVinInput').value = vin || '';
             document.getElementById('f_title').value = title;
             document.getElementById('f_year').value = v.year || '';
+            if (document.getElementById('f_trim')) document.getElementById('f_trim').value = detectedTrim;
             document.getElementById('f_engine').value = v.engine ? (v.engine.includes('L') ? `${v.engine} 16V DOHC` : v.engine) : '2.0L 16V DOHC';
             document.getElementById('f_hp').value = hpStr;
             document.getElementById('f_drivetrain').value = driveStr;
             document.getElementById('f_trans').value = normTrans(v.transmission);
             document.getElementById('f_fuel_type').value = normFuel(v.fuel) || 'Gasolina';
-            document.getElementById('f_body').value = formatBody(v.body_type || v.bodyType, '4', '5');
+            document.getElementById('f_body').value = formatBody(v.body_type || v.bodyType, '4', '5', title);
             document.getElementById('f_brakes').value = 'Discos ventilados x4 con ABS + EBD';
 
             // Cargar TODAS las imágenes del vehículo en alta resolución
@@ -6815,7 +6861,17 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             // Metadatos de Stock Local
             const colorEl = document.getElementById('f_colors');
             if (colorEl) {
-                colorEl.value = v.color || (title.includes('HR-V') ? 'Gris Platino / Interior Negro Sport' : 'Blanco Perla / Cuero Negro');
+                let vColor = v.color || '';
+                if (!vColor && v.description) {
+                    const cMatch = v.description.match(/color:\s*([^\r\n,.]+)/i) || v.description.match(/ext(?:erior)?:\s*([^\r\n,.]+)/i);
+                    if (cMatch) vColor = cMatch[1].trim();
+                }
+                if (!vColor) {
+                    if (title.includes('HR-V')) vColor = 'Gris Platino / Interior Negro Sport';
+                    else if (title.includes('Sentra')) vColor = 'Gris Plata Metalizado / Tapicería Negra';
+                    else vColor = 'Blanco Perla / Cuero Negro';
+                }
+                colorEl.value = vColor;
             }
             
             const desc = (v.description || '').toLowerCase();
@@ -6862,8 +6918,8 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             }
 
             document.getElementById('f_features_text').value = generateAdaptiveFeatures(
-                v.make || '', title, v.body_type || v.bodyType, v.trim || '', v.year || '',
-                v.engine || '', v.hp || '', v.transmission || '', v.drivetrain || ''
+                detectedMake, title, v.body_type || v.bodyType, detectedTrim, v.year || '',
+                v.engine || '', hpStr, v.transmission || '', driveStr
             );
 
             updateFichaLive();
@@ -7519,11 +7575,42 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             // Update Sheet Elements
             const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
+            // Extracción precisa de Marca y Modelo para la ficha técnica
+            const sheetMake = detectVehicleMake(title);
+            let displayYearMake = '---';
+            let displayModelTrim = '---';
+
+            if (title && title !== 'Selecciona un vehículo o ingresa un VIN / Lote') {
+                if (year && sheetMake) {
+                    displayYearMake = `${year} ${sheetMake}`;
+                } else if (sheetMake) {
+                    displayYearMake = sheetMake;
+                } else {
+                    displayYearMake = title.split(' ')[0] || '---';
+                }
+
+                // Modelo y Versión limpios (sin repetir año ni marca si ya están)
+                let modelClean = title;
+                if (year) modelClean = modelClean.replace(new RegExp(`\\b${year}\\b`, 'g'), '');
+                if (sheetMake) modelClean = modelClean.replace(new RegExp(`\\b${sheetMake}\\b`, 'gi'), '');
+                modelClean = modelClean.trim().replace(/\s+/g, ' ');
+
+                if (trim) {
+                    if (modelClean.toLowerCase().includes(trim.toLowerCase())) {
+                        displayModelTrim = modelClean;
+                    } else {
+                        displayModelTrim = `${modelClean} (${trim})`.trim();
+                    }
+                } else {
+                    displayModelTrim = modelClean || title;
+                }
+            }
+
             setTxt('pv_vin', vin);
             setTxt('pv_title', title);
             setTxt('pv_header_spec', (engine !== '---' || trans !== '---') ? `${engine} · ${trans}` : 'Especificaciones pendientes por decodificar');
-            setTxt('pv_year_make', year ? `${year} ${title.split(' ')[1] || ''}`.trim() : (title !== 'Selecciona un vehículo o ingresa un VIN / Lote' ? title : '---'));
-            setTxt('pv_model_trim', trim ? `${title.replace(year, '').trim()} (${trim})` : (title !== 'Selecciona un vehículo o ingresa un VIN / Lote' ? title : '---'));
+            setTxt('pv_year_make', displayYearMake);
+            setTxt('pv_model_trim', displayModelTrim);
             setTxt('pv_colors', colors || 'Blanco Perla / Cuero Negro');
             setTxt('pv_plant', plant);
             setTxt('pv_body', body);
@@ -7599,13 +7686,14 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
             // Actualización Dinámica de las 4 Insignias de Cabecera (Badges)
             const dtTag = document.getElementById('pv_drivetrain_tag');
+            const dtCustomInput = (document.getElementById('f_drivetrain_badge_input')?.value || '').trim();
             if (dtTag) {
-                const s = (drivetrain || '').toUpperCase();
-                if (!drivetrain || drivetrain === '---' || drivetrain === '--') {
+                const s = (dtCustomInput || drivetrain || '').toUpperCase();
+                if (!s || s === '---' || s === '--') {
                     dtTag.style.display = 'none';
                 } else {
                     dtTag.style.display = 'inline-block';
-                    dtTag.textContent = s.includes('4WD') || s.includes('4X4') ? '4WD / 4X4' : (s.includes('AWD') ? 'AWD INTEGRAL' : (s.includes('FWD') ? 'FWD DELANTERA' : (s.includes('RWD') ? 'RWD TRASERA' : s)));
+                    dtTag.textContent = dtCustomInput ? dtCustomInput.toUpperCase() : (s.includes('4WD') || s.includes('4X4') ? '4WD / 4X4' : (s.includes('AWD') ? 'AWD INTEGRAL' : (s.includes('FWD') ? 'FWD DELANTERA' : (s.includes('RWD') ? 'RWD TRASERA' : s))));
                 }
             }
 
