@@ -130,6 +130,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div style="display: flex; align-items: center; gap: 10px; background: var(--surface-container-low); padding: 14px; border-radius: var(--radius-sm);">
                         <i class="fas fa-globe" style="color: var(--primary);"></i> <span>Origen: <strong>${originFormatted}</strong></span>
                     </div>
+                    ${(() => {
+                        let displayVin = car.vin || '';
+                        if (!displayVin && car.description) {
+                            const vm = car.description.match(/VIN:\s*([A-HJ-NPR-Z0-9]{17})/i) || car.description.match(/\b([A-HJ-NPR-Z0-9]{17})\b/i);
+                            if (vm) displayVin = vm[1].toUpperCase();
+                        }
+                        return displayVin ? `
+                        <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: rgba(39,92,234,0.08); border: 1px solid rgba(39,92,234,0.3); padding: 12px 16px; border-radius: var(--radius-sm);">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-barcode" style="color: #38bdf8; font-size: 1.15rem;"></i>
+                                <span>Serial / VIN: <strong style="font-family: monospace; letter-spacing: 1px; color: #f8fafc; font-size: 0.95rem;">${displayVin}</strong></span>
+                            </div>
+                            <span style="font-size: 0.75rem; color: #34d399; font-weight: 600; background: rgba(52,211,153,0.12); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(52,211,153,0.25);">
+                                <i class="fas fa-check-circle"></i> Verificado
+                            </span>
+                        </div>` : '';
+                    })()}
                 </div>
 
                 <div style="margin-bottom: 30px;">

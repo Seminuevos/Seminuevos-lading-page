@@ -327,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filtered = filtered.filter(v =>
                 (v.title || '').toLowerCase().includes(searchTerm) ||
                 (v.year || '').toString().includes(searchTerm) ||
+                ((v.vin || '') && v.vin.toLowerCase().includes(searchTerm)) ||
                 ((v.bodyType || v.body_type) && (v.bodyType || v.body_type).toLowerCase().includes(searchTerm))
             );
         }
@@ -361,6 +362,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const originClass = car.origin === 'nacional' ? 'nacional' : 'importado';
             const originIcon = car.origin === 'nacional' ? 'fa-flag' : 'fa-globe';
             const singleBadge = `<span class="origin-badge ${originClass}"><i class="fas ${originIcon}"></i> ${originText}</span>`;
+            
+            // VIN badge si está disponible
+            let carVin = car.vin || '';
+            if (!carVin && car.description) {
+                const vm = car.description.match(/VIN:\s*([A-HJ-NPR-Z0-9]{17})/i) || car.description.match(/\b([A-HJ-NPR-Z0-9]{17})\b/i);
+                if (vm) carVin = vm[1].toUpperCase();
+            }
+            const vinBadge = carVin ? `<span class="origin-badge" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); font-family:monospace; font-size:0.7rem; letter-spacing:0.5px;"><i class="fas fa-barcode"></i> ${carVin.substring(0, 11)}...</span>` : '';
+
             const viewCount = car.views || 0;
             const viewsBadge = viewCount > 0 ? `<span class="views-badge" id="views-card-${car.id}"><i class="fas fa-eye"></i> ${viewCount} vista${viewCount !== 1 ? 's' : ''}</span>` : `<span class="views-badge" id="views-card-${car.id}" style="display:none;"></span>`;
             let carImg = (car.images && car.images.length > 0 && car.images[0]) ? car.images[0] : '';
@@ -379,8 +389,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${viewsBadge}
                 </div>
                 <div class="vehicle-card-body">
-                    <div class="vehicle-card-tags">
+                    <div class="vehicle-card-tags" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                         ${singleBadge}
+                        ${vinBadge}
                     </div>
                     <h3 class="vehicle-card-title">${car.title}</h3>
                     <p class="vehicle-card-price">${priceDisplay}</p>

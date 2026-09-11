@@ -2871,6 +2871,9 @@
                         <div class="form-group full"><label class="form-label">Nombre del Vehículo *</label><input
                                 type="text" class="form-input" id="vTitle" placeholder="Ej: Toyota Hilux SRV 4x4"
                                 required></div>
+                        <div class="form-group"><label class="form-label"><i class="fas fa-barcode"></i> VIN / Serial de Carrocería</label><input
+                                type="text" class="form-input" id="vVin" placeholder="Ej: 3N1AB8CV8SY..."
+                                maxlength="17" style="text-transform:uppercase; font-family:monospace; letter-spacing:1px;"></div>
                         <div class="form-group"><label class="form-label">Precio *</label><input type="text"
                                 class="form-input" id="vPrice" placeholder="Ej: $45,000" required></div>
                         <div class="form-group"><label class="form-label">Año *</label><input type="number"
@@ -3572,6 +3575,7 @@
                 document.getElementById('modalTitle').textContent = 'Editar Vehículo';
                 document.getElementById('vId').value = vehicle.id;
                 document.getElementById('vTitle').value = vehicle.title;
+                document.getElementById('vVin').value = vehicle.vin || '';
                 document.getElementById('vPrice').value = vehicle.price;
                 document.getElementById('vYear').value = vehicle.year;
                 document.getElementById('vKm').value = vehicle.km || '';
@@ -3601,6 +3605,7 @@
                 document.getElementById('modalTitle').textContent = 'Agregar Vehículo';
                 document.getElementById('vehicleForm').reset();
                 document.getElementById('vId').value = '';
+                document.getElementById('vVin').value = '';
                 document.getElementById('vMastertech').checked = false;
             }
             modal.classList.add('active');
@@ -3620,6 +3625,7 @@
             // Snapshot all data synchronously to prevent overwriting if user navigates away
             const id = document.getElementById('vId').value;
             const title = document.getElementById('vTitle').value;
+            const vin = (document.getElementById('vVin')?.value || '').trim().toUpperCase();
             const price = document.getElementById('vPrice').value;
             const year = parseInt(document.getElementById('vYear').value);
             const km = document.getElementById('vKm').value || '0 KM';
@@ -3674,6 +3680,7 @@
                     title, price, year, km, engine, transmission, fuel, body_type, catalog,
                     availability, origin, condition, badge, status, description, images: finalImgs, mastertech
                 };
+                if (vin) vehicleData.vin = vin;
 
                 if (id) {
                     const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', parseInt(id));
@@ -5153,6 +5160,12 @@
         async function fillForm(data) {
             if (!data) return;
             if (data.title) document.getElementById('vTitle').value = data.title;
+            let autoVin = data.vin || '';
+            if (!autoVin && data.description) {
+                const vm = data.description.match(/VIN:\s*([A-HJ-NPR-Z0-9]{17})/i) || data.description.match(/\b([A-HJ-NPR-Z0-9]{17})\b/i);
+                if (vm) autoVin = vm[1].toUpperCase();
+            }
+            if (autoVin && document.getElementById('vVin')) document.getElementById('vVin').value = autoVin;
             if (data.price) document.getElementById('vPrice').value = data.price;
             if (data.year) document.getElementById('vYear').value = data.year;
             if (data.km) document.getElementById('vKm').value = data.km;
@@ -6868,7 +6881,10 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 }
                 if (!vColor) {
                     if (title.includes('HR-V')) vColor = 'Gris Platino / Interior Negro Sport';
-                    else if (title.includes('Sentra')) vColor = 'Gris Plata Metalizado / Tapicería Negra';
+                    else if (title.includes('Sentra')) vColor = 'Blanco Perla / Interior Negro';
+                    else if (title.includes('Rogue Sport') || title.includes('Rogue')) vColor = 'Gris Plata / Interior Negro';
+                    else if (title.includes('4Runner')) vColor = 'Gris Oscuro Metalizado / Interior Cuero Negro';
+                    else if (title.includes('Corolla Cross')) vColor = 'Plata Metalizado / Tapicería Premium';
                     else vColor = 'Blanco Perla / Cuero Negro';
                 }
                 colorEl.value = vColor;
