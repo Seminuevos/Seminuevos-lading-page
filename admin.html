@@ -2424,6 +2424,139 @@
             border: none;
             padding: 8px 10px;
         }
+
+        /* ===== TASACIÓN & AVALÚO (TRADE-IN) ===== */
+        .av-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 950px) {
+            .av-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .av-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .av-section-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #60a5fa;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            border-left: 3px solid var(--accent);
+            padding-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .av-result-hero {
+            background: var(--bg3);
+            border: 1.5px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.1);
+        }
+        .av-hero-title {
+            font-size: 0.78rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+        .av-hero-price {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #10b981;
+            margin: 8px 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .av-kpi-sub {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .av-kpi-box {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+        }
+        .av-kpi-box .t {
+            font-size: 0.72rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .av-kpi-box .v {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .av-chart-box {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 18px;
+            height: 220px;
+            position: relative;
+        }
+
+        /* PDF Avalúo */
+        #avaluoPdfWrapper {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .av-pdf-page {
+            width: 210mm;
+            padding: 18mm 16mm;
+            background: #ffffff;
+            color: #0f172a;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .av-pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2.5px solid #2563eb;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+        .av-pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+            margin-bottom: 14px;
+        }
+        .av-pdf-table th, .av-pdf-table td {
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            text-align: left;
+            font-size: 0.82rem;
+        }
+        .av-pdf-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+            width: 30%;
+        }
     </style>
 </head>
 
@@ -2481,6 +2614,7 @@
                 <button class="sidebar-link" data-tab="financing"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
                 <button class="sidebar-link" data-tab="credit-plans"><i class="fas fa-file-invoice-dollar"></i> Planes de Financiamiento</button>
                 <button class="sidebar-link" data-tab="cronograma"><i class="fas fa-calendar-alt"></i> Cronograma de Pagos</button>
+                <button class="sidebar-link" data-tab="avaluo"><i class="fas fa-scale-balanced"></i> Avalúo & Trade-In</button>
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
@@ -4005,7 +4139,241 @@
                     </div>
                 </div>
             </div>
+
+            <!-- AVALÚO & TRADE-IN TAB -->
+            <div class="tab-content" id="tab-avaluo">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Tasación & <span>Avalúo (Trade-In)</span></h1>
+                        <p style="color:var(--text2); font-size:0.9rem; margin-top:4px;">
+                            <i class="fas fa-scale-balanced" style="color:var(--accent); margin-right:6px;"></i>
+                            Algoritmo de cálculo dinámico para recepción de seminuevos por tramo de año y diagnóstico técnico
+                        </p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-ghost" type="button" onclick="resetTradeInDefaults()">
+                            <i class="fas fa-undo"></i> Restaurar
+                        </button>
+                        <button class="btn btn-ghost" type="button" onclick="copyTradeInWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> Copiar Resumen
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="exportTradeInPDF()">
+                            <i class="fas fa-file-pdf"></i> Exportar Informe PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="av-grid">
+                    <!-- ENTRADA DE DATOS DEL VEHÍCULO & ESTADO -->
+                    <div class="av-card">
+                        <div class="av-section-title">
+                            <span><i class="fas fa-car" style="color:var(--accent); margin-right:8px;"></i> 1. Datos del Vehículo</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <label class="form-label" style="font-size:0.75rem; margin-bottom:0; color:var(--text2);"><i class="fas fa-search"></i> Cargar Inventario:</label>
+                                <select id="avVehicleSelect" class="form-select" style="padding:4px 8px; font-size:0.8rem; max-width:240px;" onchange="onTradeInVehicleSelected(this)">
+                                    <option value="">-- Manual / Sin Asignar --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_brand">Marca</label>
+                                <input type="text" id="av_brand" class="form-input" value="Chevrolet" placeholder="Ej: Toyota" oninput="calculateTradeIn()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_model">Modelo</label>
+                                <input type="text" id="av_model" class="form-input" value="Cruze" placeholder="Ej: Corolla" oninput="calculateTradeIn()">
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_year">Año Modelo</label>
+                                <input type="number" id="av_year" class="form-input" value="2013" min="1990" max="2035" oninput="calculateTradeIn()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_transmission">Transmisión</label>
+                                <select id="av_transmission" class="form-select" onchange="calculateTradeIn()">
+                                    <option value="Automática">Automática</option>
+                                    <option value="Sincrónica / Manual">Sincrónica / Manual</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label class="form-label" for="av_km">Kilometraje Recorrido (km)</label>
+                            <input type="number" id="av_km" class="form-input" value="284000" min="0" step="1000" oninput="calculateTradeIn()">
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_priceMax">Precio Máx. Mercado ($)</label>
+                                <input type="number" id="av_priceMax" class="form-input" value="10000" min="0" step="100" oninput="calculateTradeIn()">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_priceMin">Precio Mín. Mercado ($)</label>
+                                <input type="number" id="av_priceMin" class="form-input" value="6000" min="0" step="100" oninput="calculateTradeIn()">
+                            </div>
+                        </div>
+
+                        <div class="av-section-title" style="margin-top:10px;">
+                            <span><i class="fas fa-wrench" style="color:var(--accent); margin-right:8px;"></i> 2. Diagnóstico y Estado Físico</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:14px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_condMech">Mecánica (50%)</label>
+                                <select id="av_condMech" class="form-select" onchange="calculateTradeIn()">
+                                    <option value="bueno">Bueno (100%)</option>
+                                    <option value="regular">Regular (92%)</option>
+                                    <option value="grave" selected>Grave (80%)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_condEsthet">Estética (30%)</label>
+                                <select id="av_condEsthet" class="form-select" onchange="calculateTradeIn()">
+                                    <option value="bueno">Bueno (100%)</option>
+                                    <option value="regular">Regular (92%)</option>
+                                    <option value="grave" selected>Grave (80%)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" for="av_condElec">Electrónica (20%)</label>
+                                <select id="av_condElec" class="form-select" onchange="calculateTradeIn()">
+                                    <option value="bueno">Bueno (100%)</option>
+                                    <option value="regular">Regular (92%)</option>
+                                    <option value="grave" selected>Grave (80%)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:6px;">
+                            <label class="form-label" for="av_repairCost">Deducción Estimada por Reparaciones ($)</label>
+                            <input type="number" id="av_repairCost" class="form-input" value="2550" min="0" step="50" oninput="calculateTradeIn()">
+                        </div>
+                        <small style="color:var(--text3); font-size:0.75rem;">
+                            <i class="fas fa-info-circle"></i> Las reparaciones requeridas se deducen del valor base antes de aplicar el margen de seguridad de toma (12%).
+                        </small>
+                    </div>
+
+                    <!-- RESULTADOS Y GRÁFICA -->
+                    <div class="av-card">
+                        <div class="av-section-title">
+                            <span><i class="fas fa-chart-pie" style="color:var(--accent); margin-right:8px;"></i> 3. Dictamen y Valoración</span>
+                            <span id="av_badgeControl" style="font-family:monospace; font-size:0.78rem; background:rgba(255,255,255,0.06); padding:3px 8px; border-radius:4px; color:var(--text2);">TRD-AUTO</span>
+                        </div>
+
+                        <div class="av-result-hero">
+                            <div class="av-hero-title">Precio Sugerido de Recepción (Trade-In)</div>
+                            <div class="av-hero-price" id="av_tradeinPrice">$0.00</div>
+                            <div style="font-size:0.75rem; color:var(--text2); margin-top:2px;">
+                                Oferta formal recomendada para toma en parte de pago o compra directa
+                            </div>
+                        </div>
+
+                        <div class="av-kpi-sub">
+                            <div class="av-kpi-box">
+                                <span class="t">Valor Medio Ponderado</span>
+                                <span class="v" id="av_marketAvg">$0.00</span>
+                            </div>
+                            <div class="av-kpi-box">
+                                <span class="t">Margen Comercial Estimado</span>
+                                <span class="v" id="av_marginEst" style="color:#60a5fa;">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="av-chart-box">
+                            <canvas id="avaluoChart"></canvas>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; font-size:0.75rem; color:var(--text2); background:var(--bg3); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+                            <div><strong>Factor Km:</strong> <span id="av_lblKmFactor" style="color:#ffffff;">0.70x</span></div>
+                            <div><strong>Factor Estado:</strong> <span id="av_lblCondFactor" style="color:#ffffff;">0.80x</span></div>
+                            <div><strong>Valor Base Ajustado:</strong> <span id="av_lblBaseValue" style="color:#ffffff;">$0.00</span></div>
+                            <div><strong>Piso Mínimo Garantizado:</strong> <span id="av_lblFloorMin" style="color:#ffffff;">$0.00</span></div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" style="width:100%;" onclick="exportTradeInPDF()">
+                            <i class="fas fa-file-pdf"></i> Exportar Reporte de Avalúo (PDF)
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- PLANTILLA EXPORTABLE PDF PARA AVALÚO & TRADE-IN -->
+    <div id="avaluoPdfWrapper">
+        <div id="avaluoPdfContent" class="av-pdf-page">
+            <div class="av-pdf-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; fill: #2563eb;"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/><circle cx="7.5" cy="15" r="1.5"/><circle cx="16.5" cy="15" r="1.5"/></svg>
+                    <div>
+                        <div style="font-size:1.45rem; font-weight:900; color:#0f172a; text-transform:uppercase; letter-spacing:-0.5px;">SEMINUEVOS</div>
+                        <div style="font-size:0.75rem; color:#2563eb; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Valuación & Recepción Comercial (Trade-In)</div>
+                    </div>
+                </div>
+                <div style="text-align:right; font-size:0.82rem; color:#64748b;">
+                    <strong style="color:#0f172a; font-size:0.9rem;">INFORME DE RECEPCIÓN TRADE-IN</strong><br>
+                    N° Control: <span id="avPdfControlCode" style="font-family:monospace; font-weight:700; color:#2563eb;">TRD-000000</span><br>
+                    Fecha: <span id="avPdfDate">--</span>
+                </div>
+            </div>
+
+            <h3 style="color:#0f172a; margin:12px 0 6px 0; font-size:0.95rem; text-transform:uppercase; border-left:3px solid #2563eb; padding-left:8px;">1. Especificaciones del Vehículo</h3>
+            <table class="av-pdf-table">
+                <tr>
+                    <th>Marca</th><td id="avPdfBrand">--</td>
+                    <th>Modelo</th><td id="avPdfModel">--</td>
+                </tr>
+                <tr>
+                    <th>Año Modelo</th><td id="avPdfYear">--</td>
+                    <th>Transmisión</th><td id="avPdfTrans">--</td>
+                </tr>
+                <tr>
+                    <th>Kilometraje</th><td id="avPdfKm" colspan="3">--</td>
+                </tr>
+            </table>
+
+            <h3 style="color:#0f172a; margin:14px 0 6px 0; font-size:0.95rem; text-transform:uppercase; border-left:3px solid #2563eb; padding-left:8px;">2. Diagnóstico Técnico</h3>
+            <table class="av-pdf-table">
+                <tr>
+                    <th>Condición Mecánica</th><td id="avPdfMech">--</td>
+                    <th>Condición Estética</th><td id="avPdfEsthet">--</td>
+                </tr>
+                <tr>
+                    <th>Condición Electrónica</th><td id="avPdfElec">--</td>
+                    <th>Deducción por Reparaciones</th><td id="avPdfRepair" style="color:#dc2626; font-weight:bold;">--</td>
+                </tr>
+            </table>
+
+            <h3 style="color:#0f172a; margin:14px 0 6px 0; font-size:0.95rem; text-transform:uppercase; border-left:3px solid #2563eb; padding-left:8px;">3. Liquidación de Oferta</h3>
+            <table class="av-pdf-table">
+                <tr style="background: #f8fafc;">
+                    <th>Rango Referencia de Mercado</th>
+                    <td id="avPdfRange">--</td>
+                </tr>
+                <tr style="background: #f8fafc;">
+                    <th>Valor Base Ponderado por Año</th>
+                    <td id="avPdfBase">--</td>
+                </tr>
+                <tr style="background: #f0fdf4; border:1.5px solid #16a34a;">
+                    <th style="background:#dcfce7; color:#166534; font-weight:800; font-size:0.9rem;">OFERTA RECOMENDADA RECEPCIÓN</th>
+                    <td id="avPdfFinal" style="color: #15803d; font-size: 1.25rem; font-weight: 900;">--</td>
+                </tr>
+            </table>
+
+            <h3 style="color:#0f172a; margin:14px 0 6px 0; font-size:0.95rem; text-transform:uppercase; border-left:3px solid #2563eb; padding-left:8px;">4. Posicionamiento en Mercado</h3>
+            <div style="width: 100%; height: 210px; text-align: center; margin-top: 8px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img id="avPdfChartImg" style="max-height: 200px; width: 100%; object-fit: contain;" />
+            </div>
+
+            <div style="margin-top:20px; border-top:1px dashed #cbd5e1; padding-top:10px; display:flex; justify-content:space-between; font-size:7.5pt; color:#64748b;">
+                <div><strong>SEMINUEVOS AUTOS | RIF J-504364380</strong> - Porlamar, Isla de Margarita.</div>
+                <div>Documento formal de avalúo y tasación Trade-In. Validez: 7 días hábiles sujeta a revisión mecánica final.</div>
+            </div>
+        </div>
     </div>
 
     <!-- PLANTILLA EXPORTABLE PDF PARA CRONOGRAMA DE PAGOS -->
@@ -9773,18 +10141,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             });
         }
 
-        // Init when DOM loads or immediately if already loaded
-        function initApp() {
-            checkAuth();
-            document.querySelectorAll('.sidebar-link[data-tab="fichas"]').forEach(btn => {
-                btn.addEventListener('click', () => initFichasModule());
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="financing"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    populateFinancingVehicles();
-                    calculateFinancingPlans();
-                });
-            });
         // ===== CRONOGRAMA DE PAGOS (SIMULACIÓN & AMORTIZACIÓN) =====
         function generarNumeroControlCron() {
             const antefijoInput = document.getElementById('cron_antefijo')?.value.trim();
@@ -10107,6 +10463,373 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             });
         }
 
+        // ===== TASACIÓN & AVALÚO (TRADE-IN) =====
+        let avaluoChartInstance = null;
+
+        function generateTradeInControlNumber() {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `TRD-${day}${month}${year}${hours}${minutes}${seconds}`;
+        }
+
+        function calculateTradeIn() {
+            const brand = document.getElementById('av_brand')?.value.trim() || 'Vehículo';
+            const model = document.getElementById('av_model')?.value.trim() || '';
+            const year = parseInt(document.getElementById('av_year')?.value) || new Date().getFullYear();
+            const trans = document.getElementById('av_transmission')?.value || 'Automática';
+            const km = parseInt(document.getElementById('av_km')?.value) || 0;
+            const pMax = parseFloat(document.getElementById('av_priceMax')?.value) || 0;
+            const pMin = parseFloat(document.getElementById('av_priceMin')?.value) || 0;
+            const cMech = document.getElementById('av_condMech')?.value || 'bueno';
+            const cEsthet = document.getElementById('av_condEsthet')?.value || 'bueno';
+            const cElec = document.getElementById('av_condElec')?.value || 'bueno';
+            const repairCost = parseFloat(document.getElementById('av_repairCost')?.value) || 0;
+
+            // 1. Promediación ponderada por tramos de Año Modelo
+            let pAvg = (pMax + pMin) / 2;
+            if (pMax > 0 && pMin > 0) {
+                if (year >= 2011 && year <= 2017) {
+                    pAvg = pMin + (pMax - pMin) * 0.60;
+                } else if (year >= 2018 && year <= 2023) {
+                    pAvg = pMin + (pMax - pMin) * 0.75;
+                } else if (year >= 2024) {
+                    pAvg = pMax;
+                }
+            }
+
+            // 2. Factor de Kilometraje
+            let kmFactor = 1.0;
+            if (year >= 2024) {
+                kmFactor = 1.0;
+            } else {
+                if (km <= 50000) {
+                    kmFactor = 0.95;
+                } else if (km <= 100000) {
+                    kmFactor = 0.88;
+                } else if (km <= 150000) {
+                    kmFactor = 0.80;
+                } else {
+                    kmFactor = 0.70;
+                }
+            }
+
+            // 3. Factor por Condiciones
+            const weights = { bueno: 1.0, regular: 0.92, grave: 0.80 };
+            const condFactor = (weights[cMech] * 0.50) + (weights[cEsthet] * 0.30) + (weights[cElec] * 0.20);
+
+            // 4. Algoritmo de Recepción Trade-In
+            const baseValue = pAvg * kmFactor * condFactor;
+            const marginRatio = 0.88; // Margen de seguridad comercial (12%)
+            
+            let finalTradeIn = (baseValue - repairCost) * marginRatio;
+            const floorMin = pMin * 0.40;
+            if (finalTradeIn < floorMin) finalTradeIn = floorMin;
+            if (finalTradeIn < 0) finalTradeIn = 0;
+
+            const marginEst = pAvg - finalTradeIn - repairCost;
+
+            const fmt = (val) => '$' + Number(val || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            // Actualizar UI
+            const elTradeinPrice = document.getElementById('av_tradeinPrice');
+            if (elTradeinPrice) elTradeinPrice.innerText = fmt(finalTradeIn);
+            const elMarketAvg = document.getElementById('av_marketAvg');
+            if (elMarketAvg) elMarketAvg.innerText = fmt(pAvg);
+            const elMarginEst = document.getElementById('av_marginEst');
+            if (elMarginEst) elMarginEst.innerText = fmt(marginEst);
+
+            const elKmFactor = document.getElementById('av_lblKmFactor');
+            if (elKmFactor) elKmFactor.innerText = `${(kmFactor * 100).toFixed(0)}% (${kmFactor}x)`;
+            const elCondFactor = document.getElementById('av_lblCondFactor');
+            if (elCondFactor) elCondFactor.innerText = `${(condFactor * 100).toFixed(0)}% (${condFactor.toFixed(2)}x)`;
+            const elBaseValue = document.getElementById('av_lblBaseValue');
+            if (elBaseValue) elBaseValue.innerText = fmt(baseValue);
+            const elFloorMin = document.getElementById('av_lblFloorMin');
+            if (elFloorMin) elFloorMin.innerText = fmt(floorMin);
+
+            const numControl = generateTradeInControlNumber();
+            const elBadge = document.getElementById('av_badgeControl');
+            if (elBadge) elBadge.innerText = numControl;
+
+            updateTradeInChart(pMin, finalTradeIn, pAvg, pMax);
+
+            window._currentTradeInData = {
+                brand,
+                model,
+                year,
+                trans,
+                km,
+                pMax,
+                pMin,
+                pAvg,
+                cMech,
+                cEsthet,
+                cElec,
+                repairCost,
+                kmFactor,
+                condFactor,
+                baseValue,
+                finalTradeIn,
+                marginEst,
+                numControl
+            };
+
+            return window._currentTradeInData;
+        }
+
+        function updateTradeInChart(min, tradeIn, avg, max) {
+            const canvas = document.getElementById('avaluoChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            
+            if (avaluoChartInstance) {
+                avaluoChartInstance.destroy();
+            }
+
+            avaluoChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mínimo Mercado', 'Oferta Trade-In', 'Promedio Ajustado', 'Máximo Mercado'],
+                    datasets: [{
+                        data: [min, tradeIn, avg, max],
+                        backgroundColor: ['#64748b', '#10b981', '#3b82f6', '#94a3b8'],
+                        borderRadius: 5,
+                        barPercentage: 0.65
+                    }]
+                },
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + Number(context.raw || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(val) { return '$' + Number(val).toLocaleString('en-US'); }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.06)' }
+                        },
+                        x: {
+                            ticks: { color: '#cbd5e1', font: { size: 11, weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateTradeInVehicles() {
+            const select = document.getElementById('avVehicleSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Manual / Sin Asignar --</option>';
+
+            if (Array.isArray(vehicles) && vehicles.length > 0) {
+                vehicles.forEach((v, index) => {
+                    const priceRaw = String(v.price || '').replace(/[^0-9.]/g, '');
+                    const numPrice = parseFloat(priceRaw) || 0;
+                    const opt = document.createElement('option');
+                    opt.value = index;
+                    opt.dataset.brand = v.brand || (v.title ? v.title.split(' ')[0] : 'Auto');
+                    opt.dataset.model = v.model || (v.title ? v.title.split(' ').slice(1).join(' ') : '');
+                    opt.dataset.year = v.year || '';
+                    opt.dataset.km = v.mileage || v.km || '60000';
+                    opt.dataset.price = numPrice;
+                    opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                    select.appendChild(opt);
+                });
+            }
+            if (currentVal) select.value = currentVal;
+        }
+
+        function onTradeInVehicleSelected(selectElem) {
+            const idx = selectElem.value;
+            if (idx !== '' && Array.isArray(vehicles) && vehicles[idx]) {
+                const v = vehicles[idx];
+                const priceRaw = String(v.price || '').replace(/[^0-9.]/g, '');
+                const numPrice = parseFloat(priceRaw) || 10000;
+                const kmRaw = String(v.mileage || v.km || '60000').replace(/[^0-9]/g, '');
+                const numKm = parseInt(kmRaw) || 60000;
+
+                const brandInput = document.getElementById('av_brand');
+                if (brandInput) brandInput.value = v.brand || (v.title ? v.title.split(' ')[0] : 'Auto');
+                const modelInput = document.getElementById('av_model');
+                if (modelInput) modelInput.value = v.model || (v.title ? v.title.split(' ').slice(1).join(' ') : '');
+                const yearInput = document.getElementById('av_year');
+                if (yearInput && v.year) yearInput.value = v.year;
+                const kmInput = document.getElementById('av_km');
+                if (kmInput) kmInput.value = numKm;
+                const maxInput = document.getElementById('av_priceMax');
+                if (maxInput) maxInput.value = Math.round(numPrice * 1.10);
+                const minInput = document.getElementById('av_priceMin');
+                if (minInput) minInput.value = Math.round(numPrice * 0.85);
+
+                calculateTradeIn();
+                showToast(`Datos de ${v.title || 'Vehículo'} cargados para Avalúo`, 'success');
+            }
+        }
+
+        function resetTradeInDefaults() {
+            const elBrand = document.getElementById('av_brand');
+            if (elBrand) elBrand.value = 'Chevrolet';
+            const elModel = document.getElementById('av_model');
+            if (elModel) elModel.value = 'Cruze';
+            const elYear = document.getElementById('av_year');
+            if (elYear) elYear.value = 2013;
+            const elTrans = document.getElementById('av_transmission');
+            if (elTrans) elTrans.value = 'Automática';
+            const elKm = document.getElementById('av_km');
+            if (elKm) elKm.value = 284000;
+            const elPMax = document.getElementById('av_priceMax');
+            if (elPMax) elPMax.value = 10000;
+            const elPMin = document.getElementById('av_priceMin');
+            if (elPMin) elPMin.value = 6000;
+            const elMech = document.getElementById('av_condMech');
+            if (elMech) elMech.value = 'grave';
+            const elEsthet = document.getElementById('av_condEsthet');
+            if (elEsthet) elEsthet.value = 'grave';
+            const elElec = document.getElementById('av_condElec');
+            if (elElec) elElec.value = 'grave';
+            const elRepair = document.getElementById('av_repairCost');
+            if (elRepair) elRepair.value = 2550;
+            const sel = document.getElementById('avVehicleSelect');
+            if (sel) sel.value = '';
+
+            calculateTradeIn();
+            showToast('Valores de avalúo restablecidos a los valores base', 'info');
+        }
+
+        function exportTradeInPDF() {
+            const data = calculateTradeIn();
+            const controlCode = generateTradeInControlNumber();
+
+            const fmt = (val) => '$' + Number(val || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            const elDate = document.getElementById('avPdfDate');
+            if (elDate) elDate.innerText = new Date().toLocaleDateString('es-ES');
+            const elCode = document.getElementById('avPdfControlCode');
+            if (elCode) elCode.innerText = controlCode;
+            const elBadge = document.getElementById('av_badgeControl');
+            if (elBadge) elBadge.innerText = controlCode;
+
+            const elBrand = document.getElementById('avPdfBrand');
+            if (elBrand) elBrand.innerText = data.brand;
+            const elModel = document.getElementById('avPdfModel');
+            if (elModel) elModel.innerText = data.model;
+            const elYear = document.getElementById('avPdfYear');
+            if (elYear) elYear.innerText = data.year;
+            const elTrans = document.getElementById('avPdfTrans');
+            if (elTrans) elTrans.innerText = data.trans;
+            const elKm = document.getElementById('avPdfKm');
+            if (elKm) elKm.innerText = `${Number(data.km).toLocaleString('en-US')} km`;
+
+            const elMech = document.getElementById('avPdfMech');
+            if (elMech) elMech.innerText = data.cMech.toUpperCase();
+            const elEsthet = document.getElementById('avPdfEsthet');
+            if (elEsthet) elEsthet.innerText = data.cEsthet.toUpperCase();
+            const elElec = document.getElementById('avPdfElec');
+            if (elElec) elElec.innerText = data.cElec.toUpperCase();
+            const elRepair = document.getElementById('avPdfRepair');
+            if (elRepair) elRepair.innerText = fmt(data.repairCost);
+
+            const elRange = document.getElementById('avPdfRange');
+            if (elRange) elRange.innerText = `${fmt(data.pMin)} - ${fmt(data.pMax)}`;
+            const elBase = document.getElementById('avPdfBase');
+            if (elBase) elBase.innerText = fmt(data.baseValue);
+            const elFinal = document.getElementById('avPdfFinal');
+            if (elFinal) elFinal.innerText = fmt(data.finalTradeIn);
+
+            const canvas = document.getElementById('avaluoChart');
+            if (canvas) {
+                const chartImg = canvas.toDataURL('image/png');
+                const pdfImg = document.getElementById('avPdfChartImg');
+                if (pdfImg) pdfImg.src = chartImg;
+            }
+
+            const element = document.getElementById('avaluoPdfContent');
+            if (!element) {
+                showToast('Plantilla PDF de Avalúo no encontrada', 'danger');
+                return;
+            }
+
+            showToast('Generando Informe de Recepción Trade-In (PDF)...', 'info');
+
+            setTimeout(() => {
+                const opt = {
+                    margin:       [8, 8, 8, 8],
+                    filename:     `Informe_Recepcion_${controlCode}_${data.brand}_${data.model}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                if (typeof html2pdf === 'function') {
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        showToast('✓ Informe PDF descargado (' + controlCode + ')', 'success');
+                    }).catch(err => {
+                        console.error('Error al exportar PDF:', err);
+                        showToast('Error al exportar PDF', 'danger');
+                    });
+                } else {
+                    showToast('html2pdf no está disponible', 'danger');
+                }
+            }, 200);
+        }
+
+        function copyTradeInWhatsApp() {
+            const d = window._currentTradeInData || calculateTradeIn();
+            const controlCode = d.numControl || generateTradeInControlNumber();
+            const fmt = (val) => '$' + Number(val || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            let wa = `⚖️ *INFORME DE TASACIÓN & TRADE-IN - SEMINUEVOS* 📋\n`;
+            wa += `🔖 *N° Control:* \`${controlCode}\`\n`;
+            wa += `🚗 *Vehículo:* *${d.brand} ${d.model}* (${d.year})\n`;
+            wa += `⚙️ *Transmisión:* ${d.trans} | 📍 *Km:* ${Number(d.km).toLocaleString('en-US')} km\n`;
+            wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+            wa += `📊 *Rango de Mercado:* ${fmt(d.pMin)} - ${fmt(d.pMax)}\n`;
+            wa += `📈 *Valor Medio Ponderado:* ${fmt(d.pAvg)}\n`;
+            wa += `🔧 *Diagnóstico:* Mec: ${d.cMech.toUpperCase()} | Est: ${d.cEsthet.toUpperCase()} | Elec: ${d.cElec.toUpperCase()}\n`;
+            wa += `🛠️ *Deducción por Reparaciones:* -${fmt(d.repairCost)}\n`;
+            wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+            wa += `💰 *OFERTA SUGERIDA DE RECEPCIÓN (TRADE-IN):* *${fmt(d.finalTradeIn)}*\n`;
+            wa += `📈 *Margen Comercial Proyectado:* ${fmt(d.marginEst)}\n`;
+            wa += `━━━━━━━━━━━━━━━━━━━━\n`;
+            wa += `📍 *Isla de Margarita - SEMINUEVOS AUTOS*\n`;
+            wa += `📲 *Para coordinar inspección física y cierre contáctanos:* +58 424-870-0438\n`;
+            wa += `⏱️ *Validez:* 7 días hábiles sujeto a revisión técnica final.`;
+
+            navigator.clipboard.writeText(wa).then(() => {
+                showToast('✓ Informe Trade-In copiado al portapapeles', 'success');
+            }).catch(() => {
+                showToast('No se pudo copiar automáticamente', 'warning');
+            });
+        }
+
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
@@ -10133,11 +10856,19 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     calcularCronograma();
                 });
             });
+            document.querySelectorAll('.sidebar-link[data-tab="avaluo"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    populateTradeInVehicles();
+                    calculateTradeIn();
+                });
+            });
             // Initial calculations
             calculateFinancingPlans();
             calcularCreditoPlan();
             actualizarProgresoSlider(30);
             calcularCronograma();
+            populateTradeInVehicles();
+            calculateTradeIn();
         }
 
         if (document.readyState === 'loading') {
