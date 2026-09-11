@@ -2267,6 +2267,163 @@
             font-size: 8pt;
             color: #64748b;
         }
+
+        /* ===== CRONOGRAMA DE PAGOS & AMORTIZACIÓN ===== */
+        .cron-inputs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+        .cron-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .cron-summary-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .cron-summary-card:hover {
+            border-color: var(--border-accent);
+        }
+        .cron-summary-card .label {
+            font-size: 0.72rem;
+            color: var(--text2);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .cron-summary-card .value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .cron-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            text-align: right;
+        }
+        .cron-table th {
+            background: var(--bg3);
+            color: #ffffff;
+            padding: 11px 12px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--border);
+        }
+        .cron-table th:nth-child(1), .cron-table td:nth-child(1) {
+            text-align: center;
+            font-weight: 700;
+        }
+        .cron-table td {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .cron-table tr:nth-child(even) td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .cron-table tr:hover td {
+            background: rgba(39, 92, 234, 0.05);
+        }
+        .cron-table tfoot tr td {
+            background: var(--bg3) !important;
+            color: #ffffff;
+            font-weight: 800;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+        }
+        /* PDF Export Styling for Cronograma */
+        #cronPdfWrapper {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+        .cron-pdf-page {
+            width: 210mm;
+            padding: 16mm 14mm;
+            background: #ffffff;
+            color: #0f172a;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .cron-pdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2.5px solid #1d4ed8;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .cron-pdf-summary {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 14px 18px;
+            border-radius: 6px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .cron-pdf-summary-card .l {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .cron-pdf-summary-card .v {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .cron-pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.8rem;
+        }
+        .cron-pdf-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 7px 10px;
+            font-weight: 700;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            border: 1px solid #cbd5e1;
+        }
+        .cron-pdf-table th:nth-child(1), .cron-pdf-table td:nth-child(1) {
+            text-align: center;
+        }
+        .cron-pdf-table td {
+            padding: 6px 10px;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 0.78rem;
+        }
+        .cron-pdf-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        .cron-pdf-table tfoot tr td {
+            background-color: #0f172a !important;
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            padding: 8px 10px;
+        }
     </style>
 </head>
 
@@ -2323,6 +2480,7 @@
                 <button class="sidebar-link" data-tab="fichas"><i class="fas fa-file-invoice"></i> Fichas Técnicas</button>
                 <button class="sidebar-link" data-tab="financing"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
                 <button class="sidebar-link" data-tab="credit-plans"><i class="fas fa-file-invoice-dollar"></i> Planes de Financiamiento</button>
+                <button class="sidebar-link" data-tab="cronograma"><i class="fas fa-calendar-alt"></i> Cronograma de Pagos</button>
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
@@ -3714,7 +3872,211 @@
                     </div>
                 </div>
             </div>
+
+            <!-- CRONOGRAMA DE PAGOS TAB (SIMULACIÓN & AMORTIZACIÓN) -->
+            <div class="tab-content" id="tab-cronograma">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Cronograma de <span>Pagos</span></h1>
+                        <p style="color:var(--text2); font-size:0.9rem; margin-top:4px;">
+                            <i class="fas fa-calendar-alt" style="color:var(--accent); margin-right:6px;"></i>
+                            Simulación Dinámica de Amortización Vehicular (Cuota Fija Francesa / Capital Constante Alemán)
+                        </p>
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-ghost" type="button" onclick="resetCronogramaDefaults()">
+                            <i class="fas fa-undo"></i> Restaurar
+                        </button>
+                        <button class="btn btn-ghost" type="button" onclick="copiarCronogramaWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> Copiar Resumen
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="exportarPdfCronograma()">
+                            <i class="fas fa-file-pdf"></i> Exportar PDF Elegante
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PARÁMETROS DEL CRONOGRAMA -->
+                <div class="fin-card" style="margin-bottom: 22px;">
+                    <div class="fin-card-title">
+                        <span><i class="fas fa-sliders-h" style="color:var(--accent); margin-right:8px;"></i> Parámetros de Cotización y Amortización</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <label class="form-label" style="font-size:0.75rem; margin-bottom:0;"><i class="fas fa-car"></i> Cargar Vehículo:</label>
+                            <select id="cronVehicleSelect" class="form-select" style="padding:4px 8px; font-size:0.8rem; max-width:280px;" onchange="onCronVehicleSelected(this)">
+                                <option value="">-- Inventario Opcional --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="cron-inputs-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="cron_antefijo">Antefijo N° Control:</label>
+                            <input type="text" id="cron_antefijo" class="form-input" value="SN" placeholder="Ej: SN" oninput="calcularCronograma()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cron_desembolsoInicial">Desembolso Inicial ($):</label>
+                            <input type="number" id="cron_desembolsoInicial" class="form-input" value="2000" step="100" min="0" oninput="calcularCronograma()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cron_montoNetoFinanciar">Monto Neto a Financiar ($):</label>
+                            <input type="number" id="cron_montoNetoFinanciar" class="form-input" value="9000" step="100" min="0" oninput="calcularCronograma()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cron_tasaMensual">Tasa Interés Mensual (%):</label>
+                            <input type="number" id="cron_tasaMensual" class="form-input" value="1.5" step="0.01" min="0" oninput="calcularCronograma()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cron_plazoMeses">Plazo (Meses):</label>
+                            <input type="number" id="cron_plazoMeses" class="form-input" value="24" step="1" min="1" max="120" oninput="calcularCronograma()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="cron_tipoCuota">Tipo de Cuota:</label>
+                            <select id="cron_tipoCuota" class="form-select" onchange="calcularCronograma()">
+                                <option value="frances" selected>Cuota Fija (Francesa)</option>
+                                <option value="aleman">Capital Constante (Alemana)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botones rápidos de plazo -->
+                    <div style="display:flex; gap:8px; margin-top:14px; align-items:center; flex-wrap:wrap;">
+                        <span style="font-size:0.75rem; color:var(--text3); font-weight:700; text-transform:uppercase;">Accesos rápidos de plazo:</span>
+                        <button type="button" class="cp-pill-btn" onclick="setCronPlazo(12)">12 Meses</button>
+                        <button type="button" class="cp-pill-btn active" onclick="setCronPlazo(24)">24 Meses</button>
+                        <button type="button" class="cp-pill-btn" onclick="setCronPlazo(36)">36 Meses</button>
+                        <button type="button" class="cp-pill-btn" onclick="setCronPlazo(48)">48 Meses</button>
+                        <button type="button" class="cp-pill-btn" onclick="setCronPlazo(60)">60 Meses</button>
+                    </div>
+                </div>
+
+                <!-- EXECUTIVE SUMMARY CARDS -->
+                <div class="cron-summary-grid">
+                    <div class="cron-summary-card">
+                        <span class="label"><i class="fas fa-coins" style="color:var(--accent);"></i> Monto Neto a Financiar</span>
+                        <span class="value" id="cron_resMontoNeto">$9,000.00</span>
+                    </div>
+                    <div class="cron-summary-card">
+                        <span class="label" id="cron_lblCuotaMensual"><i class="fas fa-money-check-alt" style="color:#f59e0b;"></i> Cuota Fija Mensual</span>
+                        <span class="value" id="cron_resCuotaEstimada" style="color:#f59e0b;">$449.62</span>
+                    </div>
+                    <div class="cron-summary-card">
+                        <span class="label"><i class="fas fa-chart-line" style="color:#34d399;"></i> Total Intereses Generados</span>
+                        <span class="value" id="cron_resTotalIntereses" style="color:#34d399;">$1,790.88</span>
+                    </div>
+                    <div class="cron-summary-card">
+                        <span class="label"><i class="fas fa-wallet" style="color:#60a5fa;"></i> Costo Total de Financiamiento</span>
+                        <span class="value" id="cron_resCostoTotal" style="color:#60a5fa;">$10,790.88</span>
+                    </div>
+                </div>
+
+                <!-- TABLA DE AMORTIZACIÓN -->
+                <div class="table-container" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                    <div class="table-header">
+                        <h3><i class="fas fa-table" style="color:var(--accent); margin-right:8px;"></i> Tabla de Amortización Sugerida</h3>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <span id="cronBadgeTipoCuota" class="fin-badge fin-badge-low">Cuota Fija (Francesa)</span>
+                            <span id="cronBadgeNumControl" style="font-family:monospace; font-weight:700; color:var(--text2); font-size:0.8rem; background:rgba(255,255,255,0.05); padding:3px 8px; border-radius:4px;">SN-000000</span>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto; max-height: 520px;">
+                        <table class="cron-table" id="cronTabla">
+                            <thead>
+                                <tr>
+                                    <th>MES</th>
+                                    <th>CUOTA BASE</th>
+                                    <th>INTERÉS</th>
+                                    <th>ABONO CAPITAL</th>
+                                    <th>SALDO PENDIENTE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cron_tablaCuerpo">
+                                <!-- Filas generadas dinámicamente -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>TOTALES</td>
+                                    <td>-</td>
+                                    <td id="cron_totInteres" style="color:#34d399;">$0.00</td>
+                                    <td id="cron_totAbonoCapital" style="color:#60a5fa;">$0.00</td>
+                                    <td id="cron_totSaldoFinal" style="color:#ffffff;">$0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- PLANTILLA EXPORTABLE PDF PARA CRONOGRAMA DE PAGOS -->
+    <div id="cronPdfWrapper">
+        <div id="cronPdfContent" class="cron-pdf-page">
+            <div class="cron-pdf-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <svg viewBox="0 0 24 24" style="width: 34px; height: 34px; fill: #1d4ed8;"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4h14v4z"/><circle cx="7.5" cy="15" r="1.5"/><circle cx="16.5" cy="15" r="1.5"/></svg>
+                    <div>
+                        <div style="font-size:1.4rem; font-weight:900; color:#0f172a; text-transform:uppercase;">SEMINUEVOS</div>
+                        <div style="font-size:0.75rem; color:#1d4ed8; font-weight:700; text-transform:uppercase; letter-spacing:1px;">Estructuración & Amortización Vehicular</div>
+                    </div>
+                </div>
+                <div style="text-align:right; font-size:0.82rem; color:#64748b;">
+                    <strong style="color:#0f172a;">PROYECCIÓN DE CRONOGRAMA DE PAGOS</strong><br>
+                    N° Control: <span id="cronPdfControlNum" style="font-family:monospace; font-weight:700; color:#1d4ed8;">SN-0000</span><br>
+                    Fecha: <span id="cronPdfFecha">--</span>
+                </div>
+            </div>
+
+            <!-- Resumen Ejecutivo en PDF -->
+            <div class="cron-pdf-summary">
+                <div class="cron-pdf-summary-card">
+                    <span class="l">Monto Neto a Financiar</span>
+                    <span class="v" id="cronPdfMontoNeto">$0.00</span>
+                </div>
+                <div class="cron-pdf-summary-card">
+                    <span class="l" id="cronPdfLblCuota">Cuota Estimada</span>
+                    <span class="v" id="cronPdfCuotaEst">$0.00</span>
+                </div>
+                <div class="cron-pdf-summary-card">
+                    <span class="l">Total Intereses Generados</span>
+                    <span class="v" id="cronPdfTotalIntereses">$0.00</span>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.82rem; color:#475569;">
+                <div><strong>Tipo de Amortización:</strong> <span id="cronPdfTipoCuota">Cuota Fija (Francesa)</span></div>
+                <div><strong>Tasa Mensual:</strong> <span id="cronPdfTasa">1.5%</span> | <strong>Plazo:</strong> <span id="cronPdfPlazo">24 Meses</span></div>
+            </div>
+
+            <!-- Tabla en PDF -->
+            <table class="cron-pdf-table">
+                <thead>
+                    <tr>
+                        <th>MES</th>
+                        <th>CUOTA BASE</th>
+                        <th>INTERÉS</th>
+                        <th>ABONO CAPITAL</th>
+                        <th>SALDO PENDIENTE</th>
+                    </tr>
+                </thead>
+                <tbody id="cronPdfTablaCuerpo">
+                    <!-- Dinámico -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>TOTALES</td>
+                        <td>-</td>
+                        <td id="cronPdfTotInteres">$0.00</td>
+                        <td id="cronPdfTotAbonoCapital">$0.00</td>
+                        <td id="cronPdfTotSaldoFinal">$0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div style="margin-top:16px; border-top:1px dashed #cbd5e1; padding-top:10px; display:flex; justify-content:space-between; font-size:7.5pt; color:#64748b;">
+                <div><strong>SEMINUEVOS AUTOS | RIF J-504364380</strong> - Porlamar, Isla de Margarita.</div>
+                <div>Documento formal emitido para fines de proyección crediticia. Válido por 15 días.</div>
+            </div>
+        </div>
     </div>
 
     <!-- PLANTILLA EXPORTABLE PDF PARA PLANES DE FINANCIAMIENTO -->
@@ -9423,6 +9785,340 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     calculateFinancingPlans();
                 });
             });
+        // ===== CRONOGRAMA DE PAGOS (SIMULACIÓN & AMORTIZACIÓN) =====
+        function generarNumeroControlCron() {
+            const antefijoInput = document.getElementById('cron_antefijo')?.value.trim();
+            const antefijo = antefijoInput ? antefijoInput.toUpperCase() : 'SN';
+            const hoy = new Date();
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const anio = hoy.getFullYear();
+            const horas = String(hoy.getHours()).padStart(2, '0');
+            const minutos = String(hoy.getMinutes()).padStart(2, '0');
+            const segundos = String(hoy.getSeconds()).padStart(2, '0');
+            return `${antefijo}-${dia}${mes}${anio}-${horas}${minutos}${segundos}`;
+        }
+
+        function setCronPlazo(meses) {
+            const input = document.getElementById('cron_plazoMeses');
+            if (input) input.value = meses;
+            document.querySelectorAll('.tab-content#tab-cronograma .cp-pill-btn').forEach(btn => {
+                if (parseInt(btn.textContent) === meses) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            calcularCronograma();
+        }
+
+        function calcularCronograma() {
+            const montoNeto = parseFloat(document.getElementById('cron_montoNetoFinanciar')?.value) || 0;
+            const tasaMensualPct = parseFloat(document.getElementById('cron_tasaMensual')?.value) || 0;
+            const plazo = parseInt(document.getElementById('cron_plazoMeses')?.value) || 1;
+            const tipoCuota = document.getElementById('cron_tipoCuota')?.value || 'frances';
+
+            const i = tasaMensualPct / 100;
+            const tbody = document.getElementById('cron_tablaCuerpo');
+            const pdfTbody = document.getElementById('cronPdfTablaCuerpo');
+            if (tbody) tbody.innerHTML = '';
+            if (pdfTbody) pdfTbody.innerHTML = '';
+
+            let saldo = montoNeto;
+            let acumInteres = 0;
+            let acumAbonoCapital = 0;
+            let primeraCuota = 0;
+
+            let cuotaFijaFrancesa = 0;
+            if (tipoCuota === 'frances' && montoNeto > 0) {
+                if (i > 0) {
+                    cuotaFijaFrancesa = montoNeto * (i * Math.pow(1 + i, plazo)) / (Math.pow(1 + i, plazo) - 1);
+                } else {
+                    cuotaFijaFrancesa = montoNeto / plazo;
+                }
+            }
+
+            const fmt = (val) => '$' + Number(val || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            window._currentCronRows = [];
+
+            for (let mes = 1; mes <= plazo; mes++) {
+                let interesMes = saldo * i;
+                let abonoCapitalMes = 0;
+                let cuotaBaseMes = 0;
+
+                if (tipoCuota === 'aleman') {
+                    abonoCapitalMes = montoNeto / plazo;
+                    cuotaBaseMes = abonoCapitalMes + interesMes;
+                } else {
+                    cuotaBaseMes = cuotaFijaFrancesa;
+                    abonoCapitalMes = cuotaBaseMes - interesMes;
+                }
+
+                if (mes === plazo) {
+                    abonoCapitalMes = saldo;
+                    cuotaBaseMes = abonoCapitalMes + interesMes;
+                    saldo = 0;
+                } else {
+                    saldo -= abonoCapitalMes;
+                }
+
+                if (mes === 1) primeraCuota = cuotaBaseMes;
+
+                acumInteres += interesMes;
+                acumAbonoCapital += abonoCapitalMes;
+
+                window._currentCronRows.push({
+                    mes,
+                    cuota: fmt(cuotaBaseMes),
+                    interes: fmt(interesMes),
+                    abono: fmt(abonoCapitalMes),
+                    saldo: fmt(Math.max(0, saldo))
+                });
+
+                if (tbody) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${mes}</strong></td>
+                        <td style="font-weight:700; color:#f59e0b;">${fmt(cuotaBaseMes)}</td>
+                        <td style="color:#ef4444;">${fmt(interesMes)}</td>
+                        <td style="color:#60a5fa;">${fmt(abonoCapitalMes)}</td>
+                        <td style="font-weight:700; color:#ffffff;">${fmt(Math.max(0, saldo))}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+
+                if (pdfTbody) {
+                    const trPdf = document.createElement('tr');
+                    trPdf.innerHTML = `
+                        <td>${mes}</td>
+                        <td style="font-weight:bold;">${fmt(cuotaBaseMes)}</td>
+                        <td>${fmt(interesMes)}</td>
+                        <td>${fmt(abonoCapitalMes)}</td>
+                        <td>${fmt(Math.max(0, saldo))}</td>
+                    `;
+                    pdfTbody.appendChild(trPdf);
+                }
+            }
+
+            const costoTotal = montoNeto + acumInteres;
+
+            // UI Summary Cards
+            const elResMonto = document.getElementById('cron_resMontoNeto');
+            if (elResMonto) elResMonto.innerText = fmt(montoNeto);
+            const elResCuota = document.getElementById('cron_resCuotaEstimada');
+            if (elResCuota) elResCuota.innerText = fmt(primeraCuota);
+            const elLblCuota = document.getElementById('cron_lblCuotaMensual');
+            if (elLblCuota) elLblCuota.innerHTML = tipoCuota === 'frances' ? '<i class="fas fa-money-check-alt" style="color:#f59e0b;"></i> Cuota Fija Mensual' : '<i class="fas fa-money-check-alt" style="color:#f59e0b;"></i> Cuota Est. (Mes 1)';
+            const elResTotInt = document.getElementById('cron_resTotalIntereses');
+            if (elResTotInt) elResTotInt.innerText = fmt(acumInteres);
+            const elResCostoTot = document.getElementById('cron_resCostoTotal');
+            if (elResCostoTot) elResCostoTot.innerText = fmt(costoTotal);
+
+            // Badges
+            const badgeTipo = document.getElementById('cronBadgeTipoCuota');
+            if (badgeTipo) {
+                badgeTipo.innerText = tipoCuota === 'frances' ? 'Cuota Fija (Francesa)' : 'Capital Constante (Alemana)';
+                badgeTipo.className = tipoCuota === 'frances' ? 'fin-badge fin-badge-low' : 'fin-badge fin-badge-high';
+            }
+
+            // Totals row in web table
+            const elTotInt = document.getElementById('cron_totInteres');
+            if (elTotInt) elTotInt.innerText = fmt(acumInteres);
+            const elTotAbono = document.getElementById('cron_totAbonoCapital');
+            if (elTotAbono) elTotAbono.innerText = fmt(acumAbonoCapital);
+            const elTotSaldo = document.getElementById('cron_totSaldoFinal');
+            if (elTotSaldo) elTotSaldo.innerText = fmt(0);
+
+            // PDF fields
+            const numControl = generarNumeroControlCron();
+            const elBadgeNum = document.getElementById('cronBadgeNumControl');
+            if (elBadgeNum) elBadgeNum.innerText = numControl;
+
+            const pdfNum = document.getElementById('cronPdfControlNum');
+            if (pdfNum) pdfNum.innerText = numControl;
+            const pdfFecha = document.getElementById('cronPdfFecha');
+            if (pdfFecha) pdfFecha.innerText = new Date().toLocaleDateString('es-ES');
+            const pdfMonto = document.getElementById('cronPdfMontoNeto');
+            if (pdfMonto) pdfMonto.innerText = fmt(montoNeto);
+            const pdfCuota = document.getElementById('cronPdfCuotaEst');
+            if (pdfCuota) pdfCuota.innerText = fmt(primeraCuota);
+            const pdfLblCuota = document.getElementById('cronPdfLblCuota');
+            if (pdfLblCuota) pdfLblCuota.innerText = tipoCuota === 'frances' ? 'Cuota Fija Mensual' : 'Cuota Estimada (Mes 1)';
+            const pdfTotInt = document.getElementById('cronPdfTotalIntereses');
+            if (pdfTotInt) pdfTotInt.innerText = fmt(acumInteres);
+            const pdfTipoCuota = document.getElementById('cronPdfTipoCuota');
+            if (pdfTipoCuota) pdfTipoCuota.innerText = tipoCuota === 'frances' ? 'Cuota Fija (Francesa)' : 'Capital Constante (Alemana)';
+            const pdfTasa = document.getElementById('cronPdfTasa');
+            if (pdfTasa) pdfTasa.innerText = `${tasaMensualPct}%`;
+            const pdfPlazo = document.getElementById('cronPdfPlazo');
+            if (pdfPlazo) pdfPlazo.innerText = `${plazo} Meses`;
+            const pdfTotInteres = document.getElementById('cronPdfTotInteres');
+            if (pdfTotInteres) pdfTotInteres.innerText = fmt(acumInteres);
+            const pdfTotAbono = document.getElementById('cronPdfTotAbonoCapital');
+            if (pdfTotAbono) pdfTotAbono.innerText = fmt(acumAbonoCapital);
+            const pdfTotSaldo = document.getElementById('cronPdfTotSaldoFinal');
+            if (pdfTotSaldo) pdfTotSaldo.innerText = fmt(0);
+
+            window._currentCronData = {
+                montoNeto: fmt(montoNeto),
+                primeraCuota: fmt(primeraCuota),
+                acumInteres: fmt(acumInteres),
+                costoTotal: fmt(costoTotal),
+                tipoCuota: tipoCuota === 'frances' ? 'Cuota Fija (Francesa)' : 'Capital Constante (Alemana)',
+                plazo,
+                tasaMensualPct,
+                numControl
+            };
+        }
+
+        function populateCronogramaVehicles() {
+            const select = document.getElementById('cronVehicleSelect');
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">-- Cargar desde Inventario --</option>';
+
+            if (Array.isArray(vehicles) && vehicles.length > 0) {
+                vehicles.forEach(v => {
+                    const priceRaw = String(v.price || '').replace(/[^0-9.]/g, '');
+                    const numPrice = parseFloat(priceRaw) || 0;
+                    if (numPrice > 0) {
+                        const opt = document.createElement('option');
+                        opt.value = numPrice;
+                        opt.dataset.title = v.title || 'Vehículo';
+                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        select.appendChild(opt);
+                    }
+                });
+            }
+            if (currentVal) select.value = currentVal;
+        }
+
+        function onCronVehicleSelected(selectElem) {
+            const val = parseFloat(selectElem.value);
+            if (!isNaN(val) && val > 0) {
+                const inicial = Math.round(val * 0.30);
+                const financiado = Math.round(val * 0.70);
+                const elIni = document.getElementById('cron_desembolsoInicial');
+                if (elIni) elIni.value = inicial;
+                const elFin = document.getElementById('cron_montoNetoFinanciar');
+                if (elFin) elFin.value = financiado;
+
+                calcularCronograma();
+                showToast('Vehículo cargado: Monto a financiar calculado en $' + financiado.toLocaleString('en-US'), 'success');
+            }
+        }
+
+        function resetCronogramaDefaults() {
+            const elAnte = document.getElementById('cron_antefijo');
+            if (elAnte) elAnte.value = 'SN';
+            const elIni = document.getElementById('cron_desembolsoInicial');
+            if (elIni) elIni.value = 2000;
+            const elFin = document.getElementById('cron_montoNetoFinanciar');
+            if (elFin) elFin.value = 9000;
+            const elTasa = document.getElementById('cron_tasaMensual');
+            if (elTasa) elTasa.value = 1.5;
+            const elPlazo = document.getElementById('cron_plazoMeses');
+            if (elPlazo) elPlazo.value = 24;
+            const elTipo = document.getElementById('cron_tipoCuota');
+            if (elTipo) elTipo.value = 'frances';
+            const sel = document.getElementById('cronVehicleSelect');
+            if (sel) sel.value = '';
+
+            calcularCronograma();
+            showToast('Valores de cronograma restablecidos', 'info');
+        }
+
+        function exportarPdfCronograma() {
+            const numControl = generarNumeroControlCron();
+            const elControl = document.getElementById('cronPdfControlNum');
+            if (elControl) elControl.innerText = numControl;
+            const elBadge = document.getElementById('cronBadgeNumControl');
+            if (elBadge) elBadge.innerText = numControl;
+
+            calcularCronograma();
+
+            const element = document.getElementById('cronPdfContent');
+            if (!element) {
+                showToast('Plantilla PDF de cronograma no encontrada', 'danger');
+                return;
+            }
+
+            showToast('Generando PDF de Cronograma de Pagos...', 'info');
+
+            const opt = {
+                margin:       [8, 8, 8, 8],
+                filename:     `Cronograma_${numControl}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf === 'function') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showToast('✓ PDF de Cronograma descargado (' + numControl + ')', 'success');
+                }).catch(err => {
+                    console.error('Error al exportar PDF:', err);
+                    showToast('Error al exportar PDF', 'danger');
+                });
+            } else {
+                showToast('html2pdf no está cargado', 'danger');
+            }
+        }
+
+        function copiarCronogramaWhatsApp() {
+            const d = window._currentCronData || {};
+            const numControl = d.numControl || generarNumeroControlCron();
+            const rows = window._currentCronRows || [];
+
+            let text = `📅 *CRONOGRAMA DE PAGOS & AMORTIZACIÓN - SEMINUEVOS* 📋\n`;
+            text += `🔖 *N° Control:* \`${numControl}\`\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `💵 *Monto Neto Financiado:* ${d.montoNeto || '$0.00'}\n`;
+            text += `📈 *Tasa Mensual:* ${d.tasaMensualPct || 1.5}%\n`;
+            text += `⏱️ *Plazo:* ${d.plazo || 24} Meses\n`;
+            text += `📊 *Modalidad:* ${d.tipoCuota || 'Cuota Fija (Francesa)'}\n`;
+            text += `💰 *Cuota Base (Mes 1):* *${d.primeraCuota || '$0.00'}*\n`;
+            text += `📉 *Total Intereses:* ${d.acumInteres || '$0.00'}\n`;
+            text += `🏷️ *Costo Total Crédito:* ${d.costoTotal || '$0.00'}\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `*Primeras Cuotas del Cronograma:*\n`;
+
+            const previewRows = rows.slice(0, 6);
+            previewRows.forEach(r => {
+                text += `  • Mes ${r.mes}: Cuota ${r.cuota} (Cap: ${r.abono} | Int: ${r.interes} | Saldo: ${r.saldo})\n`;
+            });
+            if (rows.length > 6) {
+                text += `  ... (${rows.length - 6} cuotas adicionales en el PDF oficial)\n`;
+            }
+
+            text += `━━━━━━━━━━━━━━━━━━━━\n`;
+            text += `📲 *Para procesar tu financiamiento contáctanos:*\n`;
+            text += `📞 WhatsApp: +58 424-870-0438\n`;
+            text += `📍 *Isla de Margarita - SEMINUEVOS AUTOS*`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✓ Resumen de cronograma copiado al portapapeles', 'success');
+            }).catch(() => {
+                showToast('No se pudo copiar automáticamente', 'warning');
+            });
+        }
+
+        // Init when DOM loads or immediately if already loaded
+        function initApp() {
+            checkAuth();
+            document.querySelectorAll('.sidebar-link[data-tab="fichas"]').forEach(btn => {
+                btn.addEventListener('click', () => initFichasModule());
+            });
+            document.querySelectorAll('.sidebar-link[data-tab="financing"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    populateFinancingVehicles();
+                    calculateFinancingPlans();
+                });
+            });
             document.querySelectorAll('.sidebar-link[data-tab="credit-plans"]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     populateCreditPlansVehicles();
@@ -9431,10 +10127,17 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     actualizarProgresoSlider(curVal);
                 });
             });
+            document.querySelectorAll('.sidebar-link[data-tab="cronograma"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    populateCronogramaVehicles();
+                    calcularCronograma();
+                });
+            });
             // Initial calculations
             calculateFinancingPlans();
             calcularCreditoPlan();
             actualizarProgresoSlider(30);
+            calcularCronograma();
         }
 
         if (document.readyState === 'loading') {
