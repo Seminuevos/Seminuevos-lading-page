@@ -615,8 +615,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const desc = (v.description || '').toLowerCase();
                 const title = (v.title || '').toLowerCase();
 
+                // Si está marcado como entrega inmediata o catálogo seminuevos, pertenece a stock local
+                if (c === 'seminuevos' || c === 'seminuevo' || avail === 'entrega_inmediata') return false;
+
                 if (c === 'importados' || c === 'importado' || c === 'por_pedido' || c === 'pedido' || c === 'subasta' || c === 'subastas') return true;
-                if (avail === 'por_pedido' || orig === 'importado') return true;
+                if (avail === 'por_pedido') return true;
                 if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return true;
                 if (desc.includes('subasta') || desc.includes('yarda usa') || desc.includes('copart') || desc.includes('iaai') || desc.includes('por pedido') || desc.includes('importación') || desc.includes('importacion')) return true;
                 if (title.includes('actual') || title.includes('exceeds mechanical limits') || title.includes('smi-')) return true;

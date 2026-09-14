@@ -8315,8 +8315,8 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                     const price = String(v.price || '').trim();
 
                     // Descartar si pertenece al catálogo de importados o es lote de subasta por pedido
-                    if (cat === 'importados' || cat === 'subasta' || cat === 'importado') return false;
-                    if (avail === 'por_pedido' || orig === 'importado') return false;
+                    if (cat === 'importados' || cat === 'subasta') return false;
+                    if (avail === 'por_pedido') return false;
                     if (desc.includes('importado bajo pedido') || desc.includes('subasta iaai') || desc.includes('subasta copart')) return false;
                     if (price.toLowerCase() === 'consultar' && (desc.includes('lote') || desc.includes('vin:'))) return false;
 
