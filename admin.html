@@ -2114,15 +2114,9 @@
         #cpPdfTemplateWrapper,
         #cronPdfWrapper,
         #avaluoPdfWrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 210mm;
-            max-width: 210mm;
-            z-index: -9999;
-            opacity: 0;
-            pointer-events: none;
-            overflow: hidden;
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
         }
         .cp-pdf-page {
             width: 210mm;
@@ -8332,7 +8326,11 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 stockLocalOnly.forEach(v => {
                     const opt = document.createElement('option');
                     opt.value = v.id;
-                    opt.textContent = `${v.title} (${v.year || 'S/A'}) - ${v.price || 'Vitrina'}`;
+                    const rawTitle = (v.title || 'Vehículo').trim();
+                    const year = v.year ? String(v.year).trim() : '';
+                    const hasYear = year && rawTitle.includes(year);
+                    const titleWithYear = (hasYear || !year) ? rawTitle : `${rawTitle} (${year})`;
+                    opt.textContent = `${titleWithYear} - ${v.price || 'Vitrina'}`;
                     sel.appendChild(opt);
                 });
             }
@@ -9569,9 +9567,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                     scale: 2.2, 
                     useCORS: true, 
                     backgroundColor: '#090d16',
-                    logging: false,
-                    scrollY: 0,
-                    scrollX: 0
+                    logging: false
                 });
 
                 const imgData = canvas.toDataURL('image/jpeg', 0.96);
@@ -9587,9 +9583,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                         scale: 2.2,
                         useCORS: true,
                         backgroundColor: '#090d16',
-                        logging: false,
-                        scrollY: 0,
-                        scrollX: 0
+                        logging: false
                     });
 
                     const gImgData = gCanvas.toDataURL('image/jpeg', 0.95);
@@ -9619,9 +9613,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                     scale: 2.5,
                     useCORS: true,
                     backgroundColor: '#000000',
-                    logging: false,
-                    scrollY: 0,
-                    scrollX: 0
+                    logging: false
                 });
                 const link = document.createElement('a');
                 link.download = filename;
@@ -9801,7 +9793,11 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     if (numPrice > 0) {
                         const opt = document.createElement('option');
                         opt.value = numPrice;
-                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        const rawTitle = (v.title || 'Vehículo').trim();
+                        const year = v.year ? String(v.year).trim() : '';
+                        const hasYear = year && rawTitle.includes(year);
+                        const titleWithYear = (hasYear || !year) ? rawTitle : `${rawTitle} (${year})`;
+                        opt.textContent = `${titleWithYear} - $${numPrice.toLocaleString('en-US')}`;
                         select.appendChild(opt);
                     }
                 });
@@ -10066,8 +10062,12 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     if (numPrice > 0) {
                         const opt = document.createElement('option');
                         opt.value = numPrice;
-                        opt.dataset.title = v.title || 'Vehículo';
-                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        const rawTitle = (v.title || 'Vehículo').trim();
+                        const year = v.year ? String(v.year).trim() : '';
+                        const hasYear = year && rawTitle.includes(year);
+                        const titleWithYear = (hasYear || !year) ? rawTitle : `${rawTitle} (${year})`;
+                        opt.dataset.title = titleWithYear;
+                        opt.textContent = `${titleWithYear} - $${numPrice.toLocaleString('en-US')}`;
                         select.appendChild(opt);
                     }
                 });
@@ -10153,7 +10153,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 margin:       0,
                 filename:     `Cotizacion_${numControl}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: 794 },
+                html2canvas:  { scale: 2, logging: false, useCORS: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
@@ -10410,8 +10410,12 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     if (numPrice > 0) {
                         const opt = document.createElement('option');
                         opt.value = numPrice;
-                        opt.dataset.title = v.title || 'Vehículo';
-                        opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                        const rawTitle = (v.title || 'Vehículo').trim();
+                        const year = v.year ? String(v.year).trim() : '';
+                        const hasYear = year && rawTitle.includes(year);
+                        const titleWithYear = (hasYear || !year) ? rawTitle : `${rawTitle} (${year})`;
+                        opt.dataset.title = titleWithYear;
+                        opt.textContent = `${titleWithYear} - $${numPrice.toLocaleString('en-US')}`;
                         select.appendChild(opt);
                     }
                 });
@@ -10479,7 +10483,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 margin:       0,
                 filename:     `Cronograma_${numControl}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: 794 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
@@ -10724,7 +10728,11 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     opt.dataset.year = v.year || '';
                     opt.dataset.km = v.mileage || v.km || '60000';
                     opt.dataset.price = numPrice;
-                    opt.textContent = `${v.title || 'Vehículo'} (${v.year || ''}) - $${numPrice.toLocaleString('en-US')}`;
+                    const rawTitle = (v.title || 'Vehículo').trim();
+                    const year = v.year ? String(v.year).trim() : '';
+                    const hasYear = year && rawTitle.includes(year);
+                    const titleWithYear = (hasYear || !year) ? rawTitle : `${rawTitle} (${year})`;
+                    opt.textContent = `${titleWithYear} - $${numPrice.toLocaleString('en-US')}`;
                     select.appendChild(opt);
                 });
             }
@@ -10854,7 +10862,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 margin:       0,
                 filename:     `Informe_Recepcion_${controlCode}_${data.brand}_${data.model}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0, windowWidth: 794 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
