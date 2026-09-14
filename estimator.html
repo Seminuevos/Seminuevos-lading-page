@@ -1443,8 +1443,8 @@
 
     <!-- ===== ESTIMATOR LOGIC SCRIPT ===== -->
     <script>
-        // Global state
-        let allVehicles = [];
+        // Global state (scoped to estimator)
+        let estimatorInventory = [];
         let currentMode = 'vehicle'; // 'vehicle' | 'budget'
         let currentPaymentType = 'finance'; // 'finance' | 'cash'
         let isCustomPrice = false;
@@ -1458,8 +1458,41 @@
         let tradeInValue = 0;
         let targetMonthlyBudget = 450;
 
-        // --- INIT & INVENTORY LOADING ---
-        document.addEventListener('DOMContentLoaded', async () => {
+        function formatVehicleRecord(v) {
+            return {
+                id: v.id,
+                title: v.title || 'Vehículo',
+                price: parseNumberPrice(v.price),
+                rawPrice: v.price,
+                year: v.year || '',
+                km: v.km || v.mileage || '',
+                engine: v.engine || '',
+                transmission: v.transmission || '',
+                condition: v.condition || 'seminuevo',
+                origin: v.origin || 'nacional',
+                badge: v.badge || '',
+                images: Array.isArray(v.images) ? v.images : (v.images ? [v.images] : ['images/logo-white.png'])
+            };
+        }
+
+        function getInitialVehicles() {
+            try {
+                const raw = localStorage.getItem('sn_supabase_cache');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.vehicles && parsed.vehicles.length > 0) {
+                        return parsed.vehicles.map(formatVehicleRecord).filter(v => v.price > 0);
+                    }
+                }
+            } catch (e) {}
+
+            const staticSeminuevos = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
+            const static0km = (typeof vehicles0km !== 'undefined') ? vehicles0km : [];
+            return [...staticSeminuevos, ...static0km].map(formatVehicleRecord).filter(v => v.price > 0);
+        }
+
+        // --- BOOTSTRAP & INVENTORY LOADING ---
+        function bootEstimator() {
             const navToggle = document.getElementById('navToggle');
             const navMenu = document.getElementById('navMenu');
             navToggle?.addEventListener('click', () => {
@@ -1467,66 +1500,45 @@
                 navMenu?.classList.toggle('active');
             });
 
-            await loadInventory();
-            initEstimator();
-        });
+            // 1. Inicialización instantánea síncrona (0ms de latencia)
+            estimatorInventory = getInitialVehicles();
+            if (estimatorInventory.length > 0) {
+                populateVehicleSelect();
+                updateBudgetCompatibleCars();
+                recalculate();
+            }
 
-        async function loadInventory() {
-            let list = [];
+            // 2. Sincronización en segundo plano con Supabase
+            syncSupabaseInventory();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootEstimator);
+        } else {
+            bootEstimator();
+        }
+
+        async function syncSupabaseInventory() {
             try {
-                // Try Supabase first
-                if (typeof supabaseClient !== 'undefined') {
-                    const { data, error } = await supabaseClient
-                        .from('vehicles')
-                        .select('*')
-                        .eq('status', 'active');
-                    if (!error && data && data.length > 0) {
-                        list = data.map(v => ({
-                            id: v.id,
-                            title: v.title,
-                            price: parseNumberPrice(v.price),
-                            rawPrice: v.price,
-                            year: v.year || '',
-                            km: v.km || v.mileage || '',
-                            engine: v.engine || '',
-                            transmission: v.transmission || '',
-                            condition: v.condition || 'seminuevo',
-                            origin: v.origin || 'nacional',
-                            badge: v.badge || '',
-                            images: Array.isArray(v.images) ? v.images : (v.images ? [v.images] : ['images/logo-white.png'])
-                        }));
+                if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
+
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3500));
+                const fetchPromise = supabaseClient.from('vehicles').select('*').eq('status', 'active');
+                
+                const res = await Promise.race([fetchPromise, timeoutPromise]);
+                const data = res?.data;
+                if (data && data.length > 0) {
+                    const freshList = data.map(formatVehicleRecord).filter(v => v.price > 0);
+                    if (freshList.length > 0) {
+                        const currentId = selectedVehicle ? selectedVehicle.id : null;
+                        estimatorInventory = freshList;
+                        populateVehicleSelect(currentId);
+                        updateBudgetCompatibleCars();
                     }
                 }
-            } catch (err) {
-                console.warn('Supabase fetch failed, falling back to data.js:', err);
+            } catch (e) {
+                console.warn('Background Supabase sync notice:', e);
             }
-
-            // Fallback to data.js
-            if (list.length === 0) {
-                const staticSeminuevos = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-                const static0km = (typeof vehicles0km !== 'undefined') ? vehicles0km : [];
-                const combined = [...staticSeminuevos, ...static0km];
-                list = combined.map(v => ({
-                    id: v.id,
-                    title: v.title,
-                    price: parseNumberPrice(v.price),
-                    rawPrice: v.price,
-                    year: v.year || '',
-                    km: v.km || '',
-                    engine: v.engine || '',
-                    transmission: v.transmission || '',
-                    condition: v.condition || 'seminuevo',
-                    origin: v.origin || 'puerto_libre',
-                    badge: v.badge || '',
-                    images: v.images || ['images/logo-white.png']
-                }));
-            }
-
-            // Filter out vehicles without valid numerical price
-            allVehicles = list.filter(v => v.price > 0);
-
-            populateVehicleSelect();
-            updateBudgetCompatibleCars();
         }
 
         function parseNumberPrice(str) {
@@ -1536,29 +1548,31 @@
             return parseInt(cleaned, 10) || 0;
         }
 
-        function populateVehicleSelect() {
+        function populateVehicleSelect(preferredId) {
             const sel = document.getElementById('vehicleSelect');
             if (!sel) return;
             sel.innerHTML = '';
 
-            if (allVehicles.length === 0) {
+            if (estimatorInventory.length === 0) {
                 sel.innerHTML = '<option value="">No hay vehículos disponibles</option>';
                 return;
             }
 
-            allVehicles.forEach((car, index) => {
+            estimatorInventory.forEach((car) => {
                 const opt = document.createElement('option');
                 opt.value = car.id;
                 opt.textContent = `${car.title} - $${car.price.toLocaleString()}`;
                 sel.appendChild(opt);
             });
 
-            // Select first by default
-            selectVehicleById(allVehicles[0].id);
+            const targetId = preferredId || (estimatorInventory[0] ? estimatorInventory[0].id : null);
+            if (targetId) {
+                selectVehicleById(targetId);
+            }
         }
 
         function selectVehicleById(id) {
-            const car = allVehicles.find(v => String(v.id) === String(id));
+            const car = estimatorInventory.find(v => String(v.id) === String(id));
             if (!car) return;
 
             selectedVehicle = car;
@@ -1883,7 +1897,7 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const qualifying = allVehicles.filter(car => car.price <= (maxTotalCarPrice * 1.05)); // 5% flexibility
+            const qualifying = estimatorInventory.filter(car => car.price <= (maxTotalCarPrice * 1.05)); // 5% flexibility
 
             document.getElementById('compatCount').textContent = `${qualifying.length} vehículos`;
 
@@ -2003,6 +2017,24 @@
         function initEstimator() {
             recalculate();
         }
+
+        // Explicitly attach all interactive functions to window for onclick handlers
+        window.switchEstimatorMode = switchEstimatorMode;
+        window.toggleCustomPriceMode = toggleCustomPriceMode;
+        window.onCustomPriceInput = onCustomPriceInput;
+        window.onVehicleSelectChange = onVehicleSelectChange;
+        window.selectVehicleById = selectVehicleById;
+        window.setPaymentType = setPaymentType;
+        window.setDownPaymentPct = setDownPaymentPct;
+        window.onDownPaymentSliderChange = onDownPaymentSliderChange;
+        window.setLoanTerm = setLoanTerm;
+        window.setApr = setApr;
+        window.onAprSliderChange = onAprSliderChange;
+        window.toggleTradeIn = toggleTradeIn;
+        window.onTradeInValueChange = onTradeInValueChange;
+        window.onBudgetSliderChange = onBudgetSliderChange;
+        window.printQuoteSheet = printQuoteSheet;
+        window.recalculate = recalculate;
     </script>
 </body>
 </html>
