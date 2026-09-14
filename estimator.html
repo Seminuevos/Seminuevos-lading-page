@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimador de Pago y Poder de Compra | Seminuevos Agency</title>
+    <meta name="description" content="Simula tu cuota mensual o descubre tu poder de compra de autos seminuevos y 0KM en Margarita y Venezuela. Transparencia total estilo Toyota Financial.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Estimador de Cuota & Poder de Compra | Seminuevos">
+    <meta property="og:description" content="Simula tu plan de financiamiento personalizado para vehículos seminuevos y 0KM en Venezuela.">
+    <meta property="og:image" content="images/logo-white.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Mina:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Core Style -->
+    <link rel="stylesheet" href="style.css?v=3">
+
+    <style>
+        /* ===== ESTIMATOR CUSTOM STYLES (Aether Grandeur Dark) ===== */
+        :root {
+            --est-card-bg: rgba(18, 18, 22, 0.75);
+            --est-card-border: rgba(255, 255, 255, 0.08);
+            --est-blue: #275CEA;
+            --est-blue-glow: rgba(39, 92, 234, 0.35);
+            --est-green: #10B981;
+            --est-amber: #F59E0B;
+        }
+
+        body.estimator-page {
+            background-color: #050507;
+            background-image: 
+                radial-gradient(ellipse at 15% 10%, rgba(39, 92, 234, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 60%, rgba(39, 92, 234, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: var(--font-body, 'Mina', sans-serif);
+            min-height: 100vh;
+        }
+
+        .estimator-hero {
+            padding: 130px 0 35px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .estimator-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: rgba(39, 92, 234, 0.12);
+            border: 1px solid rgba(39, 92, 234, 0.3);
+            color: #93c5fd;
+            font-size: 0.78rem;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            box-shadow: 0 0 25px rgba(39, 92, 234, 0.2);
+        }
+
+        .estimator-badge i {
+            color: #60a5fa;
+        }
+
+        .estimator-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+        }
+
+        .estimator-subtitle {
+            font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+            color: #a1a1aa;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Mode Switcher Tabs */
+        .mode-switcher-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px auto 40px auto;
+            padding: 0 15px;
+        }
+
+        .mode-switcher {
+            display: inline-flex;
+            background: rgba(15, 15, 20, 0.85);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        .mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.82rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .mode-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .mode-btn.active {
+            background: var(--est-blue);
+            color: #ffffff;
+            box-shadow: 0 4px 20px var(--est-blue-glow);
+        }
+
+        /* Layout Grid */
+        .estimator-grid {
+            display: grid;
+            grid-template-columns: 1.45fr 1fr;
+            gap: 32px;
+            align-items: start;
+            margin-bottom: 80px;
+        }
+
+        @media (max-width: 992px) {
+            .estimator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards Base */
+        .est-card {
+            background: var(--est-card-bg);
+            border: 1px solid var(--est-card-border);
+            border-radius: 20px;
+            padding: 28px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            margin-bottom: 24px;
+            transition: border-color 0.3s ease;
+        }
+
+        .est-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffffff;
+        }
+
+        .card-title i {
+            color: var(--est-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Vehicle Selected Preview */
+        .vehicle-selected-box {
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .vehicle-selected-box:hover {
+            border-color: rgba(39, 92, 234, 0.4);
+            background: rgba(39, 92, 234, 0.04);
+        }
+
+        .vehicle-thumb-wrapper {
+            width: 140px;
+            height: 95px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #111;
+            position: relative;
+        }
+
+        .vehicle-thumb-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .vehicle-selected-box:hover .vehicle-thumb-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .vehicle-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .vehicle-badges-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .mini-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .mini-badge.blue {
+            background: rgba(39, 92, 234, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(39, 92, 234, 0.4);
+        }
+
+        .mini-badge.green {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .vehicle-name-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-meta-tags {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+
+        .vehicle-price-display {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--est-blue);
+        }
+
+        /* Vehicle Selector Dropdown / Search */
+        .vehicle-picker-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .est-select, .est-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.92rem;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .est-select:focus, .est-input:focus {
+            border-color: var(--est-blue);
+            box-shadow: 0 0 0 3px rgba(39, 92, 234, 0.2);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .est-btn-action {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .est-btn-action:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        /* Custom Price Box */
+        .custom-price-container {
+            display: none;
+            background: rgba(39, 92, 234, 0.06);
+            border: 1px dashed rgba(39, 92, 234, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        /* Buying Power Mode Styles */
+        .buying-power-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, rgba(39, 92, 234, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
+            border: 1px solid rgba(39, 92, 234, 0.25);
+            border-radius: 18px;
+            margin-bottom: 24px;
+        }
+
+        .bp-target-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .bp-monthly-value {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 30px var(--est-blue-glow);
+            margin-bottom: 16px;
+        }
+
+        .bp-slider-wrap {
+            max-width: 540px;
+            margin: 0 auto 20px auto;
+        }
+
+        .bp-result-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 22px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: 12px;
+            color: #6ee7b7;
+            font-size: 0.95rem;
+        }
+
+        .bp-result-banner strong {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.25rem;
+            color: #ffffff;
+        }
+
+        /* Compatible Vehicles Grid */
+        .compat-grid-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .compat-cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .compat-cars-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+        .compat-cars-grid::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .compat-car-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .compat-car-card:hover {
+            border-color: var(--est-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background: rgba(39, 92, 234, 0.05);
+        }
+
+        .compat-car-card.selected-in-grid {
+            border-color: var(--est-blue);
+            box-shadow: 0 0 0 2px var(--est-blue);
+        }
+
+        .compat-car-img {
+            width: 100%;
+            height: 125px;
+            object-fit: cover;
+            background: #111;
+        }
+
+        .compat-car-body {
+            padding: 12px;
+        }
+
+        .compat-car-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compat-car-price {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .compat-car-payment-tag {
+            display: inline-block;
+            background: rgba(39, 92, 234, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(39, 92, 234, 0.35);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-weight: 700;
+        }
+
+        /* Payment Method Tabs (Finance vs Cash) */
+        .finance-type-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ft-tab {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ft-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Financial Sliders & Inputs */
+        .param-group {
+            margin-bottom: 24px;
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .param-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-value-pill {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: rgba(39, 92, 234, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(39, 92, 234, 0.3);
+        }
+
+        /* Sliders */
+        input[type="range"].est-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            margin: 12px 0 8px 0;
+            cursor: pointer;
+        }
+
+        input[type="range"].est-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--est-blue);
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 12px var(--est-blue-glow);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"].est-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Preset Pills */
+        .preset-pills {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-pill {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #cbd5e1;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-pill:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .preset-pill.active {
+            background: var(--est-blue);
+            color: #ffffff;
+            border-color: var(--est-blue);
+            box-shadow: 0 2px 12px var(--est-blue-glow);
+        }
+
+        /* Trade-In Toggle Card */
+        .tradein-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .tradein-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .tradein-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tradein-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--est-amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        .switch-toggle input:checked + .switch-slider {
+            background-color: var(--est-amber);
+        }
+
+        .switch-toggle input:checked + .switch-slider:before {
+            transform: translateX(22px);
+        }
+
+        .tradein-form-body {
+            display: none;
+            padding-top: 16px;
+            margin-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tradein-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .tradein-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== STICKY SUMMARY CARD (RIGHT COLUMN) ===== */
+        .sticky-summary-wrap {
+            position: sticky;
+            top: 90px;
+        }
+
+        .summary-card {
+            background: rgba(15, 15, 20, 0.92);
+            border: 1px solid rgba(39, 92, 234, 0.35);
+            border-radius: 22px;
+            padding: 30px 26px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(39, 92, 234, 0.15);
+        }
+
+        .summary-main-display {
+            text-align: center;
+            padding-bottom: 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 22px;
+        }
+
+        .sum-label {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .sum-amount-huge {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(2.5rem, 4.2vw, 3.4rem);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            text-shadow: 0 0 35px var(--est-blue-glow);
+        }
+
+        .sum-period {
+            font-size: 1.1rem;
+            color: var(--est-blue);
+            font-weight: 500;
+        }
+
+        .sum-subtext {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* Proportional Progress Bar */
+        .prop-bar-container {
+            margin-bottom: 24px;
+        }
+
+        .prop-bar {
+            height: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            margin-bottom: 10px;
+        }
+
+        .prop-seg-down {
+            background: var(--est-green);
+            transition: width 0.3s ease;
+        }
+
+        .prop-seg-principal {
+            background: var(--est-blue);
+            transition: width 0.3s ease;
+        }
+
+        .prop-seg-interest {
+            background: var(--est-amber);
+            transition: width 0.3s ease;
+        }
+
+        .prop-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Financial Breakdown Table */
+        .breakdown-table {
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .b-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .b-row:last-child {
+            border-bottom: none;
+        }
+
+        .b-row.highlight {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 0.92rem;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: none;
+        }
+
+        .b-row .val {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .b-row.highlight .val {
+            font-size: 1.05rem;
+            color: var(--est-blue);
+        }
+
+        /* Action Buttons */
+        .btn-whatsapp-quote {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px 20px;
+            background: #25D366;
+            color: #050505;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.86rem;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            margin-bottom: 12px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-whatsapp-quote:hover {
+            background: #22c35e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.45);
+            color: #000;
+        }
+
+        .btn-print-quote {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print-quote:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .legal-notice {
+            margin-top: 18px;
+            font-size: 0.72rem;
+            color: #64748b;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* Cash Mode View */
+        .cash-mode-content {
+            display: none;
+        }
+
+        /* Printable Sheet Hidden by Default */
+        #printableQuoteSheet {
+            display: none;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableQuoteSheet, #printableQuoteSheet * {
+                visibility: visible;
+            }
+            #printableQuoteSheet {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: #ffffff;
+                color: #111111;
+                padding: 40px;
+            }
+            .navbar, .footer, .social-sidebar, .whatsapp-float {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="estimator-page">
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="images/logo-white.png" alt="SemiNuevos Logo" class="main-logo">
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/" class="nav-link">INICIO</a></li>
+                <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
+                <li><a href="calculadora" class="nav-link">CALCULADORA IMPORTACIÓN</a></li>
+                <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
+                <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
+                <li><a href="/#contacto" class="nav-link">CONTACTO</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="catalogo" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.75rem;">
+                    <i class="fas fa-car"></i> Ver Catálogo
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== FLOATING WHATSAPP ===== -->
+    <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20financiamiento"
+        class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="estimator-hero">
+        <div class="container">
+            <div class="estimator-badge">
+                <i class="fas fa-calculator"></i> Herramienta Financiera Seminuevos
+            </div>
+            <h1 class="estimator-title">
+                ESTIMADOR DE CUOTA & <span class="text-accent">PODER DE COMPRA</span>
+            </h1>
+            <p class="estimator-subtitle">
+                Diseñado para darte claridad total en tu inversión automotriz. Calcula tu mensualidad personalizada o dinos tu presupuesto para mostrarte los autos a los que puedes acceder.
+            </p>
+
+            <!-- Mode Switcher Tabs -->
+            <div class="mode-switcher-container">
+                <div class="mode-switcher">
+                    <button class="mode-btn active" id="btnModeVehicle" onclick="switchEstimatorMode('vehicle')">
+                        <i class="fas fa-car-side"></i> 1. Estimar por Vehículo
+                    </button>
+                    <button class="mode-btn" id="btnModeBudget" onclick="switchEstimatorMode('budget')">
+                        <i class="fas fa-wallet"></i> 2. Buscar por Presupuesto Mensual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MAIN ESTIMATOR CONTAINER ===== -->
+    <main class="container">
+        <div class="estimator-grid">
+            
+            <!-- LEFT COLUMN: CONTROLS & SELECTION -->
+            <div class="controls-column">
+                
+                <!-- ============================================== -->
+                <!-- MODE 1 CONTAINER: ESTIMAR POR VEHÍCULO -->
+                <!-- ============================================== -->
+                <div id="modeVehicleSection">
+                    <div class="est-card">
+                        <div class="card-header-flex">
+                            <div class="card-title">
+                                <i class="fas fa-car"></i> Selecciona o Ingresa el Vehículo
+                            </div>
+                            <button class="est-btn-action" id="btnToggleCustomPrice" onclick="toggleCustomPriceMode()">
+                                <i class="fas fa-edit"></i> <span id="customPriceBtnText">Precio Manual</span>
+                            </button>
+                        </div>
+
+                        <!-- Dropdown & Search Picker -->
+                        <div class="vehicle-picker-row" id="vehiclePickerRow">
+                            <select id="vehicleSelect" class="est-select" onchange="onVehicleSelectChange()">
+                                <option value="">Cargando inventario disponible...</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Price Direct Input (Toggled) -->
+                        <div class="custom-price-container" id="customPriceContainer">
+                            <label style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px; display: block;">
+                                Ingrese el monto en dólares ($ USD):
+                            </label>
+                            <input type="number" id="customPriceInput" class="est-input" placeholder="Ej. 28000" min="1000" step="500" oninput="onCustomPriceInput()">
+                        </div>
+
+                        <!-- Selected Vehicle Visual Card -->
+                        <div class="vehicle-selected-box" id="vehiclePreviewBox">
+                            <div class="vehicle-thumb-wrapper">
+                                <img id="selCarImg" src="images/logo-white.png" alt="Vehículo seleccionado">
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-badges-row">
+                                    <span class="mini-badge blue" id="selCarCondition">Seminuevo</span>
+                                    <span class="mini-badge green" id="selCarOrigin">Puerto Libre</span>
+                                </div>
+                                <div class="vehicle-name-title" id="selCarTitle">Honda HR-V Sport 2025</div>
+                                <div class="vehicle-meta-tags" id="selCarMeta">2025 • 17,000 KM • Automático</div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                                    <div class="vehicle-price-display" id="selCarPrice">$36,000</div>
+                                    <a href="#" id="selCarViewDetails" target="_blank" class="mini-badge blue" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; font-size: 0.72rem;">
+                                        <i class="fas fa-external-link-alt"></i> Ver Ficha
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- MODE 2 CONTAINER: BUSCAR POR PRESUPUESTO -->
+                <!-- ============================================== -->
+                <div id="modeBudgetSection" style="display: none;">
+                    
+                    <div class="est-card">
+                        <div class="buying-power-box">
+                            <div class="bp-target-label">¿Cuánto deseas pagar mensualmente?</div>
+                            <div class="bp-monthly-value" id="bpMonthlyDisplay">$ 450 <span style="font-size: 1.5rem; color: var(--est-blue);">/ mes</span></div>
+                            
+                            <div class="bp-slider-wrap">
+                                <input type="range" id="bpSlider" class="est-slider" min="150" max="2000" step="25" value="450" oninput="onBudgetSliderChange(this.value)">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; margin-top: 4px;">
+                                    <span>$150 / mes</span>
+                                    <span>$1,000 / mes</span>
+                                    <span>$2,000 / mes</span>
+                                </div>
+                            </div>
+
+                            <div class="bp-result-banner">
+                                <i class="fas fa-sparkles" style="color: #10B981;"></i>
+                                <span>Poder de Compra Estimado: <strong id="bpCalculatedPrice">$22,500</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Compatible Inventory List -->
+                        <div class="compat-grid-title">
+                            <span><i class="fas fa-check-circle" style="color: #10B981;"></i> Vehículos que califican para tu presupuesto</span>
+                            <span id="compatCount" style="font-size: 0.8rem; color: #94a3b8;">0 autos</span>
+                        </div>
+                        <div class="compat-cars-grid" id="compatCarsContainer">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ============================================== -->
+                <!-- COMMON FINANCIAL PARAMETERS CONTROLS -->
+                <!-- ============================================== -->
+                <div class="est-card">
+                    
+                    <!-- Tabs: Financing vs Cash -->
+                    <div class="finance-type-tabs">
+                        <button class="ft-tab active" id="tabFinancing" onclick="setPaymentType('finance')">
+                            <i class="fas fa-calendar-alt"></i> Financiamiento a Plazos
+                        </button>
+                        <button class="ft-tab" id="tabCash" onclick="setPaymentType('cash')">
+                            <i class="fas fa-money-bill-wave"></i> Pago de Contado
+                        </button>
+                    </div>
+
+                    <!-- FINANCING FIELDS -->
+                    <div id="financeParametersWrap">
+                        
+                        <!-- Down Payment (Pago Inicial) -->
+                        <div class="param-group">
+                            <div class="param-header">
+                                <span class="param-label">
+                                    <i class="fas fa-hand-holding-usd" style="color: #10B981;"></i> Pago Inicial (Down Payment)
+                                </span>
+                                <span class="param-value-pill" id="downPaymentDisplay">$7,200 (20%)</span>
+                            </div>
+
+                            <input type="range" id="downPaymentSlider" class="est-slider" min="10" max="70" step="5" value="20" oninput="onDownPaymentSliderChange(this.value)">
+
+                            <!-- Quick Preset Pills -->
+                            <div class="preset-pills">
+                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(15)">15%</button>
+                                <button type="button" class="preset-pill active" onclick="setDownPaymentPct(20)">20% (Estándar)</button>
+                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(30)">30%</button>
+                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(40)">40%</button>
+                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(50)">50%</button>
+                            </div>
+                        </div>
+
+                        <!-- Trade-In Program (Retoma de auto usado) -->
+                        <div class="tradein-card">
+                            <div class="tradein-header" onclick="toggleTradeIn()">
+                                <div class="tradein-title-group">
+                                    <div class="tradein-icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.92rem; color: #ffffff;">¿Entregas tu auto actual como parte de pago?</div>
+                                        <div style="font-size: 0.78rem; color: #94a3b8;">El valor de retoma se deduce de tu financiamiento.</div>
+                                    </div>
+                                </div>
+                                <label class="switch-toggle" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="tradeInCheck" onchange="toggleTradeIn(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="tradein-form-body" id="tradeInForm">
+                                <div class="tradein-grid">
+                                    <div>
+                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Marca y Modelo:</label>
+                                        <input type="text" id="tradeInModel" class="est-input" placeholder="Ej. Toyota Corolla 2018">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Año:</label>
+                                        <input type="number" id="tradeInYear" class="est-input" placeholder="2018">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Valor Estimado ($):</label>
+                                        <input type="number" id="tradeInValue" class="est-input" placeholder="Ej. 8000" min="0" step="500" value="0" oninput="onTradeInValueChange()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loan Term (Plazo del Crédito) -->
+                        <div class="param-group">
+                            <div class="param-header">
+                                <span class="param-label">
+                                    <i class="fas fa-clock" style="color: var(--est-blue);"></i> Plazo del Financiamiento
+                                </span>
+                                <span class="param-value-pill" id="termDisplay">36 Meses (3 Años)</span>
+                            </div>
+                            
+                            <div class="preset-pills" style="margin-top: 6px;">
+                                <button type="button" class="preset-pill" onclick="setLoanTerm(12)">12 Meses</button>
+                                <button type="button" class="preset-pill" onclick="setLoanTerm(24)">24 Meses</button>
+                                <button type="button" class="preset-pill active" onclick="setLoanTerm(36)">36 Meses</button>
+                                <button type="button" class="preset-pill" onclick="setLoanTerm(48)">48 Meses</button>
+                                <button type="button" class="preset-pill" onclick="setLoanTerm(60)">60 Meses</button>
+                            </div>
+                        </div>
+
+                        <!-- APR / Tasa Anual Estimada -->
+                        <div class="param-group" style="margin-bottom: 0;">
+                            <div class="param-header">
+                                <span class="param-label">
+                                    <i class="fas fa-percentage" style="color: #F59E0B;"></i> Tasa de Interés Anual (APR Estimada)
+                                </span>
+                                <span class="param-value-pill" id="aprDisplay">14% Anual</span>
+                            </div>
+
+                            <input type="range" id="aprSlider" class="est-slider" min="6" max="24" step="1" value="14" oninput="onAprSliderChange(this.value)">
+
+                            <div class="preset-pills">
+                                <button type="button" class="preset-pill" onclick="setApr(10)">10% (Preferencial)</button>
+                                <button type="button" class="preset-pill active" onclick="setApr(14)">14% (Estándar)</button>
+                                <button type="button" class="preset-pill" onclick="setApr(18)">18% (Flexible)</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CASH FIELDS (Toggled when Contado active) -->
+                    <div id="cashParametersWrap" class="cash-mode-content">
+                        <div style="padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; margin-bottom: 20px;">
+                            <div style="font-weight: 700; color: #6ee7b7; margin-bottom: 6px;">
+                                <i class="fas fa-check-circle"></i> Modalidad Pago de Contado (Cash)
+                            </div>
+                            <div style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">
+                                Disfruta de trámites expeditos con entrega inmediata o importación prioritaria. Puedes además aplicar tu vehículo actual como parte de pago directa.
+                            </div>
+                        </div>
+
+                        <!-- Trade in for Cash -->
+                        <div class="tradein-card">
+                            <div class="tradein-header" onclick="toggleTradeIn()">
+                                <div class="tradein-title-group">
+                                    <div class="tradein-icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.92rem; color: #ffffff;">¿Entregas tu auto actual a cambio?</div>
+                                        <div style="font-size: 0.78rem; color: #94a3b8;">Descontamos el valor de retoma del precio de contado.</div>
+                                    </div>
+                                </div>
+                                <label class="switch-toggle" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="tradeInCheckCash" onchange="toggleTradeIn(this.checked)">
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: STICKY RESULTS SUMMARY -->
+            <div class="summary-column">
+                <div class="sticky-summary-wrap">
+                    <div class="summary-card">
+                        
+                        <!-- Live Result Display -->
+                        <div class="summary-main-display">
+                            <div class="sum-label" id="mainResultTitle">Cuota Mensual Estimada</div>
+                            <div class="sum-amount-huge" id="mainPaymentDisplay">
+                                $ 0 <span class="sum-period">/ mes</span>
+                            </div>
+                            <div class="sum-subtext" id="mainPaymentSubtext">
+                                Basado en 36 cuotas con 20% de inicial
+                            </div>
+                        </div>
+
+                        <!-- Visual Proportional Progress Bar (Financing Only) -->
+                        <div class="prop-bar-container" id="propBarWrap">
+                            <div class="prop-bar">
+                                <div class="prop-seg-down" id="propSegDown" style="width: 20%;" title="Inicial"></div>
+                                <div class="prop-seg-principal" id="propSegPrincipal" style="width: 60%;" title="Capital Financiado"></div>
+                                <div class="prop-seg-interest" id="propSegInterest" style="width: 20%;" title="Intereses"></div>
+                            </div>
+                            <div class="prop-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--est-green);"></div>
+                                    <span>Inicial: <b id="legDown">$0</b></span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--est-blue);"></div>
+                                    <span>Capital: <b id="legPrincipal">$0</b></span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot" style="background: var(--est-amber);"></div>
+                                    <span>Intereses: <b id="legInterest">$0</b></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Financial Breakdown -->
+                        <div class="breakdown-table">
+                            <div class="b-row">
+                                <span>Precio del Vehículo</span>
+                                <span class="val" id="rowCarPrice">$0</span>
+                            </div>
+                            <div class="b-row" id="rowTradeInWrap" style="display: none; color: #f59e0b;">
+                                <span>Retoma de Auto (Trade-In)</span>
+                                <span class="val" id="rowTradeInValue">-$0</span>
+                            </div>
+                            <div class="b-row" id="rowDownPaymentWrap">
+                                <span>Pago Inicial en Efectivo</span>
+                                <span class="val" id="rowDownPayment">-$0</span>
+                            </div>
+                            <div class="b-row" id="rowPrincipalWrap">
+                                <span>Capital Neto Financiado</span>
+                                <span class="val" id="rowPrincipal">$0</span>
+                            </div>
+                            <div class="b-row" id="rowInterestWrap">
+                                <span>Intereses Proyectados (<span id="rowAprVal">14%</span>)</span>
+                                <span class="val" id="rowInterest">$0</span>
+                            </div>
+                            <div class="b-row highlight">
+                                <span id="rowTotalLabel">Total Inversión Proyectada</span>
+                                <span class="val" id="rowTotalAmount">$0</span>
+                            </div>
+                        </div>
+
+                        <!-- Conversion CTAs -->
+                        <a href="#" class="btn-whatsapp-quote" id="btnWhatsappQuote" target="_blank">
+                            <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Solicitar Pre-Aprobación
+                        </a>
+
+                        <button class="btn-print-quote" id="btnPrintQuote" onclick="printQuoteSheet()">
+                            <i class="fas fa-file-pdf"></i> Descargar Cotización Formal
+                        </button>
+
+                        <div class="legal-notice">
+                            <i class="fas fa-info-circle"></i> Los valores mostrados son proyecciones referenciales sujetas a disponibilidad, verificación crediticia y aprobación comercial de Seminuevos Agency.
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== PRINTABLE FORMAL QUOTATION SHEET (Hidden in normal screen) ===== -->
+    <div id="printableQuoteSheet">
+        <div style="border-bottom: 2px solid #275CEA; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h2 style="font-size: 24px; color: #111; margin: 0; font-family: sans-serif; font-weight: 800;">SEMINUEVOS AGENCY</h2>
+                <p style="margin: 4px 0 0 0; color: #555; font-size: 13px;">Concesionario y Soluciones Automotrices • Margarita, Venezuela</p>
+                <p style="margin: 2px 0 0 0; color: #777; font-size: 12px;">WhatsApp: +58 424-870-0438 • info@seminuevoautos.com</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 14px; font-weight: bold; color: #275CEA;">COTIZACIÓN DE ESTIMADOR</div>
+                <div style="font-size: 12px; color: #555; margin-top: 4px;" id="printQuoteDate">Fecha: --/--/----</div>
+                <div style="font-size: 12px; color: #777;" id="printQuoteNumber">Cotización #SN-EST-0000</div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #1e293b;" id="printVehicleName">Vehículo Seleccionado</h3>
+            <p style="margin: 0; font-size: 14px; color: #475569;" id="printVehicleSpecs">Año: ---- | Precio de Lista: $0</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 14px;">
+            <thead>
+                <tr style="background: #275CEA; color: #fff;">
+                    <th style="text-align: left; padding: 10px 14px;">Concepto Financiero</th>
+                    <th style="text-align: right; padding: 10px 14px;">Monto / Término</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Precio de Lista del Vehículo</td>
+                    <td style="padding: 10px 14px; text-align: right; font-weight: bold;" id="printPrice">$0</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Retoma de Vehículo Usado (Trade-In)</td>
+                    <td style="padding: 10px 14px; text-align: right; color: #b45309;" id="printTradeIn">-$0</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Pago Inicial Aportado</td>
+                    <td style="padding: 10px 14px; text-align: right; color: #047857;" id="printDownPayment">-$0</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Monto Neto Financiado (Capital)</td>
+                    <td style="padding: 10px 14px; text-align: right; font-weight: bold;" id="printPrincipal">$0</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Plazo y Tasa Estimada</td>
+                    <td style="padding: 10px 14px; text-align: right;" id="printTermApr">36 Meses @ 14% APR</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px 14px; color: #334155;">Intereses Proyectados Estimados</td>
+                    <td style="padding: 10px 14px; text-align: right;" id="printInterest">$0</td>
+                </tr>
+                <tr style="background: #f1f5f9; font-weight: bold; font-size: 16px;">
+                    <td style="padding: 14px; color: #0f172a;">CUOTA MENSUAL ESTIMADA</td>
+                    <td style="padding: 14px; text-align: right; color: #275CEA;" id="printMonthly">$0 / mes</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="font-size: 11px; color: #64748b; line-height: 1.6; border-top: 1px solid #cbd5e1; padding-top: 15px;">
+            <strong>Condiciones y Aviso Legal:</strong> Este documento es una simulación financiera estimativa y referencial generada mediante la plataforma de Seminuevos Agency. No representa una oferta vinculante ni un compromiso de crédito definitivo. El monto final, cuotas y aprobación están condicionados a la verificación de antecedentes, capacidad crediticia y políticas vigentes al momento de la firma formal.
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo">
+                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" style="height: 70px; width: auto;">
+                    </a>
+                    <p class="footer-desc">Semi Nuevo Autos: Tu concesionario de confianza en Margarita y toda Venezuela. Planes transparentes y certificación garantizada.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Navegación</h4>
+                    <a href="/">Inicio</a>
+                    <a href="catalogo">Catálogo Completo</a>
+                    <a href="calculadora">Calculadora Importación</a>
+                    <a href="servicios">Beneficios</a>
+                    <a href="nosotros">Nosotros</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto Asesor</h4>
+                    <a href="https://wa.me/584248700438" target="_blank"><i class="fab fa-whatsapp"></i> +58 424-870-0438</a>
+                    <p><i class="fas fa-map-marker-alt"></i> Porlamar, Isla de Margarita</p>
+                    <p><i class="fas fa-clock"></i> Lunes a Sábado: 9AM - 7PM</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Semi Nuevo Autos. Estimador Financiero Toyota-Style.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Supabase and Data dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="data.js"></script>
+
+    <!-- ===== ESTIMATOR LOGIC SCRIPT ===== -->
+    <script>
+        // Global state
+        let allVehicles = [];
+        let currentMode = 'vehicle'; // 'vehicle' | 'budget'
+        let currentPaymentType = 'finance'; // 'finance' | 'cash'
+        let isCustomPrice = false;
+
+        let selectedVehicle = null;
+        let carPrice = 36000;
+        let downPaymentPct = 20;
+        let loanTermMonths = 36;
+        let aprRate = 14;
+        let tradeInActive = false;
+        let tradeInValue = 0;
+        let targetMonthlyBudget = 450;
+
+        // --- INIT & INVENTORY LOADING ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const navToggle = document.getElementById('navToggle');
+            const navMenu = document.getElementById('navMenu');
+            navToggle?.addEventListener('click', () => {
+                navToggle.classList.toggle('active');
+                navMenu?.classList.toggle('active');
+            });
+
+            await loadInventory();
+            initEstimator();
+        });
+
+        async function loadInventory() {
+            let list = [];
+            try {
+                // Try Supabase first
+                if (typeof supabaseClient !== 'undefined') {
+                    const { data, error } = await supabaseClient
+                        .from('vehicles')
+                        .select('*')
+                        .eq('status', 'active');
+                    if (!error && data && data.length > 0) {
+                        list = data.map(v => ({
+                            id: v.id,
+                            title: v.title,
+                            price: parseNumberPrice(v.price),
+                            rawPrice: v.price,
+                            year: v.year || '',
+                            km: v.km || v.mileage || '',
+                            engine: v.engine || '',
+                            transmission: v.transmission || '',
+                            condition: v.condition || 'seminuevo',
+                            origin: v.origin || 'nacional',
+                            badge: v.badge || '',
+                            images: Array.isArray(v.images) ? v.images : (v.images ? [v.images] : ['images/logo-white.png'])
+                        }));
+                    }
+                }
+            } catch (err) {
+                console.warn('Supabase fetch failed, falling back to data.js:', err);
+            }
+
+            // Fallback to data.js
+            if (list.length === 0) {
+                const staticSeminuevos = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
+                const static0km = (typeof vehicles0km !== 'undefined') ? vehicles0km : [];
+                const combined = [...staticSeminuevos, ...static0km];
+                list = combined.map(v => ({
+                    id: v.id,
+                    title: v.title,
+                    price: parseNumberPrice(v.price),
+                    rawPrice: v.price,
+                    year: v.year || '',
+                    km: v.km || '',
+                    engine: v.engine || '',
+                    transmission: v.transmission || '',
+                    condition: v.condition || 'seminuevo',
+                    origin: v.origin || 'puerto_libre',
+                    badge: v.badge || '',
+                    images: v.images || ['images/logo-white.png']
+                }));
+            }
+
+            // Filter out vehicles without valid numerical price
+            allVehicles = list.filter(v => v.price > 0);
+
+            populateVehicleSelect();
+            updateBudgetCompatibleCars();
+        }
+
+        function parseNumberPrice(str) {
+            if (typeof str === 'number') return str;
+            if (!str) return 0;
+            const cleaned = String(str).replace(/[^0-9]/g, '');
+            return parseInt(cleaned, 10) || 0;
+        }
+
+        function populateVehicleSelect() {
+            const sel = document.getElementById('vehicleSelect');
+            if (!sel) return;
+            sel.innerHTML = '';
+
+            if (allVehicles.length === 0) {
+                sel.innerHTML = '<option value="">No hay vehículos disponibles</option>';
+                return;
+            }
+
+            allVehicles.forEach((car, index) => {
+                const opt = document.createElement('option');
+                opt.value = car.id;
+                opt.textContent = `${car.title} - $${car.price.toLocaleString()}`;
+                sel.appendChild(opt);
+            });
+
+            // Select first by default
+            selectVehicleById(allVehicles[0].id);
+        }
+
+        function selectVehicleById(id) {
+            const car = allVehicles.find(v => String(v.id) === String(id));
+            if (!car) return;
+
+            selectedVehicle = car;
+            carPrice = car.price;
+            isCustomPrice = false;
+
+            document.getElementById('customPriceContainer').style.display = 'none';
+            document.getElementById('vehiclePreviewBox').style.display = 'flex';
+            document.getElementById('vehicleSelect').value = car.id;
+            document.getElementById('customPriceBtnText').textContent = 'Precio Manual';
+
+            // Update UI card
+            document.getElementById('selCarTitle').textContent = car.title;
+            document.getElementById('selCarPrice').textContent = `$${car.price.toLocaleString()}`;
+            document.getElementById('selCarMeta').textContent = `${car.year || '2024'} • ${car.km || 'Bajo KM'} • ${car.transmission || 'Automático'}`;
+            document.getElementById('selCarCondition').textContent = (car.condition === '0km') ? '0KM' : 'Seminuevo';
+            document.getElementById('selCarOrigin').textContent = (car.origin === 'nacional') ? 'Nacional' : 'Puerto Libre';
+            
+            const firstImg = (car.images && car.images.length > 0) ? car.images[0] : 'images/logo-white.png';
+            document.getElementById('selCarImg').src = firstImg;
+
+            const viewDetailsLink = document.getElementById('selCarViewDetails');
+            if (viewDetailsLink) {
+                viewDetailsLink.href = `vehiculo.html?id=${car.id}`;
+                viewDetailsLink.style.display = 'inline-flex';
+            }
+
+            recalculate();
+        }
+
+        function onVehicleSelectChange() {
+            const sel = document.getElementById('vehicleSelect');
+            selectVehicleById(sel.value);
+        }
+
+        // --- MODE SWITCHER ---
+        function switchEstimatorMode(mode) {
+            currentMode = mode;
+            const btnV = document.getElementById('btnModeVehicle');
+            const btnB = document.getElementById('btnModeBudget');
+            const secV = document.getElementById('modeVehicleSection');
+            const secB = document.getElementById('modeBudgetSection');
+
+            if (mode === 'vehicle') {
+                btnV.classList.add('active');
+                btnB.classList.remove('active');
+                secV.style.display = 'block';
+                secB.style.display = 'none';
+            } else {
+                btnB.classList.add('active');
+                btnV.classList.remove('active');
+                secB.style.display = 'block';
+                secV.style.display = 'none';
+                updateBudgetCompatibleCars();
+            }
+            recalculate();
+        }
+
+        // --- CUSTOM PRICE TOGGLE ---
+        function toggleCustomPriceMode() {
+            isCustomPrice = !isCustomPrice;
+            const box = document.getElementById('customPriceContainer');
+            const btnText = document.getElementById('customPriceBtnText');
+            const preview = document.getElementById('vehiclePreviewBox');
+            const viewDetailsLink = document.getElementById('selCarViewDetails');
+
+            if (isCustomPrice) {
+                box.style.display = 'block';
+                btnText.textContent = 'Ver Lista de Autos';
+                if (viewDetailsLink) viewDetailsLink.style.display = 'none';
+                const input = document.getElementById('customPriceInput');
+                input.value = carPrice;
+                input.focus();
+            } else {
+                box.style.display = 'none';
+                btnText.textContent = 'Precio Manual';
+                if (viewDetailsLink) viewDetailsLink.style.display = 'inline-flex';
+                if (selectedVehicle) {
+                    carPrice = selectedVehicle.price;
+                }
+            }
+            recalculate();
+        }
+
+        function onCustomPriceInput() {
+            const val = parseFloat(document.getElementById('customPriceInput').value) || 0;
+            carPrice = Math.max(0, val);
+            recalculate();
+        }
+
+        // --- PAYMENT TYPE (FINANCE VS CASH) ---
+        function setPaymentType(type) {
+            currentPaymentType = type;
+            const tabF = document.getElementById('tabFinancing');
+            const tabC = document.getElementById('tabCash');
+            const wrapF = document.getElementById('financeParametersWrap');
+            const wrapC = document.getElementById('cashParametersWrap');
+
+            if (type === 'finance') {
+                tabF.classList.add('active');
+                tabC.classList.remove('active');
+                wrapF.style.display = 'block';
+                wrapC.style.display = 'none';
+                document.getElementById('propBarWrap').style.display = 'block';
+                document.getElementById('rowPrincipalWrap').style.display = 'flex';
+                document.getElementById('rowInterestWrap').style.display = 'flex';
+                document.getElementById('rowDownPaymentWrap').style.display = 'flex';
+                document.getElementById('mainResultTitle').textContent = 'Cuota Mensual Estimada';
+                document.getElementById('rowTotalLabel').textContent = 'Total Inversión Proyectada';
+            } else {
+                tabC.classList.add('active');
+                tabF.classList.remove('active');
+                wrapF.style.display = 'none';
+                wrapC.style.display = 'block';
+                document.getElementById('propBarWrap').style.display = 'none';
+                document.getElementById('rowPrincipalWrap').style.display = 'none';
+                document.getElementById('rowInterestWrap').style.display = 'none';
+                document.getElementById('rowDownPaymentWrap').style.display = 'none';
+                document.getElementById('mainResultTitle').textContent = 'Pago de Contado Neto';
+                document.getElementById('rowTotalLabel').textContent = 'Total a Desembolsar';
+            }
+            recalculate();
+        }
+
+        // --- CONTROLS EVENT HANDLERS ---
+        function setDownPaymentPct(pct) {
+            downPaymentPct = pct;
+            document.getElementById('downPaymentSlider').value = pct;
+            highlightPreset('downPaymentSlider', pct);
+            recalculate();
+        }
+
+        function onDownPaymentSliderChange(val) {
+            downPaymentPct = parseInt(val, 10);
+            highlightPreset('downPaymentSlider', downPaymentPct);
+            recalculate();
+        }
+
+        function setLoanTerm(months) {
+            loanTermMonths = months;
+            highlightPillByText(months + ' Meses');
+            recalculate();
+        }
+
+        function setApr(rate) {
+            aprRate = rate;
+            document.getElementById('aprSlider').value = rate;
+            highlightPillByText(rate + '%');
+            recalculate();
+        }
+
+        function onAprSliderChange(val) {
+            aprRate = parseFloat(val);
+            recalculate();
+        }
+
+        function toggleTradeIn(forceState) {
+            if (typeof forceState === 'boolean') {
+                tradeInActive = forceState;
+            } else {
+                tradeInActive = !tradeInActive;
+            }
+            document.getElementById('tradeInCheck').checked = tradeInActive;
+            const chkCash = document.getElementById('tradeInCheckCash');
+            if (chkCash) chkCash.checked = tradeInActive;
+
+            document.getElementById('tradeInForm').style.display = tradeInActive ? 'block' : 'none';
+            if (!tradeInActive) {
+                tradeInValue = 0;
+            } else {
+                tradeInValue = parseFloat(document.getElementById('tradeInValue').value) || 0;
+            }
+            recalculate();
+        }
+
+        function onTradeInValueChange() {
+            tradeInValue = parseFloat(document.getElementById('tradeInValue').value) || 0;
+            recalculate();
+        }
+
+        function onBudgetSliderChange(val) {
+            targetMonthlyBudget = parseInt(val, 10);
+            document.getElementById('bpMonthlyDisplay').innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span style="font-size: 1.5rem; color: var(--est-blue);">/ mes</span>`;
+            updateBudgetCompatibleCars();
+        }
+
+        function highlightPreset(group, val) {
+            const pills = document.querySelectorAll('.preset-pills button');
+            pills.forEach(p => {
+                if (p.textContent.startsWith(val + '%')) {
+                    p.classList.add('active');
+                } else if (p.closest('.param-group') && p.closest('.param-group').contains(document.getElementById(group))) {
+                    p.classList.remove('active');
+                }
+            });
+        }
+
+        function highlightPillByText(textSnippet) {
+            const pills = document.querySelectorAll('.preset-pill');
+            pills.forEach(p => {
+                if (p.textContent.includes(textSnippet)) {
+                    p.classList.add('active');
+                } else {
+                    // Only deactivate siblings
+                    const parent = p.parentElement;
+                    if (parent && parent.contains(p) && p.textContent.includes(textSnippet.includes('Meses') ? 'Meses' : '%')) {
+                        p.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        // --- MATHEMATICAL ENGINE ---
+        // Formula: French amortization
+        function calculateAmortization(principal, annualRatePct, months) {
+            if (principal <= 0 || months <= 0) return { monthly: 0, totalInterest: 0, totalPaid: 0 };
+            const r = (annualRatePct / 100) / 12;
+            if (r === 0) {
+                const m = principal / months;
+                return { monthly: m, totalInterest: 0, totalPaid: principal };
+            }
+            const factor = Math.pow(1 + r, months);
+            const monthly = principal * (r * factor) / (factor - 1);
+            const totalPaid = monthly * months;
+            const totalInterest = Math.max(0, totalPaid - principal);
+            return { monthly, totalInterest, totalPaid };
+        }
+
+        // Reverse formula: Calculate max principal from target monthly payment
+        function calculatePrincipalFromMonthly(monthly, annualRatePct, months) {
+            if (monthly <= 0 || months <= 0) return 0;
+            const r = (annualRatePct / 100) / 12;
+            if (r === 0) return monthly * months;
+            const factor = Math.pow(1 + r, months);
+            return monthly * (factor - 1) / (r * factor);
+        }
+
+        // --- MAIN RECALCULATE ---
+        function recalculate() {
+            // Price & deductions
+            const effectivePrice = Math.max(0, carPrice);
+            const effectiveTradeIn = tradeInActive ? Math.min(effectivePrice, Math.max(0, tradeInValue)) : 0;
+            const priceAfterTradeIn = Math.max(0, effectivePrice - effectiveTradeIn);
+
+            const downPaymentAmount = Math.round(priceAfterTradeIn * (downPaymentPct / 100));
+            const principal = Math.max(0, priceAfterTradeIn - downPaymentAmount);
+
+            // Calculation
+            const amort = calculateAmortization(principal, aprRate, loanTermMonths);
+
+            // UI Updates - Sliders and labels
+            document.getElementById('downPaymentDisplay').textContent = `$${downPaymentAmount.toLocaleString()} (${downPaymentPct}%)`;
+            document.getElementById('termDisplay').textContent = `${loanTermMonths} Meses (${(loanTermMonths / 12).toFixed(1).replace('.0', '')} Años)`;
+            document.getElementById('aprDisplay').textContent = `${aprRate}% Anual`;
+
+            // Breakdown table rows
+            document.getElementById('rowCarPrice').textContent = `$${effectivePrice.toLocaleString()}`;
+            
+            const trRow = document.getElementById('rowTradeInWrap');
+            if (tradeInActive && effectiveTradeIn > 0) {
+                trRow.style.display = 'flex';
+                document.getElementById('rowTradeInValue').textContent = `-$${effectiveTradeIn.toLocaleString()}`;
+            } else {
+                trRow.style.display = 'none';
+            }
+
+            document.getElementById('rowDownPayment').textContent = `-$${downPaymentAmount.toLocaleString()}`;
+            document.getElementById('rowPrincipal').textContent = `$${Math.round(principal).toLocaleString()}`;
+            document.getElementById('rowAprVal').textContent = `${aprRate}%`;
+            document.getElementById('rowInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
+
+            if (currentPaymentType === 'finance') {
+                // Monthly big display
+                document.getElementById('mainPaymentDisplay').innerHTML = `$ ${Math.round(amort.monthly).toLocaleString()} <span class="sum-period">/ mes</span>`;
+                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas al ${aprRate}% APR`;
+
+                const totalInvestment = downPaymentAmount + effectiveTradeIn + amort.totalPaid;
+                document.getElementById('rowTotalAmount').textContent = `$${Math.round(totalInvestment).toLocaleString()}`;
+
+                // Proportional bar
+                const totalBar = downPaymentAmount + principal + amort.totalInterest;
+                if (totalBar > 0) {
+                    const pctDown = (downPaymentAmount / totalBar) * 100;
+                    const pctPrinc = (principal / totalBar) * 100;
+                    const pctInt = (amort.totalInterest / totalBar) * 100;
+
+                    document.getElementById('propSegDown').style.width = pctDown + '%';
+                    document.getElementById('propSegPrincipal').style.width = pctPrinc + '%';
+                    document.getElementById('propSegInterest').style.width = pctInt + '%';
+
+                    document.getElementById('legDown').textContent = `$${downPaymentAmount.toLocaleString()}`;
+                    document.getElementById('legPrincipal').textContent = `$${Math.round(principal).toLocaleString()}`;
+                    document.getElementById('legInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
+                }
+            } else {
+                // Cash mode
+                const cashTotal = effectivePrice - effectiveTradeIn;
+                document.getElementById('mainPaymentDisplay').innerHTML = `$ ${cashTotal.toLocaleString()}`;
+                document.getElementById('mainPaymentSubtext').textContent = `Monto final neto para entrega o importación directa`;
+                document.getElementById('rowTotalAmount').textContent = `$${cashTotal.toLocaleString()}`;
+            }
+
+            // WhatsApp link generation
+            buildWhatsAppLink(effectivePrice, effectiveTradeIn, downPaymentAmount, principal, amort);
+        }
+
+        // --- BUYING POWER CALCULATIONS & COMPATIBLE CARS ---
+        function updateBudgetCompatibleCars() {
+            // Reverse principal
+            const maxPrincipal = calculatePrincipalFromMonthly(targetMonthlyBudget, aprRate, loanTermMonths);
+            // Assuming down payment is downPaymentPct
+            const maxPriceAfterTrade = maxPrincipal / (1 - (downPaymentPct / 100));
+            const maxTotalCarPrice = Math.round(maxPriceAfterTrade + (tradeInActive ? tradeInValue : 0));
+
+            const bpPriceEl = document.getElementById('bpCalculatedPrice');
+            if (bpPriceEl) {
+                bpPriceEl.textContent = `$${maxTotalCarPrice.toLocaleString()}`;
+            }
+
+            // Filter vehicles
+            const container = document.getElementById('compatCarsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const qualifying = allVehicles.filter(car => car.price <= (maxTotalCarPrice * 1.05)); // 5% flexibility
+
+            document.getElementById('compatCount').textContent = `${qualifying.length} vehículos`;
+
+            if (qualifying.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; padding: 30px; text-align: center; color: #94a3b8; background: rgba(255,255,255,0.02); border-radius: 12px;">
+                        <i class="fas fa-search" style="font-size: 1.8rem; margin-bottom: 10px; color: #64748b;"></i>
+                        <p>No encontramos vehículos con una cuota tan baja. Prueba aumentando el presupuesto a partir de $250/mes o ajustando el inicial.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            qualifying.forEach(car => {
+                // Calculate its exact monthly quote
+                const pAfterTr = Math.max(0, car.price - (tradeInActive ? tradeInValue : 0));
+                const dwn = pAfterTr * (downPaymentPct / 100);
+                const princ = Math.max(0, pAfterTr - dwn);
+                const am = calculateAmortization(princ, aprRate, loanTermMonths);
+                const mQuote = Math.round(am.monthly);
+
+                const card = document.createElement('div');
+                card.className = `compat-car-card ${selectedVehicle && selectedVehicle.id === car.id ? 'selected-in-grid' : ''}`;
+                const thumb = (car.images && car.images.length > 0) ? car.images[0] : 'images/logo-white.png';
+
+                card.innerHTML = `
+                    <img src="${thumb}" alt="${car.title}" class="compat-car-img" loading="lazy">
+                    <div class="compat-car-body">
+                        <div class="compat-car-title">${car.title}</div>
+                        <div class="compat-car-price">Precio: $${car.price.toLocaleString()}</div>
+                        <div class="compat-car-payment-tag">~$${mQuote} / mes</div>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    selectVehicleById(car.id);
+                    switchEstimatorMode('vehicle');
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        // --- WHATSAPP CONVERSION CTA GENERATOR ---
+        function buildWhatsAppLink(carPrice, tradeIn, downPayment, principal, amort) {
+            const btn = document.getElementById('btnWhatsappQuote');
+            if (!btn) return;
+
+            const carName = isCustomPrice 
+                ? `Vehículo Personalizado ($${carPrice.toLocaleString()})`
+                : (selectedVehicle ? selectedVehicle.title : `Vehículo de $${carPrice.toLocaleString()}`);
+
+            let text = `¡Hola Seminuevos! Estuve usando su Estimador de Pago y me interesa evaluar este plan:\n\n`;
+            text += `🚗 *Vehículo:* ${carName}\n`;
+            text += `💵 *Precio del auto:* $${carPrice.toLocaleString()}\n`;
+
+            if (tradeIn > 0) {
+                const model = document.getElementById('tradeInModel').value || 'Auto actual';
+                text += `🔄 *Retoma estimada (${model}):* -$${tradeIn.toLocaleString()}\n`;
+            }
+
+            if (currentPaymentType === 'finance') {
+                text += `💰 *Pago Inicial propuesto:* $${downPayment.toLocaleString()} (${downPaymentPct}%)\n`;
+                text += `📅 *Plazo deseado:* ${loanTermMonths} Meses\n`;
+                text += `📊 *Tasa APR ref:* ${aprRate}%\n`;
+                text += `✨ *Cuota mensual estimada:* $${Math.round(amort.monthly).toLocaleString()}/mes\n\n`;
+                text += `Quisiera saber los requisitos de financiamiento y verificar la disponibilidad. ¡Muchas gracias!`;
+            } else {
+                const totalCash = carPrice - tradeIn;
+                text += `🤝 *Modalidad:* Pago de Contado (Cash)\n`;
+                text += `🏷️ *Monto neto final:* $${totalCash.toLocaleString()}\n\n`;
+                text += `Quisiera consultar el procedimiento de compra inmediata y formas de pago.`;
+            }
+
+            const url = `https://wa.me/584248700438?text=${encodeURIComponent(text)}`;
+            btn.href = url;
+        }
+
+        // --- PRINTABLE QUOTE GENERATOR ---
+        function printQuoteSheet() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const quoteNum = `SN-EST-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            document.getElementById('printQuoteDate').textContent = `Fecha: ${dateStr}`;
+            document.getElementById('printQuoteNumber').textContent = `Cotización #${quoteNum}`;
+
+            const carName = isCustomPrice 
+                ? `Presupuesto Personalizado de Compra`
+                : (selectedVehicle ? selectedVehicle.title : 'Vehículo Seleccionado');
+
+            document.getElementById('printVehicleName').textContent = carName;
+            document.getElementById('printVehicleSpecs').textContent = `Precio de Lista: $${carPrice.toLocaleString()} | Condición: ${(selectedVehicle && selectedVehicle.condition === '0km') ? '0KM' : 'Seminuevo'} | Vigencia: 7 días`;
+
+            document.getElementById('printPrice').textContent = `$${carPrice.toLocaleString()}`;
+            document.getElementById('printTradeIn').textContent = tradeInActive ? `-$${tradeInValue.toLocaleString()}` : '$0.00';
+            
+            const pAfterTrade = Math.max(0, carPrice - (tradeInActive ? tradeInValue : 0));
+            const dwn = Math.round(pAfterTrade * (downPaymentPct / 100));
+            const princ = Math.max(0, pAfterTrade - dwn);
+            const amort = calculateAmortization(princ, aprRate, loanTermMonths);
+
+            document.getElementById('printDownPayment').textContent = `-$${dwn.toLocaleString()} (${downPaymentPct}%)`;
+            document.getElementById('printPrincipal').textContent = `$${Math.round(princ).toLocaleString()}`;
+            document.getElementById('printTermApr').textContent = `${loanTermMonths} Meses @ ${aprRate}% APR`;
+            document.getElementById('printInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
+
+            if (currentPaymentType === 'finance') {
+                document.getElementById('printMonthly').textContent = `$${Math.round(amort.monthly).toLocaleString()} / mes`;
+            } else {
+                document.getElementById('printMonthly').textContent = `$${(carPrice - (tradeInActive ? tradeInValue : 0)).toLocaleString()} (Contado)`;
+            }
+
+            window.print();
+        }
+
+        function initEstimator() {
+            recalculate();
+        }
+    </script>
+</body>
+</html>
