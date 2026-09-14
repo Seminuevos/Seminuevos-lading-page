@@ -2110,6 +2110,147 @@
             box-shadow: 0 6px 20px rgba(39, 92, 234, 0.4);
         }
 
+        /* ===== HERO SLIDER LIVE EDITOR & PREVIEW ===== */
+        .hero-slide-editor-card {
+            background: rgba(13, 20, 36, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(14px);
+            transition: border-color 0.2s ease;
+        }
+        .hero-slide-editor-card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .hero-editor-layout {
+            display: grid;
+            grid-template-columns: minmax(380px, 480px) 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+        @media (max-width: 1100px) {
+            .hero-editor-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        .hero-control-group {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .hero-control-header {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .hero-seg-btn-group {
+            display: flex;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 4px;
+        }
+        .hero-seg-btn {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .hero-seg-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .hero-seg-btn.active {
+            background: var(--accent);
+            color: #000000;
+            box-shadow: 0 0 10px rgba(212, 160, 23, 0.4);
+        }
+        .hero-preview-frame {
+            position: sticky;
+            top: 20px;
+            background: #080c14;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+        }
+        .hero-preview-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(13, 20, 36, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .hero-preview-canvas {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            background-color: #080c14;
+            background-size: cover;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .hero-preview-canvas.mobile {
+            width: 340px;
+            height: 520px;
+            margin: 15px auto;
+            border-radius: 24px;
+            border: 4px solid #1e293b;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+        }
+        .hero-preview-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            transition: background 0.2s ease;
+        }
+        .hero-preview-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 24px 32px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        .hero-glass-card {
+            background: rgba(10, 10, 10, 0.65);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 160, 23, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 360px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.2s ease;
+        }
+
         /* ESTILOS DEL PDF EXPORTABLE */
         #cpPdfTemplateWrapper,
         #cronPdfWrapper,
@@ -3585,16 +3726,25 @@
                                 página principal.
                             </p>
                         </div>
+                    </div>
 
-                        <div class="settings-section">
-                            <h3><i class="fas fa-images"></i> Gestión de Hero (Slider Principal)</h3>
-                            <div id="heroSlidesContainer" class="hero-slides-admin">
-                                <!-- Slides se cargarán dinámicamente -->
+                    <!-- GESTIÓN DE HERO CON EDITOR Y VISTA PREVIA EN VIVO -->
+                    <div class="settings-section" style="margin-top: 24px; padding: 24px; background: rgba(13, 20, 36, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; flex-wrap: wrap; gap: 12px;">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
+                                    <i class="fas fa-images" style="color: var(--accent);"></i> Gestión de Hero (Slider Principal)
+                                </h3>
+                                <p style="font-size: 0.78rem; color: var(--text3); margin: 6px 0 0 0;">
+                                    Edita los textos, precios, posición de la foto y visualiza en tiempo real cómo se verá en la página web.
+                                </p>
                             </div>
-                            <button class="btn btn-ghost btn-sm" id="addHeroSlideBtn" type="button"
-                                style="margin-top:10px;">
-                                <i class="fas fa-plus"></i> Agregar Slide
+                            <button class="btn btn-primary" id="addHeroSlideBtn" type="button" style="display: flex; align-items: center; gap: 8px; padding: 9px 18px; font-weight: 700; font-size: 0.85rem;">
+                                <i class="fas fa-plus"></i> Agregar Nuevo Slide
                             </button>
+                        </div>
+                        <div id="heroSlidesContainer" class="hero-slides-admin">
+                            <!-- Slides con controles y Vista Previa en Vivo se cargarán aquí -->
                         </div>
                     </div>
                     <button class="btn btn-primary" id="saveSettingsBtn" style="margin-top:20px;"><i
@@ -5974,85 +6124,502 @@
         function renderHeroSlides() {
             const container = document.getElementById('heroSlidesContainer');
             if (!container) return;
+            if (!Array.isArray(heroSlides) || heroSlides.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text3);"><i class="fas fa-images" style="font-size:2rem; margin-bottom:10px; display:block;"></i>No hay slides configurados. Haz clic en "Agregar Nuevo Slide".</div>`;
+                return;
+            }
+
             container.innerHTML = heroSlides.map((s, i) => {
-                // Ensure defaults for new fields if they don't exist
                 const orig = s.originalPrice || '';
                 const disc = s.discountPercentage || '';
                 const fin = s.financingBonus || '';
                 const final = s.finalPrice || '';
                 const wa = s.waText || '';
-                const cta1 = s.ctaPrimary || '';
-                const cta2 = s.ctaSecondary || '';
+                const cta1 = s.ctaPrimary || 'Asegurar Oferta';
+                const cta2 = s.ctaSecondary || 'Ver Detalles';
+                const tag = s.tag || 'STOCK LOCAL';
+                const title = s.title || 'Vehículo Seminuevo';
+                const img = s.image || 'images/hero1.png';
+                const posY = s.imgPositionY || 'center';
+                const posX = s.imgPositionX || 'center';
+                const zoom = s.imgZoom || '100';
+                const darkness = s.overlayDarkness !== undefined ? s.overlayDarkness : '70';
+                const align = s.textAlign || 'left';
+                const badgeCol = s.badgeColor || 'gold';
+                const showPrice = s.showPriceCard !== false;
+
+                const bgPos = `${posX} ${posY}`;
+                const bgSize = zoom === '100' ? 'cover' : `${zoom}%`;
+                const darkVal = Number(darkness) / 100;
+
+                const fmt = (num) => Number(num || 0).toLocaleString('en-US');
+
+                // Badge color styles
+                const badgeStyles = {
+                    gold: { color: '#eab308', bg: 'rgba(234, 179, 8, 0.15)', border: 'rgba(234, 179, 8, 0.35)' },
+                    blue: { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', border: 'rgba(56, 189, 248, 0.35)' },
+                    green: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.35)' },
+                    red: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.35)' }
+                };
+                const activeBadge = badgeStyles[badgeCol] || badgeStyles.gold;
+
+                const formattedTitle = title.includes('<span') ? title : title.replace(/\b(20\d{2}|0KM)\b/g, '<span style="color:var(--accent);">$1</span>');
 
                 return `
-                <div class="hero-slide-admin-item" style="background: var(--bg3); border-radius: var(--radius); padding: 15px; margin-bottom: 15px; border: 1px solid var(--border);">
-                    <div style="display: flex; gap: 15px; align-items: start; margin-bottom: 10px;">
-                        <div style="width: 120px; height: 80px; background: #000; border-radius: 4px; overflow: hidden; position: relative; flex-shrink: 0;">
-                            <img src="${s.image}" style="width: 100%; height: 100%; object-fit: cover;">
-                            <button onclick="document.getElementById('heroFile-${i}').click()" style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); border: none; color: #fff; cursor: pointer; opacity: 0; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-                                <i class="fas fa-camera"></i>
+                <div class="hero-slide-editor-card" id="heroSlideCard-${i}">
+                    <!-- HEADER BAR -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; margin-bottom:16px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="background:var(--accent); color:#000; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; font-family:'Unbounded',sans-serif;">
+                                SLIDE #${i + 1}
+                            </span>
+                            <span style="font-weight:700; color:#fff; font-size:0.9rem;" id="hpHeaderTitle-${i}">
+                                ${title}
+                            </span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <button type="button" class="action-btn delete" onclick="removeHeroSlide(${i})" title="Eliminar este slide">
+                                <i class="fas fa-trash"></i>
                             </button>
-                            <input type="file" id="heroFile-${i}" style="display:none" onchange="uploadHeroImage(${i}, this)" accept="image/*">
-                        </div>
-                        <div style="flex-grow: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <input type="text" class="form-input" value="${s.tag}" placeholder="Tag (Ej: STOCK LOCAL)" onchange="updateHeroSlide(${i}, 'tag', this.value)" style="padding: 4px 8px; font-size: 0.75rem; border-color: var(--border-accent);">
-                            <input type="text" class="form-input" value="${s.title}" placeholder="Título Principal" onchange="updateHeroSlide(${i}, 'title', this.value)" style="padding: 4px 8px; font-weight: 600;">
-                            <input type="text" class="form-input" value="${wa}" placeholder="Texto WhatsApp" onchange="updateHeroSlide(${i}, 'waText', this.value)" style="padding: 4px 8px; font-size: 0.75rem; grid-column: 1 / -1;">
-                        </div>
-                        <button class="action-btn delete" onclick="removeHeroSlide(${i})" style="flex-shrink: 0;"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 8px;">
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <label style="font-size:0.65rem; color:var(--text3);">Precio de Lista ($)</label>
-                            <input type="number" class="form-input" value="${orig}" placeholder="33000" onchange="updateHeroSlide(${i}, 'originalPrice', this.value)" style="padding: 4px 8px; font-size: 0.8rem;">
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <label style="font-size:0.65rem; color:var(--danger);">Descuento Especial ($)</label>
-                            <input type="number" class="form-input" value="${disc}" placeholder="9900" onchange="updateHeroSlide(${i}, 'discountPercentage', this.value)" style="padding: 4px 8px; font-size: 0.8rem;">
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <label style="font-size:0.65rem; color:#bfcdff;">Financiamiento ($)</label>
-                            <input type="number" class="form-input" value="${fin}" placeholder="10000" onchange="updateHeroSlide(${i}, 'financingBonus', this.value)" style="padding: 4px 8px; font-size: 0.8rem;">
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:4px;">
-                            <label style="font-size:0.65rem; color:var(--accent);">Precio Final ($)</label>
-                            <input type="number" class="form-input" value="${final}" placeholder="13100" onchange="updateHeroSlide(${i}, 'finalPrice', this.value)" style="padding: 4px 8px; font-size: 0.8rem;">
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-                        <input type="text" class="form-input" value="${cta1}" placeholder="CTA Principal (Ej: Asegurar Oferta)" onchange="updateHeroSlide(${i}, 'ctaPrimary', this.value)" style="padding: 4px 8px; font-size: 0.75rem;">
-                        <input type="text" class="form-input" value="${cta2}" placeholder="CTA Secundario (Ej: Ver Detalles)" onchange="updateHeroSlide(${i}, 'ctaSecondary', this.value)" style="padding: 4px 8px; font-size: 0.75rem;">
+
+                    <div class="hero-editor-layout">
+                        <!-- COLUMNA 1: CONTROLES DE EDICIÓN & AJUSTES -->
+                        <div>
+                            <!-- FOTO & ENCUADRE -->
+                            <div class="hero-control-group">
+                                <div class="hero-control-header">
+                                    <span><i class="fas fa-camera"></i> Foto de Fondo & Encuadre</span>
+                                </div>
+                                <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                                    <div style="width:70px; height:50px; background:#000; border-radius:6px; overflow:hidden; position:relative; flex-shrink:0; border:1px solid rgba(255,255,255,0.2);">
+                                        <img id="hpThumb-${i}" src="${img}" style="width:100%; height:100%; object-fit:cover;">
+                                        <button type="button" onclick="document.getElementById('heroFile-${i}').click()" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem;">
+                                            <i class="fas fa-upload"></i>
+                                        </button>
+                                        <input type="file" id="heroFile-${i}" style="display:none" onchange="uploadHeroImage(${i}, this)" accept="image/*">
+                                    </div>
+                                    <div style="flex:1;">
+                                        <input type="text" class="form-input" id="hpImgUrlInput-${i}" value="${img}" placeholder="URL de la imagen (o sube archivo)" oninput="updateHeroSlideField(${i}, 'image', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                    </div>
+                                </div>
+
+                                <!-- Posición Vertical -->
+                                <div style="margin-bottom:8px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Vertical de la Foto:</label>
+                                    <div class="hero-seg-btn-group">
+                                        <button type="button" class="hero-seg-btn ${posY==='top'?'active':''}" onclick="setHeroImgPosition(${i}, 'top', null)">⬆️ Arriba</button>
+                                        <button type="button" class="hero-seg-btn ${posY==='center'?'active':''}" onclick="setHeroImgPosition(${i}, 'center', null)">⏺️ Centro</button>
+                                        <button type="button" class="hero-seg-btn ${posY==='bottom'?'active':''}" onclick="setHeroImgPosition(${i}, 'bottom', null)">⬇️ Abajo</button>
+                                    </div>
+                                </div>
+
+                                <!-- Posición Horizontal -->
+                                <div style="margin-bottom:8px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Horizontal de la Foto:</label>
+                                    <div class="hero-seg-btn-group">
+                                        <button type="button" class="hero-seg-btn ${posX==='left'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'left')">⬅️ Izquierda</button>
+                                        <button type="button" class="hero-seg-btn ${posX==='center'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'center')">⏺️ Centro</button>
+                                        <button type="button" class="hero-seg-btn ${posX==='right'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'right')">➡️ Derecha</button>
+                                    </div>
+                                </div>
+
+                                <!-- Zoom / Escala -->
+                                <div style="margin-bottom:8px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Escala / Zoom de la Foto:</label>
+                                    <div class="hero-seg-btn-group">
+                                        <button type="button" class="hero-seg-btn ${zoom==='100'?'active':''}" onclick="setHeroImgZoom(${i}, '100')">100% Ajuste</button>
+                                        <button type="button" class="hero-seg-btn ${zoom==='115'?'active':''}" onclick="setHeroImgZoom(${i}, '115')">115% Zoom</button>
+                                        <button type="button" class="hero-seg-btn ${zoom==='130'?'active':''}" onclick="setHeroImgZoom(${i}, '130')">130% Zoom+</button>
+                                    </div>
+                                </div>
+
+                                <!-- Oscurecimiento de Fondo (Overlay) -->
+                                <div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                        <label style="font-size:0.68rem; color:#94a3b8;">Oscurecimiento de Fondo (Contraste):</label>
+                                        <span id="hpDarknessLabel-${i}" style="font-size:0.72rem; color:var(--accent); font-weight:700;">${darkness}%</span>
+                                    </div>
+                                    <input type="range" min="30" max="95" value="${darkness}" style="width:100%; accent-color:var(--accent); cursor:pointer;" oninput="updateHeroSlideField(${i}, 'overlayDarkness', this.value)">
+                                </div>
+                            </div>
+
+                            <!-- TEXTOS & ALINEACIÓN -->
+                            <div class="hero-control-group">
+                                <div class="hero-control-header">
+                                    <span><i class="fas fa-font"></i> Textos & Alineación</span>
+                                </div>
+
+                                <!-- Alineación del Contenido -->
+                                <div style="margin-bottom:10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Alineación en Pantalla:</label>
+                                    <div class="hero-seg-btn-group">
+                                        <button type="button" class="hero-seg-btn ${align==='left'?'active':''}" onclick="setTextAlign(${i}, 'left')">⬅️ Izquierda</button>
+                                        <button type="button" class="hero-seg-btn ${align==='center'?'active':''}" onclick="setTextAlign(${i}, 'center')">⏺️ Centrado</button>
+                                        <button type="button" class="hero-seg-btn ${align==='right'?'active':''}" onclick="setTextAlign(${i}, 'right')">➡️ Derecha</button>
+                                    </div>
+                                </div>
+
+                                <!-- Badge Tag & Color -->
+                                <div style="display:grid; grid-template-columns:1fr 140px; gap:8px; margin-bottom:10px;">
+                                    <div>
+                                        <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Texto del Badge:</label>
+                                        <input type="text" class="form-input" value="${tag}" placeholder="Ej: EN PROCESO" oninput="updateHeroSlideField(${i}, 'tag', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Color Badge:</label>
+                                        <select class="form-input" onchange="setBadgeColor(${i}, this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                            <option value="gold" ${badgeCol==='gold'?'selected':''}>🟡 Dorado VIP</option>
+                                            <option value="blue" ${badgeCol==='blue'?'selected':''}>🔵 Azul Neón</option>
+                                            <option value="green" ${badgeCol==='green'?'selected':''}>🟢 Verde Stock</option>
+                                            <option value="red" ${badgeCol==='red'?'selected':''}>🔴 Rojo Oferta</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Título Principal -->
+                                <div style="margin-bottom:10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Título del Vehículo:</label>
+                                    <input type="text" class="form-input" value="${title}" placeholder="Ej: Hyundai Elantra N 2025" oninput="updateHeroSlideField(${i}, 'title', this.value)" style="font-size:0.85rem; font-weight:700; padding:8px 10px;">
+                                </div>
+
+                                <!-- WhatsApp Message -->
+                                <div>
+                                    <label style="font-size:0.68rem; color:#25D366; display:flex; align-items:center; gap:4px; margin-bottom:3px;">
+                                        <i class="fab fa-whatsapp"></i> Mensaje Predeterminado al Cotizar:
+                                    </label>
+                                    <input type="text" class="form-input" value="${wa}" placeholder="¿Me pueden cotizar?" oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                </div>
+                            </div>
+
+                            <!-- TARJETA DE PRECIOS & FINANCIAMIENTO -->
+                            <div class="hero-control-group">
+                                <div class="hero-control-header">
+                                    <span><i class="fas fa-tags"></i> Precios & Financiamiento</span>
+                                    <label style="display:flex; align-items:center; gap:6px; font-size:0.72rem; cursor:pointer; color:#fff; text-transform:none;">
+                                        <input type="checkbox" ${showPrice?'checked':''} onchange="updateHeroSlideField(${i}, 'showPriceCard', this.checked)"> Mostrar Tarjeta
+                                    </label>
+                                </div>
+
+                                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:10px;">
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Precio Lista ($)</label>
+                                        <input type="number" class="form-input" id="hOrig-${i}" value="${orig}" placeholder="33000" oninput="updateHeroSlideField(${i}, 'originalPrice', this.value)" style="font-size:0.8rem; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#f87171; display:block; margin-bottom:2px;">Descuento Especial ($)</label>
+                                        <input type="number" class="form-input" id="hDisc-${i}" value="${disc}" placeholder="9900" oninput="updateHeroSlideField(${i}, 'discountPercentage', this.value)" style="font-size:0.8rem; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#93c5fd; display:block; margin-bottom:2px;">Financiamiento ($)</label>
+                                        <input type="number" class="form-input" id="hFin-${i}" value="${fin}" placeholder="10000" oninput="updateHeroSlideField(${i}, 'financingBonus', this.value)" style="font-size:0.8rem; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:var(--accent); font-weight:700; display:block; margin-bottom:2px;">Precio Final ($)</label>
+                                        <input type="number" class="form-input" id="hFinal-${i}" value="${final}" placeholder="13100" oninput="updateHeroSlideField(${i}, 'finalPrice', this.value)" style="font-size:0.85rem; font-weight:800; border-color:rgba(212,160,23,0.5); padding:6px 8px;">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="calcAutoFinalPrice(${i})" style="width:100%; font-size:0.72rem; padding:5px; display:flex; align-items:center; justify-content:center; gap:5px;">
+                                    <i class="fas fa-bolt" style="color:var(--accent);"></i> Calcular Precio Final Automático (Lista - Descuento - Financiamiento)
+                                </button>
+                            </div>
+
+                            <!-- BOTONES DE ACCIÓN (CTAS) -->
+                            <div class="hero-control-group" style="margin-bottom:0;">
+                                <div class="hero-control-header">
+                                    <span><i class="fas fa-mouse-pointer"></i> Botones de Acción</span>
+                                </div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 1 (Principal):</label>
+                                        <input type="text" class="form-input" value="${cta1}" placeholder="Asegurar Oferta" oninput="updateHeroSlideField(${i}, 'ctaPrimary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 2 (Secundario):</label>
+                                        <input type="text" class="form-input" value="${cta2}" placeholder="Ver Detalles" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLUMNA 2: VISTA PREVIA EN VIVO (LIVE PREVIEW) -->
+                        <div>
+                            <div class="hero-preview-frame">
+                                <div class="hero-preview-topbar">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e;"></span>
+                                        <span style="font-size:0.75rem; font-weight:700; color:#ffffff; font-family:'Unbounded',sans-serif;">
+                                            VISTA PREVIA EN VIVO
+                                        </span>
+                                    </div>
+                                    <div class="hero-seg-btn-group" style="padding:2px;">
+                                        <button type="button" id="btnDevDesk-${i}" class="hero-seg-btn active" onclick="setHeroPreviewDevice(${i}, 'desktop')" style="padding:4px 10px; font-size:0.68rem;">
+                                            <i class="fas fa-desktop"></i> Escritorio
+                                        </button>
+                                        <button type="button" id="btnDevMob-${i}" class="hero-seg-btn" onclick="setHeroPreviewDevice(${i}, 'mobile')" style="padding:4px 10px; font-size:0.68rem;">
+                                            <i class="fas fa-mobile-alt"></i> Móvil
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- LIENZO HERO INTERACTIVO -->
+                                <div class="hero-preview-canvas" id="hpCanvas-${i}" style="background-image:url('${img}'); background-position:${bgPos}; background-size:${bgSize};">
+                                    <!-- CAPA DEGRADADO OSCURO -->
+                                    <div class="hero-preview-overlay" id="hpOverlay-${i}" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%);"></div>
+
+                                    <!-- CONTENIDO TEXTO Y PRECIOS -->
+                                    <div class="hero-preview-content" id="hpContent-${i}" style="text-align:${align};">
+                                        <!-- BADGE -->
+                                        <div id="hpTagRow-${i}" style="display:flex; justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')}; margin-bottom:12px;">
+                                            <span id="hpBadgeEl-${i}" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:30px; background:${activeBadge.bg}; border:1px solid ${activeBadge.border}; color:${activeBadge.color}; font-size:0.75rem; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;">
+                                                <i class="fas fa-bolt"></i> <span id="hpTagText-${i}">${tag}</span>
+                                            </span>
+                                        </div>
+
+                                        <!-- TÍTULO -->
+                                        <div id="hpTitle-${i}" style="font-family:'Unbounded',sans-serif; font-size:1.6rem; font-weight:800; color:#ffffff; line-height:1.2; margin-bottom:14px; text-shadow:0 2px 10px rgba(0,0,0,0.8);">
+                                            ${formattedTitle}
+                                        </div>
+
+                                        <!-- TARJETA GLASS DE PRECIOS -->
+                                        <div id="hpPriceCard-${i}" class="hero-glass-card" style="display:${showPrice?'block':'none'}; margin:${align==='center'?'0 auto 16px auto':(align==='right'?'0 0 16px auto':'0 0 16px 0')};">
+                                            <div style="display:flex; justify-content:space-between; color:#94a3b8; text-decoration:line-through; font-size:0.8rem; margin-bottom:6px;">
+                                                <span>Precio de Lista</span>
+                                                <span id="hpRowOrig-${i}">$${fmt(orig)}</span>
+                                            </div>
+                                            <div style="display:flex; justify-content:space-between; color:#f87171; font-size:0.8rem; margin-bottom:6px;">
+                                                <span>Descuento Especial</span>
+                                                <span id="hpRowDisc-${i}">-$${fmt(disc)}</span>
+                                            </div>
+                                            <div style="display:flex; justify-content:space-between; color:#93c5fd; font-size:0.8rem; margin-bottom:8px;">
+                                                <span>Financiamiento</span>
+                                                <span id="hpRowFin-${i}">-$${fmt(fin)}</span>
+                                            </div>
+                                            <div style="border-top:1px solid rgba(255,255,255,0.12); padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                                                <span style="font-size:0.85rem; font-weight:600; color:#e2e8f0;">Llévala por</span>
+                                                <span id="hpRowFinal-${i}" style="font-size:1.3rem; font-weight:900; color:var(--accent); font-family:'Unbounded',sans-serif;">$${fmt(final)}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- BOTONES CTA -->
+                                        <div id="hpButtonsRow-${i}" style="display:flex; gap:10px; justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')}; flex-wrap:wrap;">
+                                            <span id="hpBtn1-${i}" style="display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#000; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 0 12px rgba(212,160,23,0.35);">
+                                                <span id="hpBtnText1-${i}">${cta1}</span> <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i>
+                                            </span>
+                                            <span id="hpBtn2-${i}" style="display:inline-flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:8px 16px; border-radius:8px; font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">
+                                                <span id="hpBtnText2-${i}">${cta2}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            `;
+                `;
             }).join('');
         }
 
-        window.updateHeroSlide = (index, field, value) => {
+        window.updateHeroSlideField = (index, field, value) => {
+            if (!heroSlides[index]) return;
             heroSlides[index][field] = value;
+            
+            const fmt = (num) => Number(num || 0).toLocaleString('en-US');
+
+            if (field === 'title') {
+                const headerTitle = document.getElementById(`hpHeaderTitle-${index}`);
+                if (headerTitle) headerTitle.textContent = value || 'Vehículo Seminuevo';
+                const el = document.getElementById(`hpTitle-${index}`);
+                if (el) {
+                    el.innerHTML = (value || '').includes('<span') ? value : (value || '').replace(/\b(20\d{2}|0KM)\b/g, '<span style="color:var(--accent);">$1</span>');
+                }
+            } else if (field === 'tag') {
+                const el = document.getElementById(`hpTagText-${index}`);
+                if (el) el.textContent = value || 'OFERTA';
+            } else if (field === 'image') {
+                const canvas = document.getElementById(`hpCanvas-${index}`);
+                if (canvas) canvas.style.backgroundImage = `url('${value}')`;
+                const thumb = document.getElementById(`hpThumb-${index}`);
+                if (thumb) thumb.src = value;
+            } else if (field === 'overlayDarkness') {
+                const label = document.getElementById(`hpDarknessLabel-${index}`);
+                if (label) label.textContent = `${value}%`;
+                const overlay = document.getElementById(`hpOverlay-${index}`);
+                if (overlay) {
+                    const darkVal = Number(value) / 100;
+                    overlay.style.background = `linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%)`;
+                }
+            } else if (field === 'originalPrice') {
+                const el = document.getElementById(`hpRowOrig-${index}`);
+                if (el) el.textContent = `$${fmt(value)}`;
+            } else if (field === 'discountPercentage') {
+                const el = document.getElementById(`hpRowDisc-${index}`);
+                if (el) el.textContent = `-$${fmt(value)}`;
+            } else if (field === 'financingBonus') {
+                const el = document.getElementById(`hpRowFin-${index}`);
+                if (el) el.textContent = `-$${fmt(value)}`;
+            } else if (field === 'finalPrice') {
+                const el = document.getElementById(`hpRowFinal-${index}`);
+                if (el) el.textContent = `$${fmt(value)}`;
+            } else if (field === 'showPriceCard') {
+                const el = document.getElementById(`hpPriceCard-${index}`);
+                if (el) el.style.display = value ? 'block' : 'none';
+            } else if (field === 'ctaPrimary') {
+                const el = document.getElementById(`hpBtnText1-${index}`);
+                if (el) el.textContent = value || 'Asegurar Oferta';
+            } else if (field === 'ctaSecondary') {
+                const el = document.getElementById(`hpBtnText2-${index}`);
+                if (el) el.textContent = value || 'Ver Detalles';
+            }
+        };
+
+        window.setHeroImgPosition = (index, posY, posX) => {
+            if (!heroSlides[index]) return;
+            if (posY) heroSlides[index].imgPositionY = posY;
+            if (posX) heroSlides[index].imgPositionX = posX;
+            
+            const curY = heroSlides[index].imgPositionY || 'center';
+            const curX = heroSlides[index].imgPositionX || 'center';
+            const canvas = document.getElementById(`hpCanvas-${index}`);
+            if (canvas) canvas.style.backgroundPosition = `${curX} ${curY}`;
+
+            const card = document.getElementById(`heroSlideCard-${index}`);
+            if (card) {
+                if (posY) {
+                    card.querySelectorAll('[onclick*="setHeroImgPosition"][onclick*="top"], [onclick*="setHeroImgPosition"][onclick*="center"], [onclick*="setHeroImgPosition"][onclick*="bottom"]').forEach(b => {
+                        if (b.getAttribute('onclick').includes(`'${posY}'`)) b.classList.add('active');
+                        else b.classList.remove('active');
+                    });
+                }
+                if (posX) {
+                    card.querySelectorAll('[onclick*="setHeroImgPosition"][onclick*="left"], [onclick*="setHeroImgPosition"][onclick*="center"], [onclick*="setHeroImgPosition"][onclick*="right"]').forEach(b => {
+                        if (b.getAttribute('onclick').includes(`'${posX}'`)) b.classList.add('active');
+                        else b.classList.remove('active');
+                    });
+                }
+            }
+        };
+
+        window.setHeroImgZoom = (index, zoom) => {
+            if (!heroSlides[index]) return;
+            heroSlides[index].imgZoom = zoom;
+            const canvas = document.getElementById(`hpCanvas-${index}`);
+            if (canvas) canvas.style.backgroundSize = zoom === '100' ? 'cover' : `${zoom}%`;
+
+            const card = document.getElementById(`heroSlideCard-${index}`);
+            if (card) {
+                card.querySelectorAll('[onclick*="setHeroImgZoom"]').forEach(b => {
+                    if (b.getAttribute('onclick').includes(`'${zoom}'`)) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            }
+        };
+
+        window.setTextAlign = (index, align) => {
+            if (!heroSlides[index]) return;
+            heroSlides[index].textAlign = align;
+            const content = document.getElementById(`hpContent-${index}`);
+            if (content) content.style.textAlign = align;
+
+            const tagRow = document.getElementById(`hpTagRow-${index}`);
+            if (tagRow) tagRow.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
+
+            const priceCard = document.getElementById(`hpPriceCard-${index}`);
+            if (priceCard) {
+                priceCard.style.margin = align === 'center' ? '0 auto 16px auto' : (align === 'right' ? '0 0 16px auto' : '0 0 16px 0');
+            }
+
+            const btnRow = document.getElementById(`hpButtonsRow-${index}`);
+            if (btnRow) btnRow.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
+
+            const card = document.getElementById(`heroSlideCard-${index}`);
+            if (card) {
+                card.querySelectorAll('[onclick*="setTextAlign"]').forEach(b => {
+                    if (b.getAttribute('onclick').includes(`'${align}'`)) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            }
+        };
+
+        window.setBadgeColor = (index, color) => {
+            if (!heroSlides[index]) return;
+            heroSlides[index].badgeColor = color;
+            const badgeEl = document.getElementById(`hpBadgeEl-${index}`);
+            if (!badgeEl) return;
+            const badgeStyles = {
+                gold: { color: '#eab308', bg: 'rgba(234, 179, 8, 0.15)', border: 'rgba(234, 179, 8, 0.35)' },
+                blue: { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', border: 'rgba(56, 189, 248, 0.35)' },
+                green: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.35)' },
+                red: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.35)' }
+            };
+            const s = badgeStyles[color] || badgeStyles.gold;
+            badgeEl.style.color = s.color;
+            badgeEl.style.background = s.bg;
+            badgeEl.style.borderColor = s.border;
+        };
+
+        window.setHeroPreviewDevice = (index, device) => {
+            const canvas = document.getElementById(`hpCanvas-${index}`);
+            const btnDesk = document.getElementById(`btnDevDesk-${index}`);
+            const btnMob = document.getElementById(`btnDevMob-${index}`);
+            if (!canvas) return;
+
+            if (device === 'mobile') {
+                canvas.classList.add('mobile');
+                if (btnDesk) btnDesk.classList.remove('active');
+                if (btnMob) btnMob.classList.add('active');
+            } else {
+                canvas.classList.remove('mobile');
+                if (btnDesk) btnDesk.classList.add('active');
+                if (btnMob) btnMob.classList.remove('active');
+            }
+        };
+
+        window.calcAutoFinalPrice = (index) => {
+            const s = heroSlides[index];
+            if (!s) return;
+            const orig = parseFloat(s.originalPrice) || 0;
+            const disc = parseFloat(s.discountPercentage) || 0;
+            const fin = parseFloat(s.financingBonus) || 0;
+            const final = Math.max(0, orig - disc - fin);
+            s.finalPrice = final.toString();
+            const finalInput = document.getElementById(`hFinal-${index}`);
+            if (finalInput) finalInput.value = final;
+            updateHeroSlideField(index, 'finalPrice', final.toString());
+            showToast(`Precio final calculado: $${final.toLocaleString('en-US')}`, 'success');
         };
 
         window.removeHeroSlide = (index) => {
             if (confirm('¿Eliminar este slide?')) {
                 heroSlides.splice(index, 1);
                 renderHeroSlides();
+                showToast('Slide eliminado', 'info');
             }
         };
 
         document.getElementById('addHeroSlideBtn')?.addEventListener('click', () => {
             heroSlides.push({ 
-                tag: "NUEVA OFERTA", 
+                tag: "EN PROCESO", 
                 title: "Nuevo Vehículo", 
-                originalPrice: "20000",
-                discountPercentage: "2000",
+                originalPrice: "30000",
+                discountPercentage: "5000",
                 financingBonus: "5000",
-                finalPrice: "13000",
+                finalPrice: "20000",
                 waText: "Hola, me interesa este vehículo.",
                 ctaPrimary: "Asegurar Oferta",
                 ctaSecondary: "Ver Detalles",
-                image: "images/hero1.png" 
+                image: "images/hero1.png",
+                imgPositionY: "center",
+                imgPositionX: "center",
+                imgZoom: "100",
+                overlayDarkness: "70",
+                textAlign: "left",
+                badgeColor: "gold",
+                showPriceCard: true
             });
             renderHeroSlides();
+            showToast('Nuevo slide añadido', 'success');
         });
 
         window.uploadHeroImage = async (index, input) => {
@@ -6070,8 +6637,10 @@
 
             const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
             heroSlides[index].image = urlData.publicUrl;
-            renderHeroSlides();
-            showToast('Imagen de hero actualizada', 'success');
+            updateHeroSlideField(index, 'image', urlData.publicUrl);
+            const inputUrl = document.getElementById(`hpImgUrlInput-${index}`);
+            if (inputUrl) inputUrl.value = urlData.publicUrl;
+            showToast('✓ Imagen de hero actualizada', 'success');
         };
 
         document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
