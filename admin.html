@@ -1545,8 +1545,8 @@
         /* --- SHOWCASE ROW WITH PHOTO --- */
         .ficha-showcase-row {
             display: grid;
-            grid-template-columns: 1fr 190px;
-            gap: 12px;
+            grid-template-columns: 1fr 205px;
+            gap: 14px;
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.55) 0%, rgba(15, 23, 42, 0.75) 100%);
             border: 1px solid rgba(255, 255, 255, 0.09);
             border-left: 3.5px solid #38bdf8;
@@ -1559,19 +1559,25 @@
         .ficha-photo-wrapper {
             position: relative;
             width: 100%;
-            height: 92px;
+            height: 115px;
             border-radius: 6px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
             background: #070a12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .ficha-photo-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
             display: block;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: auto;
         }
 
         .ficha-photo-badge {
@@ -3253,8 +3259,8 @@
                                         <span id="pv_price_val" style="font-size:1.55rem; font-weight:800; color:#f8fafc; font-family:'Unbounded',sans-serif; line-height:1;">$0</span>
                                     </div>
                                 </div>
-                                <div class="ficha-photo-wrapper" id="pv_vehicle_img_container" style="background:#070a12 center/cover no-repeat;">
-                                    <img id="pv_vehicle_img" src="images/favicon.png" alt="Foto Vehículo" class="ficha-photo-img" style="display:none;" onerror="this.src='images/favicon.png';">
+                                <div class="ficha-photo-wrapper" id="pv_vehicle_img_container" style="background:#070a12;">
+                                    <img id="pv_vehicle_img" src="images/favicon.png" alt="Foto Vehículo" class="ficha-photo-img" crossorigin="anonymous" onerror="this.src='images/favicon.png';">
                                     <div class="ficha-photo-badge"><i class="fas fa-camera"></i> UNIDAD REF</div>
                                 </div>
                             </div>
@@ -8728,17 +8734,41 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             }).filter((item, idx, arr) => item && arr.indexOf(item) === idx);
         }
 
+        async function waitForElementImages(container) {
+            if (!container) return;
+            const imgs = Array.from(container.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => {
+                if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                return new Promise(resolve => {
+                    let done = false;
+                    const finish = () => {
+                        if (!done) {
+                            done = true;
+                            resolve();
+                        }
+                    };
+                    img.onload = finish;
+                    img.onerror = finish;
+                    if (img.decode) {
+                        img.decode().then(finish).catch(finish);
+                    }
+                    setTimeout(finish, 3000);
+                });
+            }));
+        }
+
         function onFichaImageUrlChange() {
             const url = (document.getElementById('f_image_url')?.value || '').trim();
             const imgEl = document.getElementById('pv_vehicle_img');
             const contEl = document.getElementById('pv_vehicle_img_container') || (imgEl ? imgEl.parentElement : null);
             const indEl = document.getElementById('f_img_indicator');
             if (url) {
-                if (imgEl) imgEl.src = url;
+                if (imgEl) {
+                    imgEl.src = url;
+                    imgEl.style.display = 'block';
+                }
                 if (contEl) {
-                    contEl.style.backgroundImage = `url("${url}")`;
-                    contEl.style.backgroundSize = 'cover';
-                    contEl.style.backgroundPosition = 'center';
+                    contEl.style.backgroundImage = 'none';
                 }
                 if (indEl) indEl.textContent = '✓ URL Activa';
             }
@@ -8754,11 +8784,12 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 const contEl = document.getElementById('pv_vehicle_img_container') || (imgEl ? imgEl.parentElement : null);
                 const urlInput = document.getElementById('f_image_url');
                 const indEl = document.getElementById('f_img_indicator');
-                if (imgEl) imgEl.src = base64;
+                if (imgEl) {
+                    imgEl.src = base64;
+                    imgEl.style.display = 'block';
+                }
                 if (contEl) {
-                    contEl.style.backgroundImage = `url("${base64}")`;
-                    contEl.style.backgroundSize = 'cover';
-                    contEl.style.backgroundPosition = 'center';
+                    contEl.style.backgroundImage = 'none';
                 }
                 if (urlInput) urlInput.value = '';
                 if (indEl) indEl.textContent = '✓ Foto Subida';
@@ -9008,8 +9039,9 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                             ${pagePhotos.map((photoUrl, idx) => {
                                 const photoNum = (p * 6) + idx + 1;
                                 return `
-                                <div style="height:250px; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); background:#050811 url('${photoUrl}') center center / cover no-repeat; position:relative; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
-                                    <div style="position:absolute; bottom:8px; left:10px; background:rgba(9,13,22,0.88); border:1px solid rgba(255,255,255,0.25); color:#fff; font-size:0.68rem; padding:3px 10px; border-radius:4px; font-weight:700; backdrop-filter:blur(4px); box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+                                <div style="height:250px; border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); background:#050811; position:relative; box-shadow:0 4px 14px rgba(0,0,0,0.5);">
+                                    <img src="${photoUrl}" alt="Foto ${photoNum}" crossorigin="anonymous" loading="eager" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block; image-rendering:auto;">
+                                    <div style="position:absolute; bottom:8px; left:10px; background:rgba(9,13,22,0.88); border:1px solid rgba(255,255,255,0.25); color:#fff; font-size:0.68rem; padding:3px 10px; border-radius:4px; font-weight:700; backdrop-filter:blur(4px); box-shadow:0 2px 6px rgba(0,0,0,0.4); z-index:2;">
                                         <i class="fas fa-camera" style="color:#38bdf8;"></i> Foto ${photoNum} de ${allImgs.length}
                                     </div>
                                 </div>
@@ -9038,11 +9070,12 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             if (urlInput) urlInput.value = imgUrl;
             const imgEl = document.getElementById('pv_vehicle_img');
             const contEl = document.getElementById('pv_vehicle_img_container') || (imgEl ? imgEl.parentElement : null);
-            if (imgEl) imgEl.src = imgUrl;
+            if (imgEl) {
+                imgEl.src = imgUrl;
+                imgEl.style.display = 'block';
+            }
             if (contEl) {
-                contEl.style.backgroundImage = `url("${imgUrl}")`;
-                contEl.style.backgroundSize = 'cover';
-                contEl.style.backgroundPosition = 'center';
+                contEl.style.backgroundImage = 'none';
             }
             const indEl = document.getElementById('f_img_indicator');
             if (indEl) indEl.textContent = '✓ Portada HD Actualizada';
@@ -9125,11 +9158,12 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 if (urlInput) urlInput.value = primaryImg;
                 const imgEl = document.getElementById('pv_vehicle_img');
                 const contEl = document.getElementById('pv_vehicle_img_container') || (imgEl ? imgEl.parentElement : null);
-                if (imgEl) imgEl.src = primaryImg;
+                if (imgEl) {
+                    imgEl.src = primaryImg;
+                    imgEl.style.display = 'block';
+                }
                 if (contEl) {
-                    contEl.style.backgroundImage = `url("${primaryImg}")`;
-                    contEl.style.backgroundSize = 'cover';
-                    contEl.style.backgroundPosition = 'center';
+                    contEl.style.backgroundImage = 'none';
                 }
                 const indEl = document.getElementById('f_img_indicator');
                 if (indEl) indEl.textContent = `✓ ${allImgs.length} Fotos HD`;
@@ -10118,9 +10152,8 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             showToast(`Generando PDF Oficial (${totalPages} Página${totalPages > 1 ? 's' : ''} con Galería HD)...`, 'info');
 
             try {
-                // Ensure images in sheet 1 are loaded
-                const imgs1 = Array.from(sheet.querySelectorAll('img'));
-                await Promise.all(imgs1.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
+                // Ensure all images in sheet 1 are completely loaded and decoded
+                await waitForElementImages(sheet);
 
                 let pdfDoc;
                 if (window.jspdf && window.jspdf.jsPDF) {
@@ -10131,33 +10164,36 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
                 if (!pdfDoc) throw new Error('Biblioteca jsPDF no disponible');
 
-                // Renderizar Página 1 (Ficha Técnica Principal)
+                // Renderizar Página 1 (Ficha Técnica Principal) en Ultra-HD
                 const canvas = await html2canvas(sheet, { 
-                    scale: 2.2, 
+                    scale: 2.8, 
                     useCORS: true, 
+                    allowTaint: false,
                     backgroundColor: '#090d16',
-                    logging: false
+                    logging: false,
+                    imageTimeout: 15000
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 0.96);
-                pdfDoc.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'FAST');
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdfDoc.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
 
-                // Renderizar Páginas de Galería (Anexo Fotográfico)
+                // Renderizar Páginas de Galería (Anexo Fotográfico) en Ultra-HD
                 for (let i = 0; i < gallerySheets.length; i++) {
                     const gSheet = gallerySheets[i];
-                    const gImgs = Array.from(gSheet.querySelectorAll('img'));
-                    await Promise.all(gImgs.map(img => img.complete ? Promise.resolve() : (img.decode ? img.decode().catch(()=>{}) : Promise.resolve())));
+                    await waitForElementImages(gSheet);
 
                     const gCanvas = await html2canvas(gSheet, {
-                        scale: 2.2,
+                        scale: 2.8,
                         useCORS: true,
+                        allowTaint: false,
                         backgroundColor: '#090d16',
-                        logging: false
+                        logging: false,
+                        imageTimeout: 15000
                     });
 
-                    const gImgData = gCanvas.toDataURL('image/jpeg', 0.95);
+                    const gImgData = gCanvas.toDataURL('image/jpeg', 0.98);
                     pdfDoc.addPage('letter', 'portrait');
-                    pdfDoc.addImage(gImgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'FAST');
+                    pdfDoc.addImage(gImgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
                 }
 
                 pdfDoc.save(filename);
@@ -10178,15 +10214,19 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             showToast('Generando Imagen HD para WhatsApp / Redes...', 'info');
 
             try {
+                await waitForElementImages(sheet);
+
                 const canvas = await html2canvas(sheet, {
-                    scale: 2.5,
+                    scale: 3.0,
                     useCORS: true,
+                    allowTaint: false,
                     backgroundColor: '#000000',
-                    logging: false
+                    logging: false,
+                    imageTimeout: 15000
                 });
                 const link = document.createElement('a');
                 link.download = filename;
-                link.href = canvas.toDataURL('image/png', 1.0);
+                link.href = canvas.toDataURL('image/png');
                 link.click();
                 showToast('✓ Imagen HD descargada exitosamente', 'success');
             } catch (err) {

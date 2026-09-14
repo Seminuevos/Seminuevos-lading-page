@@ -1712,7 +1712,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         document.body.classList.add('print-mode-sheet');
-        window.print();
+        
+        // Esperar a que la imagen se decodifique completamente antes de imprimir
+        const imgToPrint = sheetContent?.querySelector('img');
+        if (imgToPrint && !imgToPrint.complete) {
+            imgToPrint.onload = () => window.print();
+            imgToPrint.onerror = () => window.print();
+            setTimeout(() => window.print(), 1200);
+        } else if (imgToPrint && imgToPrint.decode) {
+            imgToPrint.decode().then(() => window.print()).catch(() => window.print());
+        } else {
+            window.print();
+        }
     });
 
     window.addEventListener('afterprint', () => {
