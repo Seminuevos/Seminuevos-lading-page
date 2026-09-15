@@ -1268,16 +1268,28 @@
                         </button>
                     </div>
 
+                    <!-- CASH FIELDS (Toggled when Contado active) -->
+                    <div id="cashParametersWrap" class="cash-mode-content">
+                        <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; margin-bottom: 20px;">
+                            <div style="font-weight: 700; color: #6ee7b7; margin-bottom: 6px;">
+                                <i class="fas fa-check-circle"></i> Modalidad Pago de Contado (Cash)
+                            </div>
+                            <div style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">
+                                Disfruta de trámites expeditos con entrega inmediata o importación prioritaria. Puedes además aplicar tu vehículo actual como parte de pago directa.
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- TRADE-IN PROGRAM (Retoma de auto usado con Diagnóstico Técnico) -->
-                    <div class="tradein-card">
+                    <div class="tradein-card" id="tradeInCard">
                         <div class="tradein-header" onclick="toggleTradeIn()">
                             <div class="tradein-title-group">
                                 <div class="tradein-icon">
                                     <i class="fas fa-sync-alt"></i>
                                 </div>
                                 <div>
-                                    <div style="font-weight: 600; font-size: 0.95rem; color: #ffffff;">¿Entregas tu auto actual como parte de pago? (Trade-In)</div>
-                                    <div style="font-size: 0.78rem; color: #94a3b8;">Diagnóstico técnico y tasación basada en el estado real de tu vehículo.</div>
+                                    <div style="font-weight: 600; font-size: 0.95rem; color: #ffffff;" id="tradeInTitle">¿Entregas tu auto actual como parte de pago? (Trade-In)</div>
+                                    <div style="font-size: 0.78rem; color: #94a3b8;" id="tradeInSubtitle">Diagnóstico técnico y tasación basada en el estado real de tu vehículo.</div>
                                 </div>
                             </div>
                             <label class="switch-toggle" onclick="event.stopPropagation()">
@@ -1467,18 +1479,6 @@
                             </div>
                         </div>
 
-                    </div>
-
-                    <!-- CASH FIELDS (Toggled when Contado active) -->
-                    <div id="cashParametersWrap" class="cash-mode-content">
-                        <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; margin-bottom: 20px;">
-                            <div style="font-weight: 700; color: #6ee7b7; margin-bottom: 6px;">
-                                <i class="fas fa-check-circle"></i> Modalidad Pago de Contado (Cash)
-                            </div>
-                            <div style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">
-                                Disfruta de trámites expeditos con entrega inmediata o importación directa. Si activaste la sección superior de <strong>Retoma de auto (Trade-In)</strong>, su valor evaluado se deducirá automáticamente del precio final a transferir.
-                            </div>
-                        </div>
                     </div>
 
                 </div>
@@ -1944,6 +1944,8 @@
             const tabC = document.getElementById('tabCash');
             const wrapF = document.getElementById('financeParametersWrap');
             const wrapC = document.getElementById('cashParametersWrap');
+            const trTitle = document.getElementById('tradeInTitle');
+            const trSub = document.getElementById('tradeInSubtitle');
 
             if (type === 'finance') {
                 tabF.classList.add('active');
@@ -1956,6 +1958,8 @@
                 document.getElementById('rowDownPaymentWrap').style.display = 'flex';
                 document.getElementById('mainResultTitle').textContent = 'Cuota Mensual Estimada';
                 document.getElementById('rowTotalLabel').textContent = 'Total Inversión Proyectada';
+                if (trTitle) trTitle.textContent = '¿Entregas tu auto actual como parte de pago? (Trade-In)';
+                if (trSub) trSub.textContent = 'Diagnóstico técnico y tasación basada en el estado real de tu vehículo.';
             } else {
                 tabC.classList.add('active');
                 tabF.classList.remove('active');
@@ -1965,8 +1969,12 @@
                 document.getElementById('rowPrincipalWrap').style.display = 'none';
                 document.getElementById('rowInterestWrap').style.display = 'none';
                 document.getElementById('rowDownPaymentWrap').style.display = 'none';
+                document.getElementById('rowFeesWrap').style.display = 'none';
+                document.getElementById('rowInitialDisbursementWrap').style.display = 'none';
                 document.getElementById('mainResultTitle').textContent = 'Pago de Contado Neto';
                 document.getElementById('rowTotalLabel').textContent = 'Total a Desembolsar';
+                if (trTitle) trTitle.textContent = '¿Entregas tu auto actual a cambio?';
+                if (trSub) trSub.textContent = 'Descontamos el valor de retoma del precio de contado.';
             }
             recalculate();
         }
@@ -2030,6 +2038,8 @@
             }
             const chk = document.getElementById('tradeInCheck');
             if (chk) chk.checked = tradeInActive;
+            const chkCash = document.getElementById('tradeInCheckCash');
+            if (chkCash) chkCash.checked = tradeInActive;
 
             const form = document.getElementById('tradeInForm');
             if (form) form.style.display = tradeInActive ? 'block' : 'none';
@@ -2246,7 +2256,7 @@
             }
 
             const netRow = document.getElementById('rowNetCarWrap');
-            if (tradeInActive && effectiveTradeIn > 0) {
+            if (tradeInActive && effectiveTradeIn > 0 && currentPaymentType === 'finance') {
                 netRow.style.display = 'flex';
                 document.getElementById('rowNetCar').textContent = `$${netCarPrice.toLocaleString()}`;
             } else {
@@ -2257,15 +2267,20 @@
 
             const feesRow = document.getElementById('rowFeesWrap');
             const initDisbRow = document.getElementById('rowInitialDisbursementWrap');
-            if (includeFormalizationFees && currentPaymentType === 'finance') {
-                feesRow.style.display = 'flex';
-                document.getElementById('rowFees').textContent = `+$${totalFees.toLocaleString()}`;
-                initDisbRow.style.display = 'flex';
-                document.getElementById('rowInitialDisbursement').textContent = `$${initialDisbursement.toLocaleString()}`;
+            if (currentPaymentType === 'finance') {
+                if (includeFormalizationFees) {
+                    feesRow.style.display = 'flex';
+                    document.getElementById('rowFees').textContent = `+$${totalFees.toLocaleString()}`;
+                    initDisbRow.style.display = 'flex';
+                    document.getElementById('rowInitialDisbursement').textContent = `$${initialDisbursement.toLocaleString()}`;
+                } else {
+                    feesRow.style.display = 'none';
+                    initDisbRow.style.display = 'flex';
+                    document.getElementById('rowInitialDisbursement').textContent = `$${downPaymentAmount.toLocaleString()}`;
+                }
             } else {
                 feesRow.style.display = 'none';
-                initDisbRow.style.display = 'flex';
-                document.getElementById('rowInitialDisbursement').textContent = `$${downPaymentAmount.toLocaleString()}`;
+                initDisbRow.style.display = 'none';
             }
 
             document.getElementById('rowPrincipal').textContent = `$${Math.round(principal).toLocaleString()}`;
@@ -2299,7 +2314,9 @@
                 // Cash mode
                 const cashTotal = effectivePrice - effectiveTradeIn;
                 document.getElementById('mainPaymentDisplay').innerHTML = `$ ${cashTotal.toLocaleString()}`;
-                document.getElementById('mainPaymentSubtext').textContent = `Monto final neto para entrega o importación directa`;
+                document.getElementById('mainPaymentSubtext').textContent = (tradeInActive && effectiveTradeIn > 0)
+                    ? `Precio lista $${effectivePrice.toLocaleString()} menos $${effectiveTradeIn.toLocaleString()} de retoma evaluada`
+                    : `Monto final neto para entrega o importación directa`;
                 document.getElementById('rowTotalAmount').textContent = `$${cashTotal.toLocaleString()}`;
             }
 

@@ -3211,9 +3211,14 @@
                                     1 Página Carta + Anexo HD
                                 </span>
                             </div>
-                            <button type="button" class="btn btn-primary" id="btnDownloadPdf" onclick="downloadFichaPDF()" style="display:flex; align-items:center; gap:8px; padding:10px 24px; font-weight:800; font-size:0.85rem; border-radius:8px; box-shadow:0 0 15px rgba(39,92,234,0.5);">
-                                <i class="fas fa-file-pdf"></i> Descargar PDF Oficial
-                            </button>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <button type="button" class="btn btn-outline" id="btnDownloadImg" onclick="downloadFichaImage()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; font-weight:700; font-size:0.82rem; border-radius:8px; border:1px solid rgba(255,255,255,0.2); color:#fff; background:rgba(255,255,255,0.06);">
+                                    <i class="fas fa-image" style="color:#38bdf8;"></i> Descargar Imagen HD
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btnDownloadPdf" onclick="downloadFichaPDF()" style="display:flex; align-items:center; gap:8px; padding:10px 22px; font-weight:800; font-size:0.85rem; border-radius:8px; box-shadow:0 0 15px rgba(39,92,234,0.5);">
+                                    <i class="fas fa-file-pdf"></i> Descargar PDF Oficial
+                                </button>
+                            </div>
                         </div>
 
                         <!-- THE PRINTABLE 1-PAGE SHEET (DARK THEME) -->
@@ -8757,6 +8762,83 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             }));
         }
 
+        // --- PRE-PROCESAMIENTO DE IMÁGENES PARA EXPORTACIÓN ULTRA-HD (SIN APLASTAR NI DISTORSIONAR) ---
+        async function prepareElementImagesForExport(container) {
+            if (!container) return () => {};
+            await waitForElementImages(container);
+
+            const imgs = Array.from(container.querySelectorAll('img'));
+            const reverts = [];
+
+            for (const img of imgs) {
+                const rect = img.getBoundingClientRect();
+                const targetW = rect.width || img.offsetWidth;
+                const targetH = rect.height || img.offsetHeight;
+                if (!targetW || !targetH) continue;
+
+                const cStyle = window.getComputedStyle(img);
+                const isCover = cStyle.objectFit === 'cover' || 
+                                img.classList.contains('ficha-photo-img') || 
+                                img.closest('.ficha-gallery-page');
+                
+                if (!isCover) continue;
+
+                const nw = img.naturalWidth;
+                const nh = img.naturalHeight;
+                if (!nw || !nh) continue;
+
+                const targetRatio = targetW / targetH;
+                const naturalRatio = nw / nh;
+
+                // Center-crop (object-fit: cover) mathematics
+                let sx = 0, sy = 0, sw = nw, sh = nh;
+                if (naturalRatio > targetRatio) {
+                    // Más ancha que el contenedor: recortar lados
+                    sw = nh * targetRatio;
+                    sx = (nw - sw) / 2;
+                } else {
+                    // Más alta que el contenedor: recortar arriba/abajo
+                    sh = nw / targetRatio;
+                    sy = (nh - sh) / 2;
+                }
+
+                try {
+                    const exportScale = 2.5;
+                    const c = document.createElement('canvas');
+                    c.width = Math.round(targetW * exportScale);
+                    c.height = Math.round(targetH * exportScale);
+                    const ctx = c.getContext('2d');
+                    if (!ctx) continue;
+
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
+
+                    const croppedDataUrl = c.toDataURL('image/jpeg', 0.96);
+                    const originalSrc = img.src;
+                    const originalFit = img.style.objectFit;
+
+                    reverts.push(() => {
+                        img.src = originalSrc;
+                        img.style.objectFit = originalFit;
+                    });
+
+                    img.src = croppedDataUrl;
+                    img.style.objectFit = 'fill';
+                } catch (err) {
+                    console.warn('Cover crop pre-process skipped for image (CORS or canvas error):', err);
+                }
+            }
+
+            await new Promise(r => setTimeout(r, 60));
+
+            return () => {
+                reverts.forEach(fn => {
+                    try { fn(); } catch (_) {}
+                });
+            };
+        }
+
         function onFichaImageUrlChange() {
             const url = (document.getElementById('f_image_url')?.value || '').trim();
             const imgEl = document.getElementById('pv_vehicle_img');
@@ -9014,7 +9096,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                 const pageNum = p + 2;
 
                 html += `
-                    <div class="ficha-sheet ficha-gallery-page" style="min-height:1010px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 15px 40px rgba(0,0,0,0.6);">
+                    <div class="ficha-sheet ficha-gallery-page" style="width:780px !important; max-width:780px !important; height:1010px !important; min-height:1010px !important; max-height:1010px !important; overflow:hidden !important; box-sizing:border-box !important; display:flex !important; flex-direction:column !important; justify-content:space-between !important; box-shadow:0 15px 40px rgba(0,0,0,0.6);">
                         <!-- ENCABEZADO ANEXO FOTOGRÁFICO -->
                         <div class="ficha-header" style="border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:10px;">
                             <div class="ficha-brand-col">
@@ -9035,7 +9117,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                         </div>
 
                         <!-- GRID DE FOTOS EN FORMATO AUTOMOTRIZ (PROPORCIÓN PERFECTA SIN APLASTAR) -->
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; align-content:start;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0; align-content:start; flex:1;">
                             ${pagePhotos.map((photoUrl, idx) => {
                                 const photoNum = (p * 6) + idx + 1;
                                 return `
@@ -10164,32 +10246,44 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
                 if (!pdfDoc) throw new Error('Biblioteca jsPDF no disponible');
 
-                // Renderizar Página 1 (Ficha Técnica Principal) en Ultra-HD
-                const canvas = await html2canvas(sheet, { 
-                    scale: 2.8, 
-                    useCORS: true, 
-                    allowTaint: false,
-                    backgroundColor: '#090d16',
-                    logging: false,
-                    imageTimeout: 15000
-                });
-
-                const imgData = canvas.toDataURL('image/jpeg', 0.98);
-                pdfDoc.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
-
-                // Renderizar Páginas de Galería (Anexo Fotográfico) en Ultra-HD
-                for (let i = 0; i < gallerySheets.length; i++) {
-                    const gSheet = gallerySheets[i];
-                    await waitForElementImages(gSheet);
-
-                    const gCanvas = await html2canvas(gSheet, {
-                        scale: 2.8,
-                        useCORS: true,
+                // Renderizar Página 1 (Ficha Técnica Principal) en Ultra-HD con recorte cover perfecto
+                const revertCover = await prepareElementImagesForExport(sheet);
+                let canvas;
+                try {
+                    canvas = await html2canvas(sheet, { 
+                        scale: 2.8, 
+                        useCORS: true, 
                         allowTaint: false,
                         backgroundColor: '#090d16',
                         logging: false,
                         imageTimeout: 15000
                     });
+                } finally {
+                    revertCover();
+                }
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdfDoc.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
+
+                // Renderizar Páginas de Galería (Anexo Fotográfico) en Ultra-HD sin aplastar fotos
+                for (let i = 0; i < gallerySheets.length; i++) {
+                    const gSheet = gallerySheets[i];
+                    await waitForElementImages(gSheet);
+
+                    const revertGallery = await prepareElementImagesForExport(gSheet);
+                    let gCanvas;
+                    try {
+                        gCanvas = await html2canvas(gSheet, {
+                            scale: 2.8,
+                            useCORS: true,
+                            allowTaint: false,
+                            backgroundColor: '#090d16',
+                            logging: false,
+                            imageTimeout: 15000
+                        });
+                    } finally {
+                        revertGallery();
+                    }
 
                     const gImgData = gCanvas.toDataURL('image/jpeg', 0.98);
                     pdfDoc.addPage('letter', 'portrait');
@@ -10216,14 +10310,21 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             try {
                 await waitForElementImages(sheet);
 
-                const canvas = await html2canvas(sheet, {
-                    scale: 3.0,
-                    useCORS: true,
-                    allowTaint: false,
-                    backgroundColor: '#000000',
-                    logging: false,
-                    imageTimeout: 15000
-                });
+                const revertCover = await prepareElementImagesForExport(sheet);
+                let canvas;
+                try {
+                    canvas = await html2canvas(sheet, {
+                        scale: 3.0,
+                        useCORS: true,
+                        allowTaint: false,
+                        backgroundColor: '#000000',
+                        logging: false,
+                        imageTimeout: 15000
+                    });
+                } finally {
+                    revertCover();
+                }
+
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');
