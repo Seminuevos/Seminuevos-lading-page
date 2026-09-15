@@ -699,6 +699,22 @@
             border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        .tradein-field-label {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tradein-field-label i {
+            color: var(--est-amber);
+            font-size: 0.8rem;
+        }
+
         .tradein-grid {
             display: grid;
             grid-template-columns: 1.2fr 1fr 1fr;
@@ -709,6 +725,137 @@
             .tradein-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Trade-In Technical Condition Box */
+        .tradein-condition-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        .tradein-condition-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tradein-cond-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .tradein-cond-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cond-select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .cond-select-label {
+            font-size: 0.74rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cond-select-label i {
+            margin-right: 4px;
+            color: #38bdf8;
+        }
+
+        .badge-cond {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.72rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .cond-select {
+            padding: 10px 12px;
+            font-size: 0.82rem;
+        }
+
+        /* Trade-In Calculated Output Card */
+        .tradein-val-result {
+            margin-top: 16px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(39, 92, 234, 0.08));
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tradein-big-val {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fbbf24;
+            margin: 4px 0 2px 0;
+        }
+
+        .tradein-factors-info {
+            font-size: 0.73rem;
+            color: #94a3b8;
+        }
+
+        .tradein-factors-info b {
+            color: #e2e8f0;
+        }
+
+        /* Formalization Fees Card */
+        .formalization-card {
+            background: rgba(56, 189, 248, 0.04);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 20px;
+            margin-bottom: 24px;
+        }
+
+        .formalization-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .formalization-breakdown {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .fee-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.72rem;
+            color: #cbd5e1;
         }
 
         /* ===== STICKY SUMMARY CARD (RIGHT COLUMN) ===== */
@@ -1121,6 +1268,124 @@
                         </button>
                     </div>
 
+                    <!-- TRADE-IN PROGRAM (Retoma de auto usado con Diagnóstico Técnico) -->
+                    <div class="tradein-card">
+                        <div class="tradein-header" onclick="toggleTradeIn()">
+                            <div class="tradein-title-group">
+                                <div class="tradein-icon">
+                                    <i class="fas fa-sync-alt"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.95rem; color: #ffffff;">¿Entregas tu auto actual como parte de pago? (Trade-In)</div>
+                                    <div style="font-size: 0.78rem; color: #94a3b8;">Diagnóstico técnico y tasación basada en el estado real de tu vehículo.</div>
+                                </div>
+                            </div>
+                            <label class="switch-toggle" onclick="event.stopPropagation()">
+                                <input type="checkbox" id="tradeInCheck" onchange="toggleTradeIn(this.checked)">
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="tradein-form-body" id="tradeInForm">
+                            <!-- Vehicle Identification & Market -->
+                            <div class="tradein-grid">
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-car"></i> Marca y Modelo:</label>
+                                    <input type="text" id="tradeInModel" class="est-input" placeholder="Ej: Toyota Corolla / Cruze" oninput="calculateTradeInLive()">
+                                </div>
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-calendar-alt"></i> Año Modelo:</label>
+                                    <input type="number" id="tradeInYear" class="est-input" value="2017" min="1995" max="2026" oninput="calculateTradeInLive()">
+                                </div>
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-tachometer-alt"></i> Kilometraje (km):</label>
+                                    <input type="number" id="tradeInKm" class="est-input" value="85000" min="0" step="5000" oninput="calculateTradeInLive()">
+                                </div>
+                            </div>
+
+                            <div class="tradein-grid" style="margin-top: 12px;">
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-cog"></i> Transmisión:</label>
+                                    <select id="tradeInTrans" class="est-select" onchange="calculateTradeInLive()">
+                                        <option value="Automática" selected>Automática</option>
+                                        <option value="Sincrónica">Sincrónica (Manual)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-tags"></i> Ref. de Mercado ($):</label>
+                                    <input type="number" id="tradeInMarketPrice" class="est-input" value="8500" min="500" step="500" placeholder="Ej: 8500" oninput="calculateTradeInLive()">
+                                </div>
+                                <div>
+                                    <label class="tradein-field-label"><i class="fas fa-tools"></i> Reparaciones ($):</label>
+                                    <input type="number" id="tradeInRepairCost" class="est-input" value="0" min="0" step="100" placeholder="$0 (si aplica)" oninput="calculateTradeInLive()">
+                                </div>
+                            </div>
+
+                            <!-- Technical Condition Evaluation (Sincronizado con Admin) -->
+                            <div class="tradein-condition-box">
+                                <div class="tradein-condition-title">
+                                    <i class="fas fa-clipboard-check" style="color: #f59e0b;"></i> Evaluación Técnica de Estado y Condición:
+                                </div>
+                                <div class="tradein-cond-grid">
+                                    <div class="cond-select-group">
+                                        <div class="cond-select-label">
+                                            <span><i class="fas fa-wrench"></i> Mecánica (50%)</span>
+                                            <span class="badge-cond" id="badgeMech">100%</span>
+                                        </div>
+                                        <select id="tradeInCondMech" class="est-select cond-select" onchange="calculateTradeInLive()">
+                                            <option value="bueno" selected>Bueno (100%) - Motor/Caja OK</option>
+                                            <option value="regular">Regular (92%) - Servicio pendiente</option>
+                                            <option value="grave">Con Fallas (80%) - Reparación requerida</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="cond-select-group">
+                                        <div class="cond-select-label">
+                                            <span><i class="fas fa-spray-can"></i> Estética (30%)</span>
+                                            <span class="badge-cond" id="badgeEsthet">100%</span>
+                                        </div>
+                                        <select id="tradeInCondEsthet" class="est-select cond-select" onchange="calculateTradeInLive()">
+                                            <option value="bueno" selected>Bueno (100%) - Pintura/Interior OK</option>
+                                            <option value="regular">Regular (92%) - Detalles leves</option>
+                                            <option value="grave">Con Fallas (80%) - Choque/Latonería</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="cond-select-group">
+                                        <div class="cond-select-label">
+                                            <span><i class="fas fa-bolt"></i> Electrónica (20%)</span>
+                                            <span class="badge-cond" id="badgeElec">100%</span>
+                                        </div>
+                                        <select id="tradeInCondElec" class="est-select cond-select" onchange="calculateTradeInLive()">
+                                            <option value="bueno" selected>Bueno (100%) - A/A y Sensores OK</option>
+                                            <option value="regular">Regular (92%) - Sensores/Carga A/A</option>
+                                            <option value="grave">Con Fallas (80%) - Falla en ramal/A/A off</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calculated Live Trade-In Result Badge -->
+                            <div class="tradein-val-result">
+                                <div>
+                                    <div style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.8px; font-weight: 600;">
+                                        Valor Estimado de Retoma Pre-Aprobado
+                                    </div>
+                                    <div class="tradein-big-val" id="tradeInCalculatedDisplay">$ 0</div>
+                                    <div class="tradein-factors-info" id="tradeInFactorsDetail">
+                                        Condición: <b>100%</b> • Ajuste KM: <b>88%</b> • Margen Seminuevos: <b>12%</b>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <label style="font-size: 0.72rem; color: #94a3b8; display: block; margin-bottom: 4px;">
+                                        <i class="fas fa-edit"></i> ¿Ajustar tasación ($)?
+                                    </label>
+                                    <input type="number" id="tradeInValueOverride" class="est-input" style="width: 140px; padding: 8px 12px; font-weight: bold; text-align: right;" placeholder="Auto" min="0" step="100" oninput="onTradeInManualOverride()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- FINANCING FIELDS -->
                     <div id="financeParametersWrap">
                         
@@ -1128,56 +1393,19 @@
                         <div class="param-group">
                             <div class="param-header">
                                 <span class="param-label">
-                                    <i class="fas fa-hand-holding-usd" style="color: #10B981;"></i> Pago Inicial (Down Payment)
+                                    <i class="fas fa-hand-holding-usd" style="color: #10B981;"></i> Pago Inicial Vehicular (Down Payment)
                                 </span>
-                                <span class="param-value-pill" id="downPaymentDisplay">$7,200 (20%)</span>
+                                <span class="param-value-pill" id="downPaymentDisplay">$10,800 (30%)</span>
                             </div>
 
-                            <input type="range" id="downPaymentSlider" class="est-slider" min="10" max="70" step="5" value="20" oninput="onDownPaymentSliderChange(this.value)">
+                            <input type="range" id="downPaymentSlider" class="est-slider" min="20" max="60" step="5" value="30" oninput="onDownPaymentSliderChange(this.value)">
 
                             <!-- Quick Preset Pills -->
                             <div class="preset-pills">
-                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(15)">15%</button>
-                                <button type="button" class="preset-pill active" onclick="setDownPaymentPct(20)">20% (Estándar)</button>
-                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(30)">30%</button>
+                                <button type="button" class="preset-pill" onclick="setDownPaymentPct(20)">20%</button>
+                                <button type="button" class="preset-pill active" onclick="setDownPaymentPct(30)">30% (Recomendado)</button>
                                 <button type="button" class="preset-pill" onclick="setDownPaymentPct(40)">40%</button>
                                 <button type="button" class="preset-pill" onclick="setDownPaymentPct(50)">50%</button>
-                            </div>
-                        </div>
-
-                        <!-- Trade-In Program (Retoma de auto usado) -->
-                        <div class="tradein-card">
-                            <div class="tradein-header" onclick="toggleTradeIn()">
-                                <div class="tradein-title-group">
-                                    <div class="tradein-icon">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </div>
-                                    <div>
-                                        <div style="font-weight: 600; font-size: 0.92rem; color: #ffffff;">¿Entregas tu auto actual como parte de pago?</div>
-                                        <div style="font-size: 0.78rem; color: #94a3b8;">El valor de retoma se deduce de tu financiamiento.</div>
-                                    </div>
-                                </div>
-                                <label class="switch-toggle" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="tradeInCheck" onchange="toggleTradeIn(this.checked)">
-                                    <span class="switch-slider"></span>
-                                </label>
-                            </div>
-
-                            <div class="tradein-form-body" id="tradeInForm">
-                                <div class="tradein-grid">
-                                    <div>
-                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Marca y Modelo:</label>
-                                        <input type="text" id="tradeInModel" class="est-input" placeholder="Ej. Toyota Corolla 2018">
-                                    </div>
-                                    <div>
-                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Año:</label>
-                                        <input type="number" id="tradeInYear" class="est-input" placeholder="2018">
-                                    </div>
-                                    <div>
-                                        <label style="font-size: 0.75rem; color: #94a3b8; display: block; margin-bottom: 4px;">Valor Estimado ($):</label>
-                                        <input type="number" id="tradeInValue" class="est-input" placeholder="Ej. 8000" min="0" step="500" value="0" oninput="onTradeInValueChange()">
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -1199,21 +1427,43 @@
                             </div>
                         </div>
 
-                        <!-- APR / Tasa Anual Estimada -->
+                        <!-- Monthly Rate / Tasa Mensual (Sincronizado con Admin) -->
                         <div class="param-group" style="margin-bottom: 0;">
                             <div class="param-header">
                                 <span class="param-label">
-                                    <i class="fas fa-percentage" style="color: #F59E0B;"></i> Tasa de Interés Anual (APR Estimada)
+                                    <i class="fas fa-percentage" style="color: #F59E0B;"></i> Tasa de Interés Mensual (% Mensual)
                                 </span>
-                                <span class="param-value-pill" id="aprDisplay">14% Anual</span>
+                                <span class="param-value-pill" id="rateDisplay">1.5% Mensual (18% Anual)</span>
                             </div>
 
-                            <input type="range" id="aprSlider" class="est-slider" min="6" max="24" step="1" value="14" oninput="onAprSliderChange(this.value)">
+                            <input type="range" id="rateSlider" class="est-slider" min="1.0" max="3.5" step="0.1" value="1.5" oninput="onRateSliderChange(this.value)">
 
                             <div class="preset-pills">
-                                <button type="button" class="preset-pill" onclick="setApr(10)">10% (Preferencial)</button>
-                                <button type="button" class="preset-pill active" onclick="setApr(14)">14% (Estándar)</button>
-                                <button type="button" class="preset-pill" onclick="setApr(18)">18% (Flexible)</button>
+                                <button type="button" class="preset-pill active" onclick="setMonthlyRate(1.5)">1.5% (Tier 1 Preferencial)</button>
+                                <button type="button" class="preset-pill" onclick="setMonthlyRate(2.0)">2.0% (Tier 1 Estándar)</button>
+                                <button type="button" class="preset-pill" onclick="setMonthlyRate(2.5)">2.5% (Tier 2 Flexible)</button>
+                            </div>
+                        </div>
+
+                        <!-- Formalization & Satellital GPS Option (Admin Sync) -->
+                        <div class="formalization-card">
+                            <div class="formalization-header" onclick="toggleFormalizationFees()">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-shield-alt" style="color: #38bdf8; font-size: 1.1rem;"></i>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.86rem; color: #ffffff;">Incluir Gastos de Formalización y GPS</div>
+                                        <div style="font-size: 0.74rem; color: #94a3b8;">Gestión de trámites, notaría, placas y dispositivo satelital anual.</div>
+                                    </div>
+                                </div>
+                                <label class="switch-toggle" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="includeFeesCheck" onchange="toggleFormalizationFees(this.checked)" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                            <div class="formalization-breakdown" id="formalizationFeesDetail">
+                                <div class="fee-badge">Gastos Admin: $350</div>
+                                <div class="fee-badge">Notaría & Placas: $450</div>
+                                <div class="fee-badge" id="feeGpsBadge">GPS Satelital: $180/año</div>
                             </div>
                         </div>
 
@@ -1221,31 +1471,12 @@
 
                     <!-- CASH FIELDS (Toggled when Contado active) -->
                     <div id="cashParametersWrap" class="cash-mode-content">
-                        <div style="padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; margin-bottom: 20px;">
+                        <div style="padding: 16px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; margin-bottom: 20px;">
                             <div style="font-weight: 700; color: #6ee7b7; margin-bottom: 6px;">
                                 <i class="fas fa-check-circle"></i> Modalidad Pago de Contado (Cash)
                             </div>
                             <div style="font-size: 0.84rem; color: #cbd5e1; line-height: 1.5;">
-                                Disfruta de trámites expeditos con entrega inmediata o importación prioritaria. Puedes además aplicar tu vehículo actual como parte de pago directa.
-                            </div>
-                        </div>
-
-                        <!-- Trade in for Cash -->
-                        <div class="tradein-card">
-                            <div class="tradein-header" onclick="toggleTradeIn()">
-                                <div class="tradein-title-group">
-                                    <div class="tradein-icon">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </div>
-                                    <div>
-                                        <div style="font-weight: 600; font-size: 0.92rem; color: #ffffff;">¿Entregas tu auto actual a cambio?</div>
-                                        <div style="font-size: 0.78rem; color: #94a3b8;">Descontamos el valor de retoma del precio de contado.</div>
-                                    </div>
-                                </div>
-                                <label class="switch-toggle" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="tradeInCheckCash" onchange="toggleTradeIn(this.checked)">
-                                    <span class="switch-slider"></span>
-                                </label>
+                                Disfruta de trámites expeditos con entrega inmediata o importación directa. Si activaste la sección superior de <strong>Retoma de auto (Trade-In)</strong>, su valor evaluado se deducirá automáticamente del precio final a transferir.
                             </div>
                         </div>
                     </div>
@@ -1266,15 +1497,15 @@
                                 $ 0 <span class="sum-period">/ mes</span>
                             </div>
                             <div class="sum-subtext" id="mainPaymentSubtext">
-                                Basado en 36 cuotas con 20% de inicial
+                                Basado en amortización francesa con tasa mensual
                             </div>
                         </div>
 
                         <!-- Visual Proportional Progress Bar (Financing Only) -->
                         <div class="prop-bar-container" id="propBarWrap">
                             <div class="prop-bar">
-                                <div class="prop-seg-down" id="propSegDown" style="width: 20%;" title="Inicial"></div>
-                                <div class="prop-seg-principal" id="propSegPrincipal" style="width: 60%;" title="Capital Financiado"></div>
+                                <div class="prop-seg-down" id="propSegDown" style="width: 25%;" title="Inicial"></div>
+                                <div class="prop-seg-principal" id="propSegPrincipal" style="width: 55%;" title="Capital Financiado"></div>
                                 <div class="prop-seg-interest" id="propSegInterest" style="width: 20%;" title="Intereses"></div>
                             </div>
                             <div class="prop-legend">
@@ -1293,26 +1524,38 @@
                             </div>
                         </div>
 
-                        <!-- Detailed Financial Breakdown -->
+                        <!-- Detailed Financial Breakdown (Sincronizado con Mesa de Crédito Admin) -->
                         <div class="breakdown-table">
                             <div class="b-row">
                                 <span>Precio del Vehículo</span>
                                 <span class="val" id="rowCarPrice">$0</span>
                             </div>
                             <div class="b-row" id="rowTradeInWrap" style="display: none; color: #f59e0b;">
-                                <span>Retoma de Auto (Trade-In)</span>
+                                <span>Retoma Trade-In Evaluada</span>
                                 <span class="val" id="rowTradeInValue">-$0</span>
                             </div>
+                            <div class="b-row" id="rowNetCarWrap" style="display: none;">
+                                <span>Monto Neto del Vehículo</span>
+                                <span class="val" id="rowNetCar">$0</span>
+                            </div>
                             <div class="b-row" id="rowDownPaymentWrap">
-                                <span>Pago Inicial en Efectivo</span>
+                                <span>Pago Inicial Vehicular</span>
                                 <span class="val" id="rowDownPayment">-$0</span>
+                            </div>
+                            <div class="b-row" id="rowFeesWrap" style="color: #38bdf8;">
+                                <span>Gastos Formalización & GPS</span>
+                                <span class="val" id="rowFees">+$0</span>
+                            </div>
+                            <div class="b-row" id="rowInitialDisbursementWrap" style="font-weight: 700; color: #34d399; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 8px;">
+                                <span>Desembolso Inicial Total</span>
+                                <span class="val" id="rowInitialDisbursement">$0</span>
                             </div>
                             <div class="b-row" id="rowPrincipalWrap">
                                 <span>Capital Neto Financiado</span>
                                 <span class="val" id="rowPrincipal">$0</span>
                             </div>
                             <div class="b-row" id="rowInterestWrap">
-                                <span>Intereses Proyectados (<span id="rowAprVal">14%</span>)</span>
+                                <span>Intereses Proyectados (<span id="rowRateVal">1.5% mes</span>)</span>
                                 <span class="val" id="rowInterest">$0</span>
                             </div>
                             <div class="b-row highlight">
@@ -1373,21 +1616,32 @@
                     <td style="padding: 10px 14px; color: #334155;">Precio de Lista del Vehículo</td>
                     <td style="padding: 10px 14px; text-align: right; font-weight: bold;" id="printPrice">$0</td>
                 </tr>
-                <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px 14px; color: #334155;">Retoma de Vehículo Usado (Trade-In)</td>
+                <tr style="border-bottom: 1px solid #e2e8f0;" id="printTradeInRow">
+                    <td style="padding: 10px 14px; color: #334155;">
+                        <div>Retoma de Vehículo Usado (Trade-In)</div>
+                        <div style="font-size: 11px; color: #64748b;" id="printTradeInDetail">--</div>
+                    </td>
                     <td style="padding: 10px 14px; text-align: right; color: #b45309;" id="printTradeIn">-$0</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px 14px; color: #334155;">Pago Inicial Aportado</td>
+                    <td style="padding: 10px 14px; color: #334155;">Pago Inicial Vehicular</td>
                     <td style="padding: 10px 14px; text-align: right; color: #047857;" id="printDownPayment">-$0</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;" id="printFeesRow">
+                    <td style="padding: 10px 14px; color: #334155;">Gastos de Formalización y GPS Satelital</td>
+                    <td style="padding: 10px 14px; text-align: right; color: #0284c7;" id="printFees">+$0</td>
+                </tr>
+                <tr style="border-bottom: 2px solid #cbd5e1; background: #f8fafc; font-weight: bold;">
+                    <td style="padding: 10px 14px; color: #0f172a;">Desembolso Inicial Total (Efectivo Requerido)</td>
+                    <td style="padding: 10px 14px; text-align: right; color: #059669;" id="printInitialDisbursement">$0</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
                     <td style="padding: 10px 14px; color: #334155;">Monto Neto Financiado (Capital)</td>
                     <td style="padding: 10px 14px; text-align: right; font-weight: bold;" id="printPrincipal">$0</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px 14px; color: #334155;">Plazo y Tasa Estimada</td>
-                    <td style="padding: 10px 14px; text-align: right;" id="printTermApr">36 Meses @ 14% APR</td>
+                    <td style="padding: 10px 14px; color: #334155;">Plazo y Tasa Mensual Aplicada</td>
+                    <td style="padding: 10px 14px; text-align: right;" id="printTermApr">36 Meses @ 1.5% mensual (18% anual)</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
                     <td style="padding: 10px 14px; color: #334155;">Intereses Proyectados Estimados</td>
@@ -1451,12 +1705,32 @@
 
         let selectedVehicle = null;
         let carPrice = 36000;
-        let downPaymentPct = 20;
+        let downPaymentPct = 30; // Aligned with Admin recommendation (30%)
         let loanTermMonths = 36;
-        let aprRate = 14;
+        let monthlyRate = 1.5; // Aligned with Admin Tier 1 (1.5% mensual)
+        let aprRate = 18; // 1.5 * 12
         let tradeInActive = false;
         let tradeInValue = 0;
         let targetMonthlyBudget = 450;
+
+        // Formalization fees (Aligned with calcularCreditoPlan() in admin.html)
+        let includeFormalizationFees = true;
+        const feeGastosAdmin = 350;
+        const feeNotariaPlacas = 450;
+        const feeGpsAnual = 180;
+
+        // Trade-In condition diagnostics state (Aligned with calculateTradeIn() in admin.html)
+        let tradeInDiagnostic = {
+            model: '',
+            year: 2017,
+            km: 85000,
+            trans: 'Automática',
+            marketPrice: 8500,
+            repairCost: 0,
+            condMech: 'bueno',
+            condEsthet: 'bueno',
+            condElec: 'bueno'
+        };
 
         function formatVehicleRecord(v) {
             return {
@@ -1700,7 +1974,8 @@
         // --- CONTROLS EVENT HANDLERS ---
         function setDownPaymentPct(pct) {
             downPaymentPct = pct;
-            document.getElementById('downPaymentSlider').value = pct;
+            const slider = document.getElementById('downPaymentSlider');
+            if (slider) slider.value = pct;
             highlightPreset('downPaymentSlider', pct);
             recalculate();
         }
@@ -1717,40 +1992,159 @@
             recalculate();
         }
 
-        function setApr(rate) {
-            aprRate = rate;
-            document.getElementById('aprSlider').value = rate;
-            highlightPillByText(rate + '%');
+        function setMonthlyRate(rate) {
+            monthlyRate = parseFloat(rate);
+            aprRate = monthlyRate * 12;
+            const slider = document.getElementById('rateSlider');
+            if (slider) slider.value = rate;
+            highlightPillByText(rate.toFixed(1) + '%');
             recalculate();
         }
 
-        function onAprSliderChange(val) {
-            aprRate = parseFloat(val);
+        function onRateSliderChange(val) {
+            monthlyRate = parseFloat(val);
+            aprRate = monthlyRate * 12;
+            highlightPillByText(monthlyRate.toFixed(1) + '%');
             recalculate();
         }
 
+        function toggleFormalizationFees(forceState) {
+            if (typeof forceState === 'boolean') {
+                includeFormalizationFees = forceState;
+            } else {
+                includeFormalizationFees = !includeFormalizationFees;
+            }
+            const chk = document.getElementById('includeFeesCheck');
+            if (chk) chk.checked = includeFormalizationFees;
+            const detail = document.getElementById('formalizationFeesDetail');
+            if (detail) detail.style.opacity = includeFormalizationFees ? '1' : '0.4';
+            recalculate();
+        }
+
+        // --- TECHNICAL TRADE-IN AVALÚO ENGINE (Sincronizado con admin.html) ---
         function toggleTradeIn(forceState) {
             if (typeof forceState === 'boolean') {
                 tradeInActive = forceState;
             } else {
                 tradeInActive = !tradeInActive;
             }
-            document.getElementById('tradeInCheck').checked = tradeInActive;
-            const chkCash = document.getElementById('tradeInCheckCash');
-            if (chkCash) chkCash.checked = tradeInActive;
+            const chk = document.getElementById('tradeInCheck');
+            if (chk) chk.checked = tradeInActive;
 
-            document.getElementById('tradeInForm').style.display = tradeInActive ? 'block' : 'none';
-            if (!tradeInActive) {
-                tradeInValue = 0;
+            const form = document.getElementById('tradeInForm');
+            if (form) form.style.display = tradeInActive ? 'block' : 'none';
+
+            if (tradeInActive) {
+                calculateTradeInLive();
             } else {
-                tradeInValue = parseFloat(document.getElementById('tradeInValue').value) || 0;
+                tradeInValue = 0;
+                recalculate();
             }
+        }
+
+        function calculateTradeInLive() {
+            const model = document.getElementById('tradeInModel')?.value.trim() || 'Auto en Retoma';
+            const year = parseInt(document.getElementById('tradeInYear')?.value) || new Date().getFullYear();
+            const km = parseInt(document.getElementById('tradeInKm')?.value) || 0;
+            const trans = document.getElementById('tradeInTrans')?.value || 'Automática';
+            const marketPrice = parseFloat(document.getElementById('tradeInMarketPrice')?.value) || 0;
+            const repairCost = parseFloat(document.getElementById('tradeInRepairCost')?.value) || 0;
+            const cMech = document.getElementById('tradeInCondMech')?.value || 'bueno';
+            const cEsthet = document.getElementById('tradeInCondEsthet')?.value || 'bueno';
+            const cElec = document.getElementById('tradeInCondElec')?.value || 'bueno';
+
+            tradeInDiagnostic = {
+                model,
+                year,
+                km,
+                trans,
+                marketPrice,
+                repairCost,
+                condMech: cMech,
+                condEsthet: cEsthet,
+                condElec: cElec
+            };
+
+            // 1. Promediación por tramos de Año (Fórmula oficial admin.html)
+            let pMin = marketPrice * 0.85;
+            let pMax = marketPrice * 1.15;
+            let pAvg = marketPrice;
+            if (marketPrice > 0) {
+                if (year >= 2011 && year <= 2017) {
+                    pAvg = pMin + (pMax - pMin) * 0.60;
+                } else if (year >= 2018 && year <= 2023) {
+                    pAvg = pMin + (pMax - pMin) * 0.75;
+                } else if (year >= 2024) {
+                    pAvg = pMax;
+                }
+            }
+
+            // 2. Factor por Kilometraje (Tabla oficial de admin.html)
+            let kmFactor = 1.0;
+            if (year >= 2024) {
+                kmFactor = 1.0;
+            } else {
+                if (km <= 50000) {
+                    kmFactor = 0.95;
+                } else if (km <= 100000) {
+                    kmFactor = 0.88;
+                } else if (km <= 150000) {
+                    kmFactor = 0.80;
+                } else {
+                    kmFactor = 0.70;
+                }
+            }
+
+            // 3. Ponderación por Condición (Mecánica 50%, Estética 30%, Electrónica 20%)
+            const weights = { bueno: 1.0, regular: 0.92, grave: 0.80 };
+            const condFactor = ((weights[cMech] || 1.0) * 0.50) + ((weights[cEsthet] || 1.0) * 0.30) + ((weights[cElec] || 1.0) * 0.20);
+
+            // Badges en UI
+            const bMech = document.getElementById('badgeMech');
+            if (bMech) bMech.textContent = `${((weights[cMech] || 1.0) * 100).toFixed(0)}%`;
+            const bEst = document.getElementById('badgeEsthet');
+            if (bEst) bEst.textContent = `${((weights[cEsthet] || 1.0) * 100).toFixed(0)}%`;
+            const bElec = document.getElementById('badgeElec');
+            if (bElec) bElec.textContent = `${((weights[cElec] || 1.0) * 100).toFixed(0)}%`;
+
+            // 4. Algoritmo de Recepción Trade-In (Margen comercial de seguridad 12%)
+            const baseValue = pAvg * kmFactor * condFactor;
+            const marginRatio = 0.88; // 12% margen de retoma de Seminuevos
+            let calculatedTradeIn = (baseValue - repairCost) * marginRatio;
+            const floorMin = pMin * 0.40;
+            if (calculatedTradeIn < floorMin) calculatedTradeIn = floorMin;
+            if (calculatedTradeIn < 0) calculatedTradeIn = 0;
+
+            // Check manual override
+            const overrideInput = document.getElementById('tradeInValueOverride');
+            let effectiveVal = calculatedTradeIn;
+            if (overrideInput && overrideInput.value !== '' && !isNaN(parseFloat(overrideInput.value))) {
+                effectiveVal = Math.max(0, parseFloat(overrideInput.value));
+            }
+
+            tradeInValue = Math.round(effectiveVal);
+
+            // Actualizar Display en el formulario de retoma
+            const elDisp = document.getElementById('tradeInCalculatedDisplay');
+            if (elDisp) elDisp.textContent = `$ ${Math.round(calculatedTradeIn).toLocaleString()}`;
+
+            const elDetail = document.getElementById('tradeInFactorsDetail');
+            if (elDetail) {
+                elDetail.innerHTML = `Condición: <b>${(condFactor * 100).toFixed(0)}%</b> • Ajuste KM: <b>${(kmFactor * 100).toFixed(0)}%</b> • Margen Seminuevos: <b>12%</b>`;
+            }
+
             recalculate();
         }
 
-        function onTradeInValueChange() {
-            tradeInValue = parseFloat(document.getElementById('tradeInValue').value) || 0;
-            recalculate();
+        function onTradeInManualOverride() {
+            const overrideInput = document.getElementById('tradeInValueOverride');
+            if (!overrideInput || overrideInput.value === '') {
+                calculateTradeInLive();
+            } else {
+                const val = parseFloat(overrideInput.value) || 0;
+                tradeInValue = Math.max(0, Math.round(val));
+                recalculate();
+            }
         }
 
         function onBudgetSliderChange(val) {
@@ -1776,7 +2170,6 @@
                 if (p.textContent.includes(textSnippet)) {
                     p.classList.add('active');
                 } else {
-                    // Only deactivate siblings
                     const parent = p.parentElement;
                     if (parent && parent.contains(p) && p.textContent.includes(textSnippet.includes('Meses') ? 'Meses' : '%')) {
                         p.classList.remove('active');
@@ -1785,29 +2178,28 @@
             });
         }
 
-        // --- MATHEMATICAL ENGINE ---
-        // Formula: French amortization
-        function calculateAmortization(principal, annualRatePct, months) {
+        // --- MATHEMATICAL ENGINE (Fórmula Francesa de Amortización con Tasa Mensual) ---
+        function calculateAmortization(principal, monthlyRatePct, months) {
             if (principal <= 0 || months <= 0) return { monthly: 0, totalInterest: 0, totalPaid: 0 };
-            const r = (annualRatePct / 100) / 12;
-            if (r === 0) {
+            const i = (monthlyRatePct / 100);
+            if (i === 0) {
                 const m = principal / months;
                 return { monthly: m, totalInterest: 0, totalPaid: principal };
             }
-            const factor = Math.pow(1 + r, months);
-            const monthly = principal * (r * factor) / (factor - 1);
+            const factor = Math.pow(1 + i, months);
+            const monthly = principal * (i * factor) / (factor - 1);
             const totalPaid = monthly * months;
             const totalInterest = Math.max(0, totalPaid - principal);
             return { monthly, totalInterest, totalPaid };
         }
 
         // Reverse formula: Calculate max principal from target monthly payment
-        function calculatePrincipalFromMonthly(monthly, annualRatePct, months) {
+        function calculatePrincipalFromMonthly(monthly, monthlyRatePct, months) {
             if (monthly <= 0 || months <= 0) return 0;
-            const r = (annualRatePct / 100) / 12;
-            if (r === 0) return monthly * months;
-            const factor = Math.pow(1 + r, months);
-            return monthly * (factor - 1) / (r * factor);
+            const i = (monthlyRatePct / 100);
+            if (i === 0) return monthly * months;
+            const factor = Math.pow(1 + i, months);
+            return monthly * (factor - 1) / (i * factor);
         }
 
         // --- MAIN RECALCULATE ---
@@ -1815,22 +2207,36 @@
             // Price & deductions
             const effectivePrice = Math.max(0, carPrice);
             const effectiveTradeIn = tradeInActive ? Math.min(effectivePrice, Math.max(0, tradeInValue)) : 0;
-            const priceAfterTradeIn = Math.max(0, effectivePrice - effectiveTradeIn);
+            const netCarPrice = Math.max(0, effectivePrice - effectiveTradeIn);
 
-            const downPaymentAmount = Math.round(priceAfterTradeIn * (downPaymentPct / 100));
-            const principal = Math.max(0, priceAfterTradeIn - downPaymentAmount);
+            const downPaymentAmount = Math.round(netCarPrice * (downPaymentPct / 100));
+            const principal = Math.max(0, netCarPrice - downPaymentAmount);
 
-            // Calculation
-            const amort = calculateAmortization(principal, aprRate, loanTermMonths);
+            // Formalization fees (Admin sync)
+            const anosPlazo = loanTermMonths / 12;
+            const gpsTotal = feeGpsAnual * anosPlazo;
+            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
+            const initialDisbursement = downPaymentAmount + (includeFormalizationFees ? totalFees : 0);
+
+            // Calculation via French amortization with monthly rate
+            const amort = calculateAmortization(principal, monthlyRate, loanTermMonths);
 
             // UI Updates - Sliders and labels
-            document.getElementById('downPaymentDisplay').textContent = `$${downPaymentAmount.toLocaleString()} (${downPaymentPct}%)`;
-            document.getElementById('termDisplay').textContent = `${loanTermMonths} Meses (${(loanTermMonths / 12).toFixed(1).replace('.0', '')} Años)`;
-            document.getElementById('aprDisplay').textContent = `${aprRate}% Anual`;
+            const elDownDisp = document.getElementById('downPaymentDisplay');
+            if (elDownDisp) elDownDisp.textContent = `$${downPaymentAmount.toLocaleString()} (${downPaymentPct}%)`;
+
+            const elTermDisp = document.getElementById('termDisplay');
+            if (elTermDisp) elTermDisp.textContent = `${loanTermMonths} Meses (${anosPlazo.toFixed(1).replace('.0', '')} Años)`;
+
+            const elRateDisp = document.getElementById('rateDisplay');
+            if (elRateDisp) elRateDisp.textContent = `${monthlyRate.toFixed(1)}% Mensual (${(monthlyRate * 12).toFixed(0)}% Anual)`;
+
+            const elGpsBadge = document.getElementById('feeGpsBadge');
+            if (elGpsBadge) elGpsBadge.textContent = `GPS Satelital: $${gpsTotal.toLocaleString()} (${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'})`;
 
             // Breakdown table rows
             document.getElementById('rowCarPrice').textContent = `$${effectivePrice.toLocaleString()}`;
-            
+
             const trRow = document.getElementById('rowTradeInWrap');
             if (tradeInActive && effectiveTradeIn > 0) {
                 trRow.style.display = 'flex';
@@ -1839,17 +2245,39 @@
                 trRow.style.display = 'none';
             }
 
+            const netRow = document.getElementById('rowNetCarWrap');
+            if (tradeInActive && effectiveTradeIn > 0) {
+                netRow.style.display = 'flex';
+                document.getElementById('rowNetCar').textContent = `$${netCarPrice.toLocaleString()}`;
+            } else {
+                netRow.style.display = 'none';
+            }
+
             document.getElementById('rowDownPayment').textContent = `-$${downPaymentAmount.toLocaleString()}`;
+
+            const feesRow = document.getElementById('rowFeesWrap');
+            const initDisbRow = document.getElementById('rowInitialDisbursementWrap');
+            if (includeFormalizationFees && currentPaymentType === 'finance') {
+                feesRow.style.display = 'flex';
+                document.getElementById('rowFees').textContent = `+$${totalFees.toLocaleString()}`;
+                initDisbRow.style.display = 'flex';
+                document.getElementById('rowInitialDisbursement').textContent = `$${initialDisbursement.toLocaleString()}`;
+            } else {
+                feesRow.style.display = 'none';
+                initDisbRow.style.display = 'flex';
+                document.getElementById('rowInitialDisbursement').textContent = `$${downPaymentAmount.toLocaleString()}`;
+            }
+
             document.getElementById('rowPrincipal').textContent = `$${Math.round(principal).toLocaleString()}`;
-            document.getElementById('rowAprVal').textContent = `${aprRate}%`;
+            document.getElementById('rowRateVal').textContent = `${monthlyRate.toFixed(1)}% mes`;
             document.getElementById('rowInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
 
             if (currentPaymentType === 'finance') {
                 // Monthly big display
                 document.getElementById('mainPaymentDisplay').innerHTML = `$ ${Math.round(amort.monthly).toLocaleString()} <span class="sum-period">/ mes</span>`;
-                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas al ${aprRate}% APR`;
+                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas al ${monthlyRate.toFixed(1)}% mensual`;
 
-                const totalInvestment = downPaymentAmount + effectiveTradeIn + amort.totalPaid;
+                const totalInvestment = initialDisbursement + effectiveTradeIn + amort.totalPaid;
                 document.getElementById('rowTotalAmount').textContent = `$${Math.round(totalInvestment).toLocaleString()}`;
 
                 // Proportional bar
@@ -1876,14 +2304,13 @@
             }
 
             // WhatsApp link generation
-            buildWhatsAppLink(effectivePrice, effectiveTradeIn, downPaymentAmount, principal, amort);
+            buildWhatsAppLink(effectivePrice, effectiveTradeIn, downPaymentAmount, totalFees, initialDisbursement, principal, amort);
         }
 
         // --- BUYING POWER CALCULATIONS & COMPATIBLE CARS ---
         function updateBudgetCompatibleCars() {
-            // Reverse principal
-            const maxPrincipal = calculatePrincipalFromMonthly(targetMonthlyBudget, aprRate, loanTermMonths);
-            // Assuming down payment is downPaymentPct
+            // Reverse principal using monthly rate
+            const maxPrincipal = calculatePrincipalFromMonthly(targetMonthlyBudget, monthlyRate, loanTermMonths);
             const maxPriceAfterTrade = maxPrincipal / (1 - (downPaymentPct / 100));
             const maxTotalCarPrice = Math.round(maxPriceAfterTrade + (tradeInActive ? tradeInValue : 0));
 
@@ -1912,11 +2339,10 @@
             }
 
             qualifying.forEach(car => {
-                // Calculate its exact monthly quote
                 const pAfterTr = Math.max(0, car.price - (tradeInActive ? tradeInValue : 0));
                 const dwn = pAfterTr * (downPaymentPct / 100);
                 const princ = Math.max(0, pAfterTr - dwn);
-                const am = calculateAmortization(princ, aprRate, loanTermMonths);
+                const am = calculateAmortization(princ, monthlyRate, loanTermMonths);
                 const mQuote = Math.round(am.monthly);
 
                 const card = document.createElement('div');
@@ -1942,7 +2368,7 @@
         }
 
         // --- WHATSAPP CONVERSION CTA GENERATOR ---
-        function buildWhatsAppLink(carPrice, tradeIn, downPayment, principal, amort) {
+        function buildWhatsAppLink(carPrice, tradeIn, downPayment, totalFees, initialDisbursement, principal, amort) {
             const btn = document.getElementById('btnWhatsappQuote');
             if (!btn) return;
 
@@ -1951,25 +2377,40 @@
                 : (selectedVehicle ? selectedVehicle.title : `Vehículo de $${carPrice.toLocaleString()}`);
 
             let text = `¡Hola Seminuevos! Estuve usando su Estimador de Pago y me interesa evaluar este plan:\n\n`;
-            text += `🚗 *Vehículo:* ${carName}\n`;
-            text += `💵 *Precio del auto:* $${carPrice.toLocaleString()}\n`;
+            text += `🚗 *Vehículo de Interés:* ${carName}\n`;
+            text += `💵 *Precio de Lista:* $${carPrice.toLocaleString()}\n`;
 
-            if (tradeIn > 0) {
-                const model = document.getElementById('tradeInModel').value || 'Auto actual';
-                text += `🔄 *Retoma estimada (${model}):* -$${tradeIn.toLocaleString()}\n`;
+            if (tradeIn > 0 && tradeInActive) {
+                const mod = tradeInDiagnostic.model || document.getElementById('tradeInModel')?.value || 'Auto en retoma';
+                const yr = tradeInDiagnostic.year || document.getElementById('tradeInYear')?.value || '';
+                const kmVal = (tradeInDiagnostic.km || document.getElementById('tradeInKm')?.value || 0).toLocaleString();
+                const mech = tradeInDiagnostic.condMech || 'bueno';
+                const esthet = tradeInDiagnostic.condEsthet || 'bueno';
+                const elec = tradeInDiagnostic.condElec || 'bueno';
+
+                text += `\n🔄 *VEHÍCULO EN PARTE DE PAGO (TRADE-IN):*\n`;
+                text += `• *Auto:* ${mod} (${yr})\n`;
+                text += `• *Kilometraje:* ${kmVal} km • Transmisión: ${tradeInDiagnostic.trans}\n`;
+                text += `• *Diagnóstico:* Mecánica: ${mech} | Estética: ${esthet} | Eléctrico: ${elec}\n`;
+                text += `• *Tasación Pre-Aprobada:* -$${tradeIn.toLocaleString()}\n`;
             }
 
             if (currentPaymentType === 'finance') {
-                text += `💰 *Pago Inicial propuesto:* $${downPayment.toLocaleString()} (${downPaymentPct}%)\n`;
-                text += `📅 *Plazo deseado:* ${loanTermMonths} Meses\n`;
-                text += `📊 *Tasa APR ref:* ${aprRate}%\n`;
-                text += `✨ *Cuota mensual estimada:* $${Math.round(amort.monthly).toLocaleString()}/mes\n\n`;
-                text += `Quisiera saber los requisitos de financiamiento y verificar la disponibilidad. ¡Muchas gracias!`;
+                text += `\n📊 *PLAN DE FINANCIAMIENTO:*\n`;
+                text += `💰 *Pago Inicial Vehicular:* $${downPayment.toLocaleString()} (${downPaymentPct}%)\n`;
+                if (includeFormalizationFees) {
+                    text += `📑 *Gastos Formalización & GPS:* +$${totalFees.toLocaleString()}\n`;
+                    text += `💳 *Desembolso Inicial Total:* $${initialDisbursement.toLocaleString()}\n`;
+                }
+                text += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
+                text += `📈 *Tasa Mensual:* ${monthlyRate.toFixed(1)}% / mes (${(monthlyRate * 12).toFixed(0)}% anual)\n`;
+                text += `✨ *Cuota Mensual Estimada:* $${Math.round(amort.monthly).toLocaleString()} / mes\n\n`;
+                text += `Quisiera agendar una cita en su sede para revisión de la retoma y formalizar la pre-aprobación.`;
             } else {
                 const totalCash = carPrice - tradeIn;
-                text += `🤝 *Modalidad:* Pago de Contado (Cash)\n`;
-                text += `🏷️ *Monto neto final:* $${totalCash.toLocaleString()}\n\n`;
-                text += `Quisiera consultar el procedimiento de compra inmediata y formas de pago.`;
+                text += `\n🤝 *Modalidad:* Pago de Contado (Cash)\n`;
+                text += `🏷️ *Monto Neto a Desembolsar:* $${totalCash.toLocaleString()}\n\n`;
+                text += `Quisiera consultar las condiciones de entrega inmediata y formas de pago.`;
             }
 
             const url = `https://wa.me/584248700438?text=${encodeURIComponent(text)}`;
@@ -1993,16 +2434,43 @@
             document.getElementById('printVehicleSpecs').textContent = `Precio de Lista: $${carPrice.toLocaleString()} | Condición: ${(selectedVehicle && selectedVehicle.condition === '0km') ? '0KM' : 'Seminuevo'} | Vigencia: 7 días`;
 
             document.getElementById('printPrice').textContent = `$${carPrice.toLocaleString()}`;
-            document.getElementById('printTradeIn').textContent = tradeInActive ? `-$${tradeInValue.toLocaleString()}` : '$0.00';
-            
+
+            const trRow = document.getElementById('printTradeInRow');
+            if (tradeInActive && tradeInValue > 0) {
+                if (trRow) trRow.style.display = 'table-row';
+                document.getElementById('printTradeIn').textContent = `-$${tradeInValue.toLocaleString()}`;
+                const mod = tradeInDiagnostic.model || document.getElementById('tradeInModel')?.value || 'Vehículo';
+                const yr = tradeInDiagnostic.year || '';
+                const km = (tradeInDiagnostic.km || 0).toLocaleString();
+                document.getElementById('printTradeInDetail').textContent = `${mod} (${yr}) • ${km} km • Diagnóstico: Mec: ${tradeInDiagnostic.condMech}, Est: ${tradeInDiagnostic.condEsthet}, Elec: ${tradeInDiagnostic.condElec}`;
+            } else {
+                if (trRow) trRow.style.display = 'none';
+            }
+
             const pAfterTrade = Math.max(0, carPrice - (tradeInActive ? tradeInValue : 0));
             const dwn = Math.round(pAfterTrade * (downPaymentPct / 100));
             const princ = Math.max(0, pAfterTrade - dwn);
-            const amort = calculateAmortization(princ, aprRate, loanTermMonths);
+            const anosPlazo = loanTermMonths / 12;
+            const gpsTotal = feeGpsAnual * anosPlazo;
+            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
+            const initialDisbursement = dwn + (includeFormalizationFees ? totalFees : 0);
+            const amort = calculateAmortization(princ, monthlyRate, loanTermMonths);
 
             document.getElementById('printDownPayment').textContent = `-$${dwn.toLocaleString()} (${downPaymentPct}%)`;
+
+            const feesRow = document.getElementById('printFeesRow');
+            if (feesRow) {
+                feesRow.style.display = (includeFormalizationFees && currentPaymentType === 'finance') ? 'table-row' : 'none';
+                document.getElementById('printFees').textContent = `+$${totalFees.toLocaleString()}`;
+            }
+
+            const initDisbEl = document.getElementById('printInitialDisbursement');
+            if (initDisbEl) {
+                initDisbEl.textContent = `$${initialDisbursement.toLocaleString()}`;
+            }
+
             document.getElementById('printPrincipal').textContent = `$${Math.round(princ).toLocaleString()}`;
-            document.getElementById('printTermApr').textContent = `${loanTermMonths} Meses @ ${aprRate}% APR`;
+            document.getElementById('printTermApr').textContent = `${loanTermMonths} Meses @ ${monthlyRate.toFixed(1)}% mensual (${(monthlyRate * 12).toFixed(0)}% anual)`;
             document.getElementById('printInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
 
             if (currentPaymentType === 'finance') {
@@ -2028,10 +2496,12 @@
         window.setDownPaymentPct = setDownPaymentPct;
         window.onDownPaymentSliderChange = onDownPaymentSliderChange;
         window.setLoanTerm = setLoanTerm;
-        window.setApr = setApr;
-        window.onAprSliderChange = onAprSliderChange;
+        window.setMonthlyRate = setMonthlyRate;
+        window.onRateSliderChange = onRateSliderChange;
+        window.toggleFormalizationFees = toggleFormalizationFees;
         window.toggleTradeIn = toggleTradeIn;
-        window.onTradeInValueChange = onTradeInValueChange;
+        window.calculateTradeInLive = calculateTradeInLive;
+        window.onTradeInManualOverride = onTradeInManualOverride;
         window.onBudgetSliderChange = onBudgetSliderChange;
         window.printQuoteSheet = printQuoteSheet;
         window.recalculate = recalculate;
