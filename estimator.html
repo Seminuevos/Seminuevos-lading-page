@@ -858,6 +858,74 @@
             color: #cbd5e1;
         }
 
+        .fee-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .fee-input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fee-input-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .fee-input-label {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fee-number-input {
+            padding: 8px 10px;
+            font-size: 0.86rem;
+            font-weight: 700;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 8px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            width: 100%;
+            outline: none;
+        }
+
+        .fee-number-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .fee-subtotal-bar {
+            margin-top: 12px;
+            padding: 9px 14px;
+            background: rgba(56, 189, 248, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: #e2e8f0;
+            width: 100%;
+        }
+
+        .fee-subtotal-bar strong {
+            color: #38bdf8;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.95rem;
+        }
+
         /* ===== STICKY SUMMARY CARD (RIGHT COLUMN) ===== */
         .sticky-summary-wrap {
             position: sticky;
@@ -1472,10 +1540,33 @@
                                     <span class="switch-slider"></span>
                                 </label>
                             </div>
-                            <div class="formalization-breakdown" id="formalizationFeesDetail">
-                                <div class="fee-badge">Gastos Admin: $350</div>
-                                <div class="fee-badge">Notaría & Placas: $450</div>
-                                <div class="fee-badge" id="feeGpsBadge">GPS Satelital: $180/año</div>
+                            <div class="formalization-breakdown" id="formalizationFeesDetail" style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div style="font-size: 0.76rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-sliders-h"></i> Montos personalizables por trámite:
+                                    </div>
+                                    <button type="button" class="preset-pill" onclick="resetFormalizationFees()" style="padding: 2px 8px; font-size: 0.68rem;">
+                                        <i class="fas fa-undo"></i> Restablecer
+                                    </button>
+                                </div>
+                                <div class="fee-input-grid">
+                                    <div class="fee-input-col">
+                                        <label class="fee-input-label" for="inputFeeAdmin"><i class="fas fa-file-invoice-dollar" style="color: #38bdf8;"></i> Gastos Admin ($):</label>
+                                        <input type="number" id="inputFeeAdmin" class="est-input fee-number-input" value="350" min="0" step="50" oninput="onFeeInputsChange()">
+                                    </div>
+                                    <div class="fee-input-col">
+                                        <label class="fee-input-label" for="inputFeeNotaria"><i class="fas fa-stamp" style="color: #38bdf8;"></i> Notaría & Placas ($):</label>
+                                        <input type="number" id="inputFeeNotaria" class="est-input fee-number-input" value="450" min="0" step="50" oninput="onFeeInputsChange()">
+                                    </div>
+                                    <div class="fee-input-col">
+                                        <label class="fee-input-label" for="inputFeeGps"><i class="fas fa-satellite-dish" style="color: #38bdf8;"></i> GPS Satelital ($/año):</label>
+                                        <input type="number" id="inputFeeGps" class="est-input fee-number-input" value="180" min="0" step="10" oninput="onFeeInputsChange()">
+                                    </div>
+                                </div>
+                                <div class="fee-subtotal-bar" id="feeSubtotalBar">
+                                    <span>Total Trámites: <strong id="feeSubtotalSum">$1,340</strong></span>
+                                    <span style="font-size: 0.72rem; color: #94a3b8;" id="feeGpsCalcNote">(GPS $180/año × 3 años = $540)</span>
+                                </div>
                             </div>
                         </div>
 
@@ -1713,11 +1804,11 @@
         let tradeInValue = 0;
         let targetMonthlyBudget = 450;
 
-        // Formalization fees (Aligned with calcularCreditoPlan() in admin.html)
+        // Formalization fees (Aligned with calcularCreditoPlan() in admin.html - Customizable)
         let includeFormalizationFees = true;
-        const feeGastosAdmin = 350;
-        const feeNotariaPlacas = 450;
-        const feeGpsAnual = 180;
+        let feeGastosAdmin = 350;
+        let feeNotariaPlacas = 450;
+        let feeGpsAnual = 180;
 
         // Trade-In condition diagnostics state (Aligned with calculateTradeIn() in admin.html)
         let tradeInDiagnostic = {
@@ -2025,7 +2116,30 @@
             const chk = document.getElementById('includeFeesCheck');
             if (chk) chk.checked = includeFormalizationFees;
             const detail = document.getElementById('formalizationFeesDetail');
-            if (detail) detail.style.opacity = includeFormalizationFees ? '1' : '0.4';
+            if (detail) {
+                detail.style.opacity = includeFormalizationFees ? '1' : '0.4';
+                detail.style.pointerEvents = includeFormalizationFees ? 'auto' : 'none';
+            }
+            recalculate();
+        }
+
+        function onFeeInputsChange() {
+            feeGastosAdmin = Math.max(0, parseFloat(document.getElementById('inputFeeAdmin')?.value) || 0);
+            feeNotariaPlacas = Math.max(0, parseFloat(document.getElementById('inputFeeNotaria')?.value) || 0);
+            feeGpsAnual = Math.max(0, parseFloat(document.getElementById('inputFeeGps')?.value) || 0);
+            recalculate();
+        }
+
+        function resetFormalizationFees() {
+            feeGastosAdmin = 350;
+            feeNotariaPlacas = 450;
+            feeGpsAnual = 180;
+            const inAdmin = document.getElementById('inputFeeAdmin');
+            if (inAdmin) inAdmin.value = 350;
+            const inNotaria = document.getElementById('inputFeeNotaria');
+            if (inNotaria) inNotaria.value = 450;
+            const inGps = document.getElementById('inputFeeGps');
+            if (inGps) inGps.value = 180;
             recalculate();
         }
 
@@ -2222,11 +2336,17 @@
             const downPaymentAmount = Math.round(netCarPrice * (downPaymentPct / 100));
             const principal = Math.max(0, netCarPrice - downPaymentAmount);
 
-            // Formalization fees (Admin sync)
+            // Formalization fees (Admin sync & customizable)
             const anosPlazo = loanTermMonths / 12;
             const gpsTotal = feeGpsAnual * anosPlazo;
             const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
             const initialDisbursement = downPaymentAmount + (includeFormalizationFees ? totalFees : 0);
+
+            // Update subtotal bar & detail labels
+            const elFeeSubtotal = document.getElementById('feeSubtotalSum');
+            if (elFeeSubtotal) elFeeSubtotal.textContent = `$${Math.round(totalFees).toLocaleString()}`;
+            const elFeeNote = document.getElementById('feeGpsCalcNote');
+            if (elFeeNote) elFeeNote.textContent = `(GPS $${feeGpsAnual}/año × ${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'} = $${Math.round(gpsTotal).toLocaleString()})`;
 
             // Calculation via French amortization with monthly rate
             const amort = calculateAmortization(principal, monthlyRate, loanTermMonths);
@@ -2240,9 +2360,6 @@
 
             const elRateDisp = document.getElementById('rateDisplay');
             if (elRateDisp) elRateDisp.textContent = `${monthlyRate.toFixed(1)}% Mensual (${(monthlyRate * 12).toFixed(0)}% Anual)`;
-
-            const elGpsBadge = document.getElementById('feeGpsBadge');
-            if (elGpsBadge) elGpsBadge.textContent = `GPS Satelital: $${gpsTotal.toLocaleString()} (${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'})`;
 
             // Breakdown table rows
             document.getElementById('rowCarPrice').textContent = `$${effectivePrice.toLocaleString()}`;
