@@ -1507,21 +1507,30 @@
                             </div>
                         </div>
 
-                        <!-- Monthly Rate / Tasa Mensual (Sincronizado con Admin) -->
+                        <!-- Est. Credit Score / Perfil Crediticio Estimado -->
                         <div class="param-group" style="margin-bottom: 0;">
                             <div class="param-header">
                                 <span class="param-label">
-                                    <i class="fas fa-percentage" style="color: #F59E0B;"></i> Tasa de Interés Mensual (% Mensual)
+                                    <i class="fas fa-user-check" style="color: #F59E0B;"></i> Perfil Crediticio Estimado (Est. Credit Score)*
                                 </span>
-                                <span class="param-value-pill" id="rateDisplay">1.5% Mensual (18% Anual)</span>
+                                <span class="param-value-pill" id="creditScoreDisplay" style="color: #6ee7b7; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.15); font-weight: 700;">
+                                    Excelente (720+)
+                                </span>
                             </div>
 
-                            <input type="range" id="rateSlider" class="est-slider" min="1.0" max="3.5" step="0.1" value="1.5" oninput="onRateSliderChange(this.value)">
+                            <input type="range" id="creditScoreSlider" class="est-slider" min="1" max="4" step="1" value="1" oninput="onCreditScoreSliderChange(this.value)">
 
-                            <div class="preset-pills">
-                                <button type="button" class="preset-pill active" onclick="setMonthlyRate(1.5)">1.5% (Tier 1 Preferencial)</button>
-                                <button type="button" class="preset-pill" onclick="setMonthlyRate(2.0)">2.0% (Tier 1 Estándar)</button>
-                                <button type="button" class="preset-pill" onclick="setMonthlyRate(2.5)">2.5% (Tier 2 Flexible)</button>
+                            <div class="preset-pills" id="creditScorePills" style="margin-top: 8px;">
+                                <button type="button" class="preset-pill active" onclick="setCreditScoreTier('excelente')">Excelente (720+)</button>
+                                <button type="button" class="preset-pill" onclick="setCreditScoreTier('bueno')">Bueno (660-719)</button>
+                                <button type="button" class="preset-pill" onclick="setCreditScoreTier('aceptable')">Aceptable (580-659)</button>
+                                <button type="button" class="preset-pill" onclick="setCreditScoreTier('construccion')">En Construcción (520-579)</button>
+                            </div>
+
+                            <!-- Notificación de elegibilidad (Estilo Est. Credit Score) -->
+                            <div id="creditScoreWarning" style="display: none; margin-top: 12px; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; font-size: 0.78rem; color: #fbbf24; align-items: center; gap: 10px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 1.1rem; flex-shrink: 0; color: #f59e0b;"></i>
+                                <span>Para perfiles en construcción (520 - 579), la pre-aprobación está sujeta a verificación en mesa de crédito o inicial reforzado.</span>
                             </div>
                         </div>
 
@@ -1588,7 +1597,7 @@
                                 $ 0 <span class="sum-period">/ mes</span>
                             </div>
                             <div class="sum-subtext" id="mainPaymentSubtext">
-                                Basado en amortización francesa con tasa mensual
+                                Estimado según plazo y perfil crediticio seleccionado
                             </div>
                         </div>
 
@@ -1597,7 +1606,7 @@
                             <div class="prop-bar">
                                 <div class="prop-seg-down" id="propSegDown" style="width: 25%;" title="Inicial"></div>
                                 <div class="prop-seg-principal" id="propSegPrincipal" style="width: 55%;" title="Capital Financiado"></div>
-                                <div class="prop-seg-interest" id="propSegInterest" style="width: 20%;" title="Intereses"></div>
+                                <div class="prop-seg-interest" id="propSegInterest" style="width: 20%;" title="Costo Financiero"></div>
                             </div>
                             <div class="prop-legend">
                                 <div class="legend-item">
@@ -1610,7 +1619,7 @@
                                 </div>
                                 <div class="legend-item">
                                     <div class="legend-dot" style="background: var(--est-amber);"></div>
-                                    <span>Intereses: <b id="legInterest">$0</b></span>
+                                    <span>Costo Financiero: <b id="legInterest">$0</b></span>
                                 </div>
                             </div>
                         </div>
@@ -1646,7 +1655,7 @@
                                 <span class="val" id="rowPrincipal">$0</span>
                             </div>
                             <div class="b-row" id="rowInterestWrap">
-                                <span>Intereses Proyectados (<span id="rowRateVal">1.5% mes</span>)</span>
+                                <span>Costo de Financiamiento Proyectado</span>
                                 <span class="val" id="rowInterest">$0</span>
                             </div>
                             <div class="b-row highlight">
@@ -1731,11 +1740,11 @@
                     <td style="padding: 10px 14px; text-align: right; font-weight: bold;" id="printPrincipal">$0</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px 14px; color: #334155;">Plazo y Tasa Mensual Aplicada</td>
-                    <td style="padding: 10px 14px; text-align: right;" id="printTermApr">36 Meses @ 1.5% mensual (18% anual)</td>
+                    <td style="padding: 10px 14px; color: #334155;">Plazo y Perfil Crediticio Estimado</td>
+                    <td style="padding: 10px 14px; text-align: right;" id="printTermApr">36 Meses • Perfil Excelente (720+)</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 10px 14px; color: #334155;">Intereses Proyectados Estimados</td>
+                    <td style="padding: 10px 14px; color: #334155;">Cargos de Financiamiento Proyectados</td>
                     <td style="padding: 10px 14px; text-align: right;" id="printInterest">$0</td>
                 </tr>
                 <tr style="background: #f1f5f9; font-weight: bold; font-size: 16px;">
@@ -2091,20 +2100,102 @@
             recalculate();
         }
 
-        function setMonthlyRate(rate) {
-            monthlyRate = parseFloat(rate);
+        // --- EST. CREDIT SCORE ENGINE (Sincronizado con Mesa de Crédito) ---
+        const creditScoreTiers = {
+            'excelente': {
+                name: 'Excelente (720+)',
+                rate: 1.5,
+                color: '#6ee7b7',
+                border: 'rgba(16, 185, 129, 0.4)',
+                bg: 'rgba(16, 185, 129, 0.15)',
+                sliderVal: 1,
+                warning: false
+            },
+            'bueno': {
+                name: 'Bueno (660-719)',
+                rate: 2.0,
+                color: '#93c5fd',
+                border: 'rgba(39, 92, 234, 0.4)',
+                bg: 'rgba(39, 92, 234, 0.15)',
+                sliderVal: 2,
+                warning: false
+            },
+            'aceptable': {
+                name: 'Aceptable (580-659)',
+                rate: 2.5,
+                color: '#fde047',
+                border: 'rgba(234, 179, 8, 0.4)',
+                bg: 'rgba(234, 179, 8, 0.15)',
+                sliderVal: 3,
+                warning: false
+            },
+            'construccion': {
+                name: 'En Construcción (520-579)',
+                rate: 3.0,
+                color: '#f87171',
+                border: 'rgba(239, 68, 68, 0.4)',
+                bg: 'rgba(239, 68, 68, 0.15)',
+                sliderVal: 4,
+                warning: true
+            }
+        };
+
+        let currentCreditTier = 'excelente';
+
+        function setCreditScoreTier(tierKey) {
+            const tier = creditScoreTiers[tierKey] || creditScoreTiers['excelente'];
+            currentCreditTier = tierKey;
+            monthlyRate = tier.rate;
             aprRate = monthlyRate * 12;
-            const slider = document.getElementById('rateSlider');
-            if (slider) slider.value = rate;
-            highlightPillByText(rate.toFixed(1) + '%');
+
+            const disp = document.getElementById('creditScoreDisplay');
+            if (disp) {
+                disp.textContent = tier.name;
+                disp.style.color = tier.color;
+                disp.style.borderColor = tier.border;
+                disp.style.background = tier.bg;
+            }
+
+            const slider = document.getElementById('creditScoreSlider');
+            if (slider) slider.value = tier.sliderVal;
+
+            const pills = document.querySelectorAll('#creditScorePills .preset-pill');
+            pills.forEach((p, idx) => {
+                if (idx + 1 === tier.sliderVal) {
+                    p.classList.add('active');
+                } else {
+                    p.classList.remove('active');
+                }
+            });
+
+            const warn = document.getElementById('creditScoreWarning');
+            if (warn) {
+                warn.style.display = tier.warning ? 'flex' : 'none';
+            }
+
             recalculate();
         }
 
+        function onCreditScoreSliderChange(val) {
+            const v = parseInt(val, 10);
+            const keys = ['excelente', 'bueno', 'aceptable', 'construccion'];
+            const chosenKey = keys[v - 1] || 'excelente';
+            setCreditScoreTier(chosenKey);
+        }
+
+        function getCreditScoreName() {
+            return creditScoreTiers[currentCreditTier]?.name || 'Excelente (720+)';
+        }
+
+        function setMonthlyRate(rate) {
+            if (rate <= 1.6) setCreditScoreTier('excelente');
+            else if (rate <= 2.1) setCreditScoreTier('bueno');
+            else if (rate <= 2.6) setCreditScoreTier('aceptable');
+            else setCreditScoreTier('construccion');
+        }
+
         function onRateSliderChange(val) {
-            monthlyRate = parseFloat(val);
-            aprRate = monthlyRate * 12;
-            highlightPillByText(monthlyRate.toFixed(1) + '%');
-            recalculate();
+            setMonthlyRate(parseFloat(val));
         }
 
         function toggleFormalizationFees(forceState) {
@@ -2358,8 +2449,8 @@
             const elTermDisp = document.getElementById('termDisplay');
             if (elTermDisp) elTermDisp.textContent = `${loanTermMonths} Meses (${anosPlazo.toFixed(1).replace('.0', '')} Años)`;
 
-            const elRateDisp = document.getElementById('rateDisplay');
-            if (elRateDisp) elRateDisp.textContent = `${monthlyRate.toFixed(1)}% Mensual (${(monthlyRate * 12).toFixed(0)}% Anual)`;
+            const elCreditDisp = document.getElementById('creditScoreDisplay');
+            if (elCreditDisp) elCreditDisp.textContent = getCreditScoreName();
 
             // Breakdown table rows
             document.getElementById('rowCarPrice').textContent = `$${effectivePrice.toLocaleString()}`;
@@ -2401,13 +2492,14 @@
             }
 
             document.getElementById('rowPrincipal').textContent = `$${Math.round(principal).toLocaleString()}`;
-            document.getElementById('rowRateVal').textContent = `${monthlyRate.toFixed(1)}% mes`;
+            const elRateVal = document.getElementById('rowRateVal');
+            if (elRateVal) elRateVal.textContent = '';
             document.getElementById('rowInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
 
             if (currentPaymentType === 'finance') {
                 // Monthly big display
                 document.getElementById('mainPaymentDisplay').innerHTML = `$ ${Math.round(amort.monthly).toLocaleString()} <span class="sum-period">/ mes</span>`;
-                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas al ${monthlyRate.toFixed(1)}% mensual`;
+                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas · Perfil: ${getCreditScoreName()}`;
 
                 const totalInvestment = initialDisbursement + effectiveTradeIn + amort.totalPaid;
                 document.getElementById('rowTotalAmount').textContent = `$${Math.round(totalInvestment).toLocaleString()}`;
@@ -2537,7 +2629,7 @@
                     text += `💳 *Desembolso Inicial Total:* $${initialDisbursement.toLocaleString()}\n`;
                 }
                 text += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
-                text += `📈 *Tasa Mensual:* ${monthlyRate.toFixed(1)}% / mes (${(monthlyRate * 12).toFixed(0)}% anual)\n`;
+                text += `👤 *Perfil Crediticio Estimado:* ${getCreditScoreName()}\n`;
                 text += `✨ *Cuota Mensual Estimada:* $${Math.round(amort.monthly).toLocaleString()} / mes\n\n`;
                 text += `Quisiera agendar una cita en su sede para revisión de la retoma y formalizar la pre-aprobación.`;
             } else {
@@ -2604,7 +2696,7 @@
             }
 
             document.getElementById('printPrincipal').textContent = `$${Math.round(princ).toLocaleString()}`;
-            document.getElementById('printTermApr').textContent = `${loanTermMonths} Meses @ ${monthlyRate.toFixed(1)}% mensual (${(monthlyRate * 12).toFixed(0)}% anual)`;
+            document.getElementById('printTermApr').textContent = `${loanTermMonths} Meses • Perfil: ${getCreditScoreName()}`;
             document.getElementById('printInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
 
             if (currentPaymentType === 'finance') {
@@ -2630,6 +2722,8 @@
         window.setDownPaymentPct = setDownPaymentPct;
         window.onDownPaymentSliderChange = onDownPaymentSliderChange;
         window.setLoanTerm = setLoanTerm;
+        window.setCreditScoreTier = setCreditScoreTier;
+        window.onCreditScoreSliderChange = onCreditScoreSliderChange;
         window.setMonthlyRate = setMonthlyRate;
         window.onRateSliderChange = onRateSliderChange;
         window.toggleFormalizationFees = toggleFormalizationFees;
