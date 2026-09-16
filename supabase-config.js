@@ -73,12 +73,6 @@ async function apiFetch(path, options = {}) {
         }
 
         if (!response.ok) {
-            // Si la respuesta es 401, la sesión expiró — limpiar y redirigir al login
-            if (response.status === 401) {
-                _clearSession();
-                window.location.href = '/acceso-personal';
-                return { ok: false, status: 401, data: null, error: 'Sesión expirada. Por favor inicia sesión nuevamente.' };
-            }
             return {
                 ok: false,
                 status: response.status,

@@ -35,6 +35,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Formato de correo inválido' });
     }
 
+    if (!supabase) {
+        return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
+    }
+
     try {
         // Buscar usuario en agency_users con service_role (sin RLS limitaciones)
         const { data: user, error } = await supabase

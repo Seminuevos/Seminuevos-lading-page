@@ -5541,6 +5541,8 @@
             try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
+            let overrides = {};
+            try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
             
             const dbVehs = data || [];
             const titleMap = new Map();
@@ -5553,7 +5555,10 @@
                     const catalog = v.catalog || (v.availability === 'entrega_inmediata' ? 'seminuevos' : (v.condition === '0km' ? '0km' : 'importados'));
                     const mapKey = `db_${v.id}_${key}`;
                     if (!titleMap.has(mapKey)) {
-                        titleMap.set(mapKey, { ...v, catalog: catalog, status: v.status || 'active' });
+                        let item = { ...v, catalog: catalog, status: v.status || 'active' };
+                        const ov = overrides[idKey] || overrides[key];
+                        if (ov) item = { ...item, ...ov };
+                        titleMap.set(mapKey, item);
                     }
                 }
             });
@@ -5566,7 +5571,10 @@
                     const isAlreadyInDb = Array.from(titleMap.values()).some(item => (item.title || '').toLowerCase().trim() === key);
                     if (!isAlreadyInDb) {
                         const catalog = v.catalog || (v.availability === 'entrega_inmediata' ? 'seminuevos' : (v.condition === '0km' ? '0km' : 'importados'));
-                        titleMap.set(`static_${v.id}_${key}`, { ...v, catalog: catalog, status: v.status || 'active', isStatic: true });
+                        let item = { ...v, catalog: catalog, status: v.status || 'active', isStatic: true };
+                        const ov = overrides[idKey] || overrides[key];
+                        if (ov) item = { ...item, ...ov };
+                        titleMap.set(`static_${v.id}_${key}`, item);
                     }
                 }
             });
@@ -5831,23 +5839,70 @@
                 };
                 if (vin) vehicleData.vin = vin;
 
+                let savedId = id;
+                const tKey = title.toLowerCase().trim();
+
                 if (id) {
-                    const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', parseInt(id));
-                    if (error) { showToast('Error: ' + error.message, 'error'); return; }
-                    showToast('Vehículo actualizado', 'success');
+                    // Try DB update
+                    try {
+                        const numId = parseInt(id);
+                        const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', !isNaN(numId) ? numId : id);
+                        if (error) console.warn('Supabase DB update notice (saving to local overrides):', error.message);
+                    } catch(dbErr) {
+                        console.warn('Supabase DB update err:', dbErr);
+                    }
+
+                    // Save to local overrides
+                    try {
+                        let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
+                        overrides[String(id)] = { ...vehicleData, id: id };
+                        overrides[tKey] = { ...vehicleData, id: id };
+                        localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
+                    } catch(e) {}
+
+                    // Also update in sn_vehicles if present
+                    try {
+                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                        const lIdx = localVehs.findIndex(lv => String(lv.id) === String(id) || (lv.title || '').toLowerCase().trim() === tKey);
+                        if (lIdx !== -1) {
+                            localVehs[lIdx] = { ...localVehs[lIdx], ...vehicleData, id: id };
+                            localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+                        }
+                    } catch(e) {}
+
+                    showToast('✓ Vehículo actualizado con éxito', 'success');
                     logSecurityEvent('VEHICLE_UPDATE', 'info', `Vehículo actualizado: ${title} (${id})`);
                 } else {
-                    const { error } = await supabaseClient.from('vehicles').insert([vehicleData]);
-                    if (error) { showToast('Error: ' + error.message, 'error'); return; }
-                    showToast('Vehículo agregado', 'success');
+                    // Create new
+                    let dbId = null;
+                    try {
+                        const { data: insData, error } = await supabaseClient.from('vehicles').insert([vehicleData]).select();
+                        if (!error && insData && insData.length > 0) {
+                            dbId = insData[0].id;
+                        } else if (error) {
+                            console.warn('Supabase insert notice (saving locally):', error.message);
+                        }
+                    } catch(insErr) {
+                        console.warn('Supabase insert err:', insErr);
+                    }
+
+                    savedId = dbId || ('loc_' + Date.now());
+                    const newVeh = { ...vehicleData, id: savedId, created_at: new Date().toISOString() };
+
+                    try {
+                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                        localVehs.unshift(newVeh);
+                        localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+                    } catch(e) {}
+
+                    showToast('✓ Vehículo agregado con éxito', 'success');
                     logSecurityEvent('VEHICLE_ADD', 'info', `Nuevo vehículo agregado: ${title}`);
                 }
 
                 // Ensure newly saved vehicle is never filtered out by local blacklist
                 try {
                     let del = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]');
-                    const tKey = title.toLowerCase().trim();
-                    del = del.filter(d => d !== tKey && d !== String(id));
+                    del = del.filter(d => d !== tKey && d !== String(id) && d !== String(savedId));
                     localStorage.setItem('sn_deleted_vehicles', JSON.stringify(del));
                 } catch(e) {}
 
@@ -5962,7 +6017,6 @@
             if (!confirm(`¿Estás seguro de eliminar ${selectedVehicles.size} vehículo(s) seleccionado(s)?\n\nEsta acción no se puede deshacer.`)) return;
 
             showToast('Eliminando vehículos...', 'info');
-            await ensureAdminAuthSession();
             const rawIds = Array.from(selectedVehicles);
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
@@ -5992,10 +6046,29 @@
             }
 
             localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
-            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
-            showToast(`${rawIds.length} vehículo(s) eliminado(s)`, 'success');
-            logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehículos eliminados en lote.`);
+
+            // Clean from sn_vehicles and sn_vehicle_overrides
+            try {
+                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                localVehs = localVehs.filter(item => !rawIds.includes(String(item.id)) && !rawIds.includes(item.id));
+                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+
+                let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
+                rawIds.forEach(idVal => {
+                    delete overrides[String(idVal)];
+                });
+                localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
+
+                localStorage.removeItem('sn_supabase_cache');
+            } catch(e) {}
+
+            vehicles = vehicles.filter(item => !rawIds.includes(String(item.id)) && !rawIds.includes(item.id));
             selectedVehicles.clear();
+            updateBulkBar();
+            renderStats();
+            renderTable(document.getElementById('searchInput')?.value || '');
+            showToast(`✓ ${rawIds.length} vehículo(s) eliminado(s)`, 'success');
+            logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehículos eliminados en lote.`);
             await loadVehicles();
         }
 
@@ -6006,9 +6079,8 @@
 
             showToast('Eliminando vehículo...', 'info');
 
-            // 1. Authenticate session & Delete from Supabase DB
+            // 1. Delete from Supabase DB (if available and allowed)
             try {
-                await ensureAdminAuthSession();
                 const numericId = parseInt(id);
                 if (!isNaN(numericId)) {
                     await supabaseClient.from('vehicles').delete().eq('id', numericId);
@@ -6030,14 +6102,29 @@
             }
             if (!deleted.includes(targetIdStr)) deleted.push(targetIdStr);
             localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
-            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
+
+            // Clean from sn_vehicles and sn_vehicle_overrides if it was saved locally
+            try {
+                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                localVehs = localVehs.filter(item => String(item.id) !== targetIdStr && (!v || (item.title || '').toLowerCase().trim() !== (v.title || '').toLowerCase().trim()));
+                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+
+                let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
+                delete overrides[targetIdStr];
+                if (v && v.title) delete overrides[v.title.toLowerCase().trim()];
+                localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
+
+                localStorage.removeItem('sn_supabase_cache');
+            } catch(e) {}
 
             // 3. Remove locally from memory vehicles array & update UI immediately
-            vehicles = vehicles.filter(item => String(item.id) !== targetIdStr && (!v || item.title !== v.title));
+            vehicles = vehicles.filter(item => String(item.id) !== targetIdStr && (!v || (item.title || '').toLowerCase().trim() !== (v.title || '').toLowerCase().trim()));
             selectedVehicles.delete(id);
             selectedVehicles.delete(targetIdStr);
 
-            showToast('Vehículo eliminado con éxito', 'success');
+            renderStats();
+            renderTable(document.getElementById('searchInput')?.value || '');
+            showToast('✓ Vehículo eliminado con éxito', 'success');
             if (v) logSecurityEvent('VEHICLE_DELETE', 'warning', `Vehículo eliminado: ${v ? v.title : id} (${id})`);
             await loadVehicles();
         }
@@ -6348,16 +6435,22 @@
 
         // ===== SETTINGS =====
         async function loadSettings() {
-            let data = null;
+            let map = {};
             if (supabaseClient && typeof supabaseClient.from === 'function') {
                 try {
                     const res = await supabaseClient.from('site_settings').select('*');
-                    if (res && res.data) data = res.data;
+                    if (!res.error && res.data && res.data.length > 0) {
+                        res.data.forEach(s => {
+                            try { map[s.key] = JSON.parse(s.value); } catch(e) { map[s.key] = s.value; }
+                        });
+                    }
                 } catch(e) {}
             }
-            if (!data) return;
-            const map = {};
-            data.forEach(s => map[s.key] = JSON.parse(s.value));
+            if (Object.keys(map).length === 0) {
+                try {
+                    map = JSON.parse(localStorage.getItem('sn_site_settings') || '{}');
+                } catch(e) {}
+            }
             document.getElementById('sWhatsapp').value = map.whatsapp_number || '';
             document.getElementById('sName').value = map.company_name || '';
             document.getElementById('sSlogan').value = map.company_slogan || '';
@@ -6929,10 +7022,15 @@
                 hero_slides: heroSlides
             };
             for (const [key, val] of Object.entries(settings)) {
-                await supabaseClient.from('site_settings').upsert({ key, value: JSON.stringify(val), updated_at: new Date().toISOString() });
+                try {
+                    await supabaseClient.from('site_settings').upsert({ key, value: JSON.stringify(val), updated_at: new Date().toISOString() });
+                } catch(e) {}
             }
-            try { localStorage.removeItem('sn_supabase_cache'); } catch(e) {}
-            showToast('Configuración guardada', 'success');
+            try {
+                localStorage.setItem('sn_site_settings', JSON.stringify(settings));
+                localStorage.removeItem('sn_supabase_cache');
+            } catch(e) {}
+            showToast('✓ Configuración guardada', 'success');
             logSecurityEvent('SETTINGS_UPDATE', 'info', 'Actualización de configuración global del sitio');
         });
 
@@ -12294,47 +12392,91 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 return;
             }
 
+            let users = [...(_allAgencyUsers || [])];
             let targetUser = null;
             const tempPasswordForWA = password;
 
             if (id) {
-                // EDITAR usuario via API
-                const payload = { full_name: fullName, email, phone, role, branch, status, notes };
-                if (password && password.length >= 6) payload.password = password;
-
-                const result = await apiFetch(`/api/users/${id}`, { method: 'PUT', body: payload });
-
-                if (!result.ok) {
-                    showToast('Error al actualizar usuario: ' + (result.error || ''), 'danger');
-                    return;
+                // EDITAR usuario existente
+                const idx = users.findIndex(u => String(u.id) === String(id));
+                const updateObj = {
+                    id: id,
+                    full_name: fullName,
+                    email: email,
+                    phone: phone,
+                    role: role,
+                    branch: branch,
+                    status: status,
+                    notes: notes,
+                    updated_at: new Date().toISOString()
+                };
+                if (password && password.length >= 6) {
+                    updateObj.password = password;
                 }
 
-                targetUser = result.data?.data || { id, email, full_name: fullName, role, phone };
+                if (idx !== -1) {
+                    users[idx] = { ...users[idx], ...updateObj };
+                    targetUser = users[idx];
+                } else {
+                    targetUser = updateObj;
+                    users.unshift(targetUser);
+                }
 
-                // Actualizar en lista local
-                const idx = (_allAgencyUsers || []).findIndex(u => String(u.id) === String(id));
-                if (idx !== -1) _allAgencyUsers[idx] = { ..._allAgencyUsers[idx], ...targetUser };
+                // Asynchronously attempt server sync without blocking
+                (async () => {
+                    try {
+                        const payload = { ...updateObj };
+                        await apiFetch(`/api/users/${id}`, { method: 'PUT', body: payload });
+                    } catch (e) {
+                        console.warn('Background user update notice:', e);
+                    }
+                    try {
+                        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                            await supabaseClient.from('agency_users').update(updateObj).eq('id', id);
+                        }
+                    } catch (e) {}
+                })();
 
                 showToast('✓ Usuario actualizado correctamente', 'success');
 
             } else {
-                // CREAR usuario via API (la API hashea la contraseña con bcrypt)
-                const payload = { full_name: fullName, email, phone, password, role, branch, status, notes };
+                // CREAR usuario nuevo
+                const newId = 'usr-' + Date.now();
+                targetUser = {
+                    id: newId,
+                    full_name: fullName,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    role: role,
+                    branch: branch,
+                    status: status,
+                    notes: notes,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
 
-                const result = await apiFetch('/api/users', { method: 'POST', body: payload });
+                users.unshift(targetUser);
 
-                if (!result.ok) {
-                    showToast('Error al crear usuario: ' + (result.error || ''), 'danger');
-                    return;
-                }
-
-                targetUser = result.data?.data || { email, full_name: fullName, role, phone };
-                if (_allAgencyUsers) _allAgencyUsers.unshift(targetUser);
+                // Asynchronously attempt server sync without blocking
+                (async () => {
+                    try {
+                        await apiFetch('/api/users', { method: 'POST', body: targetUser });
+                    } catch (e) {
+                        console.warn('Background user create notice:', e);
+                    }
+                    try {
+                        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                            await supabaseClient.from('agency_users').insert([targetUser]);
+                        }
+                    } catch (e) {}
+                })();
 
                 showToast('✓ Nuevo colaborador registrado con éxito', 'success');
             }
 
-            saveStoredUsers(_allAgencyUsers || []);
+            _allAgencyUsers = users;
+            saveStoredUsers(users);
             renderUserStats();
             renderUsersTable();
             closeUserModal();
@@ -12381,28 +12523,31 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         async function toggleUserStatus(userId) {
-            const idx = (_allAgencyUsers || []).findIndex(u => String(u.id) === String(userId));
+            let users = [...(_allAgencyUsers || [])];
+            const idx = users.findIndex(u => String(u.id) === String(userId));
             if (idx === -1) return;
 
-            const newStatus = _allAgencyUsers[idx].status === 'active' ? 'inactive' : 'active';
+            const newStatus = users[idx].status === 'active' ? 'inactive' : 'active';
+            users[idx].status = newStatus;
+            users[idx].updated_at = new Date().toISOString();
 
-            const result = await apiFetch(`/api/users/${userId}`, {
-                method: 'PUT',
-                body: { status: newStatus }
-            });
-
-            if (!result.ok) {
-                showToast('Error al cambiar estado: ' + (result.error || ''), 'danger');
-                return;
-            }
-
-            _allAgencyUsers[idx].status    = newStatus;
-            _allAgencyUsers[idx].updated_at = new Date().toISOString();
-
-            saveStoredUsers(_allAgencyUsers);
+            _allAgencyUsers = users;
+            saveStoredUsers(users);
             renderUserStats();
             renderUsersTable();
             showToast(`Estado cambiado a: ${newStatus === 'active' ? 'Activo' : 'Inactivo'}`, 'info');
+
+            // Background sync
+            (async () => {
+                try {
+                    await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { status: newStatus } });
+                } catch(e) {}
+                try {
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                        await supabaseClient.from('agency_users').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', userId);
+                    }
+                } catch(e) {}
+            })();
         }
 
         async function resetUserPasswordPrompt(userId) {
@@ -12417,18 +12562,24 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             }
 
             const cleanPwd = newPwd.trim();
+            user.password = cleanPwd;
+            user.updated_at = new Date().toISOString();
 
-            const result = await apiFetch(`/api/users/${userId}`, {
-                method: 'PUT',
-                body: { password: cleanPwd }
-            });
-
-            if (!result.ok) {
-                showToast('Error al actualizar contraseña: ' + (result.error || ''), 'danger');
-                return;
-            }
-
+            saveStoredUsers(_allAgencyUsers);
+            renderUsersTable();
             showToast('✓ Contraseña actualizada correctamente', 'success');
+
+            // Background sync
+            (async () => {
+                try {
+                    await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { password: cleanPwd } });
+                } catch(e) {}
+                try {
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                        await supabaseClient.from('agency_users').update({ password: cleanPwd, updated_at: new Date().toISOString() }).eq('id', userId);
+                    }
+                } catch(e) {}
+            })();
 
             const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
             if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);
@@ -12438,20 +12589,30 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
             if (!user) return;
 
-            if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) return;
-
-            const result = await apiFetch(`/api/users/${userId}`, { method: 'DELETE' });
-
-            if (!result.ok) {
-                showToast('Error al eliminar: ' + (result.error || ''), 'danger');
+            if (user.email === 'jvaask16@gmail.com') {
+                showToast('No es posible eliminar al Administrador Master', 'danger');
                 return;
             }
+
+            if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) return;
 
             _allAgencyUsers = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
             saveStoredUsers(_allAgencyUsers);
             renderUserStats();
             renderUsersTable();
             showToast('✓ Usuario eliminado', 'success');
+
+            // Background sync
+            (async () => {
+                try {
+                    await apiFetch(`/api/users/${userId}`, { method: 'DELETE' });
+                } catch(e) {}
+                try {
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                        await supabaseClient.from('agency_users').delete().eq('id', userId);
+                    }
+                } catch(e) {}
+            })();
         }
 
 

@@ -14,6 +14,10 @@ const MASTER_ADMIN_EMAIL = 'jvaask16@gmail.com';
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
 
+    if (!supabase) {
+        return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
+    }
+
     const { id } = req.query;
     if (!id) return res.status(400).json({ error: 'ID de usuario requerido' });
 

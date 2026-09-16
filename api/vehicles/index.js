@@ -10,6 +10,10 @@ import { sanitizeString, validateRequired } from '../_middleware/validate.js';
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
 
+    if (!supabase) {
+        return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
+    }
+
     // GET — listar vehículos (requiere auth)
     if (req.method === 'GET') {
         const user = requireAuth(req, res);

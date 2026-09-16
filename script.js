@@ -657,21 +657,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
+            let overrides = {};
+            try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
 
             // If DB returned vehicles, DB is the single source of truth for that panel!
             // Only fallback to static data if DB returned 0 vehicles or was unreachable.
             const resolveVehicles = (dbArr, staticArr) => {
-                if (dbArr && dbArr.length > 0) {
-                    return dbArr.filter(item => {
-                        const titleKey = (item.title || '').toLowerCase().trim();
-                        const idKey = String(item.id || '');
-                        return !deleted.includes(titleKey) && !deleted.includes(idKey);
-                    });
-                }
-                return staticArr.filter(item => {
+                const source = (dbArr && dbArr.length > 0) ? dbArr : staticArr;
+                return source.filter(item => {
                     const titleKey = (item.title || '').toLowerCase().trim();
                     const idKey = String(item.id || '');
                     return !deleted.includes(titleKey) && !deleted.includes(idKey);
+                }).map(item => {
+                    const titleKey = (item.title || '').toLowerCase().trim();
+                    const idKey = String(item.id || '');
+                    const ov = overrides[idKey] || overrides[titleKey];
+                    return ov ? { ...item, ...ov } : item;
                 });
             };
 
