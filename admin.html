@@ -2746,6 +2746,67 @@
             font-weight: 700;
             width: 28%;
         }
+
+        /* USERS & STAFF MANAGEMENT STYLES */
+        .user-avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #275CEA 0%, #1b45b8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .user-status-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg2);
+        }
+        .user-status-dot.active { background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .user-status-dot.inactive { background: #ef4444; }
+
+        .role-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .role-chip.role-admin {
+            background: rgba(234, 179, 8, 0.15);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.35);
+        }
+        .role-chip.role-sales {
+            background: rgba(39, 92, 234, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(39, 92, 234, 0.35);
+        }
+        .role-chip.role-credit {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        .role-chip.role-mechanic {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.35);
+        }
     </style>
 </head>
 
@@ -2807,6 +2868,7 @@
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
+                <button class="sidebar-link" data-tab="users"><i class="fas fa-users-cog"></i> Usuarios & Personal</button>
                 <button class="sidebar-link" data-tab="settings"><i class="fas fa-cog"></i> Configuración</button>
             </nav>
             <div class="sidebar-divider"></div>
@@ -4503,6 +4565,72 @@
                     </div>
                 </div>
             </div>
+
+            <!-- USERS & STAFF MANAGEMENT TAB -->
+            <div class="tab-content" id="tab-users">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Gestión de <span>Usuarios & Personal</span></h1>
+                        <p style="color:var(--text2); font-size:0.85rem; margin-top:4px;">
+                            Crea y administra los accesos para asesores comerciales, analistas de crédito, peritos de avalúo y administradores de Seminuevos Agency.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openUserModal()"><i class="fas fa-user-plus"></i> Crear Nuevo Usuario</button>
+                </div>
+
+                <!-- KPIs ROW -->
+                <div class="stats-row" id="userStatsRow" style="margin-bottom: 24px;">
+                    <div class="stat-card">
+                        <div class="stat-card-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-card-value" id="kpiTotalUsers">0</div>
+                        <div class="stat-card-label">Total Usuarios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon" style="background: rgba(39,92,234,0.15); color: #93c5fd;"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-card-value" id="kpiSalesUsers">0</div>
+                        <div class="stat-card-label">Asesores de Ventas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon" style="background: rgba(16,185,129,0.15); color: #6ee7b7;"><i class="fas fa-file-invoice-dollar"></i></div>
+                        <div class="stat-card-value" id="kpiCreditUsers">0</div>
+                        <div class="stat-card-label">Mesa de Crédito</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon" style="background: rgba(168,85,247,0.15); color: #d8b4fe;"><i class="fas fa-wrench"></i></div>
+                        <div class="stat-card-value" id="kpiMechanicUsers">0</div>
+                        <div class="stat-card-label">Peritos Avalúo</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-icon" style="background: rgba(234,179,8,0.15); color: #facc15;"><i class="fas fa-crown"></i></div>
+                        <div class="stat-card-value" id="kpiAdminUsers">0</div>
+                        <div class="stat-card-label">Administradores</div>
+                    </div>
+                </div>
+
+                <!-- ROLE FILTER PILLS & TABLE CONTAINER -->
+                <div class="table-container">
+                    <div class="table-header" style="gap: 16px;">
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <h3 style="margin-right:12px;"><i class="fas fa-id-badge"></i> Directorio de Personal</h3>
+                            <div class="admin-catalog-tabs" style="display:inline-flex; gap:6px; margin-bottom:0;">
+                                <button type="button" class="btn btn-primary btn-sm user-filter-btn active" data-role="todos" onclick="setUserRoleFilter('todos')">Todos</button>
+                                <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="sales" onclick="setUserRoleFilter('sales')"><i class="fas fa-briefcase"></i> Ventas</button>
+                                <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="credit" onclick="setUserRoleFilter('credit')"><i class="fas fa-file-invoice-dollar"></i> Crédito</button>
+                                <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="mechanic" onclick="setUserRoleFilter('mechanic')"><i class="fas fa-wrench"></i> Avalúo</button>
+                                <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="admin" onclick="setUserRoleFilter('admin')"><i class="fas fa-crown"></i> Admins</button>
+                            </div>
+                        </div>
+                        <div class="table-search" style="width: 280px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Buscar por nombre, email o cargo..." id="userSearchInput" oninput="renderUsersTable()">
+                        </div>
+                    </div>
+
+                    <div id="userTableBody">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -4903,6 +5031,99 @@
             <div class="modal-footer">
                 <button class="btn btn-ghost" id="modalCancel">Cancelar</button>
                 <button class="btn btn-primary" id="modalSave"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- USER FORM MODAL -->
+    <div class="modal-overlay" id="userModal" style="display: none;">
+        <div class="modal" style="max-width: 650px;">
+            <div class="modal-header">
+                <h2 id="userModalTitle"><i class="fas fa-user-plus" style="color:var(--accent);"></i> Crear Nuevo Usuario</h2>
+                <button class="modal-close" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm" onsubmit="event.preventDefault(); saveUser();">
+                    <input type="hidden" id="uId">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label"><i class="fas fa-user"></i> Nombre Completo *</label>
+                            <input type="text" class="form-input" id="uFullName" placeholder="Ej: Carlos Mendoza" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-envelope"></i> Correo Electrónico (Login) *</label>
+                            <input type="email" class="form-input" id="uEmail" placeholder="asesor.carlos@seminuevos.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp / Teléfono *</label>
+                            <input type="text" class="form-input" id="uPhone" placeholder="Ej: +58 424 8700438" required>
+                        </div>
+
+                        <div class="form-group full">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <label class="form-label" style="margin-bottom:0;"><i class="fas fa-key"></i> Contraseña de Acceso *</label>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="generateRandomPassword()" style="padding:2px 10px; font-size:0.75rem;">
+                                    <i class="fas fa-wand-magic-sparkles" style="color:var(--accent);"></i> Generar Contraseña Segura
+                                </button>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <input type="password" class="form-input" id="uPassword" placeholder="Mínimo 6 caracteres" style="margin-bottom:0;" required>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="togglePasswordVisibility()" title="Mostrar / Ocultar Contraseña">
+                                    <i class="fas fa-eye" id="uEyeIcon"></i>
+                                </button>
+                            </div>
+                            <small style="color:var(--text3); font-size:0.72rem; display:block; margin-top:4px;" id="uPasswordHelp">
+                                Guarda esta contraseña para facilitársela al usuario o enviársela por WhatsApp.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-id-badge"></i> Rol / Cargo *</label>
+                            <select class="form-select" id="uRole" required>
+                                <option value="sales" selected>💼 Asesor Comercial (Ventas)</option>
+                                <option value="credit">💳 Mesa de Crédito (Financiamiento)</option>
+                                <option value="mechanic">🔧 Perito Técnico (Avalúo & Trade-In)</option>
+                                <option value="admin">👑 Administrador Master (Acceso Total)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-store"></i> Sede / Sucursal</label>
+                            <select class="form-select" id="uBranch">
+                                <option value="Porlamar (Sede Principal)" selected>Porlamar (Sede Principal)</option>
+                                <option value="Caracas">Caracas</option>
+                                <option value="Showroom Digital / Online">Showroom Digital / Online</option>
+                                <option value="Taller MasterTech">Taller MasterTech</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-toggle-on"></i> Estado de la Cuenta</label>
+                            <select class="form-select" id="uStatus">
+                                <option value="active" selected>🟢 Activo (Puede ingresar)</option>
+                                <option value="inactive">🔴 Inactivo (Acceso suspendido)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-comment-alt"></i> Notas / Turno</label>
+                            <input type="text" class="form-input" id="uNotes" placeholder="Ej: Turno Mañana / Asesor VIP">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <button type="button" class="btn btn-ghost" onclick="closeUserModal()">Cancelar</button>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="btn btn-ghost" onclick="saveUser(true)" style="color:#25D366; border-color:#25D366;" title="Guarda y abre WhatsApp con los datos de acceso">
+                        <i class="fab fa-whatsapp"></i> Guardar y Enviar por WhatsApp
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser(false)">
+                        <i class="fas fa-save"></i> Guardar Usuario
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -6689,6 +6910,7 @@
                 if (btn.dataset.tab === 'inquiries') loadInquiries();
                 if (btn.dataset.tab === 'settings') loadSettings();
                 if (btn.dataset.tab === 'analytics') { loadAnalyticsData(); loadLeads(); }
+                if (btn.dataset.tab === 'users') loadUsers();
             });
         });
 
@@ -11606,6 +11828,669 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             });
         }
 
+        // ==========================================
+        // ===== USERS & STAFF MANAGEMENT MODULE =====
+        // ==========================================
+        let _allAgencyUsers = [];
+        let _userCurrentRoleFilter = 'all';
+
+        const DEFAULT_AGENCY_USERS = [
+            {
+                id: 'usr-admin-master-001',
+                full_name: 'Administrador Master',
+                email: 'jvaask16@gmail.com',
+                phone: '+58 424 8700438',
+                role: 'admin',
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active',
+                notes: 'Acceso Directivo Principal y Supervisor General de Seminuevos',
+                created_at: new Date('2025-01-01T00:00:00Z').toISOString()
+            },
+            {
+                id: 'usr-sales-001',
+                full_name: 'Carlos Mendoza',
+                email: 'carlos.ventas@seminuevos.com',
+                phone: '+58 424 8700438',
+                role: 'sales',
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active',
+                notes: 'Asesor Comercial Senior - Showroom y Atención Digital',
+                created_at: new Date('2025-01-15T00:00:00Z').toISOString()
+            },
+            {
+                id: 'usr-credit-001',
+                full_name: 'María González',
+                email: 'credito@seminuevos.com',
+                phone: '+58 412 1234567',
+                role: 'credit',
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active',
+                notes: 'Analista de Mesa de Crédito & Planes de Financiamiento',
+                created_at: new Date('2025-02-01T00:00:00Z').toISOString()
+            },
+            {
+                id: 'usr-mechanic-001',
+                full_name: 'Taller MasterTech (Perito)',
+                email: 'taller@mastertech.com',
+                phone: '+58 424 9876543',
+                role: 'mechanic',
+                branch: 'Taller MasterTech',
+                status: 'active',
+                notes: 'Inspección Mecánica, Escaneo y Avalúo Técnico Trade-In',
+                created_at: new Date('2025-02-10T00:00:00Z').toISOString()
+            }
+        ];
+
+        function escapeUserHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getStoredUsers() {
+            try {
+                const raw = localStorage.getItem('sn_agency_users');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (e) {
+                console.warn('Error reading stored users:', e);
+            }
+            return DEFAULT_AGENCY_USERS;
+        }
+
+        function saveStoredUsers(users) {
+            _allAgencyUsers = users;
+            try {
+                localStorage.setItem('sn_agency_users', JSON.stringify(users));
+            } catch (e) {
+                console.warn('Error saving users to localStorage:', e);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('agency_users')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (!error && data && data.length > 0) {
+                        _allAgencyUsers = data;
+                        saveStoredUsers(data);
+                        renderUserStats();
+                        renderUsersTable();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not load users from Supabase, using local store:', err);
+            }
+
+            _allAgencyUsers = getStoredUsers();
+            renderUserStats();
+            renderUsersTable();
+        }
+
+        function renderUserStats() {
+            const list = _allAgencyUsers || [];
+            const total = list.length;
+            const sales = list.filter(u => u.role === 'sales').length;
+            const credit = list.filter(u => u.role === 'credit').length;
+            const mechanic = list.filter(u => u.role === 'mechanic').length;
+            const admin = list.filter(u => u.role === 'admin').length;
+
+            const elTotal = document.getElementById('kpiTotalUsers');
+            const elSales = document.getElementById('kpiSalesUsers');
+            const elCredit = document.getElementById('kpiCreditUsers');
+            const elMechanic = document.getElementById('kpiMechanicUsers');
+            const elAdmin = document.getElementById('kpiAdminUsers');
+
+            if (elTotal) elTotal.textContent = total;
+            if (elSales) elSales.textContent = sales;
+            if (elCredit) elCredit.textContent = credit;
+            if (elMechanic) elMechanic.textContent = mechanic;
+            if (elAdmin) elAdmin.textContent = admin;
+        }
+
+        function setUserRoleFilter(role) {
+            _userCurrentRoleFilter = role;
+            document.querySelectorAll('.user-filter-btn').forEach(btn => {
+                if (btn.dataset.role === role) {
+                    btn.classList.add('active');
+                    btn.classList.remove('btn-ghost');
+                    btn.classList.add('btn-primary');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-ghost');
+                }
+            });
+            renderUsersTable();
+        }
+
+        function getRoleBadge(role) {
+            switch (role) {
+                case 'admin':
+                    return '<span class="role-chip role-admin"><i class="fas fa-crown"></i> Administrador Master</span>';
+                case 'sales':
+                    return '<span class="role-chip role-sales"><i class="fas fa-briefcase"></i> Asesor Comercial</span>';
+                case 'credit':
+                    return '<span class="role-chip role-credit"><i class="fas fa-file-invoice-dollar"></i> Mesa de Crédito</span>';
+                case 'mechanic':
+                    return '<span class="role-chip role-mechanic"><i class="fas fa-wrench"></i> Perito / Avalúo</span>';
+                default:
+                    return `<span class="role-chip"><i class="fas fa-user"></i> ${role}</span>`;
+            }
+        }
+
+        function getUserInitials(name) {
+            if (!name) return 'US';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        function renderUsersTable() {
+            const container = document.getElementById('userTableBody');
+            if (!container) return;
+
+            const search = (document.getElementById('userSearchInput')?.value || '').trim().toLowerCase();
+            let filtered = (_allAgencyUsers || []).filter(u => {
+                if (_userCurrentRoleFilter !== 'all' && u.role !== _userCurrentRoleFilter) return false;
+                if (search) {
+                    const matchName = (u.full_name || '').toLowerCase().includes(search);
+                    const matchEmail = (u.email || '').toLowerCase().includes(search);
+                    const matchPhone = (u.phone || '').toLowerCase().includes(search);
+                    const matchBranch = (u.branch || '').toLowerCase().includes(search);
+                    const matchNotes = (u.notes || '').toLowerCase().includes(search);
+                    if (!matchName && !matchEmail && !matchPhone && !matchBranch && !matchNotes) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 48px 20px; color: var(--text3);">
+                        <i class="fas fa-users-slash" style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.5;"></i>
+                        <h3 style="color:var(--text); margin-bottom: 6px; font-size:1.1rem;">No se encontraron usuarios</h3>
+                        <p style="font-size: 0.85rem; max-width: 400px; margin: 0 auto 16px auto;">
+                            No hay colaboradores registrados con el filtro o búsqueda seleccionada.
+                        </p>
+                        <button class="btn btn-primary btn-sm" onclick="openUserModal()">
+                            <i class="fas fa-user-plus"></i> Registrar Usuario
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="table-container" style="overflow-x:auto;">
+                    <table class="data-table" style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Colaborador / Usuario</th>
+                                <th>Rol & Permisos</th>
+                                <th>Sede / Sucursal</th>
+                                <th>Contacto Directo</th>
+                                <th>Estado</th>
+                                <th style="text-align:right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            filtered.forEach(u => {
+                const initials = getUserInitials(u.full_name);
+                const roleBadge = getRoleBadge(u.role);
+                const isActive = u.status === 'active';
+                const statusBadge = isActive
+                    ? `<span style="display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:12px; font-size:0.75rem; font-weight:600; background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3);">
+                        <span class="user-status-dot active"></span> Activo
+                       </span>`
+                    : `<span style="display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border-radius:12px; font-size:0.75rem; font-weight:600; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3);">
+                        <span class="user-status-dot inactive"></span> Inactivo
+                       </span>`;
+
+                const cleanPhone = (u.phone || '').replace(/[^0-9]/g, '');
+
+                html += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="user-avatar-circle ${u.role}">
+                                    ${initials}
+                                </div>
+                                <div>
+                                    <div style="font-weight:600; color:var(--text); font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                                        ${escapeUserHtml(u.full_name)}
+                                    </div>
+                                    <div style="font-size:0.78rem; color:var(--text3); font-family:monospace;">
+                                        <i class="fas fa-envelope" style="font-size:0.7rem;"></i> ${escapeUserHtml(u.email)}
+                                    </div>
+                                    ${u.notes ? `<div style="font-size:0.73rem; color:var(--accent); margin-top:2px;"><i class="fas fa-info-circle"></i> ${escapeUserHtml(u.notes)}</div>` : ''}
+                                </div>
+                            </div>
+                        </td>
+                        <td>${roleBadge}</td>
+                        <td>
+                            <span style="font-size:0.83rem; color:var(--text2); display:inline-flex; align-items:center; gap:6px;">
+                                <i class="fas fa-map-marker-alt" style="color:var(--accent); font-size:0.78rem;"></i>
+                                ${escapeUserHtml(u.branch || 'Porlamar (Sede Principal)')}
+                            </span>
+                        </td>
+                        <td>
+                            ${cleanPhone ? `
+                                <a href="https://wa.me/${cleanPhone}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm" style="color:#25D366; padding:3px 8px; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;" title="Abrir chat en WhatsApp">
+                                    <i class="fab fa-whatsapp" style="font-size:0.9rem;"></i> ${escapeUserHtml(u.phone)}
+                                </a>
+                            ` : `<span style="color:var(--text3); font-size:0.8rem;">Sin teléfono</span>`}
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${statusBadge}
+                                <button class="btn btn-ghost btn-sm" onclick="toggleUserStatus('${u.id}')" style="padding:2px 6px; font-size:0.7rem;" title="${isActive ? 'Suspender acceso' : 'Reactivar acceso'}">
+                                    <i class="fas ${isActive ? 'fa-pause' : 'fa-play'}" style="color:${isActive ? '#eab308' : '#22c55e'};"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td style="text-align:right;">
+                            <div style="display:inline-flex; gap:6px; align-items:center;">
+                                <button class="btn btn-ghost btn-sm" onclick="sendUserCredentialsWhatsApp('${u.id}')" title="Enviar credenciales de acceso por WhatsApp" style="color:#25D366; padding:6px 8px;">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                                <button class="btn btn-ghost btn-sm" onclick="resetUserPasswordPrompt('${u.id}')" title="Restablecer o cambiar contraseña" style="color:var(--accent); padding:6px 8px;">
+                                    <i class="fas fa-key"></i>
+                                </button>
+                                <button class="btn btn-ghost btn-sm" onclick="openUserModal('${u.id}')" title="Editar datos del usuario" style="padding:6px 8px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                ${u.email !== 'jvaask16@gmail.com' ? `
+                                    <button class="btn btn-ghost btn-sm" onclick="deleteUser('${u.id}')" title="Eliminar usuario" style="color:#ef4444; padding:6px 8px;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function generateRandomPassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+            let pwd = '';
+            for (let i = 0; i < 10; i++) {
+                pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const pwdInput = document.getElementById('uPassword');
+            if (pwdInput) {
+                pwdInput.value = pwd;
+                pwdInput.type = 'text';
+                const eyeIcon = document.getElementById('uEyeIcon');
+                if (eyeIcon) eyeIcon.className = 'fas fa-eye-slash';
+            }
+            showToast('✓ Contraseña segura generada', 'success');
+            return pwd;
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('uPassword');
+            const eyeIcon = document.getElementById('uEyeIcon');
+            if (!pwdInput) return;
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                if (eyeIcon) eyeIcon.className = 'fas fa-eye-slash';
+            } else {
+                pwdInput.type = 'password';
+                if (eyeIcon) eyeIcon.className = 'fas fa-eye';
+            }
+        }
+
+        function openUserModal(userId = null) {
+            const modal = document.getElementById('userModal');
+            const title = document.getElementById('userModalTitle');
+            const uId = document.getElementById('uId');
+            const uFullName = document.getElementById('uFullName');
+            const uEmail = document.getElementById('uEmail');
+            const uPhone = document.getElementById('uPhone');
+            const uPassword = document.getElementById('uPassword');
+            const uRole = document.getElementById('uRole');
+            const uBranch = document.getElementById('uBranch');
+            const uStatus = document.getElementById('uStatus');
+            const uNotes = document.getElementById('uNotes');
+            const uPwdHelp = document.getElementById('uPasswordHelp');
+
+            if (!modal) return;
+
+            if (userId) {
+                const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
+                if (!user) {
+                    showToast('Usuario no encontrado', 'danger');
+                    return;
+                }
+                title.innerHTML = '<i class="fas fa-user-edit" style="color:var(--accent);"></i> Editar Usuario';
+                uId.value = user.id;
+                uFullName.value = user.full_name || '';
+                uEmail.value = user.email || '';
+                uPhone.value = user.phone || '';
+                uPassword.value = '';
+                uPassword.required = false;
+                uPassword.placeholder = 'Dejar en blanco para conservar la actual';
+                if (uPwdHelp) uPwdHelp.textContent = 'Ingresa una nueva contraseña sólo si deseas cambiar la existente.';
+                uRole.value = user.role || 'sales';
+                uBranch.value = user.branch || 'Porlamar (Sede Principal)';
+                uStatus.value = user.status || 'active';
+                uNotes.value = user.notes || '';
+            } else {
+                title.innerHTML = '<i class="fas fa-user-plus" style="color:var(--accent);"></i> Crear Nuevo Usuario';
+                uId.value = '';
+                uFullName.value = '';
+                uEmail.value = '';
+                uPhone.value = '+58 ';
+                uPassword.required = true;
+                uPassword.placeholder = 'Mínimo 6 caracteres';
+                if (uPwdHelp) uPwdHelp.textContent = 'Guarda esta contraseña para facilitársela al usuario o enviársela por WhatsApp.';
+                uRole.value = 'sales';
+                uBranch.value = 'Porlamar (Sede Principal)';
+                uStatus.value = 'active';
+                uNotes.value = '';
+                generateRandomPassword();
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeUserModal() {
+            const modal = document.getElementById('userModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function saveUser(sendViaWhatsApp = false) {
+            const id = document.getElementById('uId')?.value.trim();
+            const fullName = document.getElementById('uFullName')?.value.trim();
+            const email = document.getElementById('uEmail')?.value.trim().toLowerCase();
+            const phone = document.getElementById('uPhone')?.value.trim();
+            const password = document.getElementById('uPassword')?.value || '';
+            const role = document.getElementById('uRole')?.value || 'sales';
+            const branch = document.getElementById('uBranch')?.value || 'Porlamar (Sede Principal)';
+            const status = document.getElementById('uStatus')?.value || 'active';
+            const notes = document.getElementById('uNotes')?.value.trim();
+
+            if (!fullName || !email) {
+                showToast('Por favor completa el Nombre y el Correo Electrónico', 'warning');
+                return;
+            }
+
+            if (!id && (!password || password.length < 6)) {
+                showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
+                return;
+            }
+
+            let users = [...(_allAgencyUsers || [])];
+            let targetUser = null;
+            let tempPasswordForWA = password;
+
+            if (id) {
+                // EDIT
+                const idx = users.findIndex(u => String(u.id) === String(id));
+                if (idx !== -1) {
+                    users[idx] = {
+                        ...users[idx],
+                        full_name: fullName,
+                        email: email,
+                        phone: phone,
+                        role: role,
+                        branch: branch,
+                        status: status,
+                        notes: notes,
+                        updated_at: new Date().toISOString()
+                    };
+                    targetUser = users[idx];
+                }
+
+                // Update Supabase if available
+                try {
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                        await supabaseClient.from('agency_users').update({
+                            full_name: fullName,
+                            email: email,
+                            phone: phone,
+                            role: role,
+                            branch: branch,
+                            status: status,
+                            notes: notes,
+                            updated_at: new Date().toISOString()
+                        }).eq('id', id);
+                    }
+                } catch (e) {
+                    console.warn('Supabase user update failed (offline/fallback):', e);
+                }
+
+                showToast('✓ Usuario actualizado correctamente', 'success');
+            } else {
+                // CREATE
+                // Check duplicate email
+                if (users.some(u => u.email === email)) {
+                    showToast('Ya existe un usuario con este correo electrónico', 'danger');
+                    return;
+                }
+
+                const newId = 'usr-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6);
+                targetUser = {
+                    id: newId,
+                    full_name: fullName,
+                    email: email,
+                    phone: phone,
+                    role: role,
+                    branch: branch,
+                    status: status,
+                    notes: notes,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                users.unshift(targetUser);
+
+                // Insert to Supabase if available
+                try {
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                        const { data, error } = await supabaseClient.from('agency_users').insert([{
+                            email: email,
+                            full_name: fullName,
+                            phone: phone,
+                            role: role,
+                            branch: branch,
+                            status: status,
+                            notes: notes
+                        }]).select().single();
+
+                        if (!error && data && data.id) {
+                            targetUser.id = data.id;
+                        }
+
+                        // Try to create auth account in Supabase Auth as well
+                        if (password && password.length >= 6) {
+                            try {
+                                await supabaseClient.auth.signUp({
+                                    email: email,
+                                    password: password,
+                                    options: {
+                                        data: {
+                                            full_name: fullName,
+                                            role: role,
+                                            branch: branch
+                                        }
+                                    }
+                                });
+                            } catch (authErr) {
+                                console.log('Auth signup info:', authErr);
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Supabase user insert failed (offline/fallback):', e);
+                }
+
+                showToast('✓ Nuevo colaborador registrado con éxito', 'success');
+            }
+
+            saveStoredUsers(users);
+            renderUserStats();
+            renderUsersTable();
+            closeUserModal();
+
+            if (sendViaWhatsApp && targetUser) {
+                sendUserCredentialsWhatsApp(targetUser.id, tempPasswordForWA);
+            }
+        }
+
+        function sendUserCredentialsWhatsApp(userId, explicitPwd = null) {
+            const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
+            if (!user) {
+                showToast('Usuario no encontrado', 'danger');
+                return;
+            }
+
+            const cleanPhone = (user.phone || '').replace(/[^0-9]/g, '');
+            const pwdText = explicitPwd ? explicitPwd : '(Contraseña asignada por la administración)';
+            const roleLabels = {
+                admin: '👑 Administrador Master (Acceso Total)',
+                sales: '💼 Asesor Comercial (Ventas & Catálogo)',
+                credit: '💳 Mesa de Crédito (Financiamiento)',
+                mechanic: '🔧 Perito Técnico (Avalúo & Trade-In)'
+            };
+            const roleLabel = roleLabels[user.role] || user.role;
+
+            let msg = `👋 *¡HOLA ${user.full_name.toUpperCase()}! BIENVENIDO A SEMINUEVOS* 🚗✨\n\n`;
+            msg += `Se ha habilitado tu cuenta de acceso al Sistema Administrativo de la agencia:\n\n`;
+            msg += `🌐 *Portal de Acceso:* https://seminuevosautos.com/admin\n`;
+            msg += `👤 *Usuario / Login:* \`${user.email}\`\n`;
+            msg += `🔑 *Contraseña:* \`${pwdText}\`\n`;
+            msg += `💼 *Rol Asignado:* ${roleLabel}\n`;
+            msg += `📍 *Sede:* ${user.branch || 'Porlamar (Sede Principal)'}\n\n`;
+            msg += `📌 *Instrucciones:* Ingresa con tu correo y clave para gestionar tus funciones en la plataforma. Por seguridad, no compartas tus credenciales.\n\n`;
+            msg += `_Seminuevos Margarita - Sistema Interno de Gestión_`;
+
+            const url = cleanPhone
+                ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
+                : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+            window.open(url, '_blank');
+            showToast('✓ Abriendo WhatsApp para enviar credenciales...', 'success');
+        }
+
+        async function toggleUserStatus(userId) {
+            let users = [...(_allAgencyUsers || [])];
+            const idx = users.findIndex(u => String(u.id) === String(userId));
+            if (idx === -1) return;
+
+            const newStatus = users[idx].status === 'active' ? 'inactive' : 'active';
+            users[idx].status = newStatus;
+            users[idx].updated_at = new Date().toISOString();
+
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    await supabaseClient.from('agency_users').update({
+                        status: newStatus,
+                        updated_at: new Date().toISOString()
+                    }).eq('id', userId);
+                }
+            } catch (e) {
+                console.warn('Supabase status toggle failed:', e);
+            }
+
+            saveStoredUsers(users);
+            renderUserStats();
+            renderUsersTable();
+            showToast(`Estado cambiado a: ${newStatus === 'active' ? 'Activo' : 'Inactivo'}`, 'info');
+        }
+
+        function resetUserPasswordPrompt(userId) {
+            const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
+            if (!user) return;
+
+            const newPwd = prompt(`Restablecer contraseña para ${user.full_name} (${user.email}):\nIngresa la nueva contraseña (mínimo 6 caracteres):`, '');
+            if (newPwd === null) return;
+            if (newPwd.trim().length < 6) {
+                showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
+                return;
+            }
+
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    if (typeof logSecurityEvent === 'function') {
+                        logSecurityEvent('PASSWORD_RESET', 'INFO', `Restablecida contraseña para usuario ${user.email}`);
+                    }
+                }
+            } catch (e) {}
+
+            showToast('✓ Contraseña actualizada', 'success');
+
+            const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
+            if (sendWa) {
+                sendUserCredentialsWhatsApp(userId, newPwd.trim());
+            }
+        }
+
+        async function deleteUser(userId) {
+            const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
+            if (!user) return;
+
+            if (user.email === 'jvaask16@gmail.com') {
+                showToast('No es posible eliminar al Administrador Master', 'danger');
+                return;
+            }
+
+            if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) {
+                return;
+            }
+
+            let users = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
+
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    await supabaseClient.from('agency_users').delete().eq('id', userId);
+                }
+            } catch (e) {
+                console.warn('Supabase delete failed:', e);
+            }
+
+            saveStoredUsers(users);
+            renderUserStats();
+            renderUsersTable();
+            showToast('✓ Usuario eliminado', 'success');
+        }
+
+        // Expose functions globally for inline HTML events
+        window.loadUsers = loadUsers;
+        window.openUserModal = openUserModal;
+        window.closeUserModal = closeUserModal;
+        window.saveUser = saveUser;
+        window.generateRandomPassword = generateRandomPassword;
+        window.togglePasswordVisibility = togglePasswordVisibility;
+        window.setUserRoleFilter = setUserRoleFilter;
+        window.renderUsersTable = renderUsersTable;
+        window.toggleUserStatus = toggleUserStatus;
+        window.resetUserPasswordPrompt = resetUserPasswordPrompt;
+        window.sendUserCredentialsWhatsApp = sendUserCredentialsWhatsApp;
+        window.deleteUser = deleteUser;
+
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
@@ -11638,6 +12523,11 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     calculateTradeIn();
                 });
             });
+            document.querySelectorAll('.sidebar-link[data-tab="users"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    loadUsers();
+                });
+            });
             // Initial calculations
             calculateFinancingPlans();
             calcularCreditoPlan();
@@ -11645,6 +12535,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             calcularCronograma();
             populateTradeInVehicles();
             calculateTradeIn();
+            loadUsers();
         }
 
         if (document.readyState === 'loading') {
