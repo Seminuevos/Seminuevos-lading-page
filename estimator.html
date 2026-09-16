@@ -49,7 +49,7 @@
         }
 
         .estimator-hero {
-            padding: 130px 0 35px 0;
+            padding: 85px 0 10px 0;
             text-align: center;
             position: relative;
         }
@@ -58,17 +58,17 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 999px;
             background: rgba(39, 92, 234, 0.12);
             border: 1px solid rgba(39, 92, 234, 0.3);
             color: #93c5fd;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            letter-spacing: 1.5px;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
-            margin-bottom: 18px;
-            box-shadow: 0 0 25px rgba(39, 92, 234, 0.2);
+            margin-bottom: 8px;
+            box-shadow: 0 0 20px rgba(39, 92, 234, 0.15);
         }
 
         .estimator-badge i {
@@ -77,37 +77,37 @@
 
         .estimator-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+            font-size: clamp(1.4rem, 2.6vw, 2.1rem);
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 14px;
+            margin-bottom: 6px;
             letter-spacing: -0.5px;
         }
 
         .estimator-subtitle {
-            font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+            font-size: clamp(0.85rem, 1.2vw, 0.95rem);
             color: #a1a1aa;
-            max-width: 680px;
+            max-width: 620px;
             margin: 0 auto;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         /* Mode Switcher Tabs */
         .mode-switcher-container {
             display: flex;
             justify-content: center;
-            margin: 30px auto 40px auto;
+            margin: 12px auto 20px auto;
             padding: 0 15px;
         }
 
         .mode-switcher {
             display: inline-flex;
             background: rgba(15, 15, 20, 0.85);
-            padding: 6px;
-            border-radius: 16px;
+            padding: 5px;
+            border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
             max-width: 100%;
             overflow-x: auto;
         }
@@ -115,15 +115,15 @@
         .mode-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 24px;
+            gap: 8px;
+            padding: 9px 20px;
             border: none;
             background: transparent;
             color: #94a3b8;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
@@ -143,10 +143,10 @@
         /* Layout Grid */
         .estimator-grid {
             display: grid;
-            grid-template-columns: 1.45fr 1fr;
-            gap: 32px;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 24px;
             align-items: start;
-            margin-bottom: 80px;
+            margin-bottom: 30px;
         }
 
         @media (max-width: 992px) {
@@ -159,11 +159,11 @@
         .est-card {
             background: var(--est-card-bg);
             border: 1px solid var(--est-card-border);
-            border-radius: 20px;
-            padding: 28px;
+            border-radius: 18px;
+            padding: 20px 22px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            margin-bottom: 16px;
             transition: border-color 0.3s ease;
         }
 
@@ -175,37 +175,38 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .card-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1rem;
+            font-size: 0.92rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: #ffffff;
         }
 
         .card-title i {
             color: var(--est-blue);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
 
         /* Vehicle Selected Preview */
         .vehicle-selected-box {
             display: flex;
-            gap: 20px;
+            gap: 14px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 10px 14px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
+            align-items: center;
         }
 
         .vehicle-selected-box:hover {
@@ -214,9 +215,9 @@
         }
 
         .vehicle-thumb-wrapper {
-            width: 140px;
-            height: 95px;
-            border-radius: 10px;
+            width: 85px;
+            height: 58px;
+            border-radius: 8px;
             overflow: hidden;
             flex-shrink: 0;
             background: #111;
@@ -239,18 +240,19 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            min-width: 0;
         }
 
         .vehicle-badges-row {
             display: flex;
-            gap: 6px;
-            margin-bottom: 6px;
+            gap: 5px;
+            margin-bottom: 3px;
             flex-wrap: wrap;
         }
 
         .mini-badge {
-            font-size: 0.65rem;
-            padding: 2px 8px;
+            font-size: 0.6rem;
+            padding: 2px 6px;
             border-radius: 4px;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-weight: 600;
@@ -271,23 +273,63 @@
 
         .vehicle-name-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1.05rem;
+            font-size: 0.92rem;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .vehicle-meta-tags {
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             color: #94a3b8;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .vehicle-price-display {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--est-blue);
+        }
+
+        /* Config Banner / Header */
+        .params-header-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: rgba(39, 92, 234, 0.08);
+            border: 1px solid rgba(39, 92, 234, 0.25);
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+
+        .params-banner-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #93c5fd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .params-banner-tag {
+            font-size: 0.68rem;
+            color: #6ee7b7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(16, 185, 129, 0.12);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
 
         /* Vehicle Selector Dropdown / Search */
@@ -350,50 +392,50 @@
         /* Buying Power Mode Styles */
         .buying-power-box {
             text-align: center;
-            padding: 30px 20px;
+            padding: 18px 16px;
             background: linear-gradient(180deg, rgba(39, 92, 234, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
             border: 1px solid rgba(39, 92, 234, 0.25);
-            border-radius: 18px;
-            margin-bottom: 24px;
+            border-radius: 14px;
+            margin-bottom: 14px;
         }
 
         .bp-target-label {
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .bp-monthly-value {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+            font-size: clamp(2rem, 3.4vw, 2.6rem);
             font-weight: 800;
             color: #ffffff;
-            text-shadow: 0 0 30px var(--est-blue-glow);
-            margin-bottom: 16px;
+            text-shadow: 0 0 25px var(--est-blue-glow);
+            margin-bottom: 10px;
         }
 
         .bp-slider-wrap {
-            max-width: 540px;
-            margin: 0 auto 20px auto;
+            max-width: 500px;
+            margin: 0 auto 12px auto;
         }
 
         .bp-result-banner {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 22px;
+            gap: 10px;
+            padding: 7px 16px;
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid rgba(16, 185, 129, 0.35);
-            border-radius: 12px;
+            border-radius: 10px;
             color: #6ee7b7;
-            font-size: 0.95rem;
+            font-size: 0.86rem;
         }
 
         .bp-result-banner strong {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: #ffffff;
         }
 
@@ -491,20 +533,20 @@
         .finance-type-tabs {
             display: flex;
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 24px;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 14px;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .ft-tab {
             flex: 1;
-            padding: 10px 16px;
+            padding: 7px 12px;
             border: none;
             background: transparent;
             color: #94a3b8;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
@@ -512,7 +554,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .ft-tab.active {
@@ -523,32 +565,32 @@
 
         /* Financial Sliders & Inputs */
         .param-group {
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .param-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .param-label {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             color: #e2e8f0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .param-value-pill {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.9rem;
+            font-size: 0.84rem;
             font-weight: 700;
             color: #ffffff;
             background: rgba(39, 92, 234, 0.15);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
             border: 1px solid rgba(39, 92, 234, 0.3);
         }
@@ -558,23 +600,23 @@
             -webkit-appearance: none;
             appearance: none;
             width: 100%;
-            height: 6px;
-            border-radius: 5px;
+            height: 5px;
+            border-radius: 4px;
             background: rgba(255, 255, 255, 0.15);
             outline: none;
-            margin: 12px 0 8px 0;
+            margin: 8px 0 6px 0;
             cursor: pointer;
         }
 
         input[type="range"].est-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 22px;
-            height: 22px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: var(--est-blue);
-            border: 3px solid #ffffff;
-            box-shadow: 0 0 12px var(--est-blue-glow);
+            border: 2.5px solid #ffffff;
+            box-shadow: 0 0 10px var(--est-blue-glow);
             cursor: pointer;
             transition: transform 0.15s ease;
         }
@@ -586,18 +628,18 @@
         /* Preset Pills */
         .preset-pills {
             display: flex;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 6px;
             flex-wrap: wrap;
         }
 
         .preset-pill {
-            padding: 6px 14px;
+            padding: 5px 11px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #cbd5e1;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -619,9 +661,9 @@
         .tradein-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 18px;
-            margin-bottom: 24px;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
             transition: all 0.3s ease;
         }
 
@@ -829,9 +871,9 @@
             background: rgba(56, 189, 248, 0.04);
             border: 1px solid rgba(56, 189, 248, 0.2);
             border-radius: 12px;
-            padding: 14px 16px;
-            margin-top: 20px;
-            margin-bottom: 24px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            margin-bottom: 12px;
         }
 
         .formalization-header {
@@ -929,68 +971,68 @@
         /* ===== STICKY SUMMARY CARD (RIGHT COLUMN) ===== */
         .sticky-summary-wrap {
             position: sticky;
-            top: 90px;
+            top: 80px;
         }
 
         .summary-card {
             background: rgba(15, 15, 20, 0.92);
             border: 1px solid rgba(39, 92, 234, 0.35);
-            border-radius: 22px;
-            padding: 30px 26px;
+            border-radius: 18px;
+            padding: 20px 18px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(39, 92, 234, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(39, 92, 234, 0.15);
         }
 
         .summary-main-display {
             text-align: center;
-            padding-bottom: 22px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 22px;
+            margin-bottom: 14px;
         }
 
         .sum-label {
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             color: #94a3b8;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            letter-spacing: 1.2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .sum-amount-huge {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: clamp(2.5rem, 4.2vw, 3.4rem);
+            font-size: clamp(2.1rem, 3.4vw, 2.7rem);
             font-weight: 800;
             color: #ffffff;
             line-height: 1.1;
             letter-spacing: -1px;
-            text-shadow: 0 0 35px var(--est-blue-glow);
+            text-shadow: 0 0 30px var(--est-blue-glow);
         }
 
         .sum-period {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--est-blue);
             font-weight: 500;
         }
 
         .sum-subtext {
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             color: #64748b;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         /* Proportional Progress Bar */
         .prop-bar-container {
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .prop-bar {
-            height: 12px;
-            border-radius: 8px;
+            height: 8px;
+            border-radius: 6px;
             overflow: hidden;
             display: flex;
             background: rgba(255, 255, 255, 0.08);
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .prop-seg-down {
@@ -1011,37 +1053,37 @@
         .prop-legend {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #94a3b8;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .legend-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
         }
 
         /* Financial Breakdown Table */
         .breakdown-table {
             width: 100%;
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
 
         .b-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 9px 0;
+            padding: 5px 0;
             border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
-            font-size: 0.85rem;
+            font-size: 0.81rem;
             color: #cbd5e1;
         }
 
@@ -1052,20 +1094,20 @@
         .b-row.highlight {
             font-weight: 700;
             color: #ffffff;
-            font-size: 0.92rem;
-            padding-top: 14px;
+            font-size: 0.88rem;
+            padding-top: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
             border-bottom: none;
         }
 
         .b-row .val {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             font-weight: 600;
         }
 
         .b-row.highlight .val {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--est-blue);
         }
 
@@ -1074,19 +1116,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            padding: 15px 20px;
+            padding: 11px 16px;
             background: #25D366;
             color: #050505;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.86rem;
+            font-size: 0.82rem;
             font-weight: 700;
             border-radius: 12px;
             text-decoration: none;
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             border: none;
             cursor: pointer;
         }
@@ -1102,16 +1144,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            padding: 12px 18px;
+            padding: 9px 14px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #ffffff;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -1122,10 +1164,10 @@
         }
 
         .legal-notice {
-            margin-top: 18px;
-            font-size: 0.72rem;
+            margin-top: 10px;
+            font-size: 0.68rem;
             color: #64748b;
-            line-height: 1.5;
+            line-height: 1.35;
             text-align: center;
         }
 
@@ -1288,15 +1330,14 @@
                 <!-- MODE 2 CONTAINER: BUSCAR POR PRESUPUESTO -->
                 <!-- ============================================== -->
                 <div id="modeBudgetSection" style="display: none;">
-                    
                     <div class="est-card">
                         <div class="buying-power-box">
                             <div class="bp-target-label">¿Cuánto deseas pagar mensualmente?</div>
-                            <div class="bp-monthly-value" id="bpMonthlyDisplay">$ 450 <span style="font-size: 1.5rem; color: var(--est-blue);">/ mes</span></div>
+                            <div class="bp-monthly-value" id="bpMonthlyDisplay">$ 450 <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span></div>
                             
                             <div class="bp-slider-wrap">
                                 <input type="range" id="bpSlider" class="est-slider" min="350" max="2000" step="25" value="450" oninput="onBudgetSliderChange(this.value)">
-                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; margin-top: 4px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #64748b; margin-top: 2px;">
                                     <span>$350 / mes</span>
                                     <span>$1,000 / mes</span>
                                     <span>$2,000 / mes</span>
@@ -1307,18 +1348,14 @@
                                 <i class="fas fa-sparkles" style="color: #10B981;"></i>
                                 <span>Poder de Compra Estimado: <strong id="bpCalculatedPrice">$22,500</strong></span>
                             </div>
-                        </div>
 
-                        <!-- Compatible Inventory List -->
-                        <div class="compat-grid-title">
-                            <span><i class="fas fa-check-circle" style="color: #10B981;"></i> Vehículos que califican para tu presupuesto</span>
-                            <span id="compatCount" style="font-size: 0.8rem; color: #94a3b8;">0 autos</span>
-                        </div>
-                        <div class="compat-cars-grid" id="compatCarsContainer">
-                            <!-- Populated dynamically -->
+                            <div style="margin-top: 10px;">
+                                <a href="#budgetCompatibleSection" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #93c5fd; text-decoration: none; font-weight: 600;">
+                                    <i class="fas fa-arrow-down"></i> <span id="compatCountQuick">Ver 0 vehículos que califican abajo</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- ============================================== -->
@@ -1326,6 +1363,16 @@
                 <!-- ============================================== -->
                 <div class="est-card">
                     
+                    <!-- Config Section Header Banner -->
+                    <div class="params-header-banner">
+                        <div class="params-banner-title">
+                            <i class="fas fa-sliders-h"></i> Configura tu Plan Financiero
+                        </div>
+                        <div class="params-banner-tag">
+                            <i class="fas fa-sparkles"></i> Simula en vivo
+                        </div>
+                    </div>
+
                     <!-- Tabs: Financing vs Cash -->
                     <div class="finance-type-tabs">
                         <button class="ft-tab active" id="tabFinancing" onclick="setPaymentType('finance')">
@@ -1682,6 +1729,28 @@
             </div>
 
         </div>
+
+        <!-- ============================================== -->
+        <!-- COMPATIBLE VEHICLES RESULTS (MODE 2) -->
+        <!-- ============================================== -->
+        <section id="budgetCompatibleSection" style="display: none; margin-top: 20px; margin-bottom: 50px;">
+            <div class="est-card" style="padding: 22px;">
+                <div class="compat-grid-title" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="color: #10B981;"></i> Vehículos que califican para tu presupuesto
+                        </div>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">
+                            Pre-calificados con tu cuota objetivo, inicial y plazo seleccionados arriba. Haz clic en cualquiera para cotizarlo en detalle.
+                        </div>
+                    </div>
+                    <span id="compatCount" class="mini-badge blue" style="font-size: 0.78rem; padding: 6px 14px;">0 vehículos</span>
+                </div>
+                <div class="compat-cars-grid" id="compatCarsContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- ===== PRINTABLE FORMAL QUOTATION SHEET (Hidden in normal screen) ===== -->
@@ -1877,9 +1946,16 @@
             // 1. Inicialización instantánea síncrona (0ms de latencia)
             estimatorInventory = getInitialVehicles();
             if (estimatorInventory.length > 0) {
-                populateVehicleSelect();
-                updateBudgetCompatibleCars();
-                recalculate();
+                const urlParams = new URLSearchParams(window.location.search);
+                const carIdParam = urlParams.get('id') || urlParams.get('carId');
+                const modeParam = urlParams.get('mode');
+                populateVehicleSelect(carIdParam);
+                if (modeParam === 'budget') {
+                    switchEstimatorMode('budget');
+                } else {
+                    updateBudgetCompatibleCars();
+                    recalculate();
+                }
             }
 
             // 2. Sincronización en segundo plano con Supabase
@@ -1989,17 +2065,20 @@
             const btnB = document.getElementById('btnModeBudget');
             const secV = document.getElementById('modeVehicleSection');
             const secB = document.getElementById('modeBudgetSection');
+            const secCompat = document.getElementById('budgetCompatibleSection');
 
             if (mode === 'vehicle') {
                 btnV.classList.add('active');
                 btnB.classList.remove('active');
                 secV.style.display = 'block';
                 secB.style.display = 'none';
+                if (secCompat) secCompat.style.display = 'none';
             } else {
                 btnB.classList.add('active');
                 btnV.classList.remove('active');
                 secB.style.display = 'block';
                 secV.style.display = 'none';
+                if (secCompat) secCompat.style.display = 'block';
                 updateBudgetCompatibleCars();
             }
             recalculate();
@@ -2364,8 +2443,9 @@
 
         function onBudgetSliderChange(val) {
             targetMonthlyBudget = parseInt(val, 10);
-            document.getElementById('bpMonthlyDisplay').innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span style="font-size: 1.5rem; color: var(--est-blue);">/ mes</span>`;
+            document.getElementById('bpMonthlyDisplay').innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span>`;
             updateBudgetCompatibleCars();
+            recalculate();
         }
 
         function highlightPreset(group, val) {
@@ -2419,18 +2499,66 @@
 
         // --- MAIN RECALCULATE ---
         function recalculate() {
-            // Price & deductions
-            const effectivePrice = Math.max(0, carPrice);
-            const effectiveTradeIn = tradeInActive ? Math.min(effectivePrice, Math.max(0, tradeInValue)) : 0;
-            const netCarPrice = Math.max(0, effectivePrice - effectiveTradeIn);
+            let effectivePrice = 0;
+            let effectiveTradeIn = 0;
+            let netCarPrice = 0;
+            let downPaymentAmount = 0;
+            let principal = 0;
+            let amort = { monthly: 0, totalInterest: 0, totalPaid: 0 };
 
-            const downPaymentAmount = Math.round(netCarPrice * (downPaymentPct / 100));
-            const principal = Math.max(0, netCarPrice - downPaymentAmount);
-
-            // Formalization fees (Admin sync & customizable)
             const anosPlazo = loanTermMonths / 12;
             const gpsTotal = feeGpsAnual * anosPlazo;
             const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
+
+            if (currentMode === 'budget') {
+                // Cálculo para Modo Presupuesto Mensual
+                const maxPrincipal = calculatePrincipalFromMonthly(targetMonthlyBudget, monthlyRate, loanTermMonths);
+                const maxPriceAfterTrade = maxPrincipal / (1 - (downPaymentPct / 100));
+                const maxTotalCarPrice = Math.round(maxPriceAfterTrade + (tradeInActive ? tradeInValue : 0));
+
+                effectivePrice = maxTotalCarPrice;
+                effectiveTradeIn = tradeInActive ? Math.min(effectivePrice, Math.max(0, tradeInValue)) : 0;
+                netCarPrice = Math.max(0, effectivePrice - effectiveTradeIn);
+                downPaymentAmount = Math.round(netCarPrice * (downPaymentPct / 100));
+                principal = Math.max(0, netCarPrice - downPaymentAmount);
+                amort = calculateAmortization(principal, monthlyRate, loanTermMonths);
+
+                // Sincronizar display de poder de compra en Modo 2
+                const bpPriceEl = document.getElementById('bpCalculatedPrice');
+                if (bpPriceEl) bpPriceEl.textContent = `$${effectivePrice.toLocaleString()}`;
+
+                // Header y montos en columna derecha
+                document.getElementById('mainResultTitle').textContent = 'Cuota Mensual Objetivo';
+                document.getElementById('mainPaymentDisplay').innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span class="sum-period">/ mes</span>`;
+                document.getElementById('mainPaymentSubtext').textContent = `Poder de compra: $${effectivePrice.toLocaleString()} • ${loanTermMonths} cuotas fijas • Perfil: ${getCreditScoreName()}`;
+                
+                const carPriceLabel = document.querySelector('#rowCarPrice')?.previousElementSibling;
+                if (carPriceLabel) carPriceLabel.textContent = 'Poder de Compra Estimado';
+            } else {
+                // Modo 1: Estimar por Vehículo
+                effectivePrice = Math.max(0, carPrice);
+                effectiveTradeIn = tradeInActive ? Math.min(effectivePrice, Math.max(0, tradeInValue)) : 0;
+                netCarPrice = Math.max(0, effectivePrice - effectiveTradeIn);
+                downPaymentAmount = Math.round(netCarPrice * (downPaymentPct / 100));
+                principal = Math.max(0, netCarPrice - downPaymentAmount);
+                amort = calculateAmortization(principal, monthlyRate, loanTermMonths);
+
+                const carPriceLabel = document.querySelector('#rowCarPrice')?.previousElementSibling;
+                if (carPriceLabel) carPriceLabel.textContent = 'Precio del Vehículo';
+
+                if (currentPaymentType === 'finance') {
+                    document.getElementById('mainResultTitle').textContent = 'Cuota Mensual Estimada';
+                    document.getElementById('mainPaymentDisplay').innerHTML = `$ ${Math.round(amort.monthly).toLocaleString()} <span class="sum-period">/ mes</span>`;
+                    document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas · Perfil: ${getCreditScoreName()}`;
+                } else {
+                    document.getElementById('mainResultTitle').textContent = 'Pago de Contado Neto';
+                    document.getElementById('mainPaymentDisplay').innerHTML = `$ ${(effectivePrice - effectiveTradeIn).toLocaleString()}`;
+                    document.getElementById('mainPaymentSubtext').textContent = (tradeInActive && effectiveTradeIn > 0)
+                        ? `Precio lista $${effectivePrice.toLocaleString()} menos $${effectiveTradeIn.toLocaleString()} de retoma evaluada`
+                        : `Monto final neto para entrega o importación directa`;
+                }
+            }
+
             const initialDisbursement = downPaymentAmount + (includeFormalizationFees ? totalFees : 0);
 
             // Update subtotal bar & detail labels
@@ -2438,9 +2566,6 @@
             if (elFeeSubtotal) elFeeSubtotal.textContent = `$${Math.round(totalFees).toLocaleString()}`;
             const elFeeNote = document.getElementById('feeGpsCalcNote');
             if (elFeeNote) elFeeNote.textContent = `(GPS $${feeGpsAnual}/año × ${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'} = $${Math.round(gpsTotal).toLocaleString()})`;
-
-            // Calculation via French amortization with monthly rate
-            const amort = calculateAmortization(principal, monthlyRate, loanTermMonths);
 
             // UI Updates - Sliders and labels
             const elDownDisp = document.getElementById('downPaymentDisplay');
@@ -2497,10 +2622,6 @@
             document.getElementById('rowInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
 
             if (currentPaymentType === 'finance') {
-                // Monthly big display
-                document.getElementById('mainPaymentDisplay').innerHTML = `$ ${Math.round(amort.monthly).toLocaleString()} <span class="sum-period">/ mes</span>`;
-                document.getElementById('mainPaymentSubtext').textContent = `Estimado a ${loanTermMonths} cuotas fijas · Perfil: ${getCreditScoreName()}`;
-
                 const totalInvestment = initialDisbursement + effectiveTradeIn + amort.totalPaid;
                 document.getElementById('rowTotalAmount').textContent = `$${Math.round(totalInvestment).toLocaleString()}`;
 
@@ -2520,12 +2641,7 @@
                     document.getElementById('legInterest').textContent = `$${Math.round(amort.totalInterest).toLocaleString()}`;
                 }
             } else {
-                // Cash mode
                 const cashTotal = effectivePrice - effectiveTradeIn;
-                document.getElementById('mainPaymentDisplay').innerHTML = `$ ${cashTotal.toLocaleString()}`;
-                document.getElementById('mainPaymentSubtext').textContent = (tradeInActive && effectiveTradeIn > 0)
-                    ? `Precio lista $${effectivePrice.toLocaleString()} menos $${effectiveTradeIn.toLocaleString()} de retoma evaluada`
-                    : `Monto final neto para entrega o importación directa`;
                 document.getElementById('rowTotalAmount').textContent = `$${cashTotal.toLocaleString()}`;
             }
 
@@ -2552,7 +2668,11 @@
 
             const qualifying = estimatorInventory.filter(car => car.price <= (maxTotalCarPrice * 1.05)); // 5% flexibility
 
-            document.getElementById('compatCount').textContent = `${qualifying.length} vehículos`;
+            const countEl = document.getElementById('compatCount');
+            if (countEl) countEl.textContent = `${qualifying.length} vehículos`;
+
+            const quickEl = document.getElementById('compatCountQuick');
+            if (quickEl) quickEl.textContent = `Ver ${qualifying.length} vehículos que califican abajo`;
 
             if (qualifying.length === 0) {
                 container.innerHTML = `
@@ -2587,6 +2707,7 @@
                 card.onclick = () => {
                     selectVehicleById(car.id);
                     switchEstimatorMode('vehicle');
+                    window.scrollTo({ top: 80, behavior: 'smooth' });
                 };
 
                 container.appendChild(card);
