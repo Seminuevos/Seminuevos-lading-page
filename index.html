@@ -461,29 +461,5 @@
     <script src="data.js?v=20260813"></script>
     <script src="script.js?v=20260813"></script>
 
-    <!-- acceso interno discreto -->
-    <script>
-    (function() {
-        // MÉTODO 1: Secuencia de teclado secreta — escribe "mt2024" en cualquier momento
-        var _seq = 'mt2024', _buf = '';
-        document.addEventListener('keydown', function(e) {
-            _buf += e.key.toLowerCase();
-            if (_buf.length > _seq.length) _buf = _buf.slice(-_seq.length);
-            if (_buf === _seq) { _buf = ''; window.location.href = '/SM-OP'; }
-        });
-
-        // MÉTODO 2: Mantener presionado el copyright del footer 3 segundos (móvil o escritorio)
-        var fp = document.querySelector('.footer-bottom p');
-        if (fp) {
-            var _ft = null;
-            fp.addEventListener('mousedown',  function() { _ft = setTimeout(function(){ window.location.href = '/SM-OP'; }, 3000); });
-            fp.addEventListener('mouseup',    function() { clearTimeout(_ft); });
-            fp.addEventListener('mouseleave', function() { clearTimeout(_ft); });
-            fp.addEventListener('touchstart', function() { _ft = setTimeout(function(){ window.location.href = '/SM-OP'; }, 3000); }, { passive: true });
-            fp.addEventListener('touchend',   function() { clearTimeout(_ft); });
-            fp.addEventListener('touchmove',  function() { clearTimeout(_ft); });
-        }
-    })();
-    </script>
 </body>
 </html>
