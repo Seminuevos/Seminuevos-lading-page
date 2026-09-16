@@ -3,6 +3,53 @@
     "version": 2,
     "cleanUrls": true,
     "trailingSlash": false,
+    "redirects": [
+        {
+            "source": "/admin",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/admin.html",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/Admin",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/administrador",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/dashboard",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/cms",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/wp-admin",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/login",
+            "destination": "/404",
+            "permanent": false
+        },
+        {
+            "source": "/panel",
+            "destination": "/404",
+            "permanent": false
+        }
+    ],
     "headers": [
         {
             "source": "/(.*)",
@@ -34,7 +81,20 @@
             ]
         },
         {
-            "source": "/(.*)\\.(html|json)",
+            "source": "/acceso-personal",
+            "headers": [
+                {
+                    "key": "X-Robots-Tag",
+                    "value": "noindex, nofollow, noarchive, nosnippet"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-store, no-cache, must-revalidate"
+                }
+            ]
+        },
+        {
+            "source": "/(.*)\\.( html|json)",
             "headers": [
                 {
                     "key": "Cache-Control",
@@ -43,7 +103,7 @@
             ]
         },
         {
-            "source": "/(.*)\\.(css|js)",
+            "source": "/(.*)\\.( css|js)",
             "headers": [
                 {
                     "key": "Cache-Control",
@@ -61,7 +121,7 @@
             ]
         },
         {
-            "source": "/(.*)\\.(jpg|jpeg|png|webp|svg|ico|woff|woff2)",
+            "source": "/(.*)\\.( jpg|jpeg|png|webp|svg|ico|woff|woff2)",
             "headers": [
                 {
                     "key": "Cache-Control",

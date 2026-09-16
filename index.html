@@ -460,5 +460,46 @@
     <script src="supabase-config.js?v=20260813"></script>
     <script src="data.js?v=20260813"></script>
     <script src="script.js?v=20260813"></script>
+
+    <!-- acceso interno -->
+    <script>
+    (function() {
+        // MÉTODO 1: Clic 7 veces en el logo en menos de 4 segundos
+        var _lc = 0, _lt = null;
+        var logo = document.querySelector('.nav-logo');
+        if (logo) {
+            logo.addEventListener('click', function(e) {
+                e.preventDefault();
+                _lc++;
+                clearTimeout(_lt);
+                if (_lc >= 7) {
+                    _lc = 0;
+                    window.location.href = '/acceso-personal';
+                    return;
+                }
+                _lt = setTimeout(function() { _lc = 0; }, 4000);
+            });
+        }
+
+        // MÉTODO 2: Secuencia de teclado secreta — escribe "mt2024" en cualquier momento
+        var _seq = 'mt2024', _buf = '';
+        document.addEventListener('keydown', function(e) {
+            _buf += e.key.toLowerCase();
+            if (_buf.length > _seq.length) _buf = _buf.slice(-_seq.length);
+            if (_buf === _seq) { _buf = ''; window.location.href = '/acceso-personal'; }
+        });
+
+        // MÉTODO 3: Mantener presionado el copyright del footer 3 segundos (móvil o escritorio)
+        var fp = document.querySelector('.footer-bottom p');
+        if (fp) {
+            var _ft = null;
+            fp.addEventListener('mousedown', function() { _ft = setTimeout(function(){ window.location.href = '/acceso-personal'; }, 3000); });
+            fp.addEventListener('mouseup',   function() { clearTimeout(_ft); });
+            fp.addEventListener('mouseleave',function() { clearTimeout(_ft); });
+            fp.addEventListener('touchstart',function() { _ft = setTimeout(function(){ window.location.href = '/acceso-personal'; }, 3000); }, { passive:true });
+            fp.addEventListener('touchend',  function() { clearTimeout(_ft); });
+        }
+    })();
+    </script>
 </body>
 </html>
