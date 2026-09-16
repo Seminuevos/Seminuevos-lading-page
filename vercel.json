@@ -21,10 +21,11 @@
         { "source": "/mt-operaciones.html",   "destination": "/404", "permanent": false }
     ],
     "rewrites": [
-        { "source": "/SM-OP",        "destination": "/SM-OP.html" },
-        { "source": "/sm-op",        "destination": "/SM-OP.html" },
-        { "source": "/SM-op",        "destination": "/SM-OP.html" },
-        { "source": "/sm-OP",        "destination": "/SM-OP.html" }
+        { "source": "/SM-OP",        "destination": "/sm-op.html" },
+        { "source": "/sm-op",        "destination": "/sm-op.html" },
+        { "source": "/SM-op",        "destination": "/sm-op.html" },
+        { "source": "/sm-OP",        "destination": "/sm-op.html" },
+        { "source": "/SM-OP.html",   "destination": "/sm-op.html" }
     ],
     "headers": [
         {
@@ -53,7 +54,7 @@
             ]
         },
         {
-            "source": "/SM-OP.html",
+            "source": "/sm-op.html",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
                 { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
