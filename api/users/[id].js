@@ -3,10 +3,10 @@
  * PUT    /api/users/[id]  → Edita usuario (hashea nueva contraseña si se envía)
  * DELETE /api/users/[id]  → Elimina usuario
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth } from '../middleware/auth.js';
-import { sanitizeString, isValidEmail } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth } from '../_middleware/auth.js';
+import { sanitizeString, isValidEmail } from '../_middleware/validate.js';
 import bcrypt from 'bcryptjs';
 
 const MASTER_ADMIN_EMAIL = 'jvaask16@gmail.com';

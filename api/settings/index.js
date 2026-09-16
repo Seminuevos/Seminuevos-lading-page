@@ -2,10 +2,10 @@
  * GET /api/settings  → Obtiene configuración de la agencia
  * PUT /api/settings  → Actualiza configuración (requiere auth admin)
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
-import { sanitizeString } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth, requireAdmin } from '../_middleware/auth.js';
+import { sanitizeString } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

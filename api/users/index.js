@@ -2,10 +2,10 @@
  * GET  /api/users  → Lista agency_users (requiere auth, solo admin ve todos)
  * POST /api/users  → Crea un usuario nuevo (contraseña hasheada con bcrypt)
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth } from '../middleware/auth.js';
-import { sanitizeString, isValidEmail, validateRequired } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth } from '../_middleware/auth.js';
+import { sanitizeString, isValidEmail, validateRequired } from '../_middleware/validate.js';
 import bcrypt from 'bcryptjs';
 
 export default async function handler(req, res) {

@@ -3,10 +3,10 @@
  * Logout del lado del servidor — registra el evento en security_logs
  * (El token se invalida del lado del cliente borrando el localStorage)
  */
-import { handleCors } from '../middleware/cors.js';
-import { verifyToken } from '../middleware/auth.js';
-import { supabase } from '../lib/supabase-server.js';
-import { getClientIP } from '../middleware/validate.js';
+import { handleCors } from '../_middleware/cors.js';
+import { verifyToken } from '../_middleware/auth.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { getClientIP } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

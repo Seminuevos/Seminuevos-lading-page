@@ -2,10 +2,10 @@
  * PUT    /api/vehicles/[id]  → Edita un vehículo (requiere auth)
  * DELETE /api/vehicles/[id]  → Elimina un vehículo (requiere auth)
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth } from '../middleware/auth.js';
-import { sanitizeString } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth } from '../_middleware/auth.js';
+import { sanitizeString } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

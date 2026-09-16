@@ -2,10 +2,10 @@
  * POST /api/security/log  → Registra un evento de seguridad
  * GET  /api/security/log  → Lista logs (requiere auth admin)
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth, requireAdmin } from '../middleware/auth.js';
-import { sanitizeString, checkRateLimit, getClientIP } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth, requireAdmin } from '../_middleware/auth.js';
+import { sanitizeString, checkRateLimit, getClientIP } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

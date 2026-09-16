@@ -6,10 +6,10 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "test:auth":     "node --test api/tests/auth.test.js",
-    "test:vehicles": "node --test api/tests/vehicles.test.js",
-    "test:users":    "node --test api/tests/users.test.js",
-    "test":          "node --test api/tests/*.test.js"
+    "test:auth":     "node --test tests/auth.test.js",
+    "test:vehicles": "node --test tests/vehicles.test.js",
+    "test:users":    "node --test tests/users.test.js",
+    "test":          "node --test tests/*.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.0",

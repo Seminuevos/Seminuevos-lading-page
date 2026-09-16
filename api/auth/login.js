@@ -3,11 +3,11 @@
  * Autentica un usuario de agency_users con bcrypt
  * Devuelve JWT firmado si las credenciales son correctas
  */
-import { supabase } from '../lib/supabase-server.js';
+import { supabase } from '../_lib/supabase-server.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { handleCors } from '../middleware/cors.js';
-import { sanitizeString, isValidEmail, checkRateLimit, getClientIP } from '../middleware/validate.js';
+import { handleCors } from '../_middleware/cors.js';
+import { sanitizeString, isValidEmail, checkRateLimit, getClientIP } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

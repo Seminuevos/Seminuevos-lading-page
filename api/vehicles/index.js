@@ -2,10 +2,10 @@
  * GET  /api/vehicles  → Lista vehículos (admin, con todos los campos)
  * POST /api/vehicles  → Crea un vehículo nuevo (requiere auth)
  */
-import { supabase } from '../lib/supabase-server.js';
-import { handleCors } from '../middleware/cors.js';
-import { requireAuth } from '../middleware/auth.js';
-import { sanitizeString, validateRequired } from '../middleware/validate.js';
+import { supabase } from '../_lib/supabase-server.js';
+import { handleCors } from '../_middleware/cors.js';
+import { requireAuth } from '../_middleware/auth.js';
+import { sanitizeString, validateRequired } from '../_middleware/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
