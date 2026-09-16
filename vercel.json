@@ -19,8 +19,9 @@
         { "source": "/mt-operaciones.html",   "destination": "/404", "permanent": false }
     ],
     "rewrites": [
-        { "source": "/SM-OP",        "destination": "/sm-op.html" },
-        { "source": "/sm-op",        "destination": "/sm-op.html" }
+        { "source": "/SM-OP", "destination": "/sm-op" },
+        { "source": "/SM-op", "destination": "/sm-op" },
+        { "source": "/sm-OP", "destination": "/sm-op" }
     ],
     "headers": [
         {
