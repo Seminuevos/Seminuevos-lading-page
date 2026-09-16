@@ -2763,8 +2763,8 @@
             <div id="authSuccess" style="display:none; background: rgba(37,211,102,0.15); border:1px solid #25D366; color:#25D366; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.9rem;"></div>
             
             <form id="authLoginForm" onsubmit="event.preventDefault(); if (typeof window.performLogin === 'function') { window.performLogin(); } else if (typeof performLogin === 'function') { performLogin(); }" style="display:flex; flex-direction:column; gap:0;">
-                <input type="email" class="auth-input" id="authEmail" placeholder="Email (ej: jvaask16@gmail.com)" required autocomplete="username" value="jvaask16@gmail.com">
-                <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña" autocomplete="current-password">
+                <input type="email" class="auth-input" id="authEmail" placeholder="Email (ej: jvaask16@gmail.com)" required autocomplete="username">
+                <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña" required autocomplete="current-password">
                 <button type="submit" class="btn btn-primary btn-block" id="authLogin" style="padding:14px; font-size:1rem; width:100%; justify-content:center;">
                     <i class="fas fa-lock"></i> Iniciar Sesión
                 </button>
@@ -4953,14 +4953,8 @@
                 console.warn('Session check notice:', err.message);
             }
 
-            // 2. Check persistent authorized admin session
-            if (localStorage.getItem('sn_admin_logged_in') === 'true') {
-                let savedUser = { email: 'jvaask16@gmail.com' };
-                try { savedUser = JSON.parse(localStorage.getItem('sn_admin_user') || '{"email":"jvaask16@gmail.com"}'); } catch(e) {}
-                showAdmin(savedUser);
-                return true;
-            }
-
+            // Si no hay sesión válida activa en Supabase, forzar pantalla de login
+            localStorage.removeItem('sn_admin_logged_in');
             if (authScreen) authScreen.style.display = 'flex';
             if (adminPanel) adminPanel.style.display = 'none';
             return false;
@@ -5118,70 +5112,62 @@
 
             if (!email) {
                 if (errEl) {
-                    errEl.textContent = 'Por favor ingresa tu correo electrónico';
+                    errEl.textContent = 'Por favor ingresa tu correo electrónico.';
                     errEl.style.display = 'block';
                 }
+                emailInput?.focus();
+                return;
+            }
+
+            if (!password) {
+                if (errEl) {
+                    errEl.textContent = 'Por favor ingresa tu contraseña para iniciar sesión.';
+                    errEl.style.display = 'block';
+                }
+                passwordInput?.focus();
                 return;
             }
 
             const origHtml = btn ? btn.innerHTML : 'Iniciar Sesión';
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...';
             }
 
             try {
-                // 1. Intento de autenticación oficial con Supabase
+                // Autenticación estricta con Supabase Auth (correo Y contraseña requeridos)
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (!error && data?.user) {
-                    logSecurityEvent('AUTH_SUCCESS', 'info', `Login exitoso vía Supabase: ${data.user.email}`);
-                    showToast(`¡Bienvenido, ${data.user.email}!`, 'success');
-                    showAdmin(data.user);
-                    return;
-                }
-
-                // 2. Acceso Administrativo Directo para administradores autorizados de SemiNuevos
-                const cleanEmail = email.toLowerCase();
-                const isAuthorizedAdmin = (
-                    cleanEmail === 'jvaask16@gmail.com' || 
-                    cleanEmail === 'seminuevo@agency.com' || 
-                    cleanEmail === 'admin@seminuevosagency.com' ||
-                    cleanEmail.includes('seminuevos')
-                );
-
-                if (isAuthorizedAdmin) {
-                    logSecurityEvent('AUTH_SUCCESS', 'info', `Acceso Administrativo Maestro: ${email}`);
-                    showToast(`✓ Acceso concedido para ${email}`, 'success');
-                    showAdmin({ email: email });
-                    return;
-                }
-
-                // Si no coincide con ninguno, mostrar mensaje de error
-                const errorMsg = error ? error.message : 'Credenciales no autorizadas';
-                let userMsg = errorMsg;
-                if (userMsg.toLowerCase().includes('invalid login credentials')) {
-                    userMsg = 'Correo o contraseña incorrectos. Verifica tus datos o usa el botón de recuperación abajo.';
-                }
-                if (errEl) {
-                    errEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i> ${userMsg}`;
-                    errEl.style.display = 'block';
-                }
-                showToast(userMsg, 'error');
-                logSecurityEvent('AUTH_FAILURE', 'warning', `Fallo de login para: ${email}`, { error: errorMsg });
-
-            } catch(err) {
-                console.warn("Login fallback catch:", err.message);
-                const cleanEmail = email.toLowerCase();
-                if (cleanEmail === 'jvaask16@gmail.com' || cleanEmail.includes('seminuevos')) {
-                    showToast(`✓ Acceso concedido para ${email}`, 'success');
-                    showAdmin({ email: email });
-                } else {
+                
+                if (error || !data?.user) {
+                    const errorMsg = error ? error.message : 'Credenciales no autorizadas';
+                    let userMsg = 'Correo o contraseña incorrectos. Verifica tus credenciales.';
+                    if (errorMsg.toLowerCase().includes('email not confirmed')) {
+                        userMsg = 'El correo electrónico no ha sido confirmado aún en Supabase.';
+                    } else if (errorMsg.toLowerCase().includes('too many requests')) {
+                        userMsg = 'Demasiados intentos fallidos. Por favor espera un momento antes de volver a intentar.';
+                    }
                     if (errEl) {
-                        errEl.innerHTML = `<i class="fas fa-wifi" style="margin-right:6px;"></i> Error de conexión: ${err.message}`;
+                        errEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i> ${userMsg}`;
                         errEl.style.display = 'block';
                     }
-                    showToast('Error de conexión con el servidor', 'error');
+                    showToast(userMsg, 'error');
+                    logSecurityEvent('AUTH_FAILURE', 'warning', `Fallo de login para: ${email}`, { error: errorMsg });
+                    return;
                 }
+
+                // Autenticación exitosa verificada por Supabase
+                logSecurityEvent('AUTH_SUCCESS', 'info', `Login exitoso vía Supabase: ${data.user.email}`);
+                showToast(`¡Bienvenido, ${data.user.email}!`, 'success');
+                showAdmin(data.user);
+
+            } catch(err) {
+                console.error("Login catch error:", err);
+                if (errEl) {
+                    errEl.innerHTML = `<i class="fas fa-wifi" style="margin-right:6px;"></i> Error de conexión con el servidor de autenticación.`;
+                    errEl.style.display = 'block';
+                }
+                showToast('Error de conexión al verificar credenciales', 'error');
+                logSecurityEvent('AUTH_ERROR', 'error', `Error de conexión en login para: ${email}`, { error: err.message });
             } finally {
                 if (btn) {
                     btn.disabled = false;
