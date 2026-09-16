@@ -898,21 +898,69 @@
             color: #e2e8f0;
         }
 
-        /* Formalization Fees Card */
+        /* Formalization & Protection Fees Card */
         .formalization-card {
             background: rgba(56, 189, 248, 0.04);
             border: 1px solid rgba(56, 189, 248, 0.2);
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 11px 14px;
             margin-top: 12px;
             margin-bottom: 12px;
+            transition: all 0.25s ease;
+        }
+
+        .formalization-card.fees-inactive {
+            opacity: 0.65;
+            border-color: rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.3);
         }
 
         .formalization-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
+        }
+
+        .formalization-title-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             cursor: pointer;
+            user-select: none;
+            flex: 1;
+        }
+
+        .formalization-title-area:hover .formalization-main-title {
+            color: #38bdf8;
+        }
+
+        .formalization-main-title {
+            font-weight: 600;
+            font-size: 0.86rem;
+            color: #ffffff;
+            transition: color 0.2s ease;
+        }
+
+        .btn-toggle-details {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: #38bdf8;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle-details:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: #ffffff;
+            border-color: #38bdf8;
         }
 
         .formalization-breakdown {
@@ -934,13 +982,19 @@
 
         .fee-input-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             margin-top: 10px;
             width: 100%;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 860px) {
+            .fee-input-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
             .fee-input-grid {
                 grid-template-columns: 1fr;
             }
@@ -1654,23 +1708,44 @@
                             </div>
                         </div>
 
-                        <!-- Formalization & Satellital GPS Option (Admin Sync) -->
-                        <div class="formalization-card">
-                            <div class="formalization-header" onclick="toggleFormalizationFees()">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <i class="fas fa-shield-alt" style="color: #38bdf8; font-size: 1.1rem;"></i>
+                        <!-- Formalization, GPS & Mandatory Vehicle Insurance Option (Collapsible / Compact) -->
+                        <div class="formalization-card" id="formalizationCard">
+                            <div class="formalization-header">
+                                <div class="formalization-title-area" onclick="toggleFormalizationDetailsCollapse()">
+                                    <div style="width: 34px; height: 34px; border-radius: 9px; background: rgba(56, 189, 248, 0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i class="fas fa-shield-alt" style="color: #38bdf8; font-size: 1.05rem;"></i>
+                                    </div>
                                     <div>
-                                        <div style="font-weight: 600; font-size: 0.86rem; color: #ffffff;">Incluir Gastos de Formalización y GPS</div>
-                                        <div style="font-size: 0.74rem; color: #94a3b8;">Gestión de trámites, notaría, placas y dispositivo satelital anual.</div>
+                                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                            <span class="formalization-main-title">Gastos de Formalización, GPS y Seguro</span>
+                                            <button type="button" class="btn-toggle-details" id="btnToggleFormalizationDetails" onclick="event.stopPropagation(); toggleFormalizationDetailsCollapse();">
+                                                <span id="txtToggleFormalizationDetails">Ver detalles</span>
+                                                <i class="fas fa-chevron-down" id="iconToggleFormalizationDetails" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
+                                            </button>
+                                        </div>
+                                        <div style="font-size: 0.73rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                                            <span>Trámites notariales, GPS satelital y seguro vehicular anual</span>
+                                            <span style="color: #38bdf8; font-weight: 600;" id="feeQuickTotalBadge">($3,140 est.)</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <label class="switch-toggle" onclick="event.stopPropagation()">
+                                <label class="switch-toggle" onclick="event.stopPropagation()" title="Activar / Desactivar inclusión de gastos, GPS y seguro">
                                     <input type="checkbox" id="includeFeesCheck" onchange="toggleFormalizationFees(this.checked)" checked>
                                     <span class="switch-slider"></span>
                                 </label>
                             </div>
-                            <div class="formalization-breakdown" id="formalizationFeesDetail" style="display: flex; flex-direction: column; gap: 8px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+
+                            <!-- Desplegable / Collapsible Section -->
+                            <div class="formalization-collapsible" id="formalizationCollapsible" style="display: none; margin-top: 12px; border-top: 1px solid rgba(56, 189, 248, 0.15); padding-top: 12px;">
+                                <!-- Mandatory insurance requirement notice -->
+                                <div style="padding: 10px 14px; background: rgba(56, 189, 248, 0.08); border-left: 3px solid #38bdf8; border-radius: 6px; margin-bottom: 12px; font-size: 0.76rem; line-height: 1.45; color: #cbd5e1;">
+                                    <div style="font-weight: 700; color: #38bdf8; margin-bottom: 3px; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-shield-halved"></i> Requisito Obligatorio de Financiamiento
+                                    </div>
+                                    Para aprobar y mantener activo el crédito, <strong>es indispensable contratar anualmente el Seguro del Vehículo a todo riesgo y el sistema GPS satelital</strong> durante todo el plazo de amortización, garantizando el resguardo del vehículo y de la inversión.
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
                                     <div style="font-size: 0.76rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
                                         <i class="fas fa-sliders-h"></i> Montos personalizables por trámite:
                                     </div>
@@ -1678,6 +1753,7 @@
                                         <i class="fas fa-undo"></i> Restablecer
                                     </button>
                                 </div>
+
                                 <div class="fee-input-grid">
                                     <div class="fee-input-col">
                                         <label class="fee-input-label" for="inputFeeAdmin"><i class="fas fa-file-invoice-dollar" style="color: #38bdf8;"></i> Gastos Admin ($):</label>
@@ -1691,10 +1767,15 @@
                                         <label class="fee-input-label" for="inputFeeGps"><i class="fas fa-satellite-dish" style="color: #38bdf8;"></i> GPS Satelital ($/año):</label>
                                         <input type="number" id="inputFeeGps" class="est-input fee-number-input" value="180" min="0" step="10" oninput="onFeeInputsChange()">
                                     </div>
+                                    <div class="fee-input-col">
+                                        <label class="fee-input-label" for="inputFeeSeguro"><i class="fas fa-shield-halved" style="color: #38bdf8;"></i> Seguro Anual ($/año):</label>
+                                        <input type="number" id="inputFeeSeguro" class="est-input fee-number-input" value="600" min="0" step="50" oninput="onFeeInputsChange()">
+                                    </div>
                                 </div>
-                                <div class="fee-subtotal-bar" id="feeSubtotalBar">
-                                    <span>Total Trámites: <strong id="feeSubtotalSum">$1,340</strong></span>
-                                    <span style="font-size: 0.72rem; color: #94a3b8;" id="feeGpsCalcNote">(GPS $180/año × 3 años = $540)</span>
+
+                                <div class="fee-subtotal-bar" id="feeSubtotalBar" style="margin-top: 12px;">
+                                    <span>Total Trámites & Protección: <strong id="feeSubtotalSum">$3,140</strong></span>
+                                    <span style="font-size: 0.72rem; color: #94a3b8;" id="feeGpsCalcNote">(GPS $180/año + Seguro $600/año × 3 años = $2,340)</span>
                                 </div>
                             </div>
                         </div>
@@ -1763,7 +1844,7 @@
                                 <span class="val" id="rowDownPayment">-$0</span>
                             </div>
                             <div class="b-row" id="rowFeesWrap" style="color: #38bdf8;">
-                                <span>Gastos Formalización & GPS</span>
+                                <span>Gastos, GPS & Seguro</span>
                                 <span class="val" id="rowFees">+$0</span>
                             </div>
                             <div class="b-row" id="rowInitialDisbursementWrap" style="font-weight: 700; color: #34d399; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 8px;">
@@ -1870,7 +1951,7 @@
                     <td style="padding: 10px 14px; text-align: right; color: #047857;" id="printDownPayment">-$0</td>
                 </tr>
                 <tr style="border-bottom: 1px solid #e2e8f0;" id="printFeesRow">
-                    <td style="padding: 10px 14px; color: #334155;">Gastos de Formalización y GPS Satelital</td>
+                    <td style="padding: 10px 14px; color: #334155;">Gastos de Formalización, GPS Satelital y Seguro Anual</td>
                     <td style="padding: 10px 14px; text-align: right; color: #0284c7;" id="printFees">+$0</td>
                 </tr>
                 <tr style="border-bottom: 2px solid #cbd5e1; background: #f8fafc; font-weight: bold;">
@@ -1955,11 +2036,13 @@
         let tradeInValue = 0;
         let targetMonthlyBudget = 350;
 
-        // Formalization fees (Aligned with calcularCreditoPlan() in admin.html - Customizable)
+        // Formalization & Protection fees (Aligned with calcularCreditoPlan() in admin.html - Customizable)
         let includeFormalizationFees = true;
         let feeGastosAdmin = 350;
         let feeNotariaPlacas = 450;
         let feeGpsAnual = 180;
+        let feeSeguroAnual = 600;
+        let isFormalizationDetailsOpen = false;
 
         // Trade-In condition diagnostics state (Aligned with calculateTradeIn() in admin.html)
         let tradeInDiagnostic = {
@@ -2356,6 +2439,26 @@
             setMonthlyRate(parseFloat(val));
         }
 
+        function toggleFormalizationDetailsCollapse(forceOpen) {
+            if (typeof forceOpen === 'boolean') {
+                isFormalizationDetailsOpen = forceOpen;
+            } else {
+                isFormalizationDetailsOpen = !isFormalizationDetailsOpen;
+            }
+            const el = document.getElementById('formalizationCollapsible');
+            const txt = document.getElementById('txtToggleFormalizationDetails');
+            const icon = document.getElementById('iconToggleFormalizationDetails');
+            if (el) {
+                el.style.display = isFormalizationDetailsOpen ? 'block' : 'none';
+            }
+            if (txt) {
+                txt.textContent = isFormalizationDetailsOpen ? 'Ocultar detalles' : 'Ver detalles';
+            }
+            if (icon) {
+                icon.style.transform = isFormalizationDetailsOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
+        }
+
         function toggleFormalizationFees(forceState) {
             if (typeof forceState === 'boolean') {
                 includeFormalizationFees = forceState;
@@ -2364,10 +2467,9 @@
             }
             const chk = document.getElementById('includeFeesCheck');
             if (chk) chk.checked = includeFormalizationFees;
-            const detail = document.getElementById('formalizationFeesDetail');
-            if (detail) {
-                detail.style.opacity = includeFormalizationFees ? '1' : '0.4';
-                detail.style.pointerEvents = includeFormalizationFees ? 'auto' : 'none';
+            const card = document.getElementById('formalizationCard');
+            if (card) {
+                card.classList.toggle('fees-inactive', !includeFormalizationFees);
             }
             recalculate();
         }
@@ -2376,6 +2478,7 @@
             feeGastosAdmin = Math.max(0, parseFloat(document.getElementById('inputFeeAdmin')?.value) || 0);
             feeNotariaPlacas = Math.max(0, parseFloat(document.getElementById('inputFeeNotaria')?.value) || 0);
             feeGpsAnual = Math.max(0, parseFloat(document.getElementById('inputFeeGps')?.value) || 0);
+            feeSeguroAnual = Math.max(0, parseFloat(document.getElementById('inputFeeSeguro')?.value) || 0);
             recalculate();
         }
 
@@ -2383,12 +2486,15 @@
             feeGastosAdmin = 350;
             feeNotariaPlacas = 450;
             feeGpsAnual = 180;
+            feeSeguroAnual = 600;
             const inAdmin = document.getElementById('inputFeeAdmin');
             if (inAdmin) inAdmin.value = 350;
             const inNotaria = document.getElementById('inputFeeNotaria');
             if (inNotaria) inNotaria.value = 450;
             const inGps = document.getElementById('inputFeeGps');
             if (inGps) inGps.value = 180;
+            const inSeguro = document.getElementById('inputFeeSeguro');
+            if (inSeguro) inSeguro.value = 600;
             recalculate();
         }
 
@@ -2608,7 +2714,8 @@
 
             const anosPlazo = loanTermMonths / 12;
             const gpsTotal = feeGpsAnual * anosPlazo;
-            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
+            const seguroTotal = feeSeguroAnual * anosPlazo;
+            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal + seguroTotal;
 
             if (currentMode === 'budget') {
                 // Cálculo para Modo Presupuesto Mensual
@@ -2675,7 +2782,13 @@
             const elFeeSubtotal = document.getElementById('feeSubtotalSum');
             if (elFeeSubtotal) elFeeSubtotal.textContent = `$${Math.round(totalFees).toLocaleString()}`;
             const elFeeNote = document.getElementById('feeGpsCalcNote');
-            if (elFeeNote) elFeeNote.textContent = `(GPS $${feeGpsAnual}/año × ${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'} = $${Math.round(gpsTotal).toLocaleString()})`;
+            if (elFeeNote) elFeeNote.textContent = `(GPS $${feeGpsAnual}/año + Seguro $${feeSeguroAnual}/año × ${anosPlazo} ${anosPlazo === 1 ? 'año' : 'años'} = $${Math.round(gpsTotal + seguroTotal).toLocaleString()})`;
+            const elQuickBadge = document.getElementById('feeQuickTotalBadge');
+            if (elQuickBadge) {
+                elQuickBadge.textContent = includeFormalizationFees 
+                    ? `($${Math.round(totalFees).toLocaleString()} est.)` 
+                    : '(Desactivado)';
+            }
 
             // UI Updates - Sliders and labels
             const elDownDisp = document.getElementById('downPaymentDisplay');
@@ -2856,7 +2969,7 @@
                 text += `\n📊 *PLAN DE FINANCIAMIENTO:*\n`;
                 text += `💰 *Pago Inicial Vehicular:* $${downPayment.toLocaleString()} (${downPaymentPct}%)\n`;
                 if (includeFormalizationFees) {
-                    text += `📑 *Gastos Formalización & GPS:* +$${totalFees.toLocaleString()}\n`;
+                    text += `🛡️ *Gastos Formalización, GPS y Seguro:* +$${totalFees.toLocaleString()}\n`;
                     text += `💳 *Desembolso Inicial Total:* $${initialDisbursement.toLocaleString()}\n`;
                 }
                 text += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
@@ -2877,36 +2990,42 @@
             const btnBudget = document.getElementById('btnWhatsappBudgetQuote');
             if (btnBudget) {
                 let textB = `¡Hola Seminuevos! Estuve simulando en su Estimador por Presupuesto Mensual y me interesa evaluar este plan:\n\n`;
-                textB += `💵 *Cuota Mensual Objetivo:* $${targetMonthlyBudget.toLocaleString()} / mes\n`;
-                textB += `✨ *Poder de Compra Proyectado:* $${effectivePrice.toLocaleString()}\n`;
-                textB += `💰 *Pago Inicial Estimado:* $${downPaymentAmount.toLocaleString()} (${downPaymentPct}%)\n`;
-                textB += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
-                textB += `👤 *Perfil Crediticio:* ${getCreditScoreName()}\n`;
-                if (tradeInActive && effectiveTradeIn > 0) {
-                    textB += `🔄 *Retoma Trade-In Estimada:* -$${effectiveTradeIn.toLocaleString()}\n`;
+                textB += `🎯 *Cuota Mensual Deseada:* $${targetMonthlyBudget.toLocaleString()} / mes\n`;
+                textB += `💎 *Poder de Compra Proyectado:* $${effectivePrice.toLocaleString()}\n`;
+                textB += `💰 *Pago Inicial Vehicular:* $${downPayment.toLocaleString()} (${downPaymentPct}%)\n`;
+                if (includeFormalizationFees) {
+                    textB += `🛡️ *Gastos Formalización, GPS y Seguro:* +$${totalFees.toLocaleString()}\n`;
+                    textB += `💳 *Desembolso Inicial Total:* $${initialDisbursement.toLocaleString()}\n`;
                 }
-                textB += `\nQuisiera conocer los vehículos que califican y los recaudos para la pre-aprobación.`;
+                textB += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
+                textB += `👤 *Perfil Crediticio:* ${getCreditScoreName()}\n\n`;
+                textB += `Quisiera que un asesor me presente las mejores opciones disponibles dentro de este rango.`;
                 btnBudget.href = `https://wa.me/584248700438?text=${encodeURIComponent(textB)}`;
             }
         }
 
-        // --- PRINTABLE QUOTE GENERATOR ---
+        // --- PRINT FORMAL QUOTATION SHEET ---
         function printQuoteSheet() {
             const now = new Date();
             const dateStr = now.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
             const quoteNum = `SN-EST-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            document.getElementById('printQuoteDate').textContent = `Fecha: ${dateStr}`;
-            document.getElementById('printQuoteNumber').textContent = `Cotización #${quoteNum}`;
+            const elDate = document.getElementById('printQuoteDate');
+            if (elDate) elDate.textContent = `Fecha: ${dateStr}`;
+            const elNum = document.getElementById('printQuoteNumber');
+            if (elNum) elNum.textContent = `Cotización #${quoteNum}`;
 
             const carName = isCustomPrice 
-                ? `Presupuesto Personalizado de Compra`
+                ? 'Presupuesto Personalizado de Compra'
                 : (selectedVehicle ? selectedVehicle.title : 'Vehículo Seleccionado');
+            const elName = document.getElementById('printVehicleName');
+            if (elName) elName.textContent = carName;
 
-            document.getElementById('printVehicleName').textContent = carName;
-            document.getElementById('printVehicleSpecs').textContent = `Precio de Lista: $${carPrice.toLocaleString()} | Condición: ${(selectedVehicle && selectedVehicle.condition === '0km') ? '0KM' : 'Seminuevo'} | Vigencia: 7 días`;
+            const elSpecs = document.getElementById('printVehicleSpecs');
+            if (elSpecs) elSpecs.textContent = `Precio de Lista: $${carPrice.toLocaleString()} | Condición: ${(selectedVehicle && selectedVehicle.condition === '0km') ? '0KM' : 'Seminuevo'} | Vigencia: 7 días`;
 
-            document.getElementById('printPrice').textContent = `$${carPrice.toLocaleString()}`;
+            const elPrice = document.getElementById('printPrice');
+            if (elPrice) elPrice.textContent = `$${carPrice.toLocaleString()}`;
 
             const trRow = document.getElementById('printTradeInRow');
             if (tradeInActive && tradeInValue > 0) {
@@ -2925,7 +3044,8 @@
             const princ = Math.max(0, pAfterTrade - dwn);
             const anosPlazo = loanTermMonths / 12;
             const gpsTotal = feeGpsAnual * anosPlazo;
-            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal;
+            const seguroTotal = feeSeguroAnual * anosPlazo;
+            const totalFees = feeGastosAdmin + feeNotariaPlacas + gpsTotal + seguroTotal;
             const initialDisbursement = dwn + (includeFormalizationFees ? totalFees : 0);
             const amort = calculateAmortization(princ, monthlyRate, loanTermMonths);
 
@@ -2957,9 +3077,16 @@
 
         function initEstimator() {
             recalculate();
+            initCustomSelect();
         }
 
-        // Explicitly attach all interactive functions to window for onclick handlers
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initEstimator);
+        } else {
+            initEstimator();
+        }
+
+        // Global exports for inline HTML handlers
         window.switchEstimatorMode = switchEstimatorMode;
         window.toggleCustomPriceMode = toggleCustomPriceMode;
         window.onCustomPriceInput = onCustomPriceInput;
@@ -2974,6 +3101,9 @@
         window.setMonthlyRate = setMonthlyRate;
         window.onRateSliderChange = onRateSliderChange;
         window.toggleFormalizationFees = toggleFormalizationFees;
+        window.toggleFormalizationDetailsCollapse = toggleFormalizationDetailsCollapse;
+        window.onFeeInputsChange = onFeeInputsChange;
+        window.resetFormalizationFees = resetFormalizationFees;
         window.toggleTradeIn = toggleTradeIn;
         window.calculateTradeInLive = calculateTradeInLive;
         window.onTradeInManualOverride = onTradeInManualOverride;
