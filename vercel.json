@@ -4,19 +4,27 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "redirects": [
-        { "source": "/admin",         "destination": "/404", "permanent": false },
-        { "source": "/admin.html",    "destination": "/404", "permanent": false },
-        { "source": "/Admin",         "destination": "/404", "permanent": false },
-        { "source": "/administrador", "destination": "/404", "permanent": false },
-        { "source": "/dashboard",     "destination": "/404", "permanent": false },
-        { "source": "/cms",           "destination": "/404", "permanent": false },
-        { "source": "/wp-admin",      "destination": "/404", "permanent": false },
-        { "source": "/wp-admin/(.*)", "destination": "/404", "permanent": false },
+        { "source": "/admin",                 "destination": "/404", "permanent": false },
+        { "source": "/admin.html",            "destination": "/404", "permanent": false },
+        { "source": "/Admin",                 "destination": "/404", "permanent": false },
+        { "source": "/administrador",         "destination": "/404", "permanent": false },
+        { "source": "/dashboard",             "destination": "/404", "permanent": false },
+        { "source": "/cms",                   "destination": "/404", "permanent": false },
+        { "source": "/wp-admin",              "destination": "/404", "permanent": false },
+        { "source": "/wp-admin/(.*)",         "destination": "/404", "permanent": false },
         { "source": "/login",                 "destination": "/404", "permanent": false },
         { "source": "/panel",                 "destination": "/404", "permanent": false },
         { "source": "/admin/(.*)",            "destination": "/404", "permanent": false },
         { "source": "/acceso-personal",       "destination": "/404", "permanent": false },
-        { "source": "/acceso-personal.html",  "destination": "/404", "permanent": false }
+        { "source": "/acceso-personal.html",  "destination": "/404", "permanent": false },
+        { "source": "/mt-operaciones",        "destination": "/404", "permanent": false },
+        { "source": "/mt-operaciones.html",   "destination": "/404", "permanent": false }
+    ],
+    "rewrites": [
+        { "source": "/SM-OP",        "destination": "/SM-OP.html" },
+        { "source": "/sm-op",        "destination": "/SM-OP.html" },
+        { "source": "/SM-op",        "destination": "/SM-OP.html" },
+        { "source": "/sm-OP",        "destination": "/SM-OP.html" }
     ],
     "headers": [
         {
@@ -31,14 +39,21 @@
             ]
         },
         {
-            "source": "/mt-operaciones",
+            "source": "/SM-OP",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
                 { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
             ]
         },
         {
-            "source": "/mt-operaciones.html",
+            "source": "/sm-op",
+            "headers": [
+                { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
+                { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/SM-OP.html",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
                 { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }

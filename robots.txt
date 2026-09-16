@@ -6,4 +6,8 @@ Disallow: /acceso-personal
 Disallow: /acceso-personal.html
 Disallow: /mt-operaciones
 Disallow: /mt-operaciones.html
+Disallow: /SM-OP
+Disallow: /SM-OP.html
+Disallow: /sm-op
+Disallow: /sm-op.html
 Sitemap: https://seminuevoautos.com/sitemap.xml
