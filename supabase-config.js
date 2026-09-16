@@ -41,7 +41,7 @@ initSupabaseClient();
  * if (res.ok) { console.log(res.data.token); }
  */
 async function apiFetch(path, options = {}) {
-    const token = localStorage.getItem('sn_jwt_token');
+    const token = sessionStorage.getItem('sn_jwt_token') || localStorage.getItem('sn_jwt_token');
 
     const headers = {
         'Content-Type': 'application/json',
@@ -89,41 +89,28 @@ async function apiFetch(path, options = {}) {
     }
 }
 
-/** Guarda la sesión JWT en localStorage */
+/** Guarda la sesión temporalmente en sessionStorage (NO en localStorage para evitar auto-login) */
 function _saveSession(token, user) {
-    localStorage.setItem('sn_jwt_token', token);
-    localStorage.setItem('sn_admin_user', JSON.stringify(user));
-    localStorage.setItem('sn_admin_logged_in', 'true');
-    if (user?.role) localStorage.setItem('sn_current_role', user.role);
-}
-
-/** Borra la sesión JWT del localStorage */
-function _clearSession() {
-    localStorage.removeItem('sn_jwt_token');
-    localStorage.removeItem('sn_admin_user');
-    localStorage.removeItem('sn_admin_logged_in');
-    localStorage.removeItem('sn_current_role');
-}
-
-/** Verifica si hay sesión activa (decodifica el JWT sin verificar firma) */
-function _getSessionUser() {
-    const token = localStorage.getItem('sn_jwt_token');
-    if (!token) return null;
-
     try {
-        // Decodificar payload del JWT (sin verificar firma, eso lo hace el servidor)
-        const parts = token.split('.');
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-
-        // Verificar que no haya expirado
-        if (payload.exp && payload.exp * 1000 < Date.now()) {
-            _clearSession();
-            return null;
-        }
-
-        return payload;
-    } catch {
-        return null;
-    }
+        if (token) sessionStorage.setItem('sn_jwt_token', token);
+        if (user) sessionStorage.setItem('sn_admin_user', JSON.stringify(user));
+        if (user?.role) localStorage.setItem('sn_current_role', user.role);
+    } catch(e) {}
 }
+
+/** Borra la sesión */
+function _clearSession() {
+    try {
+        localStorage.removeItem('sn_jwt_token');
+        localStorage.removeItem('sn_admin_user');
+        localStorage.removeItem('sn_admin_logged_in');
+        localStorage.removeItem('sn_current_role');
+        sessionStorage.clear();
+    } catch(e) {}
+}
+
+/** Verifica si hay sesión activa: RETORNA NULL SIEMPRE PARA EXIGIR CREDENCIALES */
+function _getSessionUser() {
+    return null;
+}
+

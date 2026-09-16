@@ -5147,6 +5147,21 @@
         const adminPanel = document.getElementById('adminPanel');
 
         async function checkAuth() {
+            // NUNCA INICIAR AUTOMÁTICAMENTE: Obligar siempre la pantalla de login con credenciales
+            if (authScreen) authScreen.style.display = 'flex';
+            if (adminPanel) adminPanel.style.display = 'none';
+
+            // Limpiar cualquier flag de auto-login previo para asegurar ingreso manual obligatorio
+            try {
+                localStorage.removeItem('sn_admin_logged_in');
+                localStorage.removeItem('sn_jwt_token');
+                sessionStorage.removeItem('sn_admin_logged_in');
+                sessionStorage.removeItem('sn_current_user');
+            } catch(e) {}
+
+            const pwdInput = document.getElementById('authPassword');
+            if (pwdInput) pwdInput.value = '';
+
             // FIREWALL CHECK (con timeout de 1.5s para no bloquear la carga)
             try {
                 let ip = 'Unknown';
@@ -5165,30 +5180,6 @@
                 }
             } catch(e) {}
 
-            // Verificar sesión JWT local activa
-            const sessionUser = typeof _getSessionUser === 'function' ? _getSessionUser() : null;
-            if (sessionUser) {
-                const savedUser = (() => { try { return JSON.parse(localStorage.getItem('sn_admin_user') || '{}'); } catch { return {}; } })();
-                showAdmin(savedUser.id ? savedUser : sessionUser);
-                return true;
-            }
-
-            // Si hay sesión guardada en localStorage
-            try {
-                const loggedIn = localStorage.getItem('sn_admin_logged_in');
-                const rawUser = localStorage.getItem('sn_admin_user');
-                if (loggedIn === 'true' && rawUser) {
-                    const u = JSON.parse(rawUser);
-                    if (u && u.email) {
-                        showAdmin(u);
-                        return true;
-                    }
-                }
-            } catch(e) {}
-
-            // No hay sesión activa: forzar pantalla de login con credenciales
-            if (authScreen) authScreen.style.display = 'flex';
-            if (adminPanel) adminPanel.style.display = 'none';
             return false;
         }
 
@@ -5201,15 +5192,11 @@
             const displayName = user?.full_name || emailStr.split('@')[0] || 'Admin';
             if (nameEl) nameEl.textContent = displayName;
 
-            // Persist session
-            if (typeof _saveSession === 'function') {
-                const token = localStorage.getItem('sn_jwt_token') || '';
-                _saveSession(token, user);
-            } else {
-                localStorage.setItem('sn_admin_logged_in', 'true');
-                localStorage.setItem('sn_admin_user', JSON.stringify(user || { email: emailStr }));
+            // Datos de la sesión activa en memoria para la pestaña actual (sin auto-login en próximos accesos)
+            try {
+                sessionStorage.setItem('sn_current_user', JSON.stringify(user || { email: emailStr }));
                 if (user?.role) localStorage.setItem('sn_current_role', user.role);
-            }
+            } catch(e) {}
 
             // Load all dashboard components
             loadDashboard();
@@ -5423,10 +5410,11 @@
                 if (typeof _saveSession === 'function') {
                     _saveSession(authToken, authenticatedUser);
                 } else {
-                    localStorage.setItem('sn_jwt_token', authToken);
-                    localStorage.setItem('sn_admin_user', JSON.stringify(authenticatedUser));
-                    localStorage.setItem('sn_admin_logged_in', 'true');
-                    if (authenticatedUser?.role) localStorage.setItem('sn_current_role', authenticatedUser.role);
+                    try {
+                        sessionStorage.setItem('sn_jwt_token', authToken || '');
+                        sessionStorage.setItem('sn_admin_user', JSON.stringify(authenticatedUser));
+                        if (authenticatedUser?.role) localStorage.setItem('sn_current_role', authenticatedUser.role);
+                    } catch(e) {}
                 }
 
                 const welcomeName = authenticatedUser.full_name || authenticatedUser.email;
@@ -5508,12 +5496,19 @@
         });
 
         document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-            localStorage.removeItem('sn_admin_logged_in');
-            localStorage.removeItem('sn_admin_user');
+            try {
+                localStorage.removeItem('sn_admin_logged_in');
+                localStorage.removeItem('sn_admin_user');
+                localStorage.removeItem('sn_jwt_token');
+                sessionStorage.clear();
+            } catch(e) {}
+            const pwdInput = document.getElementById('authPassword');
+            if (pwdInput) pwdInput.value = '';
             await logSecurityEvent('LOGOUT', 'info', 'Cierre de sesión manual');
             try { await supabaseClient.auth.signOut(); } catch(e) {}
             if (authScreen) authScreen.style.display = 'flex';
             if (adminPanel) adminPanel.style.display = 'none';
+            showToast('Sesión cerrada correctamente', 'info');
         });
 
         // ===== VEHICLES CRUD =====
