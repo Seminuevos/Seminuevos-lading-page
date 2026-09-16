@@ -4003,7 +4003,7 @@ body::after {
 .views-badge {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    left: 10px;
     display: inline-flex;
     align-items: center;
     gap: 4px;
