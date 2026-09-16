@@ -2826,13 +2826,10 @@
             <div id="authSuccess" style="display:none; background: rgba(37,211,102,0.15); border:1px solid #25D366; color:#25D366; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.9rem;"></div>
             
             <form id="authLoginForm" onsubmit="event.preventDefault(); if (typeof window.performLogin === 'function') { window.performLogin(); } else if (typeof performLogin === 'function') { performLogin(); }" style="display:flex; flex-direction:column; gap:0;">
-                <input type="email" class="auth-input" id="authEmail" placeholder="Email (opcional para acceso rápido)" autocomplete="username">
-                <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña (opcional)" autocomplete="current-password">
+                <input type="email" class="auth-input" id="authEmail" placeholder="Email (ej: jvaask16@gmail.com)" required autocomplete="username">
+                <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña de acceso" required autocomplete="current-password">
                 <button type="submit" class="btn btn-primary btn-block" id="authLogin" style="padding:14px; font-size:1rem; width:100%; justify-content:center;">
                     <i class="fas fa-lock"></i> Iniciar Sesión
-                </button>
-                <button type="button" class="btn btn-secondary btn-block" id="authDirectBtn" onclick="directAccessMaster()" style="padding:13px; font-size:0.95rem; width:100%; justify-content:center; margin-top:12px; background:linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.95)); border:1px solid rgba(255,255,255,0.18); color:#f8fafc; cursor:pointer; border-radius:var(--radius); display:flex; align-items:center;">
-                    <i class="fas fa-bolt" style="color:var(--accent); margin-right:8px;"></i> Acceso Directo (Sin Credenciales)
                 </button>
             </form>
 
@@ -5145,13 +5142,6 @@
         const adminPanel = document.getElementById('adminPanel');
 
         async function checkAuth() {
-            // Verificar parámetro en URL para acceso directo instantáneo (?direct=1 o ?auto=1)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('direct') === '1' || urlParams.get('auto') === '1') {
-                directAccessMaster();
-                return true;
-            }
-
             // FIREWALL CHECK (con timeout de 1.5s para no bloquear la carga)
             try {
                 let ip = 'Unknown';
@@ -5170,7 +5160,7 @@
                 }
             } catch(e) {}
 
-            // Verificar sesión JWT local (decodifica sin llamar al servidor)
+            // Verificar sesión JWT local activa
             const sessionUser = typeof _getSessionUser === 'function' ? _getSessionUser() : null;
             if (sessionUser) {
                 const savedUser = (() => { try { return JSON.parse(localStorage.getItem('sn_admin_user') || '{}'); } catch { return {}; } })();
@@ -5178,7 +5168,7 @@
                 return true;
             }
 
-            // Si hay flag previo de login en localStorage, restaurar automáticamente
+            // Si hay sesión guardada en localStorage
             try {
                 const loggedIn = localStorage.getItem('sn_admin_logged_in');
                 const rawUser = localStorage.getItem('sn_admin_user');
@@ -5191,30 +5181,12 @@
                 }
             } catch(e) {}
 
-            // Mostrar pantalla de login con botón de acceso directo listo
+            // No hay sesión activa: forzar pantalla de login con credenciales
             if (authScreen) authScreen.style.display = 'flex';
             if (adminPanel) adminPanel.style.display = 'none';
             return false;
         }
 
-        // ACCESO DIRECTO SIN CREDENCIALES
-        window.directAccessMaster = function() {
-            const masterUser = {
-                id: 'master-admin',
-                email: 'jvaask16@gmail.com',
-                full_name: 'Administrador Master',
-                role: 'admin',
-                branch: 'Porlamar (Sede Principal)',
-                status: 'active'
-            };
-            const mockToken = 'direct.' + btoa(JSON.stringify({ ...masterUser, exp: Math.floor(Date.now()/1000) + 86400*30 })) + '.sig';
-            localStorage.setItem('sn_jwt_token', mockToken);
-            localStorage.setItem('sn_admin_user', JSON.stringify(masterUser));
-            localStorage.setItem('sn_admin_logged_in', 'true');
-            localStorage.setItem('sn_current_role', 'admin');
-            showToast('✓ Acceso directo autorizado como Administrador Master', 'success');
-            showAdmin(masterUser);
-        };
 
         window.showAdmin = function showAdmin(user) {
             if (authScreen) authScreen.style.display = 'none';
@@ -5347,57 +5319,114 @@
 
             if (errEl) errEl.style.display = 'none';
 
-            // Si los campos están vacíos, permitir acceso directo inmediato sin credenciales
-            if (!email && !password) {
-                directAccessMaster();
+            // Validar que ambos campos sean obligatorios
+            if (!email) {
+                if (errEl) {
+                    errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu correo electrónico.';
+                    errEl.style.display = 'block';
+                }
+                emailInput?.focus();
+                return;
+            }
+
+            if (!password) {
+                if (errEl) {
+                    errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu contraseña de acceso.';
+                    errEl.style.display = 'block';
+                }
+                passwordInput?.focus();
                 return;
             }
 
             const origHtml = btn ? btn.innerHTML : 'Iniciar Sesión';
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...'; }
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...'; }
 
             try {
-                // Intentar API interna
-                const result = await apiFetch('/api/auth/login', {
-                    method: 'POST',
-                    body: { email, password }
-                });
+                // 1. Intentar validar con la API interna segura
+                let authenticatedUser = null;
+                let authToken = null;
 
-                if (result && result.ok && result.data?.token) {
-                    const { token, user } = result.data;
-                    if (typeof _saveSession === 'function') {
-                        _saveSession(token, user);
-                    } else {
-                        localStorage.setItem('sn_jwt_token', token);
-                        localStorage.setItem('sn_admin_user', JSON.stringify(user));
-                        localStorage.setItem('sn_admin_logged_in', 'true');
-                        if (user?.role) localStorage.setItem('sn_current_role', user.role);
+                try {
+                    const result = await apiFetch('/api/auth/login', {
+                        method: 'POST',
+                        body: { email, password }
+                    });
+
+                    if (result && result.ok && result.data?.token) {
+                        authenticatedUser = result.data.user;
+                        authToken = result.data.token;
                     }
-                    showToast(`¡Bienvenido, ${user.full_name || user.email}!`, 'success');
-                    showAdmin(user);
+                } catch (apiErr) {
+                    console.warn("API login attempt:", apiErr);
+                }
+
+                // 2. Si la API no respondió (offline / variables pendientes), validar contra lista autorizada de colaboradores
+                if (!authenticatedUser) {
+                    const localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
+                    const found = localUsers.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
+
+                    if (found) {
+                        // Verificar contraseña registrada
+                        const passMatch = (found.password && found.password === password) ||
+                                          (email.toLowerCase() === 'jvaask16@gmail.com' && password === 'MasterAdmin2026!');
+                        if (passMatch) {
+                            if (found.status === 'inactive') {
+                                if (errEl) {
+                                    errEl.innerHTML = '<i class="fas fa-ban" style="margin-right:6px;"></i> Tu cuenta se encuentra inactiva. Contacta al Administrador.';
+                                    errEl.style.display = 'block';
+                                }
+                                showToast('Cuenta suspendida', 'danger');
+                                return;
+                            }
+                            authenticatedUser = found;
+                            authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
+                        }
+                    } else if (email.toLowerCase() === 'jvaask16@gmail.com' && password === 'MasterAdmin2026!') {
+                        // Credencial maestra registrada
+                        authenticatedUser = {
+                            id: 'master-admin',
+                            email: 'jvaask16@gmail.com',
+                            full_name: 'Administrador Master',
+                            role: 'admin',
+                            branch: 'Porlamar (Sede Principal)',
+                            status: 'active'
+                        };
+                        authToken = 'local.' + btoa(JSON.stringify({ ...authenticatedUser, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
+                    }
+                }
+
+                // 3. Si las credenciales no son válidas, rechazar el acceso
+                if (!authenticatedUser) {
+                    const msg = 'Correo o contraseña incorrectos. Verifica tus credenciales de acceso.';
+                    if (errEl) {
+                        errEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="margin-right:6px;"></i> ${msg}`;
+                        errEl.style.display = 'block';
+                    }
+                    showToast(msg, 'danger');
                     return;
                 }
 
-                // Fallback automático sin bloqueo: conceder acceso local
-                const fallbackUser = {
-                    id: 'usr-' + Date.now().toString(36),
-                    email: email || 'jvaask16@gmail.com',
-                    full_name: email ? email.split('@')[0] : 'Administrador Master',
-                    role: 'admin',
-                    branch: 'Porlamar (Sede Principal)',
-                    status: 'active'
-                };
-                const mockToken = 'direct.' + btoa(JSON.stringify({ ...fallbackUser, exp: Math.floor(Date.now()/1000) + 86400*30 })) + '.sig';
-                localStorage.setItem('sn_jwt_token', mockToken);
-                localStorage.setItem('sn_admin_user', JSON.stringify(fallbackUser));
-                localStorage.setItem('sn_admin_logged_in', 'true');
-                localStorage.setItem('sn_current_role', 'admin');
-                showToast(`✓ Acceso concedido: ${fallbackUser.full_name}`, 'success');
-                showAdmin(fallbackUser);
+                // 4. Credenciales correctas: guardar sesión e iniciar panel
+                if (typeof _saveSession === 'function') {
+                    _saveSession(authToken, authenticatedUser);
+                } else {
+                    localStorage.setItem('sn_jwt_token', authToken);
+                    localStorage.setItem('sn_admin_user', JSON.stringify(authenticatedUser));
+                    localStorage.setItem('sn_admin_logged_in', 'true');
+                    if (authenticatedUser?.role) localStorage.setItem('sn_current_role', authenticatedUser.role);
+                }
+
+                const welcomeName = authenticatedUser.full_name || authenticatedUser.email;
+                showToast(`¡Bienvenido, ${welcomeName}!`, 'success');
+                showAdmin(authenticatedUser);
 
             } catch(err) {
-                console.warn("Fallback auth:", err);
-                directAccessMaster();
+                console.error("Login process error:", err);
+                if (errEl) {
+                    errEl.innerHTML = '<i class="fas fa-wifi" style="margin-right:6px;"></i> Error al verificar credenciales. Intenta nuevamente.';
+                    errEl.style.display = 'block';
+                }
+                showToast('Error al conectar con el servidor', 'danger');
             } finally {
                 if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
             }
