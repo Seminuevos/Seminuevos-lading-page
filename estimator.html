@@ -155,6 +155,38 @@
             }
         }
 
+        /* Mode 2 (Budget Mode): Side-by-Side Layout without right summary card */
+        .estimator-grid.budget-mode-active {
+            grid-template-columns: 1fr !important;
+            gap: 0;
+        }
+
+        .estimator-grid.budget-mode-active .summary-column {
+            display: none !important;
+        }
+
+        .estimator-grid.budget-mode-active .controls-column {
+            display: grid !important;
+            grid-template-columns: 1fr 1.22fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .estimator-grid.budget-mode-active #modeBudgetSection {
+            position: sticky;
+            top: 85px;
+            z-index: 10;
+        }
+
+        @media (max-width: 992px) {
+            .estimator-grid.budget-mode-active .controls-column {
+                grid-template-columns: 1fr;
+            }
+            .estimator-grid.budget-mode-active #modeBudgetSection {
+                position: static;
+            }
+        }
+
         /* Cards Base */
         .est-card {
             background: var(--est-card-bg);
@@ -1269,7 +1301,7 @@
 
     <!-- ===== MAIN ESTIMATOR CONTAINER ===== -->
     <main class="container">
-        <div class="estimator-grid">
+        <div class="estimator-grid" id="estimatorGrid">
             
             <!-- LEFT COLUMN: CONTROLS & SELECTION -->
             <div class="controls-column">
@@ -1331,12 +1363,21 @@
                 <!-- ============================================== -->
                 <div id="modeBudgetSection" style="display: none;">
                     <div class="est-card">
+                        <div class="card-header-flex">
+                            <div class="card-title">
+                                <i class="fas fa-wallet"></i> Presupuesto Mensual
+                            </div>
+                            <span class="mini-badge green" style="font-size: 0.7rem; padding: 4px 10px;">
+                                <i class="fas fa-bolt"></i> Cuota Deseada
+                            </span>
+                        </div>
+
                         <div class="buying-power-box">
                             <div class="bp-target-label">¿Cuánto deseas pagar mensualmente?</div>
-                            <div class="bp-monthly-value" id="bpMonthlyDisplay">$ 450 <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span></div>
+                            <div class="bp-monthly-value" id="bpMonthlyDisplay">$ 350 <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span></div>
                             
                             <div class="bp-slider-wrap">
-                                <input type="range" id="bpSlider" class="est-slider" min="350" max="2000" step="25" value="450" oninput="onBudgetSliderChange(this.value)">
+                                <input type="range" id="bpSlider" class="est-slider" min="350" max="2000" step="25" value="350" oninput="onBudgetSliderChange(this.value)">
                                 <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: #64748b; margin-top: 2px;">
                                     <span>$350 / mes</span>
                                     <span>$1,000 / mes</span>
@@ -1344,14 +1385,46 @@
                                 </div>
                             </div>
 
-                            <div class="bp-result-banner">
-                                <i class="fas fa-sparkles" style="color: #10B981;"></i>
-                                <span>Poder de Compra Estimado: <strong id="bpCalculatedPrice">$22,500</strong></span>
+                            <!-- Preset Pills for Quick Budget Selection -->
+                            <div class="preset-pills" id="budgetPresetPills" style="margin-top: 8px; justify-content: center; flex-wrap: wrap;">
+                                <button type="button" class="preset-pill active" onclick="setBudgetPreset(350)">$350</button>
+                                <button type="button" class="preset-pill" onclick="setBudgetPreset(450)">$450</button>
+                                <button type="button" class="preset-pill" onclick="setBudgetPreset(600)">$600</button>
+                                <button type="button" class="preset-pill" onclick="setBudgetPreset(800)">$800</button>
+                                <button type="button" class="preset-pill" onclick="setBudgetPreset(1000)">$1,000</button>
+                                <button type="button" class="preset-pill" onclick="setBudgetPreset(1500)">$1,500</button>
                             </div>
 
-                            <div style="margin-top: 10px;">
-                                <a href="#budgetCompatibleSection" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #93c5fd; text-decoration: none; font-weight: 600;">
-                                    <i class="fas fa-arrow-down"></i> <span id="compatCountQuick">Ver 0 vehículos que califican abajo</span>
+                            <div class="bp-result-banner" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 16px; margin-top: 14px;">
+                                <i class="fas fa-sparkles" style="color: #10B981; font-size: 1.3rem;"></i>
+                                <div style="text-align: left;">
+                                    <div style="font-size: 0.72rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.8px; font-weight: 600;">Poder de Compra Estimado</div>
+                                    <div style="font-size: 1.45rem; font-weight: 800; color: #ffffff; font-family: var(--font-display, 'Unbounded', sans-serif);" id="bpCalculatedPrice">$13,830</div>
+                                </div>
+                            </div>
+
+                            <!-- Mini Summary Breakdown for Budget Mode -->
+                            <div class="budget-mini-breakdown" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; text-align: left;">
+                                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Inicial Estimada</div>
+                                    <div style="font-size: 0.95rem; font-weight: 700; color: #6ee7b7; margin-top: 2px;" id="bpMiniDown">$4,149</div>
+                                    <div style="font-size: 0.68rem; color: #64748b;" id="bpMiniDownPct">30% del valor</div>
+                                </div>
+                                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px;">
+                                    <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Capital a Financiar</div>
+                                    <div style="font-size: 0.95rem; font-weight: 700; color: #93c5fd; margin-top: 2px;" id="bpMiniPrincipal">$9,681</div>
+                                    <div style="font-size: 0.68rem; color: #64748b;" id="bpMiniTerm">36 cuotas fijas</div>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp Pre-Approval Action -->
+                            <a href="#" class="btn-whatsapp-quote" id="btnWhatsappBudgetQuote" target="_blank" style="margin-top: 16px; margin-bottom: 6px; text-decoration: none; justify-content: center;">
+                                <i class="fab fa-whatsapp" style="font-size: 1.15rem;"></i> Pre-Aprobar este Presupuesto
+                            </a>
+
+                            <div style="margin-top: 8px;">
+                                <a href="#budgetCompatibleSection" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.75rem; color: #93c5fd; text-decoration: none; font-weight: 600; padding: 4px 8px;">
+                                    <i class="fas fa-arrow-down"></i> <span id="compatCountQuick">Ver vehículos que califican abajo</span>
                                 </a>
                             </div>
                         </div>
@@ -1361,7 +1434,7 @@
                 <!-- ============================================== -->
                 <!-- COMMON FINANCIAL PARAMETERS CONTROLS -->
                 <!-- ============================================== -->
-                <div class="est-card">
+                <div class="est-card" id="commonFinanceCard">
                     
                     <!-- Config Section Header Banner -->
                     <div class="params-header-banner">
@@ -1633,7 +1706,7 @@
             </div>
 
             <!-- RIGHT COLUMN: STICKY RESULTS SUMMARY -->
-            <div class="summary-column">
+            <div class="summary-column" id="summaryColumn">
                 <div class="sticky-summary-wrap">
                     <div class="summary-card">
                         
@@ -1880,7 +1953,7 @@
         let aprRate = 18; // 1.5 * 12
         let tradeInActive = false;
         let tradeInValue = 0;
-        let targetMonthlyBudget = 450;
+        let targetMonthlyBudget = 350;
 
         // Formalization fees (Aligned with calcularCreditoPlan() in admin.html - Customizable)
         let includeFormalizationFees = true;
@@ -2066,18 +2139,24 @@
             const secV = document.getElementById('modeVehicleSection');
             const secB = document.getElementById('modeBudgetSection');
             const secCompat = document.getElementById('budgetCompatibleSection');
+            const gridEl = document.getElementById('estimatorGrid');
+            const sumCol = document.getElementById('summaryColumn');
 
             if (mode === 'vehicle') {
                 btnV.classList.add('active');
                 btnB.classList.remove('active');
                 secV.style.display = 'block';
                 secB.style.display = 'none';
+                if (gridEl) gridEl.classList.remove('budget-mode-active');
+                if (sumCol) sumCol.style.display = 'block';
                 if (secCompat) secCompat.style.display = 'none';
             } else {
                 btnB.classList.add('active');
                 btnV.classList.remove('active');
                 secB.style.display = 'block';
                 secV.style.display = 'none';
+                if (gridEl) gridEl.classList.add('budget-mode-active');
+                if (sumCol) sumCol.style.display = 'none';
                 if (secCompat) secCompat.style.display = 'block';
                 updateBudgetCompatibleCars();
             }
@@ -2441,9 +2520,30 @@
             }
         }
 
+        function setBudgetPreset(amount) {
+            const val = parseInt(amount, 10);
+            const slider = document.getElementById('bpSlider');
+            if (slider) slider.value = val;
+            onBudgetSliderChange(val);
+        }
+
         function onBudgetSliderChange(val) {
             targetMonthlyBudget = parseInt(val, 10);
-            document.getElementById('bpMonthlyDisplay').innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span>`;
+            const disp = document.getElementById('bpMonthlyDisplay');
+            if (disp) {
+                disp.innerHTML = `$ ${targetMonthlyBudget.toLocaleString()} <span style="font-size: 1.3rem; color: var(--est-blue);">/ mes</span>`;
+            }
+
+            // Sync preset pills active state
+            const pills = document.querySelectorAll('#budgetPresetPills .preset-pill');
+            pills.forEach(p => {
+                if (p.textContent === `$${targetMonthlyBudget.toLocaleString()}`) {
+                    p.classList.add('active');
+                } else {
+                    p.classList.remove('active');
+                }
+            });
+
             updateBudgetCompatibleCars();
             recalculate();
         }
@@ -2526,6 +2626,16 @@
                 // Sincronizar display de poder de compra en Modo 2
                 const bpPriceEl = document.getElementById('bpCalculatedPrice');
                 if (bpPriceEl) bpPriceEl.textContent = `$${effectivePrice.toLocaleString()}`;
+
+                // Sincronizar mini breakdown del card de presupuesto
+                const bpDown = document.getElementById('bpMiniDown');
+                if (bpDown) bpDown.textContent = `$${downPaymentAmount.toLocaleString()}`;
+                const bpDownPct = document.getElementById('bpMiniDownPct');
+                if (bpDownPct) bpDownPct.textContent = `${downPaymentPct}% del valor`;
+                const bpPrinc = document.getElementById('bpMiniPrincipal');
+                if (bpPrinc) bpPrinc.textContent = `$${Math.round(principal).toLocaleString()}`;
+                const bpTerm = document.getElementById('bpMiniTerm');
+                if (bpTerm) bpTerm.textContent = `${loanTermMonths} cuotas fijas`;
 
                 // Header y montos en columna derecha
                 document.getElementById('mainResultTitle').textContent = 'Cuota Mensual Objetivo';
@@ -2762,6 +2872,22 @@
 
             const url = `https://wa.me/584248700438?text=${encodeURIComponent(text)}`;
             btn.href = url;
+
+            // WhatsApp button in budget mode card
+            const btnBudget = document.getElementById('btnWhatsappBudgetQuote');
+            if (btnBudget) {
+                let textB = `¡Hola Seminuevos! Estuve simulando en su Estimador por Presupuesto Mensual y me interesa evaluar este plan:\n\n`;
+                textB += `💵 *Cuota Mensual Objetivo:* $${targetMonthlyBudget.toLocaleString()} / mes\n`;
+                textB += `✨ *Poder de Compra Proyectado:* $${effectivePrice.toLocaleString()}\n`;
+                textB += `💰 *Pago Inicial Estimado:* $${downPaymentAmount.toLocaleString()} (${downPaymentPct}%)\n`;
+                textB += `📅 *Plazo:* ${loanTermMonths} Meses\n`;
+                textB += `👤 *Perfil Crediticio:* ${getCreditScoreName()}\n`;
+                if (tradeInActive && effectiveTradeIn > 0) {
+                    textB += `🔄 *Retoma Trade-In Estimada:* -$${effectiveTradeIn.toLocaleString()}\n`;
+                }
+                textB += `\nQuisiera conocer los vehículos que califican y los recaudos para la pre-aprobación.`;
+                btnBudget.href = `https://wa.me/584248700438?text=${encodeURIComponent(textB)}`;
+            }
         }
 
         // --- PRINTABLE QUOTE GENERATOR ---
@@ -2852,6 +2978,7 @@
         window.calculateTradeInLive = calculateTradeInLive;
         window.onTradeInManualOverride = onTradeInManualOverride;
         window.onBudgetSliderChange = onBudgetSliderChange;
+        window.setBudgetPreset = setBudgetPreset;
         window.printQuoteSheet = printQuoteSheet;
         window.recalculate = recalculate;
     </script>
