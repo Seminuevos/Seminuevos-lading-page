@@ -5152,49 +5152,31 @@
                 } catch(e) {}
 
                 if (ip !== 'Unknown') {
-                    const { data: isBlocked } = await supabaseClient.from('ip_blacklist').select('*').eq('ip', ip).maybeSingle();
-                    if (isBlocked) {
-                        document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#ff5252; text-align:center;"><h1>IP BLOQUEADA</h1><p>Tu acceso ha sido revocado por razones de seguridad.</p></div>`;
+                    // Verificar blacklist via API interna (no expone la DB al cliente)
+                    const chk = await apiFetch('/api/security/check-ip?ip=' + encodeURIComponent(ip));
+                    if (chk.ok && chk.data?.blocked) {
+                        document.body.innerHTML = `<div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#ff5252; text-align:center;"><h1>ACCESO DENEGADO</h1><p>Tu acceso ha sido revocado por razones de seguridad.</p></div>`;
                         return false;
                     }
                 }
             } catch(e) {}
 
-            // 1. Check Supabase session
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (window.location.hash.includes('access_token=') || window.location.hash.includes('type=recovery')) {
-                    document.getElementById('resetPasswordModal').style.display = 'flex';
-                    if (authScreen) authScreen.style.display = 'none';
-                    return true;
-                }
-                if (session && session.user) {
-                    showAdmin(session.user);
-                    return true;
-                }
-            } catch(err) {
-                console.warn('Session check notice:', err.message);
+            // Verificar sesión JWT local (decodifica sin llamar al servidor)
+            const sessionUser = typeof _getSessionUser === 'function' ? _getSessionUser() : null;
+            if (sessionUser) {
+                // Token válido y no expirado — cargar el panel
+                const savedUser = (() => { try { return JSON.parse(localStorage.getItem('sn_admin_user') || '{}'); } catch { return {}; } })();
+                showAdmin(savedUser.id ? savedUser : sessionUser);
+                return true;
             }
 
-            // 2. Check local authenticated agency user session
-            try {
-                const loggedIn = localStorage.getItem('sn_admin_logged_in');
-                const rawUser = localStorage.getItem('sn_admin_user');
-                if (loggedIn === 'true' && rawUser) {
-                    const savedUser = JSON.parse(rawUser);
-                    if (savedUser && savedUser.email) {
-                        showAdmin(savedUser);
-                        return true;
-                    }
-                }
-            } catch(e) {}
-
-            // Si no hay sesión válida activa, forzar pantalla de login
-            localStorage.removeItem('sn_admin_logged_in');
+            // No hay sesión válida — mostrar pantalla de login
+            if (typeof _clearSession === 'function') _clearSession();
             if (authScreen) authScreen.style.display = 'flex';
             if (adminPanel) adminPanel.style.display = 'none';
             return false;
         }
+
 
         async function ensureAdminAuthSession() {
             try {
@@ -5221,28 +5203,28 @@
             if (authScreen) authScreen.style.display = 'none';
             if (adminPanel) adminPanel.style.display = 'flex';
             const nameEl = document.getElementById('userName');
-            const emailStr = user?.email || 'jvaask16@gmail.com';
+            const emailStr = user?.email || 'admin';
             const displayName = user?.full_name || emailStr.split('@')[0] || 'Admin';
             if (nameEl) nameEl.textContent = displayName;
-            
-            // Persist session locally
-            localStorage.setItem('sn_admin_logged_in', 'true');
-            localStorage.setItem('sn_admin_user', JSON.stringify(user || { email: emailStr }));
-            if (user?.role) localStorage.setItem('sn_current_role', user.role);
 
-            // Ensure Supabase Auth session for full database permissions (DELETE/UPDATE/INSERT)
-            ensureAdminAuthSession();
+            // Persist session
+            if (typeof _saveSession === 'function') {
+                const token = localStorage.getItem('sn_jwt_token') || '';
+                _saveSession(token, user);
+            } else {
+                localStorage.setItem('sn_admin_logged_in', 'true');
+                localStorage.setItem('sn_admin_user', JSON.stringify(user || { email: emailStr }));
+                if (user?.role) localStorage.setItem('sn_current_role', user.role);
+            }
 
             // Load all dashboard components
             loadDashboard();
             loadSettings();
-            // Automatically restore and sync Stock Local inventory to database only if empty
             autoSyncStockLocal();
-            // Initialize Fichas Tecnicas module
             initFichasModule();
-            // Bookmarklet import handler
             setTimeout(() => checkBookmarkletImport(), 800);
         }
+
 
         async function autoSyncStockLocal() {
             try {
@@ -5339,131 +5321,74 @@
         }
 
         async function performLogin() {
-            const emailInput = document.getElementById('authEmail');
+            const emailInput    = document.getElementById('authEmail');
             const passwordInput = document.getElementById('authPassword');
-            const email = (emailInput?.value || '').trim();
+            const email    = (emailInput?.value || '').trim();
             const password = (passwordInput?.value || '').trim();
             const errEl = document.getElementById('authError');
-            const btn = document.getElementById('authLogin');
+            const btn   = document.getElementById('authLogin');
 
             if (errEl) errEl.style.display = 'none';
 
             if (!email) {
-                if (errEl) {
-                    errEl.textContent = 'Por favor ingresa tu correo electrónico.';
-                    errEl.style.display = 'block';
-                }
+                if (errEl) { errEl.textContent = 'Por favor ingresa tu correo electrónico.'; errEl.style.display = 'block'; }
                 emailInput?.focus();
                 return;
             }
 
             if (!password) {
-                if (errEl) {
-                    errEl.textContent = 'Por favor ingresa tu contraseña para iniciar sesión.';
-                    errEl.style.display = 'block';
-                }
+                if (errEl) { errEl.textContent = 'Por favor ingresa tu contraseña para iniciar sesión.'; errEl.style.display = 'block'; }
                 passwordInput?.focus();
                 return;
             }
 
             const origHtml = btn ? btn.innerHTML : 'Iniciar Sesión';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...';
-            }
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...'; }
 
             try {
-                let authenticatedUser = null;
+                // Llamar a la API interna — las credenciales de Supabase NUNCA salen del servidor
+                const result = await apiFetch('/api/auth/login', {
+                    method: 'POST',
+                    body: { email, password }
+                });
 
-                // 1. First, attempt Supabase Auth signInWithPassword
-                try {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                    if (!error && data?.user) {
-                        authenticatedUser = data.user;
-                    }
-                } catch (authErr) {
-                    console.warn('Direct Supabase auth signIn attempt:', authErr);
-                }
-
-                // 2. If not authenticated directly via Supabase Auth, verify in Supabase agency_users table or local agency users
-                if (!authenticatedUser) {
-                    let dbUser = null;
-                    try {
-                        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                            const { data: foundUser, error: userErr } = await supabaseClient
-                                .from('agency_users')
-                                .select('*')
-                                .ilike('email', email)
-                                .maybeSingle();
-
-                            if (!userErr && foundUser) {
-                                dbUser = foundUser;
-                            }
-                        }
-                    } catch (e) {
-                        console.warn('agency_users table check error:', e);
-                    }
-
-                    // Fallback to locally stored agency users if offline or query returned null
-                    if (!dbUser && typeof getStoredUsers === 'function') {
-                        const localUsers = getStoredUsers();
-                        dbUser = localUsers.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
-                    }
-
-                    if (dbUser) {
-                        // Check if user is active
-                        if (dbUser.status === 'inactive') {
-                            const inactiveMsg = 'Tu cuenta de usuario se encuentra inactiva. Contacta al Administrador Master.';
-                            if (errEl) {
-                                errEl.innerHTML = `<i class="fas fa-ban" style="margin-right:6px;"></i> ${inactiveMsg}`;
-                                errEl.style.display = 'block';
-                            }
-                            showToast(inactiveMsg, 'warning');
-                            return;
-                        }
-
-                        // Check password matching
-                        const isPasswordCorrect = (dbUser.password && dbUser.password === password) ||
-                            (password === 'MasterAdmin2026!');
-
-                        if (isPasswordCorrect) {
-                            authenticatedUser = dbUser;
-                        }
-                    }
-                }
-
-                if (!authenticatedUser) {
-                    const userMsg = 'Correo o contraseña incorrectos. Verifica tus credenciales.';
+                if (!result.ok) {
+                    const msg = result.error || 'Correo o contraseña incorrectos. Verifica tus credenciales.';
                     if (errEl) {
-                        errEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i> ${userMsg}`;
+                        errEl.innerHTML = `<i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i> ${msg}`;
                         errEl.style.display = 'block';
                     }
-                    showToast(userMsg, 'error');
-                    logSecurityEvent('AUTH_FAILURE', 'warning', `Fallo de login para: ${email}`);
+                    showToast(msg, 'error');
                     return;
                 }
 
-                // Autenticación exitosa
-                logSecurityEvent('AUTH_SUCCESS', 'info', `Login exitoso para: ${authenticatedUser.email}`);
-                const welcomeName = authenticatedUser.full_name || authenticatedUser.email;
+                // Login exitoso — guardar JWT y datos del usuario
+                const { token, user } = result.data;
+                if (typeof _saveSession === 'function') {
+                    _saveSession(token, user);
+                } else {
+                    localStorage.setItem('sn_jwt_token', token);
+                    localStorage.setItem('sn_admin_user', JSON.stringify(user));
+                    localStorage.setItem('sn_admin_logged_in', 'true');
+                    if (user?.role) localStorage.setItem('sn_current_role', user.role);
+                }
+
+                const welcomeName = user.full_name || user.email;
                 showToast(`¡Bienvenido, ${welcomeName}!`, 'success');
-                showAdmin(authenticatedUser);
+                showAdmin(user);
 
             } catch(err) {
-                console.error("Login catch error:", err);
+                console.error("Login error:", err);
                 if (errEl) {
-                    errEl.innerHTML = `<i class="fas fa-wifi" style="margin-right:6px;"></i> Error de conexión con el servidor de autenticación.`;
+                    errEl.innerHTML = `<i class="fas fa-wifi" style="margin-right:6px;"></i> Error de conexión con el servidor.`;
                     errEl.style.display = 'block';
                 }
                 showToast('Error de conexión al verificar credenciales', 'error');
-                logSecurityEvent('AUTH_ERROR', 'error', `Error de conexión en login para: ${email}`, { error: err.message });
             } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = origHtml;
-                }
+                if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
             }
         }
+
 
         document.getElementById('authResetBtn')?.addEventListener('click', async () => {
             const email = document.getElementById('authEmail').value.trim();
@@ -12294,15 +12219,15 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         async function saveUser(sendViaWhatsApp = false) {
-            const id = document.getElementById('uId')?.value.trim();
+            const id       = document.getElementById('uId')?.value.trim();
             const fullName = document.getElementById('uFullName')?.value.trim();
-            const email = document.getElementById('uEmail')?.value.trim().toLowerCase();
-            const phone = document.getElementById('uPhone')?.value.trim();
+            const email    = document.getElementById('uEmail')?.value.trim().toLowerCase();
+            const phone    = document.getElementById('uPhone')?.value.trim();
             const password = document.getElementById('uPassword')?.value || '';
-            const role = document.getElementById('uRole')?.value || 'sales';
-            const branch = document.getElementById('uBranch')?.value || 'Porlamar (Sede Principal)';
-            const status = document.getElementById('uStatus')?.value || 'active';
-            const notes = document.getElementById('uNotes')?.value.trim();
+            const role     = document.getElementById('uRole')?.value || 'sales';
+            const branch   = document.getElementById('uBranch')?.value || 'Porlamar (Sede Principal)';
+            const status   = document.getElementById('uStatus')?.value || 'active';
+            const notes    = document.getElementById('uNotes')?.value.trim();
 
             if (!fullName || !email) {
                 showToast('Por favor completa el Nombre y el Correo Electrónico', 'warning');
@@ -12314,134 +12239,47 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 return;
             }
 
-            let users = [...(_allAgencyUsers || [])];
             let targetUser = null;
-            let tempPasswordForWA = password;
+            const tempPasswordForWA = password;
 
             if (id) {
-                // EDIT
-                const idx = users.findIndex(u => String(u.id) === String(id));
-                if (idx !== -1) {
-                    const updateObj = {
-                        full_name: fullName,
-                        email: email,
-                        phone: phone,
-                        role: role,
-                        branch: branch,
-                        status: status,
-                        notes: notes,
-                        updated_at: new Date().toISOString()
-                    };
-                    if (password && password.length >= 6) {
-                        updateObj.password = password;
-                    }
-                    users[idx] = {
-                        ...users[idx],
-                        ...updateObj
-                    };
-                    targetUser = users[idx];
-                }
+                // EDITAR usuario via API
+                const payload = { full_name: fullName, email, phone, role, branch, status, notes };
+                if (password && password.length >= 6) payload.password = password;
 
-                // Update Supabase if available
-                try {
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                        const dbPayload = {
-                            full_name: fullName,
-                            email: email,
-                            phone: phone,
-                            role: role,
-                            branch: branch,
-                            status: status,
-                            notes: notes,
-                            updated_at: new Date().toISOString()
-                        };
-                        if (password && password.length >= 6) {
-                            dbPayload.password = password;
-                        }
+                const result = await apiFetch(`/api/users/${id}`, { method: 'PUT', body: payload });
 
-                        // Try updating with password
-                        const { error: updErr } = await supabaseClient
-                            .from('agency_users')
-                            .update(dbPayload)
-                            .eq('id', id);
-
-                        if (updErr && updErr.message && updErr.message.includes('password')) {
-                            // If password column does not exist yet, update without it
-                            delete dbPayload.password;
-                            await supabaseClient.from('agency_users').update(dbPayload).eq('id', id);
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Supabase user update failed (offline/fallback):', e);
-                }
-
-                showToast('✓ Usuario actualizado correctamente', 'success');
-            } else {
-                // CREATE
-                // Check duplicate email
-                if (users.some(u => (u.email || '').toLowerCase() === email.toLowerCase())) {
-                    showToast('Ya existe un usuario con este correo electrónico', 'danger');
+                if (!result.ok) {
+                    showToast('Error al actualizar usuario: ' + (result.error || ''), 'danger');
                     return;
                 }
 
-                const newId = 'usr-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6);
-                targetUser = {
-                    id: newId,
-                    full_name: fullName,
-                    email: email,
-                    password: password,
-                    phone: phone,
-                    role: role,
-                    branch: branch,
-                    status: status,
-                    notes: notes,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
+                targetUser = result.data?.data || { id, email, full_name: fullName, role, phone };
 
-                users.unshift(targetUser);
+                // Actualizar en lista local
+                const idx = (_allAgencyUsers || []).findIndex(u => String(u.id) === String(id));
+                if (idx !== -1) _allAgencyUsers[idx] = { ..._allAgencyUsers[idx], ...targetUser };
 
-                // Insert to Supabase agency_users table
-                try {
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                        const insertPayload = {
-                            email: email,
-                            full_name: fullName,
-                            password: password,
-                            phone: phone,
-                            role: role,
-                            branch: branch,
-                            status: status,
-                            notes: notes
-                        };
+                showToast('✓ Usuario actualizado correctamente', 'success');
 
-                        const { data, error } = await supabaseClient
-                            .from('agency_users')
-                            .insert([insertPayload])
-                            .select()
-                            .single();
+            } else {
+                // CREAR usuario via API (la API hashea la contraseña con bcrypt)
+                const payload = { full_name: fullName, email, phone, password, role, branch, status, notes };
 
-                        if (!error && data && data.id) {
-                            targetUser.id = data.id;
-                        } else if (error && error.message && error.message.includes('password')) {
-                            // Column password might not exist yet, retry without it
-                            delete insertPayload.password;
-                            const retry = await supabaseClient
-                                .from('agency_users')
-                                .insert([insertPayload])
-                                .select()
-                                .single();
-                            if (retry?.data?.id) targetUser.id = retry.data.id;
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Supabase user insert failed (offline/fallback):', e);
+                const result = await apiFetch('/api/users', { method: 'POST', body: payload });
+
+                if (!result.ok) {
+                    showToast('Error al crear usuario: ' + (result.error || ''), 'danger');
+                    return;
                 }
+
+                targetUser = result.data?.data || { email, full_name: fullName, role, phone };
+                if (_allAgencyUsers) _allAgencyUsers.unshift(targetUser);
 
                 showToast('✓ Nuevo colaborador registrado con éxito', 'success');
             }
 
-            saveStoredUsers(users);
+            saveStoredUsers(_allAgencyUsers || []);
             renderUserStats();
             renderUsersTable();
             closeUserModal();
@@ -12450,6 +12288,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 sendUserCredentialsWhatsApp(targetUser.id, tempPasswordForWA);
             }
         }
+
 
         function sendUserCredentialsWhatsApp(userId, explicitPwd = null) {
             const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
@@ -12487,26 +12326,25 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         async function toggleUserStatus(userId) {
-            let users = [...(_allAgencyUsers || [])];
-            const idx = users.findIndex(u => String(u.id) === String(userId));
+            const idx = (_allAgencyUsers || []).findIndex(u => String(u.id) === String(userId));
             if (idx === -1) return;
 
-            const newStatus = users[idx].status === 'active' ? 'inactive' : 'active';
-            users[idx].status = newStatus;
-            users[idx].updated_at = new Date().toISOString();
+            const newStatus = _allAgencyUsers[idx].status === 'active' ? 'inactive' : 'active';
 
-            try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    await supabaseClient.from('agency_users').update({
-                        status: newStatus,
-                        updated_at: new Date().toISOString()
-                    }).eq('id', userId);
-                }
-            } catch (e) {
-                console.warn('Supabase status toggle failed:', e);
+            const result = await apiFetch(`/api/users/${userId}`, {
+                method: 'PUT',
+                body: { status: newStatus }
+            });
+
+            if (!result.ok) {
+                showToast('Error al cambiar estado: ' + (result.error || ''), 'danger');
+                return;
             }
 
-            saveStoredUsers(users);
+            _allAgencyUsers[idx].status    = newStatus;
+            _allAgencyUsers[idx].updated_at = new Date().toISOString();
+
+            saveStoredUsers(_allAgencyUsers);
             renderUserStats();
             renderUsersTable();
             showToast(`Estado cambiado a: ${newStatus === 'active' ? 'Activo' : 'Inactivo'}`, 'info');
@@ -12524,61 +12362,43 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             }
 
             const cleanPwd = newPwd.trim();
-            user.password = cleanPwd;
-            user.updated_at = new Date().toISOString();
 
-            try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    await supabaseClient.from('agency_users').update({
-                        password: cleanPwd,
-                        updated_at: new Date().toISOString()
-                    }).eq('id', userId);
+            const result = await apiFetch(`/api/users/${userId}`, {
+                method: 'PUT',
+                body: { password: cleanPwd }
+            });
 
-                    if (typeof logSecurityEvent === 'function') {
-                        logSecurityEvent('PASSWORD_RESET', 'INFO', `Restablecida contraseña para usuario ${user.email}`);
-                    }
-                }
-            } catch (e) {
-                console.warn('Supabase password reset update failed:', e);
+            if (!result.ok) {
+                showToast('Error al actualizar contraseña: ' + (result.error || ''), 'danger');
+                return;
             }
 
-            saveStoredUsers(_allAgencyUsers);
             showToast('✓ Contraseña actualizada correctamente', 'success');
 
             const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
-            if (sendWa) {
-                sendUserCredentialsWhatsApp(userId, cleanPwd);
-            }
+            if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);
         }
 
         async function deleteUser(userId) {
             const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
             if (!user) return;
 
-            if (user.email === 'jvaask16@gmail.com') {
-                showToast('No es posible eliminar al Administrador Master', 'danger');
+            if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) return;
+
+            const result = await apiFetch(`/api/users/${userId}`, { method: 'DELETE' });
+
+            if (!result.ok) {
+                showToast('Error al eliminar: ' + (result.error || ''), 'danger');
                 return;
             }
 
-            if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) {
-                return;
-            }
-
-            let users = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
-
-            try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    await supabaseClient.from('agency_users').delete().eq('id', userId);
-                }
-            } catch (e) {
-                console.warn('Supabase delete failed:', e);
-            }
-
-            saveStoredUsers(users);
+            _allAgencyUsers = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
+            saveStoredUsers(_allAgencyUsers);
             renderUserStats();
             renderUsersTable();
             showToast('✓ Usuario eliminado', 'success');
         }
+
 
         // Expose functions globally for inline HTML events
         window.loadUsers = loadUsers;

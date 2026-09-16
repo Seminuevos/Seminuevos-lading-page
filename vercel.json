@@ -4,129 +4,66 @@
     "cleanUrls": true,
     "trailingSlash": false,
     "redirects": [
-        {
-            "source": "/admin",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/admin.html",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/Admin",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/administrador",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/dashboard",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/cms",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/wp-admin",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/login",
-            "destination": "/404",
-            "permanent": false
-        },
-        {
-            "source": "/panel",
-            "destination": "/404",
-            "permanent": false
-        }
+        { "source": "/admin",         "destination": "/404", "permanent": false },
+        { "source": "/admin.html",    "destination": "/404", "permanent": false },
+        { "source": "/Admin",         "destination": "/404", "permanent": false },
+        { "source": "/administrador", "destination": "/404", "permanent": false },
+        { "source": "/dashboard",     "destination": "/404", "permanent": false },
+        { "source": "/cms",           "destination": "/404", "permanent": false },
+        { "source": "/wp-admin",      "destination": "/404", "permanent": false },
+        { "source": "/wp-admin/(.*)", "destination": "/404", "permanent": false },
+        { "source": "/login",         "destination": "/404", "permanent": false },
+        { "source": "/panel",         "destination": "/404", "permanent": false },
+        { "source": "/admin/(.*)",    "destination": "/404", "permanent": false }
     ],
     "headers": [
         {
             "source": "/(.*)",
             "headers": [
-                {
-                    "key": "X-Content-Type-Options",
-                    "value": "nosniff"
-                },
-                {
-                    "key": "X-Frame-Options",
-                    "value": "DENY"
-                },
-                {
-                    "key": "X-XSS-Protection",
-                    "value": "1; mode=block"
-                },
-                {
-                    "key": "Referrer-Policy",
-                    "value": "strict-origin-when-cross-origin"
-                },
-                {
-                    "key": "X-Robots-Tag",
-                    "value": "all"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
-                }
+                { "key": "X-Content-Type-Options",   "value": "nosniff" },
+                { "key": "X-Frame-Options",           "value": "DENY" },
+                { "key": "X-XSS-Protection",          "value": "1; mode=block" },
+                { "key": "Referrer-Policy",           "value": "strict-origin-when-cross-origin" },
+                { "key": "X-Robots-Tag",              "value": "all" },
+                { "key": "Cache-Control",             "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
             ]
         },
         {
             "source": "/acceso-personal",
             "headers": [
-                {
-                    "key": "X-Robots-Tag",
-                    "value": "noindex, nofollow, noarchive, nosnippet"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "no-store, no-cache, must-revalidate"
-                }
+                { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
+                { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
             ]
         },
         {
-            "source": "/(.*)\\.( html|json)",
+            "source": "/api/(.*)",
             "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400"
-                }
+                { "key": "Cache-Control", "value": "no-store, no-cache" },
+                { "key": "X-Robots-Tag",  "value": "noindex, nofollow" }
             ]
         },
         {
-            "source": "/(.*)\\.( css|js)",
+            "source": "/(.*)\\.(?:html|json)",
             "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400"
-                }
+                { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+            ]
+        },
+        {
+            "source": "/(.*)\\.(?:css|js)",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400" }
             ]
         },
         {
             "source": "/images/(.*)",
             "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
-                }
+                { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" }
             ]
         },
         {
-            "source": "/(.*)\\.( jpg|jpeg|png|webp|svg|ico|woff|woff2)",
+            "source": "/(.*)\\.(?:jpg|jpeg|png|webp|svg|ico|woff|woff2)",
             "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
-                }
+                { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800" }
             ]
         }
     ]

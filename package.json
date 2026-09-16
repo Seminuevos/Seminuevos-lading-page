@@ -1,10 +1,20 @@
 {
+  "name": "seminuevo-agency",
   "type": "module",
+  "version": "1.0.0",
   "engines": {
     "node": ">=18.x"
   },
+  "scripts": {
+    "test:auth":     "node --test api/tests/auth.test.js",
+    "test:vehicles": "node --test api/tests/vehicles.test.js",
+    "test:users":    "node --test api/tests/users.test.js",
+    "test":          "node --test api/tests/*.test.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.102.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
     "cheerio": "^1.2.0",
     "https-proxy-agent": "^9.0.0",
     "node-fetch": "^3.3.2"
