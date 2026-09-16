@@ -7,7 +7,7 @@
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
     <meta name="googlebot" content="noindex, nofollow">
-    <title>MasterTech — Sistema Interno</title>
+    <title>MasterTech | Terminal de Operaciones</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="manifest" href="site.webmanifest">
@@ -2820,8 +2820,8 @@
             <div style="margin-bottom: 24px;">
                 <img src="images/logo-white.png" alt="SemiNuevos Logo" style="height: 120px; width: auto;">
             </div>
-            <h1>Panel de Administración</h1>
-            <p>Ingresa con tu cuenta para gestionar el inventario</p>
+            <h1>Terminal de Operaciones</h1>
+            <p>MasterTech Automotive Services — Acceso Autorizado</p>
             <div class="auth-error" id="authError" style="display:none; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#fca5a5; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.85rem; text-align:left;"></div>
             <div id="authSuccess" style="display:none; background: rgba(37,211,102,0.15); border:1px solid #25D366; color:#25D366; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.9rem;"></div>
             
@@ -3901,7 +3901,7 @@
                     <div>
                         <i class="fas fa-rocket" style="color:var(--accent);"></i> <strong>Bookmarklet IAAI / Copart:</strong> Arrastra el botón a tu barra de marcadores para importar directamente sin proxy.
                     </div>
-                    <a href="javascript:(function(){try{var adminOrigin='https://seminuevos-lading-page.vercel.app';var url=window.location.href;function getImg(lotId){var imgs=[];for(var i=1;i<=15;i++){imgs.push('https://vis.iaai.com/resizer?imageKeys='+lotId+'~IAA~S'+i+'&width=1024&height=768');}return imgs;}function scanObj(obj,d){if(!obj||typeof obj!=='object')return d;var keys=Object.keys(obj);function g(k){var f=keys.find(function(x){return x.toLowerCase()===k.toLowerCase();});return f?obj[f]:null;}var year=g('Year')||g('lcy')||g('modelYear');if(year&&!d.year)d.year=String(year);var make=g('Make')||g('mkn')||g('brand');if(make&&!d.make)d.make=String(make);var model=g('Model')||g('lm')||g('modelName');if(model&&!d.model)d.model=String(model);var series=g('Series')||g('srs')||g('trim');if(series&&!d.series)d.series=String(series);var vin=g('VIN')||g('fv')||g('vin');if(vin&&!d.vin)d.vin=String(vin);var odo=g('ODOValue')||g('orr')||g('odometer')||g('mileage');if(odo&&!d.km)d.km=String(odo)+' mi';var eng=g('engineDescription')||g('engineDesc')||g('engine');if(eng&&!d.engine)d.engine=String(eng);var trans=g('transmissionDescription')||g('Transmission')||g('tsmn');if(trans&&!d.trans)d.trans=String(trans);var body=g('bodyStyleDescription')||g('BodyStyle')||g('bs');if(body&&!d.body)d.body=String(body);var fuel=g('fuelTypeDescription')||g('FuelType')||g('ft');if(fuel&&!d.fuel)d.fuel=String(fuel);var clr=g('Color')||g('clr')||g('exteriorColor');if(clr&&!d.color)d.color=String(clr);var loc=g('SellingBranch')||g('BranchName')||g('Location');if(loc&&!d.location)d.location=String(loc);var dmg=g('PrimaryDamageDescription')||g('PrimaryDamage')||g('dd');if(dmg&&!d.damage)d.damage=String(dmg);var bnp=g('buyNowPrice')||g('bnp');var bid=g('highBidAmount')||g('curm')||g('currentBid');if(bnp&&!d.price)d.price='$'+parseInt(bnp).toLocaleString();else if(bid&&!d.price)d.price='$'+parseInt(bid).toLocaleString();for(var k in obj){if(obj[k]&&typeof obj[k]==='object'&&k!=='ancestors'&&k!=='images'){scanObj(obj[k],d);}}return d;}var raw={};try{var nd=window.__NEXT_DATA__;if(nd)raw=scanObj(nd,raw);}catch(e){}try{var ps=window.__PRELOADED_STATE__;if(ps)raw=scanObj(ps,raw);}catch(e){}var lotMatch=url.match(/VehicleDetail\/(\d+)|vehicle\/(\d+)|\/(\d{7,9})(?:-[A-Z]+)?(?:\/|$|\?)/i);var lotId=lotMatch?(lotMatch[1]||lotMatch[2]||lotMatch[3]):null;var payload={url:url,lotId:lotId,year:raw.year,make:raw.make,model:raw.model,series:raw.series,vin:raw.vin,km:raw.km,engine:raw.engine,transmission:raw.trans,bodyType:raw.body,fuel:raw.fuel,color:raw.color,location:raw.location,damage:raw.damage,price:raw.price,images:lotId?getImg(lotId):[]};var title=(raw.year||'')+' '+(raw.make||'')+' '+(raw.model||'')+' '+(raw.series||'');payload.title=title.trim().replace(/\s+/g,' ')||'Vehículo IAAI';sessionStorage.setItem('sn_bm_import',JSON.stringify(payload));window.open(adminOrigin+'/acceso-personal#bm_import','_blank');}catch(e){alert('Error en bookmarklet: '+e.message);}})();"
+                    <a href="javascript:(function(){try{var adminOrigin='https://seminuevos-lading-page.vercel.app';var url=window.location.href;function getImg(lotId){var imgs=[];for(var i=1;i<=15;i++){imgs.push('https://vis.iaai.com/resizer?imageKeys='+lotId+'~IAA~S'+i+'&width=1024&height=768');}return imgs;}function scanObj(obj,d){if(!obj||typeof obj!=='object')return d;var keys=Object.keys(obj);function g(k){var f=keys.find(function(x){return x.toLowerCase()===k.toLowerCase();});return f?obj[f]:null;}var year=g('Year')||g('lcy')||g('modelYear');if(year&&!d.year)d.year=String(year);var make=g('Make')||g('mkn')||g('brand');if(make&&!d.make)d.make=String(make);var model=g('Model')||g('lm')||g('modelName');if(model&&!d.model)d.model=String(model);var series=g('Series')||g('srs')||g('trim');if(series&&!d.series)d.series=String(series);var vin=g('VIN')||g('fv')||g('vin');if(vin&&!d.vin)d.vin=String(vin);var odo=g('ODOValue')||g('orr')||g('odometer')||g('mileage');if(odo&&!d.km)d.km=String(odo)+' mi';var eng=g('engineDescription')||g('engineDesc')||g('engine');if(eng&&!d.engine)d.engine=String(eng);var trans=g('transmissionDescription')||g('Transmission')||g('tsmn');if(trans&&!d.trans)d.trans=String(trans);var body=g('bodyStyleDescription')||g('BodyStyle')||g('bs');if(body&&!d.body)d.body=String(body);var fuel=g('fuelTypeDescription')||g('FuelType')||g('ft');if(fuel&&!d.fuel)d.fuel=String(fuel);var clr=g('Color')||g('clr')||g('exteriorColor');if(clr&&!d.color)d.color=String(clr);var loc=g('SellingBranch')||g('BranchName')||g('Location');if(loc&&!d.location)d.location=String(loc);var dmg=g('PrimaryDamageDescription')||g('PrimaryDamage')||g('dd');if(dmg&&!d.damage)d.damage=String(dmg);var bnp=g('buyNowPrice')||g('bnp');var bid=g('highBidAmount')||g('curm')||g('currentBid');if(bnp&&!d.price)d.price='$'+parseInt(bnp).toLocaleString();else if(bid&&!d.price)d.price='$'+parseInt(bid).toLocaleString();for(var k in obj){if(obj[k]&&typeof obj[k]==='object'&&k!=='ancestors'&&k!=='images'){scanObj(obj[k],d);}}return d;}var raw={};try{var nd=window.__NEXT_DATA__;if(nd)raw=scanObj(nd,raw);}catch(e){}try{var ps=window.__PRELOADED_STATE__;if(ps)raw=scanObj(ps,raw);}catch(e){}var lotMatch=url.match(/VehicleDetail\/(\d+)|vehicle\/(\d+)|\/(\d{7,9})(?:-[A-Z]+)?(?:\/|$|\?)/i);var lotId=lotMatch?(lotMatch[1]||lotMatch[2]||lotMatch[3]):null;var payload={url:url,lotId:lotId,year:raw.year,make:raw.make,model:raw.model,series:raw.series,vin:raw.vin,km:raw.km,engine:raw.engine,transmission:raw.trans,bodyType:raw.body,fuel:raw.fuel,color:raw.color,location:raw.location,damage:raw.damage,price:raw.price,images:lotId?getImg(lotId):[]};var title=(raw.year||'')+' '+(raw.make||'')+' '+(raw.model||'')+' '+(raw.series||'');payload.title=title.trim().replace(/\s+/g,' ')||'Vehículo IAAI';sessionStorage.setItem('sn_bm_import',JSON.stringify(payload));window.open(adminOrigin+'/mt-operaciones#bm_import','_blank');}catch(e){alert('Error en bookmarklet: '+e.message);}})();"
                         class="bookmarklet-btn"><i class="fas fa-rocket"></i> ⚡ Importar a SemiNuvo</a>
                 </div>
                 <div id="bulkStatus" style="margin-top: 20px;"></div>
@@ -5447,7 +5447,7 @@
                 return;
             }
             if (btnReset) btnReset.textContent = 'Enviando correo...';
-            const redirectUrl = window.location.origin + '/acceso-personal';
+            const redirectUrl = window.location.origin + '/mt-operaciones';
             const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
             if (btnReset) btnReset.textContent = '¿Olvidaste tu contraseña?';
             if (error) {
@@ -12351,7 +12351,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             let msg = `👋 *¡HOLA ${user.full_name.toUpperCase()}! BIENVENIDO A SEMINUEVOS* 🚗✨\n\n`;
             msg += `Se ha habilitado tu cuenta de acceso al Sistema Administrativo de la agencia:\n\n`;
-            msg += `🌐 *Portal de Acceso:* https://seminuevosautos.com/acceso-personal\n`;
+            msg += `🌐 *Portal de Acceso:* https://seminuevosautos.com/mt-operaciones\n`;
             msg += `👤 *Usuario / Login:* \`${user.email}\`\n`;
             msg += `🔑 *Contraseña:* \`${pwdText}\`\n`;
             msg += `💼 *Rol Asignado:* ${roleLabel}\n`;

@@ -12,9 +12,11 @@
         { "source": "/cms",           "destination": "/404", "permanent": false },
         { "source": "/wp-admin",      "destination": "/404", "permanent": false },
         { "source": "/wp-admin/(.*)", "destination": "/404", "permanent": false },
-        { "source": "/login",         "destination": "/404", "permanent": false },
-        { "source": "/panel",         "destination": "/404", "permanent": false },
-        { "source": "/admin/(.*)",    "destination": "/404", "permanent": false }
+        { "source": "/login",                 "destination": "/404", "permanent": false },
+        { "source": "/panel",                 "destination": "/404", "permanent": false },
+        { "source": "/admin/(.*)",            "destination": "/404", "permanent": false },
+        { "source": "/acceso-personal",       "destination": "/404", "permanent": false },
+        { "source": "/acceso-personal.html",  "destination": "/404", "permanent": false }
     ],
     "headers": [
         {
@@ -29,7 +31,14 @@
             ]
         },
         {
-            "source": "/acceso-personal",
+            "source": "/mt-operaciones",
+            "headers": [
+                { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
+                { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/mt-operaciones.html",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
                 { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
