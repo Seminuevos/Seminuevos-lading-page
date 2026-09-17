@@ -138,7 +138,6 @@ export default async function handler(req, res) {
             }
 
             // 1. Guardar en site_settings con cliente autenticado
-            const db = await getAuthenticatedServerClient();
             let { error: updateErr } = await db
                 .from('site_settings')
                 .update({
@@ -234,7 +233,6 @@ export default async function handler(req, res) {
                     }
 
                     const filtered = list.filter(u => String(u.id) !== String(id));
-                    const db = await getAuthenticatedServerClient();
                     await db
                         .from('site_settings')
                         .update({
