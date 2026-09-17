@@ -94,7 +94,8 @@ export default async function handler(req, res) {
 
         try {
             // 1. Obtener y actualizar en site_settings agency_users_directory
-            const { data: setRow } = await supabase
+            const db = await getAuthenticatedServerClient();
+            const { data: setRow } = await db
                 .from('site_settings')
                 .select('value')
                 .eq('key', 'agency_users_directory')
@@ -215,7 +216,8 @@ export default async function handler(req, res) {
         }
 
         try {
-            const { data: setRow } = await supabase
+            const db = await getAuthenticatedServerClient();
+            const { data: setRow } = await db
                 .from('site_settings')
                 .select('value')
                 .eq('key', 'agency_users_directory')

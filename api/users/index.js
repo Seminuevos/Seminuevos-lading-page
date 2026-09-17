@@ -39,7 +39,8 @@ export default async function handler(req, res) {
             } catch(e) {}
 
             // 2. Fallback: site_settings (agency_users_directory)
-            const { data: setRow } = await supabase
+            const db = await getAuthenticatedServerClient();
+            const { data: setRow } = await db
                 .from('site_settings')
                 .select('value')
                 .eq('key', 'agency_users_directory')
@@ -52,6 +53,10 @@ export default async function handler(req, res) {
                     const isAdmin = authUser.role === 'admin' || 
                                     authUser.role === 'super_admin' || 
                                     ADMIN_EMAILS.includes((authUser.email || '').toLowerCase().trim());
+                    const safeList = list.map(u => {
+                        const { password_hash, ...rest } = u;
+                        return rest;
+                    });
                     const filtered = isAdmin
                         ? safeList
                         : safeList.filter(u => u.id === authUser.id);
@@ -120,7 +125,8 @@ export default async function handler(req, res) {
             }
 
             // 2. Guardar en site_settings agency_users_directory
-            const { data: setRow } = await supabase
+            const db = await getAuthenticatedServerClient();
+            const { data: setRow } = await db
                 .from('site_settings')
                 .select('value')
                 .eq('key', 'agency_users_directory')
@@ -151,7 +157,6 @@ export default async function handler(req, res) {
 
             currentList.unshift(newRecord);
 
-            const db = await getAuthenticatedServerClient();
             await db
                 .from('site_settings')
                 .update({

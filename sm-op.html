@@ -5126,10 +5126,10 @@
             <div class="modal-footer" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                 <button type="button" class="btn btn-ghost" onclick="closeUserModal()">Cancelar</button>
                 <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn btn-ghost" onclick="saveUser(true)" style="color:#25D366; border-color:#25D366;" title="Guarda y abre WhatsApp con los datos de acceso">
+                    <button type="button" class="btn btn-ghost" id="btnSaveUserWa" onclick="saveUser(true)" style="color:#25D366; border-color:#25D366;" title="Guarda y abre WhatsApp con los datos de acceso">
                         <i class="fab fa-whatsapp"></i> Guardar y Enviar por WhatsApp
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="saveUser(false)">
+                    <button type="button" class="btn btn-primary" id="btnSaveUser" onclick="saveUser(false)">
                         <i class="fas fa-save"></i> Guardar Usuario
                     </button>
                 </div>
@@ -12331,10 +12331,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 email: 'jvicente@seminuevos.com',
                 password: 'admin123',
                 phone: '+58 424 8700438',
-                role: 'sales',
+                role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
                 status: 'active',
-                notes: 'Colaborador Asesor Comercial',
+                notes: 'Administrador Principal de Operaciones',
                 created_at: new Date('2026-09-17T18:50:03Z').toISOString()
             },
             {
@@ -12448,43 +12448,30 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             } catch (e) {
                 console.warn('Error saving users to localStorage:', e);
             }
-            // Sincronizar permanentemente con la nube de Supabase para todos los dispositivos
-            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                (async () => {
-                    try {
-                        await supabaseClient
-                            .from('site_settings')
-                            .upsert({
-                                key: 'agency_users_directory',
-                                value: users
-                            });
-                    } catch(err) {
-                        console.warn('Sync users to Supabase notice:', err);
-                    }
-                })();
-            }
         }
 
         async function loadUsers() {
-            // 1. Sincronizar directorio de usuarios en vivo desde Supabase Cloud
+            // 1. Consultar endpoint del servidor (fuente autoritativa con acceso de servicio)
+            try {
+                const apiRes = await apiFetch('/api/users');
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
+                    _allAgencyUsers = apiRes.data.data;
+                    try { localStorage.setItem('sn_agency_users', JSON.stringify(_allAgencyUsers)); } catch(e) {}
+                    renderUserStats();
+                    renderUsersTable();
+                    return;
+                }
+            } catch (err) {
+                console.warn('loadUsers API notice:', err);
+            }
+
+            // 2. Intentar lectura directa desde Supabase Cloud
             const cloudUsers = await syncUsersFromSupabase();
             if (cloudUsers && cloudUsers.length > 0) {
                 renderUserStats();
                 renderUsersTable();
                 return;
             }
-
-            // 2. Intentar API backend
-            try {
-                const apiRes = await apiFetch('/api/users');
-                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
-                    _allAgencyUsers = apiRes.data.data;
-                    saveStoredUsers(apiRes.data.data);
-                    renderUserStats();
-                    renderUsersTable();
-                    return;
-                }
-            } catch (err) {}
 
             // 3. Respaldo local
             _allAgencyUsers = getStoredUsers();
@@ -12807,125 +12794,160 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 return;
             }
 
-            let users = [...(_allAgencyUsers || [])];
-            let targetUser = null;
-            const tempPasswordForWA = password;
+            const btnSave = document.getElementById('btnSaveUser');
+            const btnSaveWa = document.getElementById('btnSaveUserWa');
+            const origSaveHtml = btnSave ? btnSave.innerHTML : '<i class="fas fa-save"></i> Guardar Usuario';
+            const origWaHtml = btnSaveWa ? btnSaveWa.innerHTML : '<i class="fab fa-whatsapp"></i> Guardar y Enviar por WhatsApp';
 
-            if (id) {
-                // EDITAR usuario existente
-                const idx = users.findIndex(u => String(u.id) === String(id));
-                const updateObj = {
-                    id: id,
-                    full_name: fullName,
-                    email: email,
-                    phone: phone,
-                    role: role,
-                    branch: branch,
-                    status: status,
-                    notes: notes,
-                    updated_at: new Date().toISOString()
-                };
-                if (password && password.length >= 6) {
-                    updateObj.password = password;
-                    if (email.toLowerCase() === 'jvaask16@gmail.com') {
-                        try { localStorage.setItem('sn_master_pwd', password); } catch(e) {}
-                    }
-                    try {
-                        const curUser = (await supabaseClient?.auth?.getUser())?.data?.user;
-                        if (curUser && curUser.email?.toLowerCase() === email.toLowerCase()) {
-                            await supabaseClient.auth.updateUser({ password: password });
-                        }
-                    } catch(e) {}
-                }
-
-                if (idx !== -1) {
-                    users[idx] = { ...users[idx], ...updateObj };
-                    targetUser = users[idx];
-                } else {
-                    targetUser = updateObj;
-                    users.unshift(targetUser);
-                }
-
-                // Sincronizar con el servidor en la nube
-                (async () => {
-                    try {
-                        const payload = { ...updateObj };
-                        await apiFetch(`/api/users/${encodeURIComponent(id)}`, { method: 'PUT', body: payload });
-                    } catch (e) {
-                        console.warn('Background user update notice:', e);
-                    }
-                })();
-
-                showToast('✓ Usuario actualizado correctamente', 'success');
-
-            } else {
-                // CREAR usuario nuevo
-                let newId = 'usr-' + Date.now();
-                targetUser = {
-                    id: newId,
-                    full_name: fullName,
-                    email: email,
-                    phone: phone,
-                    password: password,
-                    role: role,
-                    branch: branch,
-                    status: status,
-                    notes: notes,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
-
-                // Enlazar y registrar directamente en Supabase Auth
-                if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
-                    try {
-                        const { data: sbSign, error: sbSignErr } = await supabaseClient.auth.signUp({
-                            email: email,
-                            password: password,
-                            options: {
-                                data: {
-                                    full_name: fullName,
-                                    role: role,
-                                    branch: branch,
-                                    phone: phone
-                                }
-                            }
-                        });
-                        if (!sbSignErr && sbSign?.user?.id) {
-                            newId = sbSign.user.id;
-                            targetUser.id = newId;
-                        } else if (sbSignErr) {
-                            console.warn('Supabase auth signup notice:', sbSignErr);
-                        }
-                    } catch (e) {
-                        console.warn('Supabase auth signup error:', e);
-                    }
-                }
-
-                users.unshift(targetUser);
-
-                // Sincronizar con el servidor en la nube
-                (async () => {
-                    try {
-                        await apiFetch('/api/users', { method: 'POST', body: targetUser });
-                    } catch (e) {
-                        console.warn('Background user create notice:', e);
-                    }
-                })();
-
-                showToast('✓ Nuevo colaborador registrado con éxito', 'success');
+            if (btnSave) {
+                btnSave.disabled = true;
+                btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando en base de datos...';
             }
+            if (btnSaveWa) btnSaveWa.disabled = true;
 
-            _allAgencyUsers = users;
-            saveStoredUsers(users);
-            renderUserStats();
-            renderUsersTable();
-            closeUserModal();
+            showToast('Guardando cambios en la base de datos...', 'info');
 
-            if (sendViaWhatsApp && targetUser) {
-                sendUserCredentialsWhatsApp(targetUser.id, tempPasswordForWA);
+            try {
+                let users = [...(_allAgencyUsers || [])];
+                let targetUser = null;
+                const tempPasswordForWA = password;
+
+                if (id) {
+                    // EDITAR usuario existente
+                    const idx = users.findIndex(u => String(u.id) === String(id));
+                    const updateObj = {
+                        id: id,
+                        full_name: fullName,
+                        email: email,
+                        phone: phone,
+                        role: role,
+                        branch: branch,
+                        status: status,
+                        notes: notes,
+                        updated_at: new Date().toISOString()
+                    };
+                    if (password && password.length >= 6) {
+                        updateObj.password = password;
+                        if (email.toLowerCase() === 'jvaask16@gmail.com') {
+                            try { localStorage.setItem('sn_master_pwd', password); } catch(e) {}
+                        }
+                        try {
+                            const curUser = (await supabaseClient?.auth?.getUser())?.data?.user;
+                            if (curUser && curUser.email?.toLowerCase() === email.toLowerCase()) {
+                                await supabaseClient.auth.updateUser({ password: password });
+                            }
+                        } catch(e) {}
+                    }
+
+                    // Guardar de forma síncrona en el servidor en la nube
+                    const apiRes = await apiFetch(`/api/users/${encodeURIComponent(id)}`, {
+                        method: 'PUT',
+                        body: updateObj
+                    });
+
+                    if (!apiRes || !apiRes.ok) {
+                        throw new Error(apiRes?.error || 'Error al persistir cambios en el servidor');
+                    }
+
+                    if (idx !== -1) {
+                        users[idx] = { ...users[idx], ...updateObj };
+                        targetUser = users[idx];
+                    } else {
+                        targetUser = updateObj;
+                        users.unshift(targetUser);
+                    }
+
+                    _allAgencyUsers = users;
+                    saveStoredUsers(users);
+                    renderUserStats();
+                    renderUsersTable();
+                    closeUserModal();
+                    showToast('✓ Cambios guardados permanentemente en la base de datos', 'success');
+
+                    if (sendViaWhatsApp && targetUser) {
+                        sendUserCredentialsWhatsApp(targetUser.id, tempPasswordForWA);
+                    }
+                } else {
+                    // CREAR usuario nuevo
+                    let newId = 'usr-' + Date.now();
+                    targetUser = {
+                        id: newId,
+                        full_name: fullName,
+                        email: email,
+                        phone: phone,
+                        password: password,
+                        role: role,
+                        branch: branch,
+                        status: status,
+                        notes: notes,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
+
+                    // Enlazar en Supabase Auth si está disponible
+                    if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+                        try {
+                            const { data: sbSign, error: sbSignErr } = await supabaseClient.auth.signUp({
+                                email: email,
+                                password: password,
+                                options: {
+                                    data: {
+                                        full_name: fullName,
+                                        role: role,
+                                        branch: branch,
+                                        phone: phone
+                                    }
+                                }
+                            });
+                            if (!sbSignErr && sbSign?.user?.id) {
+                                newId = sbSign.user.id;
+                                targetUser.id = newId;
+                            }
+                        } catch (e) {
+                            console.warn('Supabase auth signup notice:', e);
+                        }
+                    }
+
+                    // Guardar de forma síncrona en el servidor en la nube
+                    const apiRes = await apiFetch('/api/users', {
+                        method: 'POST',
+                        body: targetUser
+                    });
+
+                    if (!apiRes || !apiRes.ok) {
+                        throw new Error(apiRes?.error || 'Error al registrar nuevo usuario en el servidor');
+                    }
+
+                    if (apiRes.data && apiRes.data.data) {
+                        targetUser = { ...targetUser, ...apiRes.data.data };
+                    }
+
+                    users.unshift(targetUser);
+                    _allAgencyUsers = users;
+                    saveStoredUsers(users);
+                    renderUserStats();
+                    renderUsersTable();
+                    closeUserModal();
+                    showToast('✓ Nuevo colaborador registrado y guardado permanentemente', 'success');
+
+                    if (sendViaWhatsApp && targetUser) {
+                        sendUserCredentialsWhatsApp(targetUser.id, tempPasswordForWA);
+                    }
+                }
+            } catch (err) {
+                console.error('saveUser error:', err);
+                showToast('❌ Error al guardar datos: ' + (err.message || 'Verifica la conexión'), 'danger');
+            } finally {
+                if (btnSave) {
+                    btnSave.disabled = false;
+                    btnSave.innerHTML = origSaveHtml;
+                }
+                if (btnSaveWa) {
+                    btnSaveWa.disabled = false;
+                    btnSaveWa.innerHTML = origWaHtml;
+                }
             }
         }
-
 
         function sendUserCredentialsWhatsApp(userId, explicitPwd = null) {
             const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
@@ -12969,21 +12991,29 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             if (idx === -1) return;
 
             const newStatus = users[idx].status === 'active' ? 'inactive' : 'active';
-            users[idx].status = newStatus;
-            users[idx].updated_at = new Date().toISOString();
+            showToast('Actualizando estado en la base de datos...', 'info');
 
-            _allAgencyUsers = users;
-            saveStoredUsers(users);
-            renderUserStats();
-            renderUsersTable();
-            showToast(`Estado cambiado a: ${newStatus === 'active' ? 'Activo' : 'Inactivo'}`, 'info');
+            try {
+                const apiRes = await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
+                    method: 'PUT',
+                    body: { status: newStatus }
+                });
 
-            // Background sync
-            (async () => {
-                try {
-                    await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { status: newStatus } });
-                } catch(e) {}
-            })();
+                if (!apiRes || !apiRes.ok) {
+                    throw new Error(apiRes?.error || 'Error al cambiar estado');
+                }
+
+                users[idx].status = newStatus;
+                users[idx].updated_at = new Date().toISOString();
+                _allAgencyUsers = users;
+                saveStoredUsers(users);
+                renderUserStats();
+                renderUsersTable();
+                showToast(`✓ Estado actualizado permanentemente a: ${newStatus === 'active' ? 'Activo' : 'Inactivo'}`, 'success');
+            } catch (err) {
+                console.error('toggleUserStatus error:', err);
+                showToast('❌ Error al actualizar estado: ' + (err.message || 'Error de conexión'), 'danger');
+            }
         }
 
         async function resetUserPasswordPrompt(userId) {
@@ -12998,79 +13028,90 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 return;
             }
 
-            user.password = cleanPwd;
-            user.updated_at = new Date().toISOString();
+            showToast('Guardando nueva contraseña en el servidor...', 'info');
 
-            if (user.email && user.email.toLowerCase() === 'jvaask16@gmail.com') {
-                try { localStorage.setItem('sn_master_pwd', cleanPwd); } catch(e) {}
-            }
-
-            // Actualizar si es el usuario logueado actualmente
             try {
-                const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user');
-                if (uStr) {
-                    const activeUser = JSON.parse(uStr);
-                    if (activeUser && (activeUser.email?.toLowerCase() === user.email?.toLowerCase() || String(activeUser.id) === String(userId))) {
-                        activeUser.password = cleanPwd;
-                        sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                        sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
-                        localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                    }
-                }
-            } catch(e) {}
-
-            saveStoredUsers(_allAgencyUsers);
-            renderUsersTable();
-            showToast('Guardando contraseña en el servidor...', 'info');
-
-            // Sincronizar en el servidor nube
-            try {
-                await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
+                const apiRes = await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
                     method: 'PUT',
                     body: { email: user.email, password: cleanPwd }
                 });
-                showToast('✓ Contraseña guardada correctamente en el sistema', 'success');
-            } catch(e) {
-                console.warn('Server password reset error:', e);
-            }
 
-            // Sincronizar en Supabase Auth si es la sesión activa en el navegador
-            try {
-                if (supabaseClient && supabaseClient.auth) {
-                    const curAuthUser = (await supabaseClient.auth.getUser())?.data?.user;
-                    if (curAuthUser && curAuthUser.email?.toLowerCase() === user.email?.toLowerCase()) {
-                        await supabaseClient.auth.updateUser({ password: cleanPwd });
-                    }
+                if (!apiRes || !apiRes.ok) {
+                    throw new Error(apiRes?.error || 'Error al guardar la contraseña en el servidor');
                 }
-            } catch(e) {}
 
-            const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
-            if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);
+                user.password = cleanPwd;
+                user.updated_at = new Date().toISOString();
+
+                if (user.email && user.email.toLowerCase() === 'jvaask16@gmail.com') {
+                    try { localStorage.setItem('sn_master_pwd', cleanPwd); } catch(e) {}
+                }
+
+                try {
+                    const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user');
+                    if (uStr) {
+                        const activeUser = JSON.parse(uStr);
+                        if (activeUser && (activeUser.email?.toLowerCase() === user.email?.toLowerCase() || String(activeUser.id) === String(userId))) {
+                            activeUser.password = cleanPwd;
+                            sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                            sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
+                            localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                        }
+                    }
+                } catch(e) {}
+
+                saveStoredUsers(_allAgencyUsers);
+                renderUsersTable();
+                showToast('✓ Contraseña guardada permanentemente en la base de datos', 'success');
+
+                // Sincronizar en Supabase Auth si es la sesión activa en el navegador
+                try {
+                    if (supabaseClient && supabaseClient.auth) {
+                        const curAuthUser = (await supabaseClient.auth.getUser())?.data?.user;
+                        if (curAuthUser && curAuthUser.email?.toLowerCase() === user.email?.toLowerCase()) {
+                            await supabaseClient.auth.updateUser({ password: cleanPwd });
+                        }
+                    }
+                } catch(e) {}
+
+                const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
+                if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);
+
+            } catch(e) {
+                console.error('Server password reset error:', e);
+                showToast('❌ Error al cambiar contraseña: ' + (e.message || 'Error de conexión'), 'danger');
+            }
         }
 
         async function deleteUser(userId) {
             const user = (_allAgencyUsers || []).find(u => String(u.id) === String(userId));
             if (!user) return;
 
-            if (user.email === 'jvaask16@gmail.com') {
-                showToast('No es posible eliminar al Administrador Master', 'danger');
+            const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+            if (ADMIN_EMAILS.includes((user.email || '').toLowerCase().trim())) {
+                showToast('No es posible eliminar a un Administrador Principal', 'danger');
                 return;
             }
 
             if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente a "${user.full_name}" (${user.email})?`)) return;
 
-            _allAgencyUsers = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
-            saveStoredUsers(_allAgencyUsers);
-            renderUserStats();
-            renderUsersTable();
-            showToast('✓ Usuario eliminado', 'success');
+            showToast('Eliminando colaborador de la base de datos...', 'info');
 
-            // Background sync
-            (async () => {
-                try {
-                    await apiFetch(`/api/users/${userId}`, { method: 'DELETE' });
-                } catch(e) {}
-            })();
+            try {
+                const apiRes = await apiFetch(`/api/users/${encodeURIComponent(userId)}`, { method: 'DELETE' });
+                if (!apiRes || !apiRes.ok) {
+                    throw new Error(apiRes?.error || 'Error al eliminar usuario en el servidor');
+                }
+
+                _allAgencyUsers = (_allAgencyUsers || []).filter(u => String(u.id) !== String(userId));
+                saveStoredUsers(_allAgencyUsers);
+                renderUserStats();
+                renderUsersTable();
+                showToast('✓ Usuario eliminado permanentemente de la base de datos', 'success');
+            } catch(e) {
+                console.error('deleteUser error:', e);
+                showToast('❌ Error al eliminar usuario: ' + (e.message || 'Error de conexión'), 'danger');
+            }
         }
 
 
