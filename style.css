@@ -607,8 +607,44 @@ body::after {
     transition: all 0.5s ease;
 }
 
-/* Centrado automático para el primer slide (estilo bienvenida) */
-.hero-slide:first-child .hero-content {
+.hero-content.align-left {
+    left: 80px;
+    right: auto;
+    text-align: left;
+    transform: translateY(-50%);
+}
+
+.hero-content.align-left .hero-buttons,
+.hero-content.align-left .hero-tag {
+    justify-content: flex-start;
+}
+
+.hero-content.align-right {
+    left: auto;
+    right: 80px;
+    text-align: right;
+    transform: translateY(-50%);
+}
+
+.hero-content.align-right .hero-buttons,
+.hero-content.align-right .hero-tag {
+    justify-content: flex-end;
+}
+
+.hero-content.align-center {
+    left: 50%;
+    right: auto;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+
+.hero-content.align-center .hero-buttons,
+.hero-content.align-center .hero-tag {
+    justify-content: center;
+}
+
+/* Centrado automático para el primer slide (si no tiene clase de alineación explícita) */
+.hero-slide:first-child .hero-content:not(.align-left):not(.align-right) {
     left: 50% !important;
     top: 47% !important;
     transform: translate(-50%, -50%) !important;
@@ -3169,10 +3205,44 @@ body::after {
         display: none;
     }
 
-    .hero-content {
-        left: 5%;
-        right: 5%;
-        bottom: 18%;
+    .hero-content,
+    .hero-content.align-left,
+    .hero-content.align-right,
+    .hero-content.align-center,
+    .hero-slide:first-child .hero-content {
+        left: 16px !important;
+        right: 16px !important;
+        top: 50% !important;
+        bottom: auto !important;
+        transform: translateY(-50%) !important;
+        width: calc(100% - 32px) !important;
+        max-width: 100% !important;
+        text-align: center !important;
+    }
+
+    .hero-content .hero-buttons,
+    .hero-content .hero-tag,
+    .hero-content.align-left .hero-buttons,
+    .hero-content.align-left .hero-tag,
+    .hero-content.align-right .hero-buttons,
+    .hero-content.align-right .hero-tag {
+        justify-content: center !important;
+    }
+
+    .hero-subtitle > div {
+        margin: 0 auto !important;
+        max-width: 100% !important;
+    }
+
+    .brands-marquee::before,
+    .brands-marquee::after {
+        width: 30px !important;
+    }
+
+    .contact-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
     }
 
     .hero-scroll-indicator {

@@ -17,8 +17,8 @@ export default async function handler(req, res) {
 
     const ip = getClientIP(req);
 
-    // Rate limiting: máximo 8 intentos de login por minuto por IP
-    if (!checkRateLimit(`login:${ip}`, 8, 60000)) {
+    // Rate limiting: máximo 30 intentos de login por minuto por IP (permite CGNAT móvil)
+    if (!checkRateLimit(`login:${ip}`, 30, 60000)) {
         return res.status(429).json({ error: 'Demasiados intentos. Espera un momento antes de intentar nuevamente.' });
     }
 

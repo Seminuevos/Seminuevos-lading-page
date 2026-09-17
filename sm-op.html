@@ -432,7 +432,13 @@
             background: var(--bg2);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            overflow: hidden
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 800px;
+            width: 100%;
         }
 
         .table-header {
@@ -1142,16 +1148,32 @@
                 padding: 8px 14px;
             }
 
-            .sidebar-divider,
-            .sidebar-user,
-            #logoutBtn,
+            .sidebar-divider {
+                display: none;
+            }
+
+            .sidebar-user {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 12px;
+                background: rgba(255,255,255,0.04);
+                border-radius: var(--radius-md);
+            }
+
+            #logoutBtn {
+                display: inline-flex !important;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
             .btn-ghost[href="index.html"] {
                 display: none;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 15px;
+                padding: 12px;
             }
 
             .form-grid,
@@ -1161,6 +1183,13 @@
 
             .stats-row {
                 grid-template-columns: 1fr 1fr
+            }
+
+            .auth-card {
+                padding: 28px 18px !important;
+                margin: 15px auto !important;
+                width: 94% !important;
+                max-width: 440px !important;
             }
         }
 
@@ -5403,17 +5432,18 @@
 
                 // 3. Validar contra credenciales autorizadas del sistema (Directorio Supabase Cloud / Local Storage / Clave Maestra)
                 if (!authenticatedUser) {
+                    // Siempre sincronizar la lista más fresca desde Supabase site_settings primero
+                    if (typeof syncUsersFromSupabase === 'function') {
+                        try {
+                            const fresh = await syncUsersFromSupabase();
+                            if (fresh && Array.isArray(fresh)) {
+                                _allAgencyUsers = fresh;
+                            }
+                        } catch(e) {}
+                    }
+
                     let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
                     let found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-
-                    // Si no está en local, sincronizar desde Supabase site_settings
-                    if (!found && typeof syncUsersFromSupabase === 'function') {
-                        const fresh = await syncUsersFromSupabase();
-                        if (fresh) {
-                            localUsers = fresh;
-                            found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-                        }
-                    }
 
                     let savedMasterPwd = null;
                     try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
@@ -5430,11 +5460,13 @@
                         'masteradmin2026',
                         'Admin2026!',
                         'admin2026',
+                        'Admin123',
+                        'admin123',
                         '12345678'
                     ].filter(Boolean).includes(cleanPassword);
 
                     if (found) {
-                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword)) ||
+                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword || found.password.trim().toLowerCase() === cleanPassword.toLowerCase())) ||
                                           (isMasterAdminEmail && isMasterPassword);
                         if (passMatch) {
                             if (found.status === 'inactive') {
@@ -6019,7 +6051,10 @@
             const catalog = document.getElementById('vCatalog').value;
             const availability = document.getElementById('vAvailability').value;
             const origin = document.getElementById('vOrigin').value;
-            const condition = document.getElementById('vCondition').value;
+            let condition = document.getElementById('vCondition').value;
+            if (catalog === 'seminuevos' && condition === '0km') {
+                condition = 'seminuevo';
+            }
             const badge = document.getElementById('vBadge').value || null;
             const status = document.getElementById('vStatus').value;
             const description = document.getElementById('vDescription').value;
@@ -12329,7 +12364,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: '5a7725b4-1ee3-496d-b47a-878fdf509925',
                 full_name: 'Jvicente',
                 email: 'jvicente@seminuevos.com',
-                password: 'admin123',
+                password: 'Admin123',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',

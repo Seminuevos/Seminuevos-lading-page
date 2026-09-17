@@ -586,19 +586,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!v) return false;
         if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return false;
         const c = (v.catalog || '').toLowerCase().trim();
+        // Priority 1: If catalog is explicitly seminuevos or importados, it can NEVER be 0km
+        if (c === 'seminuevos' || c === 'seminuevo' || c === 'importados' || c === 'importado' || c === 'por_pedido' || c === 'subasta') return false;
+        if (c === '0km') return true;
+        // Priority 2: Fallback for uncataloged items only
         const cond = (v.condition || '').toLowerCase().trim();
         const badge = (v.badge || '').toLowerCase().trim();
-        return (c === '0km' || cond === '0km' || badge.includes('0km'));
+        return (cond === '0km' || badge.includes('0km'));
     };
 
     // Helper Discriminator 2: Detect Imported / Por Pedido / Subasta vehicles
     const isImportedOrAuctionVehicle = (v) => {
         if (!v) return false;
-        if (isZeroKmVehicle(v)) return false;
         const c = (v.catalog || '').toLowerCase().trim();
-        const avail = (v.availability || '').toLowerCase().trim();
-        if (c === 'seminuevos' || c === 'seminuevo' || avail === 'entrega_inmediata') return false;
+        if (c === 'seminuevos' || c === 'seminuevo') return false;
+        if (c === '0km') return false;
+        if (isZeroKmVehicle(v)) return false;
         if (c === 'importados' || c === 'importado' || c === 'por_pedido' || c === 'pedido' || c === 'subasta' || c === 'subastas') return true;
+
+        const avail = (v.availability || '').toLowerCase().trim();
+        if (avail === 'entrega_inmediata') return false;
         if (avail === 'por_pedido') return true;
         if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return true;
         const desc = (v.description || '').toLowerCase();
@@ -611,6 +618,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper Discriminator 3: Detect Stock Local (Seminuevo Entrega Inmediata) vehicles
     const isStockLocalVehicle = (v) => {
         if (!v) return false;
+        const c = (v.catalog || '').toLowerCase().trim();
+        if (c === 'seminuevos' || c === 'seminuevo') return true;
         if (isZeroKmVehicle(v)) return false;
         if (isImportedOrAuctionVehicle(v)) return false;
         return true;
@@ -794,14 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 subtitleHtml = `<p>${s.subtitle}</p>`;
             }
 
-            const alignStyle = textAlign === 'center' 
-                ? 'left: 50% !important; transform: translate(-50%, -50%) !important; text-align: center !important;' 
-                : (textAlign === 'right' 
-                    ? 'left: auto !important; right: 80px !important; text-align: right !important;' 
-                    : 'left: 80px !important; text-align: left !important;');
-
-            const btnAlignStyle = textAlign === 'center' ? 'justify-content: center !important;' : (textAlign === 'right' ? 'justify-content: flex-end !important;' : 'justify-content: flex-start !important;');
-            const tagAlignStyle = textAlign === 'center' ? 'justify-content: center !important;' : (textAlign === 'right' ? 'justify-content: flex-end !important;' : 'justify-content: flex-start !important;');
+            const alignClass = textAlign === 'center' ? 'align-center' : (textAlign === 'right' ? 'align-right' : 'align-left');
 
             // Mapear URLs pesadas legadas a las versiones optimizadas locales
             let heroBgImage = s.image || '';
@@ -813,8 +815,8 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
                     <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.45}) 35%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.35}) 45%, transparent 100%);"></div>
-                    <div class="hero-content" style="${alignStyle}">
-                        <div class="hero-tag" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; ${tagAlignStyle}">
+                    <div class="hero-content ${alignClass}">
+                        <div class="hero-tag" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;">
                             <span style="display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:30px; background:${activeBadge.bg}; border:1px solid ${activeBadge.border}; color:${activeBadge.color}; font-weight:800; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.5px;">
                                 <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-star' : 'fa-car')}"></i> ${s.tag || 'OFERTA DESTACADA'}
                             </span>
@@ -825,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="hero-subtitle" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;">
                             ${subtitleHtml}
                         </div>
-                        <div class="hero-buttons" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards; ${btnAlignStyle}">
+                        <div class="hero-buttons" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;">
                             <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta VIP del sitio web.')}" class="btn btn-primary" target="_blank" style="text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
                                ${s.ctaPrimary || 'Reclamar Oferta'} <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
                             </a>
