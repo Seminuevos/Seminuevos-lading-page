@@ -4622,7 +4622,7 @@
                         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                             <h3 style="margin-right:12px;"><i class="fas fa-id-badge"></i> Directorio de Personal</h3>
                             <div class="admin-catalog-tabs" style="display:inline-flex; gap:6px; margin-bottom:0;">
-                                <button type="button" class="btn btn-primary btn-sm user-filter-btn active" data-role="todos" onclick="setUserRoleFilter('todos')">Todos</button>
+                                <button type="button" class="btn btn-primary btn-sm user-filter-btn active" data-role="all" onclick="setUserRoleFilter('all')">Todos</button>
                                 <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="sales" onclick="setUserRoleFilter('sales')"><i class="fas fa-briefcase"></i> Ventas</button>
                                 <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="credit" onclick="setUserRoleFilter('credit')"><i class="fas fa-file-invoice-dollar"></i> Crédito</button>
                                 <button type="button" class="btn btn-ghost btn-sm user-filter-btn" data-role="mechanic" onclick="setUserRoleFilter('mechanic')"><i class="fas fa-wrench"></i> Avalúo</button>
@@ -12339,15 +12339,16 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         function setUserRoleFilter(role) {
-            _userCurrentRoleFilter = role;
+            _userCurrentRoleFilter = (role === 'all' || role === 'todos' || !role) ? 'all' : role;
             document.querySelectorAll('.user-filter-btn').forEach(btn => {
-                if (btn.dataset.role === role) {
-                    btn.classList.add('active');
+                const bRole = btn.dataset.role;
+                const isMatch = (bRole === _userCurrentRoleFilter) || 
+                                ((_userCurrentRoleFilter === 'all') && (bRole === 'all' || bRole === 'todos'));
+                if (isMatch) {
+                    btn.classList.add('active', 'btn-primary');
                     btn.classList.remove('btn-ghost');
-                    btn.classList.add('btn-primary');
                 } else {
-                    btn.classList.remove('active');
-                    btn.classList.remove('btn-primary');
+                    btn.classList.remove('active', 'btn-primary');
                     btn.classList.add('btn-ghost');
                 }
             });
@@ -12382,7 +12383,9 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             const search = (document.getElementById('userSearchInput')?.value || '').trim().toLowerCase();
             let filtered = (_allAgencyUsers || []).filter(u => {
-                if (_userCurrentRoleFilter !== 'all' && u.role !== _userCurrentRoleFilter) return false;
+                if (_userCurrentRoleFilter && _userCurrentRoleFilter !== 'all' && _userCurrentRoleFilter !== 'todos') {
+                    if (u.role !== _userCurrentRoleFilter) return false;
+                }
                 if (search) {
                     const matchName = (u.full_name || '').toLowerCase().includes(search);
                     const matchEmail = (u.email || '').toLowerCase().includes(search);
@@ -12395,16 +12398,24 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             });
 
             if (filtered.length === 0) {
+                const isFiltered = (_userCurrentRoleFilter && _userCurrentRoleFilter !== 'all' && _userCurrentRoleFilter !== 'todos') || search;
                 container.innerHTML = `
                     <div style="text-align:center; padding: 48px 20px; color: var(--text3);">
                         <i class="fas fa-users-slash" style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.5;"></i>
-                        <h3 style="color:var(--text); margin-bottom: 6px; font-size:1.1rem;">No se encontraron usuarios</h3>
+                        <h3 style="color:var(--text); margin-bottom: 6px; font-size:1.1rem;">No se encontraron colaboradores</h3>
                         <p style="font-size: 0.85rem; max-width: 400px; margin: 0 auto 16px auto;">
-                            No hay colaboradores registrados con el filtro o búsqueda seleccionada.
+                            ${isFiltered ? 'No hay colaboradores con el filtro o búsqueda seleccionada.' : 'No hay colaboradores registrados actualmente.'}
                         </p>
-                        <button class="btn btn-primary btn-sm" onclick="openUserModal()">
-                            <i class="fas fa-user-plus"></i> Registrar Usuario
-                        </button>
+                        <div style="display:inline-flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                            ${isFiltered ? `
+                                <button class="btn btn-ghost btn-sm" onclick="setUserRoleFilter('all'); const s = document.getElementById('userSearchInput'); if (s) s.value = '';">
+                                    <i class="fas fa-undo"></i> Mostrar Todos (${(_allAgencyUsers || []).length})
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-primary btn-sm" onclick="openUserModal()">
+                                <i class="fas fa-user-plus"></i> Registrar Usuario
+                            </button>
+                        </div>
                     </div>
                 `;
                 return;
