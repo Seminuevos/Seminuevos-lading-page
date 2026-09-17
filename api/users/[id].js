@@ -3,7 +3,7 @@
  * PUT    /api/users/[id]  → Edita usuario (hashea nueva contraseña si se envía)
  * DELETE /api/users/[id]  → Elimina usuario
  */
-import { supabase } from '../_lib/supabase-server.js';
+import { supabase, getAuthenticatedServerClient } from '../_lib/supabase-server.js';
 import { handleCors } from '../_middleware/cors.js';
 import { requireAuth } from '../_middleware/auth.js';
 import { sanitizeString, isValidEmail } from '../_middleware/validate.js';
@@ -136,8 +136,9 @@ export default async function handler(req, res) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            // 1. Guardar en site_settings
-            let { error: updateErr } = await supabase
+            // 1. Guardar en site_settings con cliente autenticado
+            const db = await getAuthenticatedServerClient();
+            let { error: updateErr } = await db
                 .from('site_settings')
                 .update({
                     value: list,
@@ -147,7 +148,7 @@ export default async function handler(req, res) {
 
             if (updateErr) {
                 console.warn('[api/users/:id] update error, attempting upsert:', updateErr.message);
-                const { error: upsertErr } = await supabase
+                const { error: upsertErr } = await db
                     .from('site_settings')
                     .upsert({
                         key: 'agency_users_directory',
@@ -231,12 +232,14 @@ export default async function handler(req, res) {
                     }
 
                     const filtered = list.filter(u => String(u.id) !== String(id));
-                    await supabase
+                    const db = await getAuthenticatedServerClient();
+                    await db
                         .from('site_settings')
-                        .upsert({
-                            key: 'agency_users_directory',
-                            value: filtered
-                        });
+                        .update({
+                            value: filtered,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('key', 'agency_users_directory');
 
                     return res.status(200).json({ message: 'Usuario eliminado correctamente' });
                 }

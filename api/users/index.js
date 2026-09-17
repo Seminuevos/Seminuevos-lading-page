@@ -2,7 +2,7 @@
  * GET  /api/users  → Lista agency_users (requiere auth, solo admin ve todos)
  * POST /api/users  → Crea un usuario nuevo (contraseña hasheada con bcrypt)
  */
-import { supabase } from '../_lib/supabase-server.js';
+import { supabase, getAuthenticatedServerClient } from '../_lib/supabase-server.js';
 import { handleCors } from '../_middleware/cors.js';
 import { requireAuth } from '../_middleware/auth.js';
 import { sanitizeString, isValidEmail, validateRequired } from '../_middleware/validate.js';
@@ -151,12 +151,14 @@ export default async function handler(req, res) {
 
             currentList.unshift(newRecord);
 
-            await supabase
+            const db = await getAuthenticatedServerClient();
+            await db
                 .from('site_settings')
-                .upsert({
-                    key: 'agency_users_directory',
-                    value: currentList
-                });
+                .update({
+                    value: currentList,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('key', 'agency_users_directory');
 
             const { password: _p, ...safeUser } = newRecord;
             return res.status(201).json({ data: safeUser });
