@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Get current IP
             let ip = 'Unknown';
             try {
-                const res = await fetch('https://api.ipify.org?format=json');
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), 2000);
+                const res = await fetch('https://api.ipify.org?format=json', { signal: ctrl.signal });
+                clearTimeout(tid);
                 const json = await res.json();
                 ip = json.ip;
             } catch(e) {}
@@ -62,7 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    checkSecurity();
+    // Run security & analytics non-blocking after initial paint
+    setTimeout(() => {
+        checkSecurity();
+        if (sessionStorage.getItem('sn_is_new_session') === 'true') {
+            sessionStorage.removeItem('sn_is_new_session');
+            logAnalyticsEvent('session_start', { initial_page: window.location.pathname });
+        }
+    }, 1500);
 
     function getVisitorId() {
         let vid = localStorage.getItem('sn_visitor_id');
@@ -119,11 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'Navegación General';
     }
 
-    // Check if new session start
-    if (sessionStorage.getItem('sn_is_new_session') === 'true') {
-        sessionStorage.removeItem('sn_is_new_session');
-        logAnalyticsEvent('session_start', { initial_page: window.location.pathname });
-    }
+
 
     // Auto-track Section Interest
     const sectionObserver = new IntersectionObserver((entries) => {
@@ -575,262 +581,173 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFilters('porpedidoFilters', 'porpedidoBrandFilter', 'porpedido', porpedidoGrid, () => appVehiclesPorPedido);
     setupFilters('zerokmFilters', 'zerokmBrandFilter', 'zerokm', zerokmGrid, () => appVehicles0km);
 
-    // ===== SUPABASE DATA FETCH =====
-    async function initSupabaseData() {
-        if (window.location.pathname.includes('vehiculo')) {
-            return; // Skip full catalog query on single vehicle detail page for maximum speed
-        }
-        try {
-            // ===== TTL CACHE (5 minutes Time-To-Live) =====
-            const SUPABASE_CACHE_TTL_MS = 5 * 60 * 1000;
-            const cacheKey = 'sn_supabase_cache';
-            let cachedData = null;
-            try {
-                const raw = localStorage.getItem(cacheKey);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp < SUPABASE_CACHE_TTL_MS) && parsed.vehicles) {
-                        cachedData = parsed;
-                    }
-                }
-            } catch (e) {
-                console.warn('Cache check notice:', e);
-            }
+    // Helper Discriminator 1: Detect 0KM vehicles (strictly 0 KM mileage & zero km badges, never seminuevos or subasta lots)
+    const isZeroKmVehicle = (v) => {
+        if (!v) return false;
+        if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return false;
+        const c = (v.catalog || '').toLowerCase().trim();
+        const cond = (v.condition || '').toLowerCase().trim();
+        const badge = (v.badge || '').toLowerCase().trim();
+        return (c === '0km' || cond === '0km' || badge.includes('0km'));
+    };
 
-            let vData = null;
-            let sData = null;
+    // Helper Discriminator 2: Detect Imported / Por Pedido / Subasta vehicles
+    const isImportedOrAuctionVehicle = (v) => {
+        if (!v) return false;
+        if (isZeroKmVehicle(v)) return false;
+        const c = (v.catalog || '').toLowerCase().trim();
+        const avail = (v.availability || '').toLowerCase().trim();
+        if (c === 'seminuevos' || c === 'seminuevo' || avail === 'entrega_inmediata') return false;
+        if (c === 'importados' || c === 'importado' || c === 'por_pedido' || c === 'pedido' || c === 'subasta' || c === 'subastas') return true;
+        if (avail === 'por_pedido') return true;
+        if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return true;
+        const desc = (v.description || '').toLowerCase();
+        const title = (v.title || '').toLowerCase();
+        if (desc.includes('subasta') || desc.includes('yarda usa') || desc.includes('copart') || desc.includes('iaai') || desc.includes('por pedido') || desc.includes('importación') || desc.includes('importacion')) return true;
+        if (title.includes('actual') || title.includes('exceeds mechanical limits') || title.includes('smi-')) return true;
+        return false;
+    };
 
-            if (cachedData) {
-                vData = cachedData.vehicles;
-                sData = cachedData.settings;
-            } else {
-                // Fetch fresh data concurrently in parallel
-                const [vDataRes, sDataRes] = await Promise.all([
-                    supabaseClient.from('vehicles').select('*').eq('status', 'active'),
-                    supabaseClient.from('site_settings').select('*')
-                ]);
-                vData = vDataRes?.data || [];
-                sData = sDataRes?.data || [];
+    // Helper Discriminator 3: Detect Stock Local (Seminuevo Entrega Inmediata) vehicles
+    const isStockLocalVehicle = (v) => {
+        if (!v) return false;
+        if (isZeroKmVehicle(v)) return false;
+        if (isImportedOrAuctionVehicle(v)) return false;
+        return true;
+    };
 
-                // Store in cache with TTL timestamp
-                try {
-                    localStorage.setItem(cacheKey, JSON.stringify({
-                        timestamp: Date.now(),
-                        vehicles: vData,
-                        settings: sData
-                    }));
-                } catch (e) {
-                    console.warn('Cache write notice:', e);
-                }
-            }
+    function applyDataToPanels(vData = [], sData = []) {
+        const allStatic = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
+        const staticSemi = allStatic.filter(isStockLocalVehicle);
+        const staticPorPedido = allStatic.filter(isImportedOrAuctionVehicle);
+        const staticZeroKm = allStatic.filter(isZeroKmVehicle);
 
-            const allStatic = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-            
-            // Helper Discriminator 1: Detect 0KM vehicles (strictly 0 KM mileage & zero km badges, never seminuevos or subasta lots)
-            const isZeroKmVehicle = (v) => {
-                if (!v) return false;
+        let localVehs = [];
+        try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
+        const combinedRaw = [...(vData || []), ...localVehs];
 
-                // Auction / subasta / SMI lots can NEVER be 0KM
-                if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return false;
+        const dbSemi = combinedRaw.filter(isStockLocalVehicle);
+        const dbPorPedido = combinedRaw.filter(isImportedOrAuctionVehicle);
+        const db0km = combinedRaw.filter(isZeroKmVehicle);
 
-                // Check explicit 0KM catalog or condition marker
-                const c = (v.catalog || '').toLowerCase().trim();
-                const cond = (v.condition || '').toLowerCase().trim();
-                const badge = (v.badge || '').toLowerCase().trim();
-                const isExplicit0km = (c === '0km' || cond === '0km' || badge.includes('0km'));
-                if (!isExplicit0km) return false;
+        let deleted = [];
+        try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
+        let overrides = {};
+        try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
 
-                // Mileage validation: vehicles with high mileage (e.g. 35,000 km, 50,000 km, 93,000 km) CANNOT be 0KM
-                const rawKm = String(v.km || v.mileage || '0').replace(/\D/g, '');
-                const kmNum = parseInt(rawKm, 10) || 0;
-                if (kmNum > 100) return false;
+        const resolveVehicles = (dbArr, staticArr) => {
+            const source = (dbArr && dbArr.length > 0) ? dbArr : staticArr;
+            return source.filter(item => {
+                const titleKey = (item.title || '').toLowerCase().trim();
+                const idKey = String(item.id || '');
+                return !deleted.includes(titleKey) && !deleted.includes(idKey);
+            }).map(item => {
+                const titleKey = (item.title || '').toLowerCase().trim();
+                const idKey = String(item.id || '');
+                const ov = overrides[idKey] || overrides[titleKey];
+                return ov ? { ...item, ...ov } : item;
+            });
+        };
 
-                return true;
-            };
-
-            // Helper Discriminator 2: Detect Imported / Por Pedido / Subasta vehicles
-            const isImportedOrAuctionVehicle = (v) => {
-                if (!v) return false;
-                if (isZeroKmVehicle(v)) return false; // 0KM vehicles stay in 0KM tab
-
-                const c = (v.catalog || '').toLowerCase().trim();
-                const avail = (v.availability || '').toLowerCase().trim();
-                const orig = (v.origin || '').toLowerCase().trim();
-                const desc = (v.description || '').toLowerCase();
-                const title = (v.title || '').toLowerCase();
-
-                // Si está marcado como entrega inmediata o catálogo seminuevos, pertenece a stock local
-                if (c === 'seminuevos' || c === 'seminuevo' || avail === 'entrega_inmediata') return false;
-
-                if (c === 'importados' || c === 'importado' || c === 'por_pedido' || c === 'pedido' || c === 'subasta' || c === 'subastas') return true;
-                if (avail === 'por_pedido') return true;
-                if (v.lot_number || v.lotNumber || v.smi_id || (v.id && String(v.id).startsWith('SMI-'))) return true;
-                if (desc.includes('subasta') || desc.includes('yarda usa') || desc.includes('copart') || desc.includes('iaai') || desc.includes('por pedido') || desc.includes('importación') || desc.includes('importacion')) return true;
-                if (title.includes('actual') || title.includes('exceeds mechanical limits') || title.includes('smi-')) return true;
-
-                return false;
-            };
-
-            // Helper Discriminator 3: Detect Stock Local (Seminuevo Entrega Inmediata) vehicles
-            const isStockLocalVehicle = (v) => {
-                if (!v) return false;
-                if (isZeroKmVehicle(v)) return false; // Strictly exclude 0KM
-                if (isImportedOrAuctionVehicle(v)) return false; // Strictly exclude Imported / Por Pedido
-
-                const c = (v.catalog || '').toLowerCase().trim();
-                const avail = (v.availability || '').toLowerCase().trim();
-                const orig = (v.origin || '').toLowerCase().trim();
-
-                if (c === 'seminuevos' || c === 'seminuevo' || c === 'stock_local') return true;
-                if (avail === 'entrega_inmediata' || orig === 'nacional') return true;
-
-                return true; // Fallback for any non-0KM, non-Imported vehicle
-            };
-
-            const staticSemi = allStatic.filter(isStockLocalVehicle);
-            const staticPorPedido = allStatic.filter(isImportedOrAuctionVehicle);
-            const staticZeroKm = allStatic.filter(isZeroKmVehicle);
-
-            let localVehs = [];
-            try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
-            const combinedRaw = [...(vData || []), ...localVehs];
-
-            const dbSemi = combinedRaw.filter(isStockLocalVehicle);
-            const dbPorPedido = combinedRaw.filter(isImportedOrAuctionVehicle);
-            const db0km = combinedRaw.filter(isZeroKmVehicle);
-
-            let deleted = [];
-            try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
-            let overrides = {};
-            try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
-
-            // If DB returned vehicles, DB is the single source of truth for that panel!
-            // Only fallback to static data if DB returned 0 vehicles or was unreachable.
-            const resolveVehicles = (dbArr, staticArr) => {
-                const source = (dbArr && dbArr.length > 0) ? dbArr : staticArr;
-                return source.filter(item => {
-                    const titleKey = (item.title || '').toLowerCase().trim();
-                    const idKey = String(item.id || '');
-                    return !deleted.includes(titleKey) && !deleted.includes(idKey);
-                }).map(item => {
-                    const titleKey = (item.title || '').toLowerCase().trim();
-                    const idKey = String(item.id || '');
-                    const ov = overrides[idKey] || overrides[titleKey];
-                    return ov ? { ...item, ...ov } : item;
-                });
-            };
-
-            appVehiclesSeminuevos = resolveVehicles(dbSemi, staticSemi);
-            appVehiclesPorPedido = resolveVehicles(dbPorPedido, staticPorPedido);
-            appVehicles0km = resolveVehicles(db0km, staticZeroKm);
-
-            // Render all grids with data
-            renderAllPanels();
-
-            // Load settings
-            const map = {};
-            if (sData) {
-                sData.forEach(s => {
-                    try {
-                        map[s.key] = JSON.parse(s.value);
-                    } catch (e) {
-                        map[s.key] = s.value;
-                    }
-                });
-                
-                // Render Promotions from site_settings or fallback (after map is populated)
-                if (map.promotions_list) {
-                    let pList = map.promotions_list;
-                    if (typeof pList === 'string') {
-                        try { pList = JSON.parse(pList); } catch(e) {}
-                    }
-                    if (Array.isArray(pList) && pList.length > 0) {
-                        const activeList = pList.filter(p => p.status === 'active');
-                        renderPromotions(activeList.length > 0 ? activeList : getActivePromotionsFromStorageOrFallback());
-                    } else {
-                        renderPromotions(getActivePromotionsFromStorageOrFallback());
-                    }
-                } else {
-                    renderPromotions(getActivePromotionsFromStorageOrFallback());
-                }
-
-                if (map.whatsapp_number) {
-                    // Normalize number (remove +, spaces, etc.) for WhatsApp links
-                    window.WHATSAPP_NUMBER = String(map.whatsapp_number).replace(/[^0-9]/g, '');
-                }
-
-                // Update UI visually
-                if (map.company_name) document.querySelectorAll('.logo-text').forEach(el => el.textContent = map.company_name);
-
-                const fFb = document.querySelector('a[title="Facebook"]');
-                const fIg = document.querySelector('a[title="Instagram"]');
-                const fTt = document.querySelector('a[title="TikTok"]');
-                const fYt = document.querySelector('a[title="YouTube"]');
-
-                if (map.social_facebook && fFb) fFb.href = map.social_facebook;
-                if (map.social_instagram && fIg) fIg.href = map.social_instagram;
-                if (map.social_tiktok && fTt) fTt.href = map.social_tiktok;
-                if (map.social_youtube && fYt) fYt.href = map.social_youtube;
-                // Load Calculator rates
-                window.CALC_FLETE = map.calc_flete || 3500;
-                window.CALC_ADUANA = map.calc_aduana || 3500;
-                window.CALC_DOC_VZLA = map.calc_doc_vzla || 1000;
-                window.CALC_SERVICE_FEE = map.calc_service_fee || 900;
-
-                // Load Hero Slides
-                const overrideSlides = [
-                    {
-                        image: 'images/gallery/honda-hrv-2024-sport/1.jpg',
-                        tag: 'OFERTA EXCLUSIVA',
-                        title: 'Honda HR-V 2024 Sport',
-                        originalPrice: 33000,
-                        discountPercentage: 9900,
-                        financingBonus: 10000,
-                        finalPrice: 13100,
-                        waText: 'Hola, quiero asegurar la Honda HR-V 2024 Sport con la oferta de financiamiento.',
-                        ctaPrimary: 'Asegurar Oferta',
-                        ctaSecondary: 'Ver Detalles'
-                    },
-                    {
-                        image: 'images/gallery/toyota-corolla-cross-le-4x4-awd-2022/1.jpg',
-                        tag: 'ACCIÓN RÁPIDA',
-                        title: 'Toyota Corolla Cross LE 2022',
-                        originalPrice: 31990,
-                        discountPercentage: 9597,
-                        financingBonus: 10000,
-                        finalPrice: 12393,
-                        waText: 'Hola, quiero aplicar al financiamiento en la Corolla Cross LE 2022.',
-                        ctaPrimary: 'Aplicar Ahora',
-                        ctaSecondary: 'Más Info'
-                    },
-                    {
-                        image: 'images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2',
-                        tag: 'ESTATUS INMEDIATO',
-                        title: 'Toyota 4Runner 2021 SR5',
-                        originalPrice: 39990,
-                        discountPercentage: 11997,
-                        financingBonus: 10000,
-                        finalPrice: 17993,
-                        waText: 'Hola, quiero apartar la Toyota 4Runner 2021 con el beneficio especial.',
-                        ctaPrimary: 'Reservar Ya',
-                        ctaSecondary: 'Inventario'
-                    }
-                ];
-
-                if (map.hero_slides && map.hero_slides.length > 0) {
-                    renderDynamicHero(map.hero_slides);
-                } else {
-                    renderDynamicHero(overrideSlides);
-                }
-            }
-        } catch (e) { console.error('Error fetching CMS data', e); }
+        appVehiclesSeminuevos = resolveVehicles(dbSemi, staticSemi);
+        appVehiclesPorPedido = resolveVehicles(dbPorPedido, staticPorPedido);
+        appVehicles0km = resolveVehicles(db0km, staticZeroKm);
 
         renderAllPanels();
 
-        // Refresh filter buttons after data is loaded
         if (typeof refreshFilters_seminuevos === 'function') refreshFilters_seminuevos();
         if (typeof refreshFilters_porpedido === 'function') refreshFilters_porpedido();
         if (typeof refreshFilters_zerokm === 'function') refreshFilters_zerokm();
+
+        if (sData && sData.length > 0) {
+            const map = {};
+            sData.forEach(s => {
+                try {
+                    map[s.key] = JSON.parse(s.value);
+                } catch (e) {
+                    map[s.key] = s.value;
+                }
+            });
+
+            if (map.promotions_list) {
+                let pList = map.promotions_list;
+                if (typeof pList === 'string') {
+                    try { pList = JSON.parse(pList); } catch(e) {}
+                }
+                if (Array.isArray(pList) && pList.length > 0) {
+                    const activeList = pList.filter(p => p.status === 'active');
+                    renderPromotions(activeList.length > 0 ? activeList : getActivePromotionsFromStorageOrFallback());
+                } else {
+                    renderPromotions(getActivePromotionsFromStorageOrFallback());
+                }
+            } else {
+                renderPromotions(getActivePromotionsFromStorageOrFallback());
+            }
+
+            if (map.whatsapp_number) {
+                window.WHATSAPP_NUMBER = String(map.whatsapp_number).replace(/[^0-9]/g, '');
+            }
+
+            if (map.company_name) document.querySelectorAll('.logo-text').forEach(el => el.textContent = map.company_name);
+
+            const fFb = document.querySelector('a[title="Facebook"]');
+            const fIg = document.querySelector('a[title="Instagram"]');
+            const fTt = document.querySelector('a[title="TikTok"]');
+            const fYt = document.querySelector('a[title="YouTube"]');
+
+            if (map.social_facebook && fFb) fFb.href = map.social_facebook;
+            if (map.social_instagram && fIg) fIg.href = map.social_instagram;
+            if (map.social_tiktok && fTt) fTt.href = map.social_tiktok;
+            if (map.social_youtube && fYt) fYt.href = map.social_youtube;
+
+            window.CALC_FLETE = map.calc_flete || 3500;
+            window.CALC_ADUANA = map.calc_aduana || 3500;
+            window.CALC_DOC_VZLA = map.calc_doc_vzla || 1000;
+            window.CALC_SERVICE_FEE = map.calc_service_fee || 900;
+
+            if (map.hero_slides && map.hero_slides.length > 0) {
+                renderDynamicHero(map.hero_slides);
+            }
+        }
+    }
+
+    // ===== INSTANT INITIAL RENDER (0ms delay) =====
+    const cacheKey = 'sn_supabase_cache';
+    let initialCached = null;
+    try {
+        const raw = localStorage.getItem(cacheKey);
+        if (raw) initialCached = JSON.parse(raw);
+    } catch(e) {}
+
+    if (initialCached && initialCached.vehicles && initialCached.vehicles.length > 0) {
+        applyDataToPanels(initialCached.vehicles, initialCached.settings || []);
+    } else {
+        applyDataToPanels([], []);
+    }
+
+    // ===== BACKGROUND ASYNC REVALIDATION =====
+    async function initSupabaseData() {
+        if (window.location.pathname.includes('vehiculo')) return;
+        try {
+            const [vDataRes, sDataRes] = await Promise.all([
+                supabaseClient.from('vehicles').select('*').eq('status', 'active'),
+                supabaseClient.from('site_settings').select('*')
+            ]);
+            const vData = vDataRes?.data || [];
+            const sData = sDataRes?.data || [];
+
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify({
+                    timestamp: Date.now(),
+                    vehicles: vData,
+                    settings: sData
+                }));
+            } catch(e) {}
+
+            applyDataToPanels(vData, sData);
+        } catch(e) {
+            console.warn('Background Supabase sync notice:', e);
+        }
     }
 
     function renderDynamicHero(slidesData) {
