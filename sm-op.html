@@ -2826,7 +2826,7 @@
             <div id="authSuccess" style="display:none; background: rgba(37,211,102,0.15); border:1px solid #25D366; color:#25D366; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.9rem;"></div>
             
             <form id="authLoginForm" onsubmit="event.preventDefault(); if (typeof window.performLogin === 'function') { window.performLogin(); } else if (typeof performLogin === 'function') { performLogin(); }" style="display:flex; flex-direction:column; gap:0;">
-                <input type="email" class="auth-input" id="authEmail" placeholder="Email (ej: jvaask16@gmail.com)" required autocomplete="username">
+                <input type="email" class="auth-input" id="authEmail" placeholder="Correo electrónico" required autocomplete="username">
                 <div style="position:relative; width:100%; margin-bottom:16px;">
                     <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña de acceso" required autocomplete="current-password" style="margin-bottom:0; padding-right:44px;">
                     <button type="button" onclick="const p = document.getElementById('authPassword'), i = document.getElementById('authEye'); if (p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye-slash'; } else { p.type = 'password'; i.className = 'fas fa-eye'; }" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem; padding:6px;" title="Mostrar / Ocultar contraseña">
@@ -5604,7 +5604,7 @@
         });
 
         async function promptChangeAdminPassword() {
-            const newPwd = prompt('Cambiar contraseña de Administrador Master (jvaask16@gmail.com):\nIngresa tu nueva contraseña (mínimo 6 caracteres):', '');
+            const newPwd = prompt('Cambiar contraseña de Administrador Master:\nIngresa tu nueva contraseña (mínimo 6 caracteres):', '');
             if (newPwd === null) return;
             const cleanPwd = newPwd.trim();
             if (cleanPwd.length < 6) {
