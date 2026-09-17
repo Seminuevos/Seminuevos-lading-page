@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 </div>
                 <div class="vehicle-thumbnails" style="display: flex; gap: 12px; margin-top: 15px; overflow-x: auto; padding-bottom: 10px;">
-                    ${car.images.map((img, i) => `<img src="${img}" class="v-thumb" style="width: 110px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; opacity: ${i===0?'1':'0.5'}; border: 2px solid ${i===0?'var(--primary)':'transparent'}; transition: 0.3s;" onclick="changeMainVehicleImage('${img}', ${i}, this)">`).join('')}
+                    ${car.images.map((img, i) => `<img src="${img}" class="v-thumb" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" style="width: 110px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; opacity: ${i===0?'1':'0.5'}; border: 2px solid ${i===0?'var(--primary)':'transparent'}; transition: 0.3s;" onclick="changeMainVehicleImage('${img}', ${i}, this)">`).join('')}
                 </div>
             </div>
         `;

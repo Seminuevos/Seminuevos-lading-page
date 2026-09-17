@@ -211,6 +211,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heroSlider.init();
 
+    // ===== YARIS GR LAZY VIDEO OBSERVER =====
+    function initYarisVideoObserver() {
+        const yarisSection = document.getElementById('yaris-gr-exclusive');
+        if (!yarisSection) return;
+
+        let videoLoaded = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const isMobile = window.innerWidth <= 768;
+                const activeVideo = isMobile
+                    ? yarisSection.querySelector('.mobile-video')
+                    : yarisSection.querySelector('.desktop-video');
+                const inactiveVideo = isMobile
+                    ? yarisSection.querySelector('.desktop-video')
+                    : yarisSection.querySelector('.mobile-video');
+
+                if (entry.isIntersecting) {
+                    if (!videoLoaded && activeVideo) {
+                        const source = activeVideo.querySelector('source[data-src]');
+                        if (source) {
+                            source.src = source.getAttribute('data-src');
+                            activeVideo.load();
+                        }
+                        videoLoaded = true;
+                    }
+                    if (activeVideo && activeVideo.paused) {
+                        activeVideo.play().catch(() => {});
+                    }
+                } else {
+                    if (activeVideo && !activeVideo.paused) {
+                        activeVideo.pause();
+                    }
+                    if (inactiveVideo && !inactiveVideo.paused) {
+                        inactiveVideo.pause();
+                    }
+                }
+            });
+        }, { rootMargin: '300px 0px', threshold: 0.05 });
+
+        observer.observe(yarisSection);
+    }
+
+    initYarisVideoObserver();
+
     // ===== NAVBAR SCROLL =====
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -385,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="vehicle-card-image">
                     <img src="${carImg}" alt="${optimizedAlt}" loading="${loadingAttr}" ${priorityAttr} decoding="async" onerror="this.onerror=null; this.src='${fallbackImg}';">
-                    ${car.mastertech ? `<img src="CERTIFICADO---MASTERTECH.png" alt="Sello Mastertech" class="mastertech-seal">` : ''}
+                    ${car.mastertech ? `<img src="CERTIFICADO---MASTERTECH.png" alt="Sello Mastertech" class="mastertech-seal" loading="lazy" decoding="async">` : ''}
                     ${viewsBadge}
                 </div>
                 <div class="vehicle-card-body">
@@ -842,9 +886,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const btnAlignStyle = textAlign === 'center' ? 'justify-content: center !important;' : (textAlign === 'right' ? 'justify-content: flex-end !important;' : 'justify-content: flex-start !important;');
             const tagAlignStyle = textAlign === 'center' ? 'justify-content: center !important;' : (textAlign === 'right' ? 'justify-content: flex-end !important;' : 'justify-content: flex-start !important;');
 
+            // Mapear URLs pesadas legadas a las versiones optimizadas locales
+            let heroBgImage = s.image || '';
+            if (heroBgImage.includes('hero-1785512729611-0.jpg')) heroBgImage = 'images/hero-slides/hero-1.jpg';
+            else if (heroBgImage.includes('hero-1781886028689-1.jpg')) heroBgImage = 'images/hero-slides/hero-2.jpg';
+            else if (heroBgImage.includes('hero-1789410090103-2.jpg')) heroBgImage = 'images/hero-slides/hero-3.jpg';
+
             // Re-crear el diseño premium exacto
             html += `
-                <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${s.image}'); background-position: ${bgPos}; background-size: ${bgSize};">
+                <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
                     <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.45}) 35%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.35}) 45%, transparent 100%);"></div>
                     <div class="hero-content" style="${alignStyle}">
                         <div class="hero-tag" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards; ${tagAlignStyle}">
