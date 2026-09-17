@@ -12895,9 +12895,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             };
             const roleLabel = roleLabels[user.role] || user.role;
 
+            const currentOrigin = (typeof window !== 'undefined' && window.location?.origin) ? window.location.origin : 'https://www.seminuevoautos.com';
             let msg = `👋 *¡HOLA ${user.full_name.toUpperCase()}! BIENVENIDO A SEMINUEVOS* 🚗✨\n\n`;
             msg += `Se ha habilitado tu cuenta de acceso al Sistema Administrativo de la agencia:\n\n`;
-            msg += `🌐 *Portal de Acceso:* https://seminuevosautos.com/SM-OP\n`;
+            msg += `🌐 *Portal de Acceso:* ${currentOrigin}/SM-OP\n`;
             msg += `👤 *Usuario / Login:* \`${user.email}\`\n`;
             msg += `🔑 *Contraseña:* \`${pwdText}\`\n`;
             msg += `💼 *Rol Asignado:* ${roleLabel}\n`;

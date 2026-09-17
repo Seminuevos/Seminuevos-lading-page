@@ -19,9 +19,20 @@
         { "source": "/mt-operaciones.html",   "destination": "/404", "permanent": false }
     ],
     "rewrites": [
-        { "source": "/SM-OP", "destination": "/sm-op" },
-        { "source": "/SM-op", "destination": "/sm-op" },
-        { "source": "/sm-OP", "destination": "/sm-op" }
+        { "source": "/SM-OP",       "destination": "/sm-op" },
+        { "source": "/Sm-op",       "destination": "/sm-op" },
+        { "source": "/Sm-Op",       "destination": "/sm-op" },
+        { "source": "/sm-Op",       "destination": "/sm-op" },
+        { "source": "/SM-op",       "destination": "/sm-op" },
+        { "source": "/smop",        "destination": "/sm-op" },
+        { "source": "/SMOP",        "destination": "/sm-op" },
+        { "source": "/Smop",        "destination": "/sm-op" },
+        { "source": "/SmOp",        "destination": "/sm-op" },
+        { "source": "/sm-op.html",  "destination": "/sm-op" },
+        { "source": "/SM-OP.html",  "destination": "/sm-op" },
+        { "source": "/Sm-op.html",  "destination": "/sm-op" },
+        { "source": "/operaciones", "destination": "/sm-op" },
+        { "source": "/Operaciones", "destination": "/sm-op" }
     ],
     "headers": [
         {
