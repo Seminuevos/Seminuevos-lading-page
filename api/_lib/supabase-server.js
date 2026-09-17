@@ -4,22 +4,14 @@
  */
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || 'https://gfvmugsbizmvlziljxir.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || 'sb_publishable_g0Iw9r4zRCBadMPtiF5kNA_x8_n4p8v';
 
-const isConfigured = Boolean(supabaseUrl && supabaseServiceKey);
-
-if (!isConfigured) {
-    console.warn('[supabase-server] Variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no configuradas en Vercel.');
-}
-
-export const supabase = isConfigured
-    ? createClient(supabaseUrl, supabaseServiceKey, {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-            detectSessionInUrl: false
-        }
-    })
-    : null;
+export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false
+    }
+});
 

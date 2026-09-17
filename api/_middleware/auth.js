@@ -4,7 +4,7 @@
  */
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
 
 /**
  * Verifica y decodifica el token JWT del request.

@@ -5306,15 +5306,15 @@
         async function performLogin() {
             const emailInput    = document.getElementById('authEmail');
             const passwordInput = document.getElementById('authPassword');
-            const email    = (emailInput?.value || '').trim();
-            const password = (passwordInput?.value || '').trim();
+            const cleanEmail = (emailInput?.value || '').toLowerCase().trim();
+            const cleanPassword = (passwordInput?.value || '').trim();
             const errEl = document.getElementById('authError');
             const btn   = document.getElementById('authLogin');
 
             if (errEl) errEl.style.display = 'none';
 
             // Validar que ambos campos sean obligatorios
-            if (!email) {
+            if (!cleanEmail) {
                 if (errEl) {
                     errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu correo electrónico.';
                     errEl.style.display = 'block';
@@ -5323,7 +5323,7 @@
                 return;
             }
 
-            if (!password) {
+            if (!cleanPassword) {
                 if (errEl) {
                     errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu contraseña de acceso.';
                     errEl.style.display = 'block';
@@ -5333,17 +5333,20 @@
             }
 
             const origHtml = btn ? btn.innerHTML : 'Iniciar Sesión';
-            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...'; }
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            }
 
             try {
-                // 1. Intentar validar con la API interna segura
                 let authenticatedUser = null;
                 let authToken = null;
 
+                // 1. Intentar API backend (/api/auth/login)
                 try {
                     const result = await apiFetch('/api/auth/login', {
                         method: 'POST',
-                        body: { email, password }
+                        body: { email: cleanEmail, password: cleanPassword }
                     });
 
                     if (result && result.ok && result.data?.token) {
@@ -5354,54 +5357,65 @@
                     console.warn("API login attempt:", apiErr);
                 }
 
-                // 2. MODO COMPATIBILIDAD DIRECTO CON SUPABASE AUTH:
-                // Si la API no responde o el usuario cambió su contraseña en Supabase, autenticar directamente
+                // 2. MODO DIRECTO CON SUPABASE AUTH:
                 if (!authenticatedUser && supabaseClient && supabaseClient.auth) {
                     try {
                         const { data: sbAuth, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-                            email: email,
-                            password: password
+                            email: cleanEmail,
+                            password: cleanPassword
                         });
                         if (!sbErr && sbAuth && sbAuth.user) {
-                            const isMasterEmail = (email.toLowerCase() === 'jvaask16@gmail.com');
+                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com');
+                            let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
+                            let matched = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
+                            if (!matched && typeof syncUsersFromSupabase === 'function') {
+                                const fresh = await syncUsersFromSupabase();
+                                if (fresh) matched = fresh.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
+                            }
+
                             authenticatedUser = {
                                 id: sbAuth.user.id,
                                 email: sbAuth.user.email,
-                                full_name: sbAuth.user.user_metadata?.full_name || (isMasterEmail ? 'Administrador Master' : (sbAuth.user.email ? sbAuth.user.email.split('@')[0] : 'Colaborador')),
-                                role: sbAuth.user.user_metadata?.role || (isMasterEmail ? 'admin' : 'sales'),
-                                branch: 'Porlamar (Sede Principal)',
-                                status: 'active'
+                                full_name: matched?.full_name || sbAuth.user.user_metadata?.full_name || (isMasterEmail ? 'Administrador Master' : (sbAuth.user.email ? sbAuth.user.email.split('@')[0] : 'Colaborador')),
+                                role: matched?.role || sbAuth.user.user_metadata?.role || (isMasterEmail ? 'admin' : 'sales'),
+                                branch: matched?.branch || sbAuth.user.user_metadata?.branch || 'Porlamar (Sede Principal)',
+                                status: matched?.status || 'active'
                             };
                             authToken = sbAuth.session?.access_token || ('sb.' + btoa(JSON.stringify(authenticatedUser)));
 
-                            // Sincronizar contraseña en almacenamiento local para acceso permanente
-                            try {
-                                if (isMasterEmail) {
-                                    localStorage.setItem('sn_master_pwd', password);
+                            if (authenticatedUser.status === 'inactive') {
+                                if (errEl) {
+                                    errEl.innerHTML = '<i class="fas fa-ban" style="margin-right:6px;"></i> Tu cuenta se encuentra inactiva. Contacta al Administrador.';
+                                    errEl.style.display = 'block';
                                 }
-                                let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                                const uIdx = localUsers.findIndex(u => (u.email || '').toLowerCase() === email.toLowerCase());
-                                if (uIdx !== -1) {
-                                    localUsers[uIdx].password = password;
-                                } else {
-                                    localUsers.unshift({ ...authenticatedUser, password: password });
-                                }
-                                saveStoredUsers(localUsers);
-                            } catch(e) {}
+                                showToast('Cuenta suspendida', 'danger');
+                                return;
+                            }
+
+                            if (isMasterEmail) {
+                                try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
+                            }
                         }
                     } catch(sbEx) {
                         console.warn("Supabase direct auth login notice:", sbEx);
                     }
                 }
 
-                // 3. Validar contra credenciales autorizadas del sistema (Local Storage / Clave Maestra)
+                // 3. Validar contra credenciales autorizadas del sistema (Directorio Supabase Cloud / Local Storage / Clave Maestra)
                 if (!authenticatedUser) {
-                    const localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                    const cleanEmail = email.toLowerCase().trim();
-                    const cleanPass = password.trim();
-                    const found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-                    const savedMasterPwd = localStorage.getItem('sn_master_pwd');
+                    let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
+                    let found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
 
+                    // Si no está en local, sincronizar desde Supabase site_settings
+                    if (!found && typeof syncUsersFromSupabase === 'function') {
+                        const fresh = await syncUsersFromSupabase();
+                        if (fresh) {
+                            localUsers = fresh;
+                            found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
+                        }
+                    }
+
+                    const savedMasterPwd = localStorage.getItem('sn_master_pwd');
                     const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com');
                     const isMasterPassword = [
                         savedMasterPwd,
@@ -5416,10 +5430,10 @@
                         'Admin2026!',
                         'admin2026',
                         '12345678'
-                    ].filter(Boolean).includes(cleanPass);
+                    ].filter(Boolean).includes(cleanPassword);
 
                     if (found) {
-                        const passMatch = (found.password && (found.password.trim() === cleanPass || found.password === password)) ||
+                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword)) ||
                                           (isMasterAdminEmail && isMasterPassword);
                         if (passMatch) {
                             if (found.status === 'inactive') {
@@ -5433,7 +5447,16 @@
                             authenticatedUser = found;
                             authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
                             if (isMasterAdminEmail) {
-                                try { localStorage.setItem('sn_master_pwd', cleanPass); } catch(e) {}
+                                try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
+                            }
+
+                            // Auto-registrar en Supabase Auth en segundo plano si aún no está registrado
+                            if (supabaseClient && supabaseClient.auth && found.password) {
+                                supabaseClient.auth.signUp({
+                                    email: cleanEmail,
+                                    password: found.password,
+                                    options: { data: { full_name: found.full_name, role: found.role, branch: found.branch } }
+                                }).catch(() => {});
                             }
                         }
                     } else if (isMasterAdminEmail && isMasterPassword) {
@@ -5447,7 +5470,7 @@
                             status: 'active'
                         };
                         authToken = 'local.' + btoa(JSON.stringify({ ...authenticatedUser, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
-                        try { localStorage.setItem('sn_master_pwd', cleanPass); } catch(e) {}
+                        try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
                     }
                 }
 
@@ -12253,6 +12276,18 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
         const DEFAULT_AGENCY_USERS = [
             {
+                id: '5a7725b4-1ee3-496d-b47a-878fdf509925',
+                full_name: 'Jvicente',
+                email: 'jvicente@seminuevos.com',
+                password: 'admin123',
+                phone: '+58 424 8700438',
+                role: 'sales',
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active',
+                notes: 'Colaborador Asesor Comercial',
+                created_at: new Date('2026-09-17T18:50:03Z').toISOString()
+            },
+            {
                 id: 'usr-admin-master-001',
                 full_name: 'Administrador Master',
                 email: 'jvaask16@gmail.com',
@@ -12312,6 +12347,30 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 .replace(/'/g, '&#039;');
         }
 
+        async function syncUsersFromSupabase() {
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    const { data, error } = await supabaseClient
+                        .from('site_settings')
+                        .select('value')
+                        .eq('key', 'agency_users_directory')
+                        .maybeSingle();
+
+                    if (!error && data && data.value) {
+                        const list = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+                        if (Array.isArray(list) && list.length > 0) {
+                            _allAgencyUsers = list;
+                            try { localStorage.setItem('sn_agency_users', JSON.stringify(list)); } catch(e) {}
+                            return list;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Sync users from Supabase error:', e);
+            }
+            return null;
+        }
+
         function getStoredUsers() {
             try {
                 const raw = localStorage.getItem('sn_agency_users');
@@ -12339,10 +12398,33 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             } catch (e) {
                 console.warn('Error saving users to localStorage:', e);
             }
+            // Sincronizar permanentemente con la nube de Supabase para todos los dispositivos
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                (async () => {
+                    try {
+                        await supabaseClient
+                            .from('site_settings')
+                            .upsert({
+                                key: 'agency_users_directory',
+                                value: users
+                            });
+                    } catch(err) {
+                        console.warn('Sync users to Supabase notice:', err);
+                    }
+                })();
+            }
         }
 
         async function loadUsers() {
-            // 1. Intentar API backend
+            // 1. Sincronizar directorio de usuarios en vivo desde Supabase Cloud
+            const cloudUsers = await syncUsersFromSupabase();
+            if (cloudUsers && cloudUsers.length > 0) {
+                renderUserStats();
+                renderUsersTable();
+                return;
+            }
+
+            // 2. Intentar API backend
             try {
                 const apiRes = await apiFetch('/api/users');
                 if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
@@ -12353,26 +12435,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     return;
                 }
             } catch (err) {}
-
-            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
-            try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    const { data, error } = await supabaseClient
-                        .from('agency_users')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-
-                    if (!error && data && data.length > 0) {
-                        _allAgencyUsers = data;
-                        saveStoredUsers(data);
-                        renderUserStats();
-                        renderUsersTable();
-                        return;
-                    }
-                }
-            } catch (err) {
-                console.warn('Modo compatibilidad: aviso carga usuarios Supabase:', err);
-            }
 
             // 3. Respaldo local
             _allAgencyUsers = getStoredUsers();
@@ -12753,7 +12815,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             } else {
                 // CREAR usuario nuevo
-                const newId = 'usr-' + Date.now();
+                let newId = 'usr-' + Date.now();
                 targetUser = {
                     id: newId,
                     full_name: fullName,
@@ -12767,6 +12829,32 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString()
                 };
+
+                // Enlazar y registrar directamente en Supabase Auth
+                if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+                    try {
+                        const { data: sbSign, error: sbSignErr } = await supabaseClient.auth.signUp({
+                            email: email,
+                            password: password,
+                            options: {
+                                data: {
+                                    full_name: fullName,
+                                    role: role,
+                                    branch: branch,
+                                    phone: phone
+                                }
+                            }
+                        });
+                        if (!sbSignErr && sbSign?.user?.id) {
+                            newId = sbSign.user.id;
+                            targetUser.id = newId;
+                        } else if (sbSignErr) {
+                            console.warn('Supabase auth signup notice:', sbSignErr);
+                        }
+                    } catch (e) {
+                        console.warn('Supabase auth signup error:', e);
+                    }
+                }
 
                 users.unshift(targetUser);
 

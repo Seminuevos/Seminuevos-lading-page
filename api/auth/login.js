@@ -82,6 +82,48 @@ export default async function handler(req, res) {
                 console.warn('[api/auth/login] Supabase auth fallback notice:', sbErr);
             }
 
+            // Intentar verificar en agency_users_directory de site_settings
+            try {
+                const { data: setRow } = await supabase
+                    .from('site_settings')
+                    .select('value')
+                    .eq('key', 'agency_users_directory')
+                    .maybeSingle();
+
+                if (setRow && setRow.value) {
+                    const uList = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
+                    if (Array.isArray(uList)) {
+                        const matched = uList.find(u => (u.email || '').toLowerCase().trim() === emailClean);
+                        if (matched && matched.password === passwordClean) {
+                            if (matched.status === 'inactive') {
+                                return res.status(403).json({ error: 'Cuenta suspendida. Contacta al administrador.' });
+                            }
+                            const tokenPayload = {
+                                id: matched.id,
+                                email: matched.email,
+                                role: matched.role || 'sales',
+                                full_name: matched.full_name || 'Colaborador'
+                            };
+                            const jwtSecret = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
+                            const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
+                            return res.status(200).json({
+                                token,
+                                user: {
+                                    id: matched.id,
+                                    email: matched.email,
+                                    full_name: matched.full_name,
+                                    role: matched.role || 'sales',
+                                    branch: matched.branch || 'Porlamar (Sede Principal)',
+                                    status: 'active'
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('[api/auth/login] site_settings directory check notice:', e);
+            }
+
             // Credencial maestra registrada
             const isMasterEmail = (emailClean === 'jvaask16@gmail.com');
             const isMasterPassword = [
