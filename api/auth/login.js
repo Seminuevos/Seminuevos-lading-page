@@ -48,6 +48,8 @@ export default async function handler(req, res) {
             .maybeSingle();
 
         if (error || !user) {
+            const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+
             // Modo compatibilidad: intentar Supabase Auth directamente
             try {
                 const { data: authData, error: authErr } = await supabase.auth.signInWithPassword({
@@ -55,13 +57,13 @@ export default async function handler(req, res) {
                     password: passwordClean
                 });
                 if (!authErr && authData && authData.user) {
-                    const isMaster = (emailClean === 'jvaask16@gmail.com');
+                    const isMaster = ADMIN_EMAILS.includes(emailClean) || (authData.user.user_metadata?.role === 'admin');
                     const role = isMaster ? 'admin' : (authData.user.user_metadata?.role || 'sales');
                     const tokenPayload = {
                         id: authData.user.id,
                         email: authData.user.email,
                         role: role,
-                        full_name: authData.user.user_metadata?.full_name || (isMaster ? 'Administrador Master' : 'Colaborador')
+                        full_name: authData.user.user_metadata?.full_name || (isMaster ? 'Administrador' : 'Colaborador')
                     };
                     const jwtSecret = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
                     const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
@@ -94,29 +96,39 @@ export default async function handler(req, res) {
                     const uList = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
                     if (Array.isArray(uList)) {
                         const matched = uList.find(u => (u.email || '').toLowerCase().trim() === emailClean);
-                        if (matched && matched.password === passwordClean) {
-                            if (matched.status === 'inactive') {
-                                return res.status(403).json({ error: 'Cuenta suspendida. Contacta al administrador.' });
+                        if (matched) {
+                            let passOk = (matched.password === passwordClean);
+                            if (!passOk && matched.password_hash) {
+                                try {
+                                    passOk = await bcrypt.compare(passwordClean, matched.password_hash);
+                                } catch (e) {}
                             }
-                            const tokenPayload = {
-                                id: matched.id,
-                                email: matched.email,
-                                role: matched.role || 'sales',
-                                full_name: matched.full_name || 'Colaborador'
-                            };
-                            const jwtSecret = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
-                            const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
-                            return res.status(200).json({
-                                token,
-                                user: {
+                            if (passOk) {
+                                if (matched.status === 'inactive') {
+                                    return res.status(403).json({ error: 'Cuenta suspendida. Contacta al administrador.' });
+                                }
+                                const isMaster = ADMIN_EMAILS.includes(emailClean) || matched.role === 'admin' || matched.role === 'super_admin';
+                                const role = isMaster ? 'admin' : (matched.role || 'sales');
+                                const tokenPayload = {
                                     id: matched.id,
                                     email: matched.email,
-                                    full_name: matched.full_name,
-                                    role: matched.role || 'sales',
-                                    branch: matched.branch || 'Porlamar (Sede Principal)',
-                                    status: 'active'
-                                }
-                            });
+                                    role: role,
+                                    full_name: matched.full_name || (isMaster ? 'Administrador' : 'Colaborador')
+                                };
+                                const jwtSecret = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
+                                const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
+                                return res.status(200).json({
+                                    token,
+                                    user: {
+                                        id: matched.id,
+                                        email: matched.email,
+                                        full_name: tokenPayload.full_name,
+                                        role: role,
+                                        branch: matched.branch || 'Porlamar (Sede Principal)',
+                                        status: 'active'
+                                    }
+                                });
+                            }
                         }
                     }
                 }

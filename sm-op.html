@@ -5365,7 +5365,7 @@
                             password: cleanPassword
                         });
                         if (!sbErr && sbAuth && sbAuth.user) {
-                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com');
+                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
                             let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
                             let matched = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
                             if (!matched && typeof syncUsersFromSupabase === 'function') {
@@ -5417,7 +5417,7 @@
 
                     let savedMasterPwd = null;
                     try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
-                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com');
+                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
                     const isMasterPassword = [
                         savedMasterPwd,
                         'Jvaask2006..',
@@ -5444,6 +5444,9 @@
                                 }
                                 showToast('Cuenta suspendida', 'danger');
                                 return;
+                            }
+                            if (isMasterAdminEmail) {
+                                found.role = 'admin';
                             }
                             authenticatedUser = found;
                             authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
@@ -5562,33 +5565,40 @@
                 return;
             }
 
+            let activeUser = null;
+            try {
+                const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user') || localStorage.getItem('sn_current_user');
+                if (uStr) activeUser = JSON.parse(uStr);
+            } catch(e) {}
+
             try {
                 const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-                if (error) {
-                    console.warn('Supabase auth updateUser notice:', error.message);
-                }
+                if (error) console.warn('Supabase auth updateUser notice:', error.message);
             } catch (err) {
                 console.warn('Supabase auth updateUser notice:', err);
             }
 
-            // Guardar permanentemente la nueva contraseña localmente
+            const targetEmail = (activeUser?.email || 'jvicente@seminuevos.com').toLowerCase().trim();
+            const targetId = activeUser?.id || '5a7725b4-1ee3-496d-b47a-878fdf509925';
+
             try {
-                localStorage.setItem('sn_master_pwd', newPassword);
+                if (targetEmail === 'jvaask16@gmail.com') {
+                    localStorage.setItem('sn_master_pwd', newPassword);
+                }
                 let stored = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                let adminUser = stored.find(u => (u.email || '').toLowerCase() === 'jvaask16@gmail.com');
-                if (adminUser) {
-                    adminUser.password = newPassword;
-                } else {
-                    stored.unshift({
-                        id: 'usr-admin-master-001',
-                        full_name: 'Administrador Master',
-                        email: 'jvaask16@gmail.com',
-                        password: newPassword,
-                        role: 'admin',
-                        status: 'active'
-                    });
+                let match = stored.find(u => (u.email || '').toLowerCase().trim() === targetEmail || String(u.id) === String(targetId));
+                if (match) {
+                    match.password = newPassword;
+                    match.updated_at = new Date().toISOString();
                 }
                 if (typeof saveStoredUsers === 'function') saveStoredUsers(stored);
+            } catch(e) {}
+
+            try {
+                await apiFetch(`/api/users/${encodeURIComponent(targetId)}`, {
+                    method: 'PUT',
+                    body: { email: targetEmail, password: newPassword }
+                });
             } catch(e) {}
 
             const pwdInput = document.getElementById('authPassword');
@@ -5603,7 +5613,7 @@
                     showAdmin({
                         id: session.user.id,
                         email: session.user.email,
-                        full_name: session.user.user_metadata?.full_name || 'Administrador Master',
+                        full_name: session.user.user_metadata?.full_name || 'Administrador',
                         role: 'admin',
                         status: 'active'
                     });
@@ -5628,7 +5638,20 @@
         });
 
         async function promptChangeAdminPassword() {
-            const newPwd = prompt('Cambiar contraseña de Administrador Master:\nIngresa tu nueva contraseña (mínimo 6 caracteres):', '');
+            let activeUser = null;
+            try {
+                const uStr = sessionStorage.getItem('sn_current_user') || 
+                             sessionStorage.getItem('sn_admin_user') || 
+                             localStorage.getItem('sn_current_user') || 
+                             localStorage.getItem('sn_admin_user');
+                if (uStr) activeUser = JSON.parse(uStr);
+            } catch(e) {}
+
+            const userEmail = (activeUser?.email || 'jvicente@seminuevos.com').toLowerCase().trim();
+            const userName = activeUser?.full_name || userEmail;
+            const userId = activeUser?.id || '5a7725b4-1ee3-496d-b47a-878fdf509925';
+
+            const newPwd = prompt(`Cambiar contraseña para ${userName} (${userEmail}):\nIngresa tu nueva contraseña (mínimo 6 caracteres):`, '');
             if (newPwd === null) return;
             const cleanPwd = newPwd.trim();
             if (cleanPwd.length < 6) {
@@ -5636,51 +5659,77 @@
                 return;
             }
 
-            // 1. Guardar permanentemente en local storage
+            showToast('Guardando nueva contraseña...', 'info');
+
+            // 1. Guardar permanentemente en local storage / memoria
             try {
-                localStorage.setItem('sn_master_pwd', cleanPwd);
+                if (userEmail === 'jvaask16@gmail.com') {
+                    localStorage.setItem('sn_master_pwd', cleanPwd);
+                }
                 let stored = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                let adminUser = stored.find(u => (u.email || '').toLowerCase() === 'jvaask16@gmail.com');
-                if (adminUser) {
-                    adminUser.password = cleanPwd;
+                let match = stored.find(u => (u.email || '').toLowerCase().trim() === userEmail || String(u.id) === String(userId));
+                if (match) {
+                    match.password = cleanPwd;
+                    match.updated_at = new Date().toISOString();
                 } else {
                     stored.unshift({
-                        id: 'usr-admin-master-001',
-                        full_name: 'Administrador Master',
-                        email: 'jvaask16@gmail.com',
+                        id: userId,
+                        full_name: userName,
+                        email: userEmail,
                         password: cleanPwd,
-                        role: 'admin',
-                        status: 'active'
+                        role: activeUser?.role || 'admin',
+                        status: 'active',
+                        updated_at: new Date().toISOString()
                     });
                 }
                 if (typeof saveStoredUsers === 'function') saveStoredUsers(stored);
-            } catch(e) {}
 
-            // 2. Sincronizar en Supabase Auth
+                // Actualizar sesión activa
+                if (activeUser) {
+                    activeUser.password = cleanPwd;
+                    try {
+                        sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                        sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
+                        localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                    } catch(e) {}
+                }
+            } catch(e) {
+                console.warn('Local save warning:', e);
+            }
+
+            // 2. Sincronizar en Supabase Auth directamente si hay sesión
             try {
                 if (supabaseClient && supabaseClient.auth) {
                     const { data: sessData } = await supabaseClient.auth.getSession();
                     if (!sessData || !sessData.session) {
-                        const cur = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
-                        await supabaseClient.auth.signInWithPassword({
-                            email: 'jvaask16@gmail.com',
-                            password: cur
-                        });
+                        try {
+                            await supabaseClient.auth.signInWithPassword({
+                                email: userEmail,
+                                password: cleanPwd
+                            });
+                        } catch(e) {}
                     }
                     const { error } = await supabaseClient.auth.updateUser({ password: cleanPwd });
                     if (error) console.warn('Supabase auth updateUser notice:', error.message);
                 }
             } catch(e) {}
 
-            // 3. Sincronizar en backend API si responde
+            // 3. Sincronizar en backend API (Persistencia en base de datos nube)
             try {
-                await apiFetch('/api/users/usr-admin-master-001', { method: 'PUT', body: { password: cleanPwd } });
-            } catch(e) {}
+                await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
+                    method: 'PUT',
+                    body: { email: userEmail, password: cleanPwd }
+                });
+            } catch(e) {
+                console.warn('API update notice:', e);
+            }
 
             const pwdInput = document.getElementById('authPassword');
             if (pwdInput) pwdInput.value = cleanPwd;
 
-            showToast('✓ Contraseña actualizada correctamente y guardada', 'success');
+            if (typeof renderUsersTable === 'function') renderUsersTable();
+
+            showToast('✓ Contraseña actualizada y guardada correctamente en el sistema', 'success');
         }
 
         // ===== VEHICLES CRUD =====
@@ -12797,11 +12846,11 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     users.unshift(targetUser);
                 }
 
-                // Asynchronously attempt server sync without blocking
+                // Sincronizar con el servidor en la nube
                 (async () => {
                     try {
                         const payload = { ...updateObj };
-                        await apiFetch(`/api/users/${id}`, { method: 'PUT', body: payload });
+                        await apiFetch(`/api/users/${encodeURIComponent(id)}`, { method: 'PUT', body: payload });
                     } catch (e) {
                         console.warn('Background user update notice:', e);
                     }
@@ -12854,7 +12903,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
                 users.unshift(targetUser);
 
-                // Asynchronously attempt server sync without blocking
+                // Sincronizar con el servidor en la nube
                 (async () => {
                     try {
                         await apiFetch('/api/users', { method: 'POST', body: targetUser });
@@ -12943,42 +12992,57 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             const newPwd = prompt(`Restablecer contraseña para ${user.full_name} (${user.email}):\nIngresa la nueva contraseña (mínimo 6 caracteres):`, '');
             if (newPwd === null) return;
-            if (newPwd.trim().length < 6) {
+            const cleanPwd = newPwd.trim();
+            if (cleanPwd.length < 6) {
                 showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
                 return;
             }
 
-            const cleanPwd = newPwd.trim();
             user.password = cleanPwd;
             user.updated_at = new Date().toISOString();
 
             if (user.email && user.email.toLowerCase() === 'jvaask16@gmail.com') {
                 try { localStorage.setItem('sn_master_pwd', cleanPwd); } catch(e) {}
-                try {
-                    if (supabaseClient && supabaseClient.auth) {
-                        const { data: sessData } = await supabaseClient.auth.getSession();
-                        if (!sessData?.session) {
-                            const cur = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
-                            await supabaseClient.auth.signInWithPassword({
-                                email: 'jvaask16@gmail.com',
-                                password: cur
-                            });
-                        }
-                        await supabaseClient.auth.updateUser({ password: cleanPwd });
-                    }
-                } catch(e) {}
             }
+
+            // Actualizar si es el usuario logueado actualmente
+            try {
+                const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user');
+                if (uStr) {
+                    const activeUser = JSON.parse(uStr);
+                    if (activeUser && (activeUser.email?.toLowerCase() === user.email?.toLowerCase() || String(activeUser.id) === String(userId))) {
+                        activeUser.password = cleanPwd;
+                        sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                        sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
+                        localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
+                    }
+                }
+            } catch(e) {}
 
             saveStoredUsers(_allAgencyUsers);
             renderUsersTable();
-            showToast('✓ Contraseña actualizada correctamente', 'success');
+            showToast('Guardando contraseña en el servidor...', 'info');
 
-            // Background sync
-            (async () => {
-                try {
-                    await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { password: cleanPwd } });
-                } catch(e) {}
-            })();
+            // Sincronizar en el servidor nube
+            try {
+                await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
+                    method: 'PUT',
+                    body: { email: user.email, password: cleanPwd }
+                });
+                showToast('✓ Contraseña guardada correctamente en el sistema', 'success');
+            } catch(e) {
+                console.warn('Server password reset error:', e);
+            }
+
+            // Sincronizar en Supabase Auth si es la sesión activa en el navegador
+            try {
+                if (supabaseClient && supabaseClient.auth) {
+                    const curAuthUser = (await supabaseClient.auth.getUser())?.data?.user;
+                    if (curAuthUser && curAuthUser.email?.toLowerCase() === user.email?.toLowerCase()) {
+                        await supabaseClient.auth.updateUser({ password: cleanPwd });
+                    }
+                }
+            } catch(e) {}
 
             const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
             if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);

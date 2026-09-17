@@ -50,11 +50,20 @@ export default async function handler(req, res) {
 
     // PUT — editar usuario
     if (req.method === 'PUT') {
-        if (authUser.role !== 'admin' && authUser.role !== 'super_admin' && authUser.id !== id) {
+        const body = req.body || {};
+        const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+        const isAdmin = authUser.role === 'admin' || 
+                        authUser.role === 'super_admin' || 
+                        ADMIN_EMAILS.includes((authUser.email || '').toLowerCase().trim());
+
+        const isSelf = (authUser.id === id) || 
+                       (body.email && authUser.email?.toLowerCase().trim() === body.email?.toLowerCase().trim()) ||
+                       (authUser.email?.toLowerCase().trim() === String(id).toLowerCase().trim());
+
+        if (!isAdmin && !isSelf) {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
 
-        const body = req.body || {};
         const payload = { updated_at: new Date().toISOString() };
 
         if (body.full_name !== undefined) payload.full_name = sanitizeString(body.full_name, 150);
@@ -63,7 +72,7 @@ export default async function handler(req, res) {
         if (body.notes !== undefined)     payload.notes     = sanitizeString(body.notes, 500);
 
         // Solo admin puede cambiar rol y status
-        if (authUser.role === 'admin' || authUser.role === 'super_admin') {
+        if (isAdmin) {
             if (body.role !== undefined)   payload.role   = sanitizeString(body.role, 30);
             if (body.status !== undefined) payload.status = sanitizeString(body.status, 20);
             if (body.email !== undefined) {
@@ -75,46 +84,100 @@ export default async function handler(req, res) {
             }
         }
 
-        // Si viene nueva contraseña, hashearla
+        // Si viene nueva contraseña
+        let newRawPassword = null;
         if (body.password && body.password.length >= 6) {
-            const newPwd = sanitizeString(body.password, 128);
-            payload.password_hash = await bcrypt.hash(newPwd, 12);
-            payload.password = null;
+            newRawPassword = sanitizeString(body.password, 128);
+            payload.password_hash = await bcrypt.hash(newRawPassword, 12);
+            payload.password = newRawPassword;
         }
 
         try {
-            // 1. Intentar actualizar en site_settings agency_users_directory
+            // 1. Obtener y actualizar en site_settings agency_users_directory
             const { data: setRow } = await supabase
                 .from('site_settings')
                 .select('value')
                 .eq('key', 'agency_users_directory')
                 .maybeSingle();
 
+            let list = [];
             if (setRow && setRow.value) {
-                let list = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
-                if (Array.isArray(list)) {
-                    const idx = list.findIndex(u => String(u.id) === String(id));
-                    if (idx !== -1) {
-                        const updated = { ...list[idx], ...payload };
-                        if (body.password && body.password.length >= 6) {
-                            updated.password = sanitizeString(body.password, 128);
+                list = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
+            }
+            if (!Array.isArray(list)) list = [];
+
+            const targetEmail = (body.email || '').toLowerCase().trim();
+            let idx = list.findIndex(u => String(u.id) === String(id));
+            if (idx === -1 && targetEmail) {
+                idx = list.findIndex(u => (u.email || '').toLowerCase().trim() === targetEmail);
+            }
+
+            let targetUser = null;
+            if (idx !== -1) {
+                const updated = { ...list[idx], ...payload };
+                if (newRawPassword) {
+                    updated.password = newRawPassword;
+                }
+                list[idx] = updated;
+                targetUser = updated;
+            } else if (isAdmin) {
+                targetUser = {
+                    id: id,
+                    email: targetEmail || (authUser.email || ''),
+                    full_name: payload.full_name || 'Usuario',
+                    role: payload.role || 'sales',
+                    branch: payload.branch || 'Porlamar (Sede Principal)',
+                    status: payload.status || 'active',
+                    ...payload
+                };
+                if (newRawPassword) targetUser.password = newRawPassword;
+                list.unshift(targetUser);
+            } else {
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+
+            await supabase
+                .from('site_settings')
+                .upsert({
+                    key: 'agency_users_directory',
+                    value: list
+                });
+
+            // 2. Sincronizar en Supabase Auth si se proporcionó nueva contraseña
+            if (newRawPassword) {
+                const userEmail = (targetUser.email || targetEmail || '').toLowerCase().trim();
+                try {
+                    if (supabase.auth && supabase.auth.admin) {
+                        try {
+                            await supabase.auth.admin.updateUserById(id, { password: newRawPassword });
+                        } catch (e) {
+                            if (userEmail) {
+                                const { data: authUsersRes } = await supabase.auth.admin.listUsers();
+                                const authMatch = authUsersRes?.users?.find(u => (u.email || '').toLowerCase() === userEmail);
+                                if (authMatch) {
+                                    await supabase.auth.admin.updateUserById(authMatch.id, { password: newRawPassword });
+                                } else {
+                                    await supabase.auth.admin.createUser({
+                                        email: userEmail,
+                                        password: newRawPassword,
+                                        email_confirm: true,
+                                        user_metadata: {
+                                            full_name: targetUser.full_name,
+                                            role: targetUser.role
+                                        }
+                                    });
+                                }
+                            }
                         }
-                        list[idx] = updated;
-
-                        await supabase
-                            .from('site_settings')
-                            .upsert({
-                                key: 'agency_users_directory',
-                                value: list
-                            });
-
-                        const { password: _p, password_hash: _ph, ...safeData } = updated;
-                        return res.status(200).json({ data: safeData });
                     }
+                } catch (authErr) {
+                    console.warn('[api/users/:id] Supabase Auth sync notice:', authErr);
                 }
             }
 
-            return res.status(404).json({ error: 'Usuario no encontrado' });
+            const { password: _p, password_hash: _ph, ...safeData } = targetUser;
+            return res.status(200).json({ data: safeData });
+
         } catch (err) {
             console.error('[PUT /api/users/:id] catch:', err);
             return res.status(500).json({ error: 'Error interno del servidor' });
@@ -123,7 +186,12 @@ export default async function handler(req, res) {
 
     // DELETE — eliminar usuario
     if (req.method === 'DELETE') {
-        if (authUser.role !== 'admin' && authUser.role !== 'super_admin') {
+        const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+        const isAdmin = authUser.role === 'admin' || 
+                        authUser.role === 'super_admin' || 
+                        ADMIN_EMAILS.includes((authUser.email || '').toLowerCase().trim());
+
+        if (!isAdmin) {
             return res.status(403).json({ error: 'Solo los administradores pueden eliminar usuarios' });
         }
 
@@ -140,8 +208,8 @@ export default async function handler(req, res) {
                     const target = list.find(u => String(u.id) === String(id));
                     if (!target) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-                    if (target.email === MASTER_ADMIN_EMAIL) {
-                        return res.status(403).json({ error: 'No es posible eliminar al Administrador Master' });
+                    if (ADMIN_EMAILS.includes((target.email || '').toLowerCase().trim())) {
+                        return res.status(403).json({ error: 'No es posible eliminar a un Administrador Principal' });
                     }
 
                     const filtered = list.filter(u => String(u.id) !== String(id));

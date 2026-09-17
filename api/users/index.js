@@ -48,8 +48,11 @@ export default async function handler(req, res) {
             if (setRow && setRow.value) {
                 const list = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
                 if (Array.isArray(list)) {
-                    const safeList = list.map(({ password, password_hash, ...rest }) => rest);
-                    const filtered = (authUser.role === 'admin' || authUser.role === 'super_admin')
+                    const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+                    const isAdmin = authUser.role === 'admin' || 
+                                    authUser.role === 'super_admin' || 
+                                    ADMIN_EMAILS.includes((authUser.email || '').toLowerCase().trim());
+                    const filtered = isAdmin
                         ? safeList
                         : safeList.filter(u => u.id === authUser.id);
                     return res.status(200).json({ data: filtered });
@@ -69,8 +72,13 @@ export default async function handler(req, res) {
         const authUser = requireAuth(req, res);
         if (!authUser) return;
 
+        const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+        const isAdmin = authUser.role === 'admin' || 
+                        authUser.role === 'super_admin' || 
+                        ADMIN_EMAILS.includes((authUser.email || '').toLowerCase().trim());
+
         // Solo admin puede crear usuarios
-        if (authUser.role !== 'admin' && authUser.role !== 'super_admin') {
+        if (!isAdmin) {
             return res.status(403).json({ error: 'Solo los administradores pueden crear usuarios' });
         }
 

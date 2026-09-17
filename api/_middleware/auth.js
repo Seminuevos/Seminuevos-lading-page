@@ -42,7 +42,9 @@ export function requireAuth(req, res) {
 export function requireAdmin(req, res) {
     const user = requireAuth(req, res);
     if (!user) return null;
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
+    const adminEmails = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+    const isAdmin = user.role === 'admin' || user.role === 'super_admin' || adminEmails.includes((user.email || '').toLowerCase().trim());
+    if (!isAdmin) {
         res.status(403).json({ error: 'Acceso denegado. Se requieren permisos de administrador.' });
         return null;
     }
