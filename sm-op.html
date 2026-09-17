@@ -5519,12 +5519,22 @@
 
         async function loadVehicles() {
             let data = null;
-            if (supabaseClient && typeof supabaseClient.from === 'function') {
+
+            // 1. Intentar API backend
+            try {
+                const apiRes = await apiFetch('/api/vehicles');
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
+                    data = apiRes.data.data;
+                }
+            } catch(e) {}
+
+            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no está configurada o falla
+            if (!data && supabaseClient && typeof supabaseClient.from === 'function') {
                 try {
                     const res = await supabaseClient.from('vehicles').select('*').order('created_at', { ascending: false });
                     if (!res.error && res.data) data = res.data;
                 } catch(e) {
-                    console.warn('DB load vehicles notice:', e);
+                    console.warn('Modo compatibilidad: Carga directa Supabase:', e);
                 }
             }
             
@@ -5838,16 +5848,25 @@
                 const tKey = title.toLowerCase().trim();
 
                 if (id) {
-                    // Try DB update
+                    // 1. Intentar API backend
+                    let apiSuccess = false;
                     try {
-                        const numId = parseInt(id);
-                        const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', !isNaN(numId) ? numId : id);
-                        if (error) console.warn('Supabase DB update notice (saving to local overrides):', error.message);
-                    } catch(dbErr) {
-                        console.warn('Supabase DB update err:', dbErr);
+                        const apiRes = await apiFetch(`/api/vehicles/${id}`, { method: 'PUT', body: vehicleData });
+                        if (apiRes && apiRes.ok) apiSuccess = true;
+                    } catch(e) {}
+
+                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
+                    if (!apiSuccess) {
+                        try {
+                            const numId = parseInt(id);
+                            const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', !isNaN(numId) ? numId : id);
+                            if (error) console.warn('Modo compatibilidad: aviso DB direct Supabase:', error.message);
+                        } catch(dbErr) {
+                            console.warn('Modo compatibilidad: error Supabase:', dbErr);
+                        }
                     }
 
-                    // Save to local overrides
+                    // 3. Respaldo local inmediato (cero bloqueos)
                     try {
                         let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
                         overrides[String(id)] = { ...vehicleData, id: id };
@@ -5868,17 +5887,29 @@
                     showToast('✓ Vehículo actualizado con éxito', 'success');
                     logSecurityEvent('VEHICLE_UPDATE', 'info', `Vehículo actualizado: ${title} (${id})`);
                 } else {
-                    // Create new
+                    // 1. Intentar API backend
+                    let apiSuccess = false;
                     let dbId = null;
                     try {
-                        const { data: insData, error } = await supabaseClient.from('vehicles').insert([vehicleData]).select();
-                        if (!error && insData && insData.length > 0) {
-                            dbId = insData[0].id;
-                        } else if (error) {
-                            console.warn('Supabase insert notice (saving locally):', error.message);
+                        const apiRes = await apiFetch('/api/vehicles', { method: 'POST', body: vehicleData });
+                        if (apiRes && apiRes.ok && apiRes.data?.data?.id) {
+                            apiSuccess = true;
+                            dbId = apiRes.data.data.id;
                         }
-                    } catch(insErr) {
-                        console.warn('Supabase insert err:', insErr);
+                    } catch(e) {}
+
+                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
+                    if (!apiSuccess) {
+                        try {
+                            const { data: insData, error } = await supabaseClient.from('vehicles').insert([vehicleData]).select();
+                            if (!error && insData && insData.length > 0) {
+                                dbId = insData[0].id;
+                            } else if (error) {
+                                console.warn('Modo compatibilidad: aviso Supabase direct:', error.message);
+                            }
+                        } catch(insErr) {
+                            console.warn('Modo compatibilidad: error Supabase:', insErr);
+                        }
                     }
 
                     savedId = dbId || ('loc_' + Date.now());
@@ -6020,6 +6051,10 @@
                 const sId = String(idVal);
                 const v = vehicles.find(item => String(item.id) === sId);
 
+                // 1. Intentar API backend
+                apiFetch(`/api/vehicles/${idVal}`, { method: 'DELETE' }).catch(() => {});
+
+                // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no está disponible
                 try {
                     const numId = parseInt(idVal);
                     if (!isNaN(numId)) {
@@ -6030,7 +6065,7 @@
                         await supabaseClient.from('vehicles').delete().eq('title', v.title);
                     }
                 } catch(e) {
-                    console.warn('Bulk DB delete notice:', e);
+                    console.warn('Modo compatibilidad: Supabase bulk delete notice:', e);
                 }
 
                 if (v && v.title) {
@@ -6074,7 +6109,12 @@
 
             showToast('Eliminando vehículo...', 'info');
 
-            // 1. Delete from Supabase DB (if available and allowed)
+            // 1. Intentar API backend
+            try {
+                await apiFetch(`/api/vehicles/${id}`, { method: 'DELETE' });
+            } catch(e) {}
+
+            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
             try {
                 const numericId = parseInt(id);
                 if (!isNaN(numericId)) {
@@ -6085,7 +6125,7 @@
                     await supabaseClient.from('vehicles').delete().eq('title', v.title);
                 }
             } catch(e) {
-                console.warn('DB delete error notice:', e);
+                console.warn('Modo compatibilidad: Supabase DB delete notice:', e);
             }
 
             // 2. Save in localStorage deleted blacklist so static/cache units hide permanently
@@ -7744,8 +7784,28 @@
                         images: cleanImgs.length > 0 ? cleanImgs : ['images/hero1.png']
                     };
 
-                    const { error: dbErr } = await supabaseClient.from('vehicles').insert([vehicleData]);
-                    if (dbErr) throw dbErr;
+                    // 1. Intentar API backend
+                    let importedOk = false;
+                    try {
+                        const apiRes = await apiFetch('/api/vehicles', { method: 'POST', body: vehicleData });
+                        if (apiRes && apiRes.ok) importedOk = true;
+                    } catch(e) {}
+
+                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
+                    if (!importedOk) {
+                        try {
+                            const { error: dbErr } = await supabaseClient.from('vehicles').insert([vehicleData]);
+                            if (!dbErr) importedOk = true;
+                        } catch(e) {}
+                    }
+
+                    // 3. Respaldo local inmediato si la DB está protegida por RLS
+                    if (!importedOk) {
+                        const locId = 'loc_' + Date.now();
+                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                        localVehs.unshift({ ...vehicleData, id: locId });
+                        localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+                    }
 
                     successCount++;
                     completed++;
@@ -7921,9 +7981,30 @@
             if (garbage.length === 0) { showToast('No hay basura que limpiar', 'info'); return; }
 
             showToast(`Limpiando ${garbage.length} registros...`, 'info');
+            let deleted = [];
+            try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
+
             for (const v of garbage) {
-                await supabaseClient.from('vehicles').delete().eq('id', v.id);
+                // 1. Intentar API
+                apiFetch(`/api/vehicles/${v.id}`, { method: 'DELETE' }).catch(() => {});
+
+                // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase
+                try {
+                    await supabaseClient.from('vehicles').delete().eq('id', v.id);
+                } catch(e) {}
+
+                // 3. Respaldo local
+                if (v.id) deleted.push(String(v.id));
+                if (v.title) deleted.push((v.title || '').toLowerCase().trim());
             }
+
+            try {
+                localStorage.setItem('sn_deleted_vehicles', JSON.stringify([...new Set(deleted)]));
+                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
+                localVehs = localVehs.filter(lv => !garbage.some(g => String(g.id) === String(lv.id)));
+                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+            } catch(e) {}
+
             showToast('Limpieza completada', 'success');
             if (typeof loadVehicles === 'function') await loadVehicles();
         }
@@ -7943,7 +8024,18 @@
                 });
 
                 if (modified) {
-                    await supabaseClient.from('vehicles').update({ images: cleanedImages }).eq('id', v.id);
+                    // 1. Intentar API
+                    apiFetch(`/api/vehicles/${v.id}`, { method: 'PUT', body: { images: cleanedImages } }).catch(() => {});
+                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase
+                    try {
+                        await supabaseClient.from('vehicles').update({ images: cleanedImages }).eq('id', v.id);
+                    } catch(e) {}
+                    // 3. Respaldo local
+                    try {
+                        let ov = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
+                        ov[String(v.id)] = { ...(ov[String(v.id)] || {}), images: cleanedImages };
+                        localStorage.setItem('sn_vehicle_overrides', JSON.stringify(ov));
+                    } catch(e) {}
                     updatedCount++;
                 }
             }
@@ -12059,6 +12151,19 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         }
 
         async function loadUsers() {
+            // 1. Intentar API backend
+            try {
+                const apiRes = await apiFetch('/api/users');
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
+                    _allAgencyUsers = apiRes.data.data;
+                    saveStoredUsers(apiRes.data.data);
+                    renderUserStats();
+                    renderUsersTable();
+                    return;
+                }
+            } catch (err) {}
+
+            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
             try {
                 if (typeof supabaseClient !== 'undefined' && supabaseClient) {
                     const { data, error } = await supabaseClient
@@ -12075,9 +12180,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     }
                 }
             } catch (err) {
-                console.warn('Could not load users from Supabase, using local store:', err);
+                console.warn('Modo compatibilidad: aviso carga usuarios Supabase:', err);
             }
 
+            // 3. Respaldo local
             _allAgencyUsers = getStoredUsers();
             renderUserStats();
             renderUsersTable();
