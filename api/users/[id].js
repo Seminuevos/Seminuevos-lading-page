@@ -83,21 +83,38 @@ export default async function handler(req, res) {
         }
 
         try {
-            const { data, error } = await supabase
-                .from('agency_users')
-                .update(payload)
-                .eq('id', id)
-                .select('id, email, full_name, phone, role, branch, status, notes, created_at, updated_at')
+            // 1. Intentar actualizar en site_settings agency_users_directory
+            const { data: setRow } = await supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'agency_users_directory')
                 .maybeSingle();
 
-            if (error) {
-                console.error('[PUT /api/users/:id]', error);
-                return res.status(500).json({ error: 'Error al actualizar usuario' });
+            if (setRow && setRow.value) {
+                let list = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
+                if (Array.isArray(list)) {
+                    const idx = list.findIndex(u => String(u.id) === String(id));
+                    if (idx !== -1) {
+                        const updated = { ...list[idx], ...payload };
+                        if (body.password && body.password.length >= 6) {
+                            updated.password = sanitizeString(body.password, 128);
+                        }
+                        list[idx] = updated;
+
+                        await supabase
+                            .from('site_settings')
+                            .upsert({
+                                key: 'agency_users_directory',
+                                value: list
+                            });
+
+                        const { password: _p, password_hash: _ph, ...safeData } = updated;
+                        return res.status(200).json({ data: safeData });
+                    }
+                }
             }
 
-            if (!data) return res.status(404).json({ error: 'Usuario no encontrado' });
-
-            return res.status(200).json({ data });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         } catch (err) {
             console.error('[PUT /api/users/:id] catch:', err);
             return res.status(500).json({ error: 'Error interno del servidor' });
@@ -111,27 +128,35 @@ export default async function handler(req, res) {
         }
 
         try {
-            // Proteger la cuenta del administrador master
-            const { data: target } = await supabase
-                .from('agency_users')
-                .select('email')
-                .eq('id', id)
+            const { data: setRow } = await supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'agency_users_directory')
                 .maybeSingle();
 
-            if (!target) return res.status(404).json({ error: 'Usuario no encontrado' });
+            if (setRow && setRow.value) {
+                let list = typeof setRow.value === 'string' ? JSON.parse(setRow.value) : setRow.value;
+                if (Array.isArray(list)) {
+                    const target = list.find(u => String(u.id) === String(id));
+                    if (!target) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-            if (target.email === MASTER_ADMIN_EMAIL) {
-                return res.status(403).json({ error: 'No es posible eliminar al Administrador Master' });
+                    if (target.email === MASTER_ADMIN_EMAIL) {
+                        return res.status(403).json({ error: 'No es posible eliminar al Administrador Master' });
+                    }
+
+                    const filtered = list.filter(u => String(u.id) !== String(id));
+                    await supabase
+                        .from('site_settings')
+                        .upsert({
+                            key: 'agency_users_directory',
+                            value: filtered
+                        });
+
+                    return res.status(200).json({ message: 'Usuario eliminado correctamente' });
+                }
             }
 
-            const { error } = await supabase.from('agency_users').delete().eq('id', id);
-
-            if (error) {
-                console.error('[DELETE /api/users/:id]', error);
-                return res.status(500).json({ error: 'Error al eliminar usuario' });
-            }
-
-            return res.status(200).json({ message: 'Usuario eliminado correctamente' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         } catch (err) {
             console.error('[DELETE /api/users/:id] catch:', err);
             return res.status(500).json({ error: 'Error interno del servidor' });

@@ -5415,7 +5415,8 @@
                         }
                     }
 
-                    const savedMasterPwd = localStorage.getItem('sn_master_pwd');
+                    let savedMasterPwd = null;
+                    try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
                     const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com');
                     const isMasterPassword = [
                         savedMasterPwd,
@@ -12804,11 +12805,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     } catch (e) {
                         console.warn('Background user update notice:', e);
                     }
-                    try {
-                        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                            await supabaseClient.from('agency_users').update(updateObj).eq('id', id);
-                        }
-                    } catch (e) {}
                 })();
 
                 showToast('✓ Usuario actualizado correctamente', 'success');
@@ -12865,11 +12861,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     } catch (e) {
                         console.warn('Background user create notice:', e);
                     }
-                    try {
-                        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                            await supabaseClient.from('agency_users').insert([targetUser]);
-                        }
-                    } catch (e) {}
                 })();
 
                 showToast('✓ Nuevo colaborador registrado con éxito', 'success');
@@ -12942,11 +12933,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 try {
                     await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { status: newStatus } });
                 } catch(e) {}
-                try {
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                        await supabaseClient.from('agency_users').update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', userId);
-                    }
-                } catch(e) {}
             })();
         }
 
@@ -12991,11 +12977,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 try {
                     await apiFetch(`/api/users/${userId}`, { method: 'PUT', body: { password: cleanPwd } });
                 } catch(e) {}
-                try {
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                        await supabaseClient.from('agency_users').update({ password: cleanPwd, updated_at: new Date().toISOString() }).eq('id', userId);
-                    }
-                } catch(e) {}
             })();
 
             const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
@@ -13023,11 +13004,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
             (async () => {
                 try {
                     await apiFetch(`/api/users/${userId}`, { method: 'DELETE' });
-                } catch(e) {}
-                try {
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                        await supabaseClient.from('agency_users').delete().eq('id', userId);
-                    }
                 } catch(e) {}
             })();
         }
