@@ -175,12 +175,14 @@ export default async function handler(req, res) {
             }
 
             // Registrar intento fallido
-            await supabase.from('security_logs').insert({
-                event_type: 'LOGIN_FAILED',
-                severity: 'warning',
-                details: `Intento de login para correo no registrado: ${emailClean}`,
-                ip_address: ip
-            }).maybeSingle().catch(() => {});
+            try {
+                await supabase.from('security_logs').insert({
+                    event_type: 'LOGIN_FAILED',
+                    severity: 'warning',
+                    details: `Intento de login para correo no registrado: ${emailClean}`,
+                    ip_address: ip
+                });
+            } catch (e) {}
 
             return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
         }
@@ -203,12 +205,14 @@ export default async function handler(req, res) {
         }
 
         if (!passwordValid) {
-            await supabase.from('security_logs').insert({
-                event_type: 'LOGIN_FAILED',
-                severity: 'warning',
-                details: `Contraseña incorrecta para: ${emailClean}`,
-                ip_address: ip
-            }).maybeSingle().catch(() => {});
+            try {
+                await supabase.from('security_logs').insert({
+                    event_type: 'LOGIN_FAILED',
+                    severity: 'warning',
+                    details: `Contraseña incorrecta para: ${emailClean}`,
+                    ip_address: ip
+                });
+            } catch (e) {}
 
             return res.status(401).json({ error: 'Correo o contraseña incorrectos' });
         }
@@ -237,13 +241,15 @@ export default async function handler(req, res) {
         const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
 
         // Registrar login exitoso
-        await supabase.from('security_logs').insert({
-            event_type: 'LOGIN_SUCCESS',
-            severity: 'info',
-            details: `Login exitoso: ${user.full_name || emailClean} [${user.role}]`,
-            ip_address: ip,
-            user_id: user.id
-        }).maybeSingle().catch(() => {});
+        try {
+            await supabase.from('security_logs').insert({
+                event_type: 'LOGIN_SUCCESS',
+                severity: 'info',
+                details: `Login exitoso: ${user.full_name || emailClean} [${user.role}]`,
+                ip_address: ip,
+                user_id: user.id
+            });
+        } catch (e) {}
 
         return res.status(200).json({
             token,

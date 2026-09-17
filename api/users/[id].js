@@ -136,12 +136,30 @@ export default async function handler(req, res) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            await supabase
+            // 1. Guardar en site_settings
+            let { error: updateErr } = await supabase
                 .from('site_settings')
-                .upsert({
-                    key: 'agency_users_directory',
-                    value: list
-                });
+                .update({
+                    value: list,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('key', 'agency_users_directory');
+
+            if (updateErr) {
+                console.warn('[api/users/:id] update error, attempting upsert:', updateErr.message);
+                const { error: upsertErr } = await supabase
+                    .from('site_settings')
+                    .upsert({
+                        key: 'agency_users_directory',
+                        value: list,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'key' });
+
+                if (upsertErr) {
+                    console.error('[api/users/:id] upsert failed:', upsertErr);
+                    return res.status(500).json({ error: 'Error al persistir cambios en la base de datos', details: upsertErr.message });
+                }
+            }
 
             // 2. Sincronizar en Supabase Auth si se proporcionó nueva contraseña
             if (newRawPassword) {
