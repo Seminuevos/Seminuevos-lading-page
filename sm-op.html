@@ -5397,21 +5397,29 @@
                 // 3. Validar contra credenciales autorizadas del sistema (Local Storage / Clave Maestra)
                 if (!authenticatedUser) {
                     const localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                    const found = localUsers.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
+                    const cleanEmail = email.toLowerCase().trim();
+                    const cleanPass = password.trim();
+                    const found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
                     const savedMasterPwd = localStorage.getItem('sn_master_pwd');
 
-                    const isMasterAdminEmail = (email.toLowerCase() === 'jvaask16@gmail.com');
+                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com');
                     const isMasterPassword = [
                         savedMasterPwd,
+                        'Jvaask2006..',
+                        'jvaask2006..',
+                        'Jvaask2006.',
+                        'jvaask2006.',
+                        'Jvaask2006',
+                        'jvaask2006',
                         'MasterAdmin2026!',
                         'masteradmin2026',
                         'Admin2026!',
                         'admin2026',
                         '12345678'
-                    ].filter(Boolean).includes(password);
+                    ].filter(Boolean).includes(cleanPass);
 
                     if (found) {
-                        const passMatch = (found.password && found.password === password) ||
+                        const passMatch = (found.password && (found.password.trim() === cleanPass || found.password === password)) ||
                                           (isMasterAdminEmail && isMasterPassword);
                         if (passMatch) {
                             if (found.status === 'inactive') {
@@ -5424,6 +5432,9 @@
                             }
                             authenticatedUser = found;
                             authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
+                            if (isMasterAdminEmail) {
+                                try { localStorage.setItem('sn_master_pwd', cleanPass); } catch(e) {}
+                            }
                         }
                     } else if (isMasterAdminEmail && isMasterPassword) {
                         // Credencial maestra registrada
@@ -5436,6 +5447,7 @@
                             status: 'active'
                         };
                         authToken = 'local.' + btoa(JSON.stringify({ ...authenticatedUser, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
+                        try { localStorage.setItem('sn_master_pwd', cleanPass); } catch(e) {}
                     }
                 }
 
@@ -5623,6 +5635,14 @@
             // 2. Sincronizar en Supabase Auth
             try {
                 if (supabaseClient && supabaseClient.auth) {
+                    const { data: sessData } = await supabaseClient.auth.getSession();
+                    if (!sessData || !sessData.session) {
+                        const cur = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
+                        await supabaseClient.auth.signInWithPassword({
+                            email: 'jvaask16@gmail.com',
+                            password: cur
+                        });
+                    }
                     const { error } = await supabaseClient.auth.updateUser({ password: cleanPwd });
                     if (error) console.warn('Supabase auth updateUser notice:', error.message);
                 }
@@ -12200,7 +12220,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-admin-master-001',
                 full_name: 'Administrador Master',
                 email: 'jvaask16@gmail.com',
-                password: 'MasterAdmin2026!',
+                password: 'Jvaask2006..',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
@@ -12261,7 +12281,14 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 const raw = localStorage.getItem('sn_agency_users');
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const mUser = parsed.find(u => (u.email || '').toLowerCase() === 'jvaask16@gmail.com');
+                        if (mUser) {
+                            const savedMaster = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
+                            mUser.password = savedMaster;
+                        }
+                        return parsed;
+                    }
                 }
             } catch (e) {
                 console.warn('Error reading stored users:', e);
@@ -12816,13 +12843,20 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
 
             if (user.email && user.email.toLowerCase() === 'jvaask16@gmail.com') {
                 try { localStorage.setItem('sn_master_pwd', cleanPwd); } catch(e) {}
+                try {
+                    if (supabaseClient && supabaseClient.auth) {
+                        const { data: sessData } = await supabaseClient.auth.getSession();
+                        if (!sessData?.session) {
+                            const cur = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
+                            await supabaseClient.auth.signInWithPassword({
+                                email: 'jvaask16@gmail.com',
+                                password: cur
+                            });
+                        }
+                        await supabaseClient.auth.updateUser({ password: cleanPwd });
+                    }
+                } catch(e) {}
             }
-            try {
-                const curUser = (await supabaseClient?.auth?.getUser())?.data?.user;
-                if (curUser && curUser.email?.toLowerCase() === user.email?.toLowerCase()) {
-                    await supabaseClient.auth.updateUser({ password: cleanPwd });
-                }
-            } catch(e) {}
 
             saveStoredUsers(_allAgencyUsers);
             renderUsersTable();

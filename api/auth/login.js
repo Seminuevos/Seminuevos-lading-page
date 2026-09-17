@@ -85,6 +85,12 @@ export default async function handler(req, res) {
             // Credencial maestra registrada
             const isMasterEmail = (emailClean === 'jvaask16@gmail.com');
             const isMasterPassword = [
+                'Jvaask2006..',
+                'jvaask2006..',
+                'Jvaask2006.',
+                'jvaask2006.',
+                'Jvaask2006',
+                'jvaask2006',
                 'MasterAdmin2026!',
                 'masteradmin2026',
                 'Admin2026!',
