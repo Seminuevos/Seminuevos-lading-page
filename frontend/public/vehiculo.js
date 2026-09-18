@@ -67,7 +67,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (e) {}
 
-    const priceText = car.price === 'Consultar' ? 'Consultar precio' : car.price;
+    const priceText = car.price === 'Consultar'
+        ? 'Consultar precio'
+        : (car.has_title ? `${car.price} <span class="price-insurance-note">+ seguro</span>` : car.price);
+
+    const featureBadgesHtml = [
+        car.trade_in_eligible ? `<span class="origin-badge feature-badge trade-in"><i class="fas fa-handshake"></i> Trade-In</span>` : '',
+        car.financing_eligible ? `<span class="origin-badge feature-badge financing"><i class="fas fa-file-invoice-dollar"></i> Financiamiento</span>` : '',
+        car.available_for_rental ? `<span class="origin-badge feature-badge rental"><i class="fas fa-key"></i> Disponible para alquiler</span>` : ''
+    ].filter(Boolean).join('');
     const cleanDesc = car.description ? car.description.split('\n\n[ADMIN-LINK]:')[0] : '';
     
     // Photos
@@ -104,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center;">
                     <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; background: rgba(39,92,234,0.15); color: #60a5fa; border: 1px solid rgba(39,92,234,0.3); font-size: 0.8rem; font-weight: 700; font-family: system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-car-side"></i> ${fallbackBodyType}</span>
                     ${availBadgeHtml}
+                    ${featureBadgesHtml}
                 </div>
                 <h1 style="font-family: var(--font-display); font-size: 2.3rem; margin-bottom: 10px; line-height: 1.2;">${car.title}</h1>
                 <p style="font-size: 1.9rem; font-weight: bold; color: var(--primary); margin-bottom: 25px;">${priceText}</p>

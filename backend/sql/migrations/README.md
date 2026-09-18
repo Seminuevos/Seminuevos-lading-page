@@ -16,6 +16,7 @@ archivo gigante):
 | 2026-09-18 | `2026-09-18_02_rental_price_rules.sql` | Tarifas por rango de fechas para cada vehículo de alquiler |
 | 2026-09-18 | `2026-09-18_03_rental_customers.sql` | Clientes de alquiler (solo email + teléfono, sin cuenta) |
 | 2026-09-18 | `2026-09-18_04_rental_requests.sql` | Solicitudes de alquiler (cliente ⟷ vehículo, con estado) |
+| 2026-09-18 | `2026-09-18_05_vehicle_labels.sql` | Etiquetas en `vehicles`: trade_in_eligible, financing_eligible, has_title, available_for_rental |
 
 ## Cómo probar cada una
 

@@ -38,6 +38,9 @@ describe('VehiclesService', () => {
     expect((builder.eq as jest.Mock)).toHaveBeenCalledWith('status', 'active');
     const selectedColumns = (builder.select as jest.Mock).mock.calls[0][0] as string;
     expect(selectedColumns).not.toContain('created_by');
+    for (const col of ['trade_in_eligible', 'financing_eligible', 'has_title', 'available_for_rental']) {
+      expect(selectedColumns).toContain(col);
+    }
   });
 
   it('findOnePublic lanza NotFoundException si el vehículo no está activo o no existe', async () => {

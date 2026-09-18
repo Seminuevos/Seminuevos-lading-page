@@ -11,7 +11,8 @@ const TABLE = 'vehicles';
 const PUBLIC_COLUMNS =
   'id, title, price, year, km, engine, transmission, fuel, body_type, condition, ' +
   'availability, origin, color, badge, description, features, images, catalog, ' +
-  'mastertech, views, created_at';
+  'mastertech, views, created_at, trade_in_eligible, financing_eligible, has_title, ' +
+  'available_for_rental';
 
 @Injectable()
 export class VehiclesService {

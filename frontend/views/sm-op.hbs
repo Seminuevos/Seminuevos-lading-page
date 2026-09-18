@@ -5259,12 +5259,31 @@
                         <div class="form-group"><label class="form-label">Estado</label><select class="form-select"
                                 id="vStatus">
                                 <option value="active">Activo</option>
+                                <option value="inactive">Inactivo (oculto del catálogo)</option>
                                 <option value="sold">Vendido</option>
                                 <option value="reserved">Reservado</option>
                             </select></div>
                         <div class="form-group full" style="display: flex; flex-direction: row; align-items: center; gap: 8px;">
                             <input type="checkbox" id="vMastertech" style="width: 18px; height: 18px; accent-color: var(--accent);">
                             <label class="form-label" for="vMastertech" style="margin-bottom: 0;">Sello Garantía Mastertech</label>
+                        </div>
+                        <div class="form-group full" style="display: flex; flex-wrap: wrap; gap: 18px; align-items: center; padding-top: 4px; border-top: 1px dashed var(--border); margin-top: 4px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="vTradeIn" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                <label class="form-label" for="vTradeIn" style="margin-bottom: 0;">Admite Trade-In</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="vFinancing" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                <label class="form-label" for="vFinancing" style="margin-bottom: 0;">Admite Financiamiento</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="vHasTitle" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                <label class="form-label" for="vHasTitle" style="margin-bottom: 0;">Tiene Placa/Título (precio + seguro)</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="vAvailableForRental" style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                <label class="form-label" for="vAvailableForRental" style="margin-bottom: 0;">Disponible para alquiler</label>
+                            </div>
                         </div>
                         <div class="form-group full">
                             <label class="form-label">Imágenes</label>
@@ -5919,7 +5938,12 @@
                 updateBulkBar();
                 return;
             }
-            const statusBadge = (s) => s === 'active' ? '<span class="badge badge-green">ACTIVO</span>' : s === 'sold' ? '<span class="badge badge-red">VENDIDO</span>' : '<span class="badge badge-blue">RESERVADO</span>';
+            const statusBadge = (s) => {
+                if (s === 'active') return '<span class="badge badge-green">ACTIVO</span>';
+                if (s === 'sold') return '<span class="badge badge-red">VENDIDO</span>';
+                if (s === 'inactive') return '<span class="badge" style="background:rgba(148,163,184,0.15); color:#94a3b8;">INACTIVO</span>';
+                return '<span class="badge badge-blue">RESERVADO</span>';
+            };
             const imgSrc = (v) => {
                 let src = (v.images && v.images.length > 0) ? v.images[0] : (v.image || '');
                 if (src && src.includes('vis.iaai.com')) {
@@ -5945,7 +5969,7 @@
                     <td style="color:var(--accent);font-weight:600">${v.price}</td>
                     <td><span class="badge badge-gold">${(v.catalog || '').toUpperCase()}</span></td>
                     <td>${statusBadge(v.status)}</td>
-                    <td><div class="action-btns"><button class="action-btn" onclick="openFichaForVehicle('${v.id}')" title="Ficha Técnica Comercial" style="color:#38bdf8;"><i class="fas fa-file-invoice"></i></button><button class="action-btn" onclick="editVehicle('${v.id}')" title="Editar"><i class="fas fa-pen"></i></button><button class="action-btn delete" onclick="deleteVehicle('${v.id}')" title="Eliminar"><i class="fas fa-trash"></i></button></div></td>
+                    <td><div class="action-btns"><button class="action-btn" onclick="openFichaForVehicle('${v.id}')" title="Ficha Técnica Comercial" style="color:#38bdf8;"><i class="fas fa-file-invoice"></i></button><button class="action-btn" onclick="toggleVehicleActive('${v.id}', '${v.status}')" title="${v.status === 'active' ? 'Desactivar (ocultar del catálogo)' : 'Activar (mostrar en el catálogo)'}" style="color:${v.status === 'active' ? '#fbbf24' : '#4ade80'};"><i class="fas ${v.status === 'active' ? 'fa-eye-slash' : 'fa-eye'}"></i></button><button class="action-btn" onclick="editVehicle('${v.id}')" title="Editar"><i class="fas fa-pen"></i></button><button class="action-btn delete" onclick="deleteVehicle('${v.id}')" title="Eliminar"><i class="fas fa-trash"></i></button></div></td>
                 </tr>`;
             });
             html += '</tbody></table>';
@@ -6037,6 +6061,10 @@
                 document.getElementById('vStatus').value = vehicle.status || 'active';
                 document.getElementById('vDescription').value = vehicle.description || '';
                 document.getElementById('vMastertech').checked = !!vehicle.mastertech;
+                document.getElementById('vTradeIn').checked = !!vehicle.trade_in_eligible;
+                document.getElementById('vFinancing').checked = !!vehicle.financing_eligible;
+                document.getElementById('vHasTitle').checked = !!vehicle.has_title;
+                document.getElementById('vAvailableForRental').checked = !!vehicle.available_for_rental;
 
                 // Cargar imágenes existentes como miniaturas con cache-buster para evitar versiones antiguas del navegador
                 document.getElementById('vImage').value = '';
@@ -6053,6 +6081,10 @@
                 document.getElementById('vId').value = '';
                 document.getElementById('vVin').value = '';
                 document.getElementById('vMastertech').checked = false;
+                document.getElementById('vTradeIn').checked = false;
+                document.getElementById('vFinancing').checked = false;
+                document.getElementById('vHasTitle').checked = false;
+                document.getElementById('vAvailableForRental').checked = false;
             }
             modal.classList.add('active');
         }
@@ -6090,6 +6122,10 @@
             const status = document.getElementById('vStatus').value;
             const description = document.getElementById('vDescription').value;
             const mastertech = document.getElementById('vMastertech').checked;
+            const trade_in_eligible = document.getElementById('vTradeIn').checked;
+            const financing_eligible = document.getElementById('vFinancing').checked;
+            const has_title = document.getElementById('vHasTitle').checked;
+            const available_for_rental = document.getElementById('vAvailableForRental').checked;
             const manualImgs = document.getElementById('vImage').value.split(',').map(s => s.trim()).filter(Boolean);
 
             if (!title || !price || !year) { showToast('Completa los campos obligatorios', 'error'); isSaving = false; return; }
@@ -6126,7 +6162,8 @@
 
                 const vehicleData = {
                     title, price, year, km, engine, transmission, fuel, body_type, catalog,
-                    availability, origin, condition, badge, status, description, images: finalImgs, mastertech
+                    availability, origin, condition, badge, status, description, images: finalImgs, mastertech,
+                    trade_in_eligible, financing_eligible, has_title, available_for_rental
                 };
                 if (vin) vehicleData.vin = vin;
 
@@ -6341,6 +6378,19 @@
             logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehículos eliminados en lote.`);
             await loadVehicles();
         }
+
+        window.toggleVehicleActive = async (id, currentStatus) => {
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            const res = await apiFetch(`/api/vehicles/${id}`, { method: 'PUT', body: { status: newStatus } });
+            if (!res.ok) {
+                showToast(res.error || 'No se pudo cambiar el estado del vehículo', 'danger');
+                return;
+            }
+            const local = vehicles.find(v => String(v.id) === String(id));
+            if (local) local.status = newStatus;
+            renderTable(document.getElementById('searchInput')?.value || '');
+            showToast(newStatus === 'active' ? '✓ Vehículo activado (visible en el catálogo)' : '✓ Vehículo desactivado (oculto del catálogo)', 'success');
+        };
 
         async function deleteVehicle(id) {
             if (!confirm('¿Eliminar este vehículo?')) return;

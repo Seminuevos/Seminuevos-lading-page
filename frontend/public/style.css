@@ -317,7 +317,8 @@ body::after {
     background: rgba(12, 12, 12, 0.94);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
     min-height: 105px;
     display: flex;
     align-items: center;
@@ -327,6 +328,8 @@ body::after {
     background: rgba(8, 8, 8, 0.97);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
+    border-bottom-color: rgba(212, 160, 23, 0.25);
+    box-shadow: 0 4px 28px rgba(0, 0, 0, 0.5);
     padding: 10px 0;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
 }
@@ -549,9 +552,9 @@ body::after {
 /* ===== HERO ===== */
 .hero {
     position: relative;
-    height: 88vh;
-    height: 88dvh;
-    min-height: 660px;
+    height: 72vh;
+    height: 72dvh;
+    min-height: 520px;
     overflow: hidden;
 }
 
@@ -1391,6 +1394,32 @@ body::after {
     background: rgba(96, 165, 250, 0.15);
     color: #60a5fa;
     border: 1px solid rgba(96, 165, 250, 0.28);
+}
+
+.feature-badge.trade-in {
+    background: rgba(212, 160, 23, 0.15);
+    color: var(--primary);
+    border: 1px solid rgba(212, 160, 23, 0.3);
+}
+
+.feature-badge.financing {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.feature-badge.rental {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.price-insurance-note {
+    font-size: 0.62em;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 .vehicle-card-body {
@@ -4433,8 +4462,8 @@ body::after {
 
     /* Hero Section Overrides */
     .hero {
-        min-height: 520px !important;
-        height: 80vh !important;
+        min-height: 460px !important;
+        height: 66vh !important;
         display: flex;
         align-items: center;
     }
@@ -5469,6 +5498,13 @@ img.mastertech-seal {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         white-space: nowrap;
+    }
+}
+
+/* Financiamiento / Trade-In (servicios.html) apiladas en mobile */
+@media (max-width: 900px) {
+    .big-feature-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 

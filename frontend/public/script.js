@@ -399,7 +399,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // SEO Optimized Alt Text: [Marca] [Modelo] [Año] - Seminuevos Venezuela
             const optimizedAlt = `${car.title} ${car.year} - Seminuevos Venezuela`;
             
-            const priceDisplay = car.price === 'Consultar' ? `<span class="price-consult">Consultar Precio</span>` : car.price;
+            const priceDisplay = car.price === 'Consultar'
+                ? `<span class="price-consult">Consultar Precio</span>`
+                : (car.has_title ? `${car.price} <span class="price-insurance-note">+ seguro</span>` : car.price);
             const originText = car.origin === 'nacional' ? 'Nacional' : (car.badge || 'Puerto Libre');
             const originClass = car.origin === 'nacional' ? 'nacional' : 'importado';
             const originIcon = car.origin === 'nacional' ? 'fa-flag' : 'fa-globe';
@@ -412,6 +414,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (vm) carVin = vm[1].toUpperCase();
             }
             const vinBadge = carVin ? `<span class="origin-badge" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); font-family:monospace; font-size:0.7rem; letter-spacing:0.5px;"><i class="fas fa-barcode"></i> ${carVin.substring(0, 11)}...</span>` : '';
+
+            const featureBadges = [
+                car.trade_in_eligible ? `<span class="origin-badge feature-badge trade-in"><i class="fas fa-handshake"></i> Trade-In</span>` : '',
+                car.financing_eligible ? `<span class="origin-badge feature-badge financing"><i class="fas fa-file-invoice-dollar"></i> Financiamiento</span>` : '',
+                car.available_for_rental ? `<span class="origin-badge feature-badge rental"><i class="fas fa-key"></i> Disponible para alquiler</span>` : ''
+            ].filter(Boolean).join('');
 
             const viewCount = car.views || 0;
             const viewsBadge = viewCount > 0 ? `<span class="views-badge" id="views-card-${car.id}"><i class="fas fa-eye"></i> ${viewCount} vista${viewCount !== 1 ? 's' : ''}</span>` : `<span class="views-badge" id="views-card-${car.id}" style="display:none;"></span>`;
@@ -434,6 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="vehicle-card-tags" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                         ${singleBadge}
                         ${vinBadge}
+                        ${featureBadges}
                     </div>
                     <h3 class="vehicle-card-title">${car.title}</h3>
                     <p class="vehicle-card-price">${priceDisplay}</p>

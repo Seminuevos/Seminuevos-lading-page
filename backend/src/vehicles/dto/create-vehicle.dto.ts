@@ -1,6 +1,6 @@
 import { ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
-const STATUSES = ['active', 'inactive', 'sold'];
+const STATUSES = ['active', 'inactive', 'sold', 'reserved'];
 
 export class CreateVehicleDto {
   @IsString()
@@ -94,4 +94,20 @@ export class CreateVehicleDto {
   @IsOptional()
   @IsBoolean()
   mastertech?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  trade_in_eligible?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  financing_eligible?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  has_title?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  available_for_rental?: boolean;
 }
