@@ -2,7 +2,7 @@
  * GET  /api/inquiries  → Lista consultas CRM (requiere auth)
  * POST /api/inquiries  → Crea consulta pública (formulario de contacto, sin auth)
  */
-import { supabase } from '../_lib/supabase-server.js';
+import { supabase, getAuthenticatedServerClient } from '../_lib/supabase-server.js';
 import { handleCors } from '../_middleware/cors.js';
 import { requireAuth } from '../_middleware/auth.js';
 import { sanitizeString, isValidEmail, checkRateLimit, getClientIP } from '../_middleware/validate.js';
@@ -16,7 +16,8 @@ export default async function handler(req, res) {
         if (!authUser) return;
 
         try {
-            const { data, error } = await supabase
+            const db = await getAuthenticatedServerClient();
+            const { data, error } = await db
                 .from('inquiries')
                 .select('*')
                 .order('created_at', { ascending: false })

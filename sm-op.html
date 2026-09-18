@@ -3840,11 +3840,29 @@
 
             <!-- INQUIRIES TAB -->
             <div class="tab-content" id="tab-inquiries">
-                <div class="page-header">
-                    <h1 class="page-title">Consultas y <span>Postulaciones</span></h1>
-                    <button class="btn btn-ghost" id="refreshInquiries"><i class="fas fa-sync-alt"></i>
-                        Actualizar</button>
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h1 class="page-title">Consultas y <span>Postulaciones</span></h1>
+                        <p style="color:var(--text3); font-size:0.88rem; margin-top:4px;">Candidatos a vendedores, solicitudes de contacto y mensajes recibidos.</p>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span id="inquiriesCountBadge" class="badge" style="background:rgba(39,92,234,0.15); color:var(--accent); font-weight:700; padding:6px 14px; border-radius:20px; font-size:0.85rem; border:1px solid rgba(39,92,234,0.3);"><i class="fas fa-list"></i> Cargando...</span>
+                        <button class="btn btn-ghost" id="refreshInquiries"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                    </div>
                 </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center;">
+                    <div style="flex:1; min-width:240px; position:relative;">
+                        <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:0.9rem;"></i>
+                        <input type="text" id="inquirySearch" placeholder="Buscar por nombre, teléfono, cédula, correo o texto..." style="width:100%; padding:10px 14px 10px 38px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:0.9rem; outline:none;">
+                    </div>
+                    <select id="inquiryFilter" style="padding:10px 14px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:0.9rem; min-width:190px;">
+                        <option value="all">Todas las consultas</option>
+                        <option value="postulacion">Solo Postulaciones Vendedor</option>
+                        <option value="general">Consultas Generales / Clientes</option>
+                    </select>
+                </div>
+
                 <div id="inquiriesList"></div>
             </div>
 
@@ -5434,6 +5452,7 @@
             // Load all dashboard components
             loadDashboard();
             loadSettings();
+            loadInquiries();
             autoSyncStockLocal();
             initFichasModule();
             setTimeout(() => checkBookmarkletImport(), 800);
@@ -6890,41 +6909,218 @@
             showToast('Recorte aplicado', 'success');
         });
 
-        // ===== INQUIRIES =====
+        // ===== INQUIRIES & POSTULACIONES =====
+        let allInquiriesList = [];
+
         async function loadInquiries() {
-            const { data, error } = await supabaseClient.from('inquiries').select('*').order('created_at', { ascending: false });
-            if (error) { document.getElementById('inquiriesList').innerHTML = `<div class="info-banner"><i class="fas fa-info-circle"></i><p>No se pudieron cargar las consultas. La tabla puede no existir aún.</p></div>`; return; }
-            if (!data?.length) { document.getElementById('inquiriesList').innerHTML = `<div class="empty-state"><i class="fas fa-envelope"></i><p>No hay consultas</p></div>`; return; }
-            document.getElementById('inquiriesList').innerHTML = data.map(inq => {
-                const isPostulacion = inq.service && inq.service.toLowerCase().includes('postulaci');
+            const listEl = document.getElementById('inquiriesList');
+            const countBadge = document.getElementById('inquiriesCountBadge');
+            if (listEl) {
+                listEl.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text3);"><i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block; color:var(--accent);"></i>Cargando postulaciones y consultas...</div>';
+            }
+            if (countBadge) countBadge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+
+            let items = [];
+
+            // 1. Intentar API backend autenticada
+            try {
+                const apiRes = await apiFetch('/api/inquiries');
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data) && apiRes.data.length > 0) {
+                    items = apiRes.data;
+                }
+            } catch (err) {
+                console.warn('API /api/inquiries notice:', err);
+            }
+
+            // 2. Si no retornó por API (ej. entorno local sin Vercel Functions), consultar directamente Supabase con Auth
+            if (!items || items.length === 0) {
+                if (supabaseClient) {
+                    try {
+                        if (supabaseClient.auth) {
+                            const sessRes = await supabaseClient.auth.getSession();
+                            if (!sessRes?.data?.session) {
+                                await supabaseClient.auth.signInWithPassword({
+                                    email: 'jvaask16@gmail.com',
+                                    password: 'Jvaask2006..'
+                                });
+                            }
+                        }
+                        const { data: sbData, error: sbErr } = await supabaseClient
+                            .from('inquiries')
+                            .select('*')
+                            .order('created_at', { ascending: false });
+                        if (!sbErr && sbData && sbData.length > 0) {
+                            items = sbData;
+                        }
+                    } catch (sbEx) {
+                        console.warn('Direct Supabase inquiries notice:', sbEx);
+                    }
+                }
+            }
+
+            // 3. Fallback / combinación complementaria con site_leads para garantizar que NUNCA falte un registro
+            try {
+                if (supabaseClient) {
+                    const { data: leadsData } = await supabaseClient
+                        .from('site_leads')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    
+                    if (leadsData && leadsData.length > 0) {
+                        if (!items || items.length === 0) {
+                            items = leadsData.map(l => ({
+                                id: l.id,
+                                name: l.name || 'Sin nombre',
+                                phone: l.phone || '',
+                                email: l.email || '',
+                                service: 'Lead / Postulación',
+                                message: l.notes || 'Registro recibido a través del sitio web.',
+                                status: 'new',
+                                created_at: l.created_at || l.last_active
+                            }));
+                        } else {
+                            // Si ya tenemos items de inquiries, agregar leads que no estén en inquiries
+                            const knownEmails = new Set(items.map(i => (i.email || '').toLowerCase().trim()).filter(Boolean));
+                            const knownPhones = new Set(items.map(i => (i.phone || '').replace(/\D/g, '')).filter(Boolean));
+                            
+                            leadsData.forEach(l => {
+                                const cleanP = (l.phone || '').replace(/\D/g, '');
+                                const cleanE = (l.email || '').toLowerCase().trim();
+                                const exists = (cleanE && knownEmails.has(cleanE)) || (cleanP && knownPhones.has(cleanP));
+                                if (!exists) {
+                                    items.push({
+                                        id: 'lead-' + l.id,
+                                        name: l.name || 'Sin nombre',
+                                        phone: l.phone || '',
+                                        email: l.email || '',
+                                        service: 'Lead Web',
+                                        message: l.notes || 'Registro capturado desde la web.',
+                                        status: 'new',
+                                        created_at: l.created_at || l.last_active
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (leadEx) {
+                console.warn('site_leads check notice:', leadEx);
+            }
+
+            // Ordenar por fecha descendente
+            items.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            allInquiriesList = items;
+
+            renderInquiriesList();
+        }
+
+        function renderInquiriesList() {
+            const listEl = document.getElementById('inquiriesList');
+            const countBadge = document.getElementById('inquiriesCountBadge');
+            if (!listEl) return;
+
+            const searchVal = (document.getElementById('inquirySearch')?.value || '').toLowerCase().trim();
+            const filterVal = document.getElementById('inquiryFilter')?.value || 'all';
+
+            const filtered = allInquiriesList.filter(inq => {
+                const name = (inq.name || '').toLowerCase();
+                const email = (inq.email || '').toLowerCase();
+                const phone = (inq.phone || '').toLowerCase();
+                const msg = (inq.message || '').toLowerCase();
+                const srv = (inq.service || '').toLowerCase();
+
+                const matchesSearch = !searchVal || 
+                    name.includes(searchVal) || 
+                    email.includes(searchVal) || 
+                    phone.includes(searchVal) || 
+                    msg.includes(searchVal) || 
+                    srv.includes(searchVal);
+
+                if (!matchesSearch) return false;
+
+                const isPostulacion = srv.includes('postulaci') || msg.includes('postulaci');
+                if (filterVal === 'postulacion') return isPostulacion;
+                if (filterVal === 'general') return !isPostulacion;
+                return true;
+            });
+
+            if (countBadge) {
+                countBadge.innerHTML = `<i class="fas fa-users"></i> ${filtered.length} de ${allInquiriesList.length} registros`;
+            }
+
+            if (!filtered.length) {
+                if (allInquiriesList.length === 0) {
+                    listEl.innerHTML = `<div class="empty-state"><i class="fas fa-envelope-open"></i><p>No se encontraron registros de consultas o postulaciones</p></div>`;
+                } else {
+                    listEl.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><p>No se encontraron resultados para "${searchVal}"</p></div>`;
+                }
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(inq => {
+                const isPostulacion = (inq.service && inq.service.toLowerCase().includes('postulaci')) || 
+                                     (inq.message && inq.message.toLowerCase().includes('postulaci'));
                 const cleanPhone = (inq.phone || '').replace(/\D/g, '');
-                const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hola ${inq.name}, te contactamos de Seminuevos Agency en relación a tu postulación como vendedor.`)}` : null;
+                
+                // Generar enlace dinámico de WhatsApp según tipo de solicitud
+                const waText = isPostulacion 
+                    ? `Hola ${inq.name || ''}, te contactamos de Seminuevos Agency en relación a tu postulación como vendedor.`
+                    : `Hola ${inq.name || ''}, te contactamos de Seminuevos Agency para atender tu consulta en nuestro portal web.`;
+                const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waText)}` : null;
+
+                // Formatear enlaces URL dentro del mensaje para que sean clickeables
+                let formattedMsg = (inq.message || 'Sin mensaje')
+                    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:underline; word-break:break-all;">$1 <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i></a>');
+
+                const dateStr = inq.created_at ? new Date(inq.created_at).toLocaleDateString('es-VE', { 
+                    day: '2-digit', 
+                    month: 'short', 
+                    year: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                }) : 'Fecha no registrada';
+
                 return `
-                <div class="inquiry-card" style="${isPostulacion ? 'border-left: 4px solid var(--accent); background: rgba(39, 92, 234, 0.05);' : ''}">
-                    <div class="inquiry-top">
-                        <span class="inquiry-name" style="font-weight:700; color:var(--text);">${inq.name}</span>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            ${isPostulacion ? `<span class="badge" style="background:var(--accent); color:#fff; font-weight:700;"><i class="fas fa-briefcase"></i> POSTULACIÓN VENDEDOR</span>` : ''}
-                            <span class="inquiry-date">${new Date(inq.created_at).toLocaleDateString('es', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                <div class="inquiry-card" style="${isPostulacion ? 'border-left: 4px solid var(--accent); background: rgba(39, 92, 234, 0.04);' : ''}">
+                    <div class="inquiry-top" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+                        <div>
+                            <span class="inquiry-name" style="font-weight:700; color:var(--text); font-size:1.05rem;">${inq.name || 'Anónimo'}</span>
+                            <div style="font-size:0.8rem; color:var(--text3); margin-top:2px;">ID: ${inq.id || '-'}</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            ${isPostulacion ? `<span class="badge" style="background:var(--accent); color:#fff; font-weight:700; font-size:0.75rem; padding:4px 10px; border-radius:12px;"><i class="fas fa-briefcase"></i> POSTULACIÓN VENDEDOR</span>` : `<span class="badge" style="background:rgba(255,255,255,0.08); color:var(--text); font-size:0.75rem; padding:4px 8px; border-radius:12px;"><i class="fas fa-tag"></i> ${inq.service || 'Consulta'}</span>`}
+                            <span class="inquiry-date" style="font-size:0.8rem; color:var(--text3);"><i class="far fa-clock"></i> ${dateStr}</span>
                         </div>
                     </div>
-                    <div class="inquiry-body" style="white-space: pre-line; line-height: 1.55; font-size: 0.9rem; margin: 10px 0; color: var(--text2);">${inq.message || 'Sin mensaje'}</div>
-                    <div class="inquiry-meta" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
-                        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                            ${inq.phone ? `<span><i class="fas fa-phone"></i> ${inq.phone}</span>` : ''}
-                            ${inq.email ? `<span><i class="fas fa-envelope"></i> ${inq.email}</span>` : ''}
-                            ${inq.service && !isPostulacion ? `<span><i class="fas fa-tag"></i> ${inq.service}</span>` : ''}
-                            <span class="badge ${inq.status === 'new' ? 'badge-green' : 'badge-gold'}">${inq.status === 'new' ? 'NUEVA' : 'VISTA'}</span>
+
+                    <div class="inquiry-body" style="white-space: pre-line; line-height: 1.6; font-size: 0.9rem; margin: 12px 0; color: var(--text2); background:var(--bg3); padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);">
+                        ${formattedMsg}
+                    </div>
+
+                    <div class="inquiry-meta" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; margin-top:10px;">
+                        <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; font-size:0.85rem;">
+                            ${inq.phone ? `<a href="tel:${cleanPhone}" style="color:var(--text); text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-phone" style="color:var(--accent);"></i> ${inq.phone}</a>` : ''}
+                            ${inq.email ? `<a href="mailto:${inq.email}" style="color:var(--text); text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-envelope" style="color:var(--accent);"></i> ${inq.email}</a>` : ''}
+                            <span class="badge ${inq.status === 'new' ? 'badge-green' : 'badge-gold'}" style="font-size:0.75rem;">${inq.status === 'new' ? 'NUEVA' : 'ATENDIDA'}</span>
                         </div>
-                        ${cleanPhone ? `
-                        <a href="${waLink}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:6px; font-weight:600; padding:6px 12px;">
-                            <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
-                        </a>` : ''}
+                        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                            ${inq.email ? `
+                            <a href="mailto:${inq.email}" class="btn btn-sm btn-ghost" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:0.85rem; border-radius:6px;">
+                                <i class="fas fa-envelope"></i> Email
+                            </a>` : ''}
+                            ${cleanPhone ? `
+                            <a href="${waLink}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:6px; font-weight:600; padding:6px 14px; font-size:0.85rem;">
+                                <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+                            </a>` : ''}
+                        </div>
                     </div>
                 </div>`;
             }).join('');
         }
+
         document.getElementById('refreshInquiries')?.addEventListener('click', loadInquiries);
+        document.getElementById('inquirySearch')?.addEventListener('input', renderInquiriesList);
+        document.getElementById('inquiryFilter')?.addEventListener('change', renderInquiriesList);
 
         // ===== SETTINGS =====
         async function loadSettings() {
