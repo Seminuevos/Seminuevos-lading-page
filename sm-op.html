@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
     <meta name="googlebot" content="noindex, nofollow">
@@ -51,14 +51,22 @@
         }
 
         html {
-            scroll-behavior: smooth
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            max-width: 100%;
+            width: 100%;
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
             font-family: 'Mina', sans-serif;
             background: var(--bg);
             color: var(--text);
-            min-height: 100vh
+            min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100%;
+            width: 100%;
+            position: relative;
         }
 
         /* AUTH SCREEN */
@@ -124,7 +132,10 @@
             position: relative;
             z-index: 1;
             display: flex;
-            min-height: 100vh
+            min-height: 100vh;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -235,6 +246,18 @@
         .sidebar-user .user-role {
             color: var(--text3);
             font-size: .75rem
+        }
+
+        .sidebar-actions-mobile {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .sidebar-actions-mobile button,
+        .sidebar-actions-mobile a {
+            width: 100%;
         }
 
         /* HEADER */
@@ -1118,71 +1141,252 @@
         }
 
         @media(max-width:768px) {
+            html, body {
+                width: 100% !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+            }
+
+            body::before, body::after {
+                display: none !important;
+            }
+
             .admin-layout {
-                flex-direction: column
+                flex-direction: column !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                min-width: 0 !important;
+                overflow-x: hidden !important;
             }
 
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                padding: 15px;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                align-items: center;
+                width: 100% !important;
+                max-width: 100vw !important;
+                min-width: 0 !important;
+                height: auto !important;
+                position: relative !important;
+                padding: 12px 14px 14px !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border) !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
             }
 
             .sidebar-logo {
-                display: none;
+                display: none !important;
             }
 
             .sidebar-nav {
-                flex-direction: row;
-                overflow-x: auto;
-                padding-bottom: 5px;
-                gap: 5px;
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                padding: 4px 0 10px 0 !important;
+                gap: 8px !important;
+                scrollbar-width: none;
             }
 
-            .sidebar-link {
-                white-space: nowrap;
-                padding: 8px 14px;
-            }
-
-            .sidebar-divider {
+            .sidebar-nav::-webkit-scrollbar {
                 display: none;
             }
 
+            .sidebar-link {
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+                padding: 8px 14px !important;
+                font-size: 0.82rem !important;
+                border-radius: var(--radius-md) !important;
+                background: rgba(255,255,255,0.04) !important;
+                border: 1px solid rgba(255,255,255,0.06) !important;
+            }
+
+            .sidebar-link.active {
+                background: rgba(39, 92, 234, 0.25) !important;
+                border-color: var(--accent) !important;
+                color: #fff !important;
+            }
+
+            .sidebar-divider {
+                display: none !important;
+            }
+
             .sidebar-user {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px 12px;
-                background: rgba(255,255,255,0.04);
-                border-radius: var(--radius-md);
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 10px !important;
+                padding: 10px 14px !important;
+                background: rgba(255,255,255,0.04) !important;
+                border-radius: var(--radius-md) !important;
+                margin-top: 6px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .sidebar-user .user-info {
+                text-align: left !important;
+            }
+
+            .sidebar-actions-mobile {
+                display: flex !important;
+                gap: 8px !important;
+                margin-top: 8px !important;
+                width: 100% !important;
+            }
+
+            .sidebar-actions-mobile button,
+            .sidebar-actions-mobile a {
+                flex: 1 !important;
+                margin-top: 0 !important;
             }
 
             #logoutBtn {
                 display: inline-flex !important;
-                padding: 6px 12px;
-                font-size: 0.8rem;
+                padding: 6px 12px !important;
+                font-size: 0.8rem !important;
             }
 
             .btn-ghost[href="index.html"] {
-                display: none;
+                display: none !important;
             }
 
             .main-content {
-                margin-left: 0;
-                padding: 12px;
+                margin-left: 0 !important;
+                padding: 16px 12px !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                overflow-x: hidden !important;
+            }
+
+            .page-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+                margin-bottom: 18px !important;
+                width: 100% !important;
+            }
+
+            .page-title {
+                font-size: 1.4rem !important;
+                text-align: left !important;
+            }
+
+            .page-header .btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 12px !important;
             }
 
             .form-grid,
             .settings-grid {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr !important;
             }
 
             .stats-row {
-                grid-template-columns: 1fr 1fr
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                margin-bottom: 18px !important;
+            }
+
+            .stat-card {
+                padding: 14px !important;
+                box-sizing: border-box !important;
+            }
+
+            .stat-val {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.78rem !important;
+            }
+
+            .admin-catalog-tabs {
+                display: flex !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                gap: 8px !important;
+                padding-bottom: 6px !important;
+                margin-bottom: 16px !important;
+                scrollbar-width: none;
+            }
+
+            .admin-catalog-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .admin-tab-btn {
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+                padding: 8px 14px !important;
+                font-size: 0.82rem !important;
+            }
+
+            .table-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                border-radius: var(--radius-md) !important;
+            }
+
+            #vehicleTableBody {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .table-container table,
+            #vehicleTableBody table {
+                min-width: 640px !important;
+                width: 100% !important;
+            }
+
+            th {
+                padding: 10px 12px !important;
+                font-size: 0.72rem !important;
+            }
+
+            td {
+                padding: 10px 12px !important;
+                font-size: 0.84rem !important;
+            }
+
+            .table-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 10px !important;
+                padding: 12px 14px !important;
+            }
+
+            .table-search {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .table-search input {
+                width: 100% !important;
             }
 
             .auth-card {
@@ -2915,13 +3119,11 @@
                     <div class="user-role">Administrador</div>
                 </div>
             </div>
-            <button class="btn btn-ghost btn-sm" onclick="promptChangeAdminPassword()" style="margin-top:12px;width:100%"><i
-                    class="fas fa-key"></i> Cambiar Mi Contraseña</button>
-            <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-top:8px;width:100%"><i
-                    class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
-            <a href="index.html" class="btn btn-ghost btn-sm"
-                style="margin-top:8px;width:100%;text-decoration:none;text-align:center"><i
-                    class="fas fa-arrow-left"></i> Volver al sitio</a>
+            <div class="sidebar-actions-mobile">
+                <button class="btn btn-ghost btn-sm" onclick="promptChangeAdminPassword()"><i class="fas fa-key"></i> Contraseña</button>
+                <button class="btn btn-ghost btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
+                <a href="index.html" class="btn btn-ghost btn-sm" style="text-decoration:none;text-align:center;"><i class="fas fa-external-link-alt"></i> Ver Web</a>
+            </div>
         </aside>
 
         <main class="main-content">
