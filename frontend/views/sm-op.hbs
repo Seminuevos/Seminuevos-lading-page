@@ -5390,7 +5390,6 @@
     <div class="toast" id="toast"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="data.js"></script>
     <script>
@@ -5463,8 +5462,8 @@
         async function autoSyncStockLocal() {
             try {
                 // Only seed if database is completely empty (0 vehicles)
-                const { data: dbData, error } = await supabaseClient.from('vehicles').select('id').limit(1);
-                if (error || (dbData && dbData.length > 0)) {
+                const check = await apiFetch('/api/vehicles');
+                if (!check.ok || (check.data?.data && check.data.data.length > 0)) {
                     return; // Database already has inventory, do not duplicate!
                 }
 
@@ -5491,8 +5490,8 @@
                         catalog: 'seminuevos',
                         status: 'active'
                     };
-                    const { error: insErr } = await supabaseClient.from('vehicles').insert([payload]);
-                    if (!insErr) inserted = true;
+                    const insRes = await apiFetch('/api/vehicles', { method: 'POST', body: payload });
+                    if (insRes.ok) inserted = true;
                 }
 
                 if (inserted) {
@@ -5589,152 +5588,20 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             }
 
+            // Único camino de autenticación: POST /api/auth/login (bcrypt + JWT
+            // en el backend). Antes había dos "fallbacks" más acá mismo en el
+            // JS del cliente — uno hablando directo con Supabase Auth, y otro
+            // con una lista de contraseñas maestras hardcodeada y visible con
+            // solo hacer "Ver código fuente". Ambos se eliminaron: eran un
+            // backdoor de login, no un respaldo.
             try {
-                let authenticatedUser = null;
-                let authToken = null;
+                const result = await apiFetch('/api/auth/login', {
+                    method: 'POST',
+                    body: { email: cleanEmail, password: cleanPassword }
+                });
 
-                // 1. Intentar API backend (/api/auth/login)
-                try {
-                    const result = await apiFetch('/api/auth/login', {
-                        method: 'POST',
-                        body: { email: cleanEmail, password: cleanPassword }
-                    });
-
-                    if (result && result.ok && result.data?.token) {
-                        authenticatedUser = result.data.user;
-                        authToken = result.data.token;
-                    }
-                } catch (apiErr) {
-                    console.warn("API login attempt:", apiErr);
-                }
-
-                // 2. MODO DIRECTO CON SUPABASE AUTH:
-                if (!authenticatedUser && supabaseClient && supabaseClient.auth) {
-                    try {
-                        const { data: sbAuth, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-                            email: cleanEmail,
-                            password: cleanPassword
-                        });
-                        if (!sbErr && sbAuth && sbAuth.user) {
-                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
-                            let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                            let matched = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-                            if (!matched && typeof syncUsersFromSupabase === 'function') {
-                                const fresh = await syncUsersFromSupabase();
-                                if (fresh) matched = fresh.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-                            }
-
-                            authenticatedUser = {
-                                id: sbAuth.user.id,
-                                email: sbAuth.user.email,
-                                full_name: matched?.full_name || sbAuth.user.user_metadata?.full_name || (isMasterEmail ? 'Administrador Master' : (sbAuth.user.email ? sbAuth.user.email.split('@')[0] : 'Colaborador')),
-                                role: matched?.role || sbAuth.user.user_metadata?.role || (isMasterEmail ? 'admin' : 'sales'),
-                                branch: matched?.branch || sbAuth.user.user_metadata?.branch || 'Porlamar (Sede Principal)',
-                                status: matched?.status || 'active'
-                            };
-                            authToken = sbAuth.session?.access_token || ('sb.' + btoa(JSON.stringify(authenticatedUser)));
-
-                            if (authenticatedUser.status === 'inactive') {
-                                if (errEl) {
-                                    errEl.innerHTML = '<i class="fas fa-ban" style="margin-right:6px;"></i> Tu cuenta se encuentra inactiva. Contacta al Administrador.';
-                                    errEl.style.display = 'block';
-                                }
-                                showToast('Cuenta suspendida', 'danger');
-                                return;
-                            }
-
-                            if (isMasterEmail) {
-                                try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                            }
-                        }
-                    } catch(sbEx) {
-                        console.warn("Supabase direct auth login notice:", sbEx);
-                    }
-                }
-
-                // 3. Validar contra credenciales autorizadas del sistema (Directorio Supabase Cloud / Local Storage / Clave Maestra)
-                if (!authenticatedUser) {
-                    // Siempre sincronizar la lista más fresca desde Supabase site_settings primero
-                    if (typeof syncUsersFromSupabase === 'function') {
-                        try {
-                            const fresh = await syncUsersFromSupabase();
-                            if (fresh && Array.isArray(fresh)) {
-                                _allAgencyUsers = fresh;
-                            }
-                        } catch(e) {}
-                    }
-
-                    let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                    let found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-
-                    let savedMasterPwd = null;
-                    try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
-                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
-                    const isMasterPassword = [
-                        savedMasterPwd,
-                        'Jvaask2006..',
-                        'jvaask2006..',
-                        'Jvaask2006.',
-                        'jvaask2006.',
-                        'Jvaask2006',
-                        'jvaask2006',
-                        'MasterAdmin2026!',
-                        'masteradmin2026',
-                        'Admin2026!',
-                        'admin2026',
-                        'Admin123',
-                        'admin123',
-                        '12345678'
-                    ].filter(Boolean).includes(cleanPassword);
-
-                    if (found) {
-                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword || found.password.trim().toLowerCase() === cleanPassword.toLowerCase())) ||
-                                          (isMasterAdminEmail && isMasterPassword);
-                        if (passMatch) {
-                            if (found.status === 'inactive') {
-                                if (errEl) {
-                                    errEl.innerHTML = '<i class="fas fa-ban" style="margin-right:6px;"></i> Tu cuenta se encuentra inactiva. Contacta al Administrador.';
-                                    errEl.style.display = 'block';
-                                }
-                                showToast('Cuenta suspendida', 'danger');
-                                return;
-                            }
-                            if (isMasterAdminEmail) {
-                                found.role = 'admin';
-                            }
-                            authenticatedUser = found;
-                            authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
-                            if (isMasterAdminEmail) {
-                                try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                            }
-
-                            // Auto-registrar en Supabase Auth en segundo plano si aún no está registrado
-                            if (supabaseClient && supabaseClient.auth && found.password) {
-                                supabaseClient.auth.signUp({
-                                    email: cleanEmail,
-                                    password: found.password,
-                                    options: { data: { full_name: found.full_name, role: found.role, branch: found.branch } }
-                                }).catch(() => {});
-                            }
-                        }
-                    } else if (isMasterAdminEmail && isMasterPassword) {
-                        // Credencial maestra registrada
-                        authenticatedUser = {
-                            id: 'master-admin',
-                            email: 'jvaask16@gmail.com',
-                            full_name: 'Administrador Master',
-                            role: 'admin',
-                            branch: 'Porlamar (Sede Principal)',
-                            status: 'active'
-                        };
-                        authToken = 'local.' + btoa(JSON.stringify({ ...authenticatedUser, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
-                        try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                    }
-                }
-
-                // 3. Si las credenciales no son válidas, rechazar el acceso
-                if (!authenticatedUser) {
-                    const msg = 'Correo o contraseña incorrectos. Verifica tus credenciales de acceso.';
+                if (!result || !result.ok || !result.data?.token) {
+                    const msg = result?.error || 'Correo o contraseña incorrectos. Verifica tus credenciales de acceso.';
                     if (errEl) {
                         errEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="margin-right:6px;"></i> ${msg}`;
                         errEl.style.display = 'block';
@@ -5743,7 +5610,9 @@
                     return;
                 }
 
-                // 4. Credenciales correctas: guardar sesión e iniciar panel
+                const authenticatedUser = result.data.user;
+                const authToken = result.data.token;
+
                 if (typeof _saveSession === 'function') {
                     _saveSession(authToken, authenticatedUser);
                 } else {
@@ -5784,28 +5653,14 @@
                 }
                 return;
             }
-            if (btnReset) btnReset.textContent = 'Enviando correo...';
-            const redirectUrl = window.location.origin + '/SM-OP';
-            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
+            // La recuperación de contraseña por email (magic link de Supabase
+            // Auth) ya no aplica — el login es JWT propio del backend, sin
+            // sesión de Supabase. Pide a un administrador que restablezca tu
+            // contraseña desde el panel de Usuarios.
             if (btnReset) btnReset.textContent = '¿Olvidaste tu contraseña?';
-            if (error) {
-                if (errEl) {
-                    errEl.innerHTML = '<i class="fas fa-times-circle"></i> Error al enviar enlace: ' + error.message;
-                    errEl.style.display = 'block';
-                }
-            } else {
-                if (succEl) {
-                    succEl.innerHTML = '✅ <strong>¡Enlace enviado!</strong> Revisa tu bandeja de entrada o la carpeta de Spam para restablecer tu contraseña.';
-                    succEl.style.display = 'block';
-                }
-                showToast('Enlace de recuperación enviado', 'success');
-            }
-        });
-
-        // Detect password recovery token from URL hash or Supabase event
-        supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'PASSWORD_RECOVERY') {
-                document.getElementById('resetPasswordModal').style.display = 'flex';
+            if (errEl) {
+                errEl.innerHTML = '<i class="fas fa-info-circle"></i> Pide a un administrador que restablezca tu contraseña desde el panel de Usuarios.';
+                errEl.style.display = 'block';
             }
         });
 
@@ -5825,57 +5680,30 @@
                 if (uStr) activeUser = JSON.parse(uStr);
             } catch(e) {}
 
-            try {
-                const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
-                if (error) console.warn('Supabase auth updateUser notice:', error.message);
-            } catch (err) {
-                console.warn('Supabase auth updateUser notice:', err);
+            if (!activeUser?.id) {
+                errEl.textContent = 'No se pudo identificar tu sesión. Vuelve a iniciar sesión.';
+                errEl.style.display = 'block';
+                return;
             }
 
-            const targetEmail = (activeUser?.email || 'jvicente@seminuevos.com').toLowerCase().trim();
-            const targetId = activeUser?.id || '5a7725b4-1ee3-496d-b47a-878fdf509925';
+            const result = await apiFetch(`/api/users/${encodeURIComponent(activeUser.id)}`, {
+                method: 'PUT',
+                body: { password: newPassword }
+            });
 
-            try {
-                if (targetEmail === 'jvaask16@gmail.com') {
-                    localStorage.setItem('sn_master_pwd', newPassword);
-                }
-                let stored = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                let match = stored.find(u => (u.email || '').toLowerCase().trim() === targetEmail || String(u.id) === String(targetId));
-                if (match) {
-                    match.password = newPassword;
-                    match.updated_at = new Date().toISOString();
-                }
-                if (typeof saveStoredUsers === 'function') saveStoredUsers(stored);
-            } catch(e) {}
-
-            try {
-                await apiFetch(`/api/users/${encodeURIComponent(targetId)}`, {
-                    method: 'PUT',
-                    body: { email: targetEmail, password: newPassword }
-                });
-            } catch(e) {}
-
-            const pwdInput = document.getElementById('authPassword');
-            if (pwdInput) pwdInput.value = newPassword;
+            if (!result.ok) {
+                errEl.textContent = result.error || 'No se pudo actualizar la contraseña.';
+                errEl.style.display = 'block';
+                return;
+            }
 
             document.getElementById('resetPasswordModal').style.display = 'none';
             showToast('¡Contraseña actualizada con éxito!', 'success');
-
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session && session.user) {
-                    showAdmin({
-                        id: session.user.id,
-                        email: session.user.email,
-                        full_name: session.user.user_metadata?.full_name || 'Administrador',
-                        role: 'admin',
-                        status: 'active'
-                    });
-                }
-            } catch(e) {}
+            showAdmin(activeUser);
         });
 
         document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+            try { await apiFetch('/api/auth/logout', { method: 'POST' }); } catch(e) {}
             try {
                 localStorage.removeItem('sn_admin_logged_in');
                 localStorage.removeItem('sn_admin_user');
@@ -5884,8 +5712,6 @@
             } catch(e) {}
             const pwdInput = document.getElementById('authPassword');
             if (pwdInput) pwdInput.value = '';
-            await logSecurityEvent('LOGOUT', 'info', 'Cierre de sesión manual');
-            try { await supabaseClient.auth.signOut(); } catch(e) {}
             if (authScreen) authScreen.style.display = 'flex';
             if (adminPanel) adminPanel.style.display = 'none';
             showToast('Sesión cerrada correctamente', 'info');
@@ -5894,96 +5720,38 @@
         async function promptChangeAdminPassword() {
             let activeUser = null;
             try {
-                const uStr = sessionStorage.getItem('sn_current_user') || 
-                             sessionStorage.getItem('sn_admin_user') || 
-                             localStorage.getItem('sn_current_user') || 
-                             localStorage.getItem('sn_admin_user');
+                const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user');
                 if (uStr) activeUser = JSON.parse(uStr);
             } catch(e) {}
 
-            const userEmail = (activeUser?.email || 'jvicente@seminuevos.com').toLowerCase().trim();
-            const userName = activeUser?.full_name || userEmail;
-            const userId = activeUser?.id || '5a7725b4-1ee3-496d-b47a-878fdf509925';
+            if (!activeUser?.id) {
+                showToast('No se pudo identificar tu sesión. Vuelve a iniciar sesión.', 'danger');
+                return;
+            }
 
-            const newPwd = prompt(`Cambiar contraseña para ${userName} (${userEmail}):\nIngresa tu nueva contraseña (mínimo 6 caracteres):`, '');
+            const userName = activeUser.full_name || activeUser.email;
+            const newPwd = prompt(`Cambiar contraseña para ${userName} (${activeUser.email}):\nIngresa tu nueva contraseña (mínimo 8 caracteres):`, '');
             if (newPwd === null) return;
             const cleanPwd = newPwd.trim();
-            if (cleanPwd.length < 6) {
-                showToast('La contraseña debe tener al menos 6 caracteres', 'warning');
+            if (cleanPwd.length < 8) {
+                showToast('La contraseña debe tener al menos 8 caracteres', 'warning');
                 return;
             }
 
             showToast('Guardando nueva contraseña...', 'info');
 
-            // 1. Guardar permanentemente en local storage / memoria
-            try {
-                if (userEmail === 'jvaask16@gmail.com') {
-                    localStorage.setItem('sn_master_pwd', cleanPwd);
-                }
-                let stored = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                let match = stored.find(u => (u.email || '').toLowerCase().trim() === userEmail || String(u.id) === String(userId));
-                if (match) {
-                    match.password = cleanPwd;
-                    match.updated_at = new Date().toISOString();
-                } else {
-                    stored.unshift({
-                        id: userId,
-                        full_name: userName,
-                        email: userEmail,
-                        password: cleanPwd,
-                        role: activeUser?.role || 'admin',
-                        status: 'active',
-                        updated_at: new Date().toISOString()
-                    });
-                }
-                if (typeof saveStoredUsers === 'function') saveStoredUsers(stored);
+            const result = await apiFetch(`/api/users/${encodeURIComponent(activeUser.id)}`, {
+                method: 'PUT',
+                body: { password: cleanPwd }
+            });
 
-                // Actualizar sesión activa
-                if (activeUser) {
-                    activeUser.password = cleanPwd;
-                    try {
-                        sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                        sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
-                        localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                    } catch(e) {}
-                }
-            } catch(e) {
-                console.warn('Local save warning:', e);
+            if (!result.ok) {
+                showToast(result.error || 'No se pudo actualizar la contraseña', 'danger');
+                return;
             }
-
-            // 2. Sincronizar en Supabase Auth directamente si hay sesión
-            try {
-                if (supabaseClient && supabaseClient.auth) {
-                    const { data: sessData } = await supabaseClient.auth.getSession();
-                    if (!sessData || !sessData.session) {
-                        try {
-                            await supabaseClient.auth.signInWithPassword({
-                                email: userEmail,
-                                password: cleanPwd
-                            });
-                        } catch(e) {}
-                    }
-                    const { error } = await supabaseClient.auth.updateUser({ password: cleanPwd });
-                    if (error) console.warn('Supabase auth updateUser notice:', error.message);
-                }
-            } catch(e) {}
-
-            // 3. Sincronizar en backend API (Persistencia en base de datos nube)
-            try {
-                await apiFetch(`/api/users/${encodeURIComponent(userId)}`, {
-                    method: 'PUT',
-                    body: { email: userEmail, password: cleanPwd }
-                });
-            } catch(e) {
-                console.warn('API update notice:', e);
-            }
-
-            const pwdInput = document.getElementById('authPassword');
-            if (pwdInput) pwdInput.value = cleanPwd;
 
             if (typeof renderUsersTable === 'function') renderUsersTable();
-
-            showToast('✓ Contraseña actualizada y guardada correctamente en el sistema', 'success');
+            showToast('✓ Contraseña actualizada correctamente', 'success');
         }
 
         // ===== VEHICLES CRUD =====
@@ -5992,10 +5760,28 @@
         let currentEditIndex = -1;
         let originalImageData = null;
 
+        /** Sube una imagen al backend (proxy de Supabase Storage) y devuelve su URL pública, o null si falla. */
+        async function uploadImageToBackend(blob, filename) {
+            try {
+                const formData = new FormData();
+                formData.append('file', blob, filename);
+                const res = await fetch(apiUrl('/api/vehicles/upload-image'), {
+                    method: 'POST',
+                    headers: { ...apiAuthHeader() },
+                    body: formData
+                });
+                if (!res.ok) return null;
+                const json = await res.json();
+                return json?.data?.url || null;
+            } catch (e) {
+                console.warn('Upload de imagen falló:', e);
+                return null;
+            }
+        }
+
         async function loadVehicles() {
             let data = null;
 
-            // 1. Intentar API backend
             try {
                 const apiRes = await apiFetch('/api/vehicles');
                 if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
@@ -6003,16 +5789,6 @@
                 }
             } catch(e) {}
 
-            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no está configurada o falla
-            if (!data && supabaseClient && typeof supabaseClient.from === 'function') {
-                try {
-                    const res = await supabaseClient.from('vehicles').select('*').order('created_at', { ascending: false });
-                    if (!res.error && res.data) data = res.data;
-                } catch(e) {
-                    console.warn('Modo compatibilidad: Carga directa Supabase:', e);
-                }
-            }
-            
             const staticSemi = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
             const static0km = (typeof vehicles0km !== 'undefined') ? vehicles0km : [];
             const allStatic = (typeof allVehicles !== 'undefined') ? allVehicles : [...staticSemi, ...static0km];
@@ -6300,10 +6076,9 @@
                     if (data.startsWith('data:')) {
                         const blob = await (await fetch(data)).blob();
                         const fname = `vehicle-${Date.now()}-${i}.jpg`;
-                        const { data: upData, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, blob, { contentType: 'image/jpeg' });
-                        if (!error) {
-                            const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
-                            finalImgs.push(urlData.publicUrl);
+                        const publicUrl = await uploadImageToBackend(blob, fname);
+                        if (publicUrl) {
+                            finalImgs.push(publicUrl);
                         }
                     } else {
                         // Es un URL existente
@@ -6326,25 +6101,11 @@
                 const tKey = title.toLowerCase().trim();
 
                 if (id) {
-                    // 1. Intentar API backend
-                    let apiSuccess = false;
                     try {
-                        const apiRes = await apiFetch(`/api/vehicles/${id}`, { method: 'PUT', body: vehicleData });
-                        if (apiRes && apiRes.ok) apiSuccess = true;
+                        await apiFetch(`/api/vehicles/${id}`, { method: 'PUT', body: vehicleData });
                     } catch(e) {}
 
-                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
-                    if (!apiSuccess) {
-                        try {
-                            const numId = parseInt(id);
-                            const { error } = await supabaseClient.from('vehicles').update(vehicleData).eq('id', !isNaN(numId) ? numId : id);
-                            if (error) console.warn('Modo compatibilidad: aviso DB direct Supabase:', error.message);
-                        } catch(dbErr) {
-                            console.warn('Modo compatibilidad: error Supabase:', dbErr);
-                        }
-                    }
-
-                    // 3. Respaldo local inmediato (cero bloqueos)
+                    // Respaldo local inmediato (cero bloqueos)
                     try {
                         let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
                         overrides[String(id)] = { ...vehicleData, id: id };
@@ -6365,30 +6126,13 @@
                     showToast('✓ Vehículo actualizado con éxito', 'success');
                     logSecurityEvent('VEHICLE_UPDATE', 'info', `Vehículo actualizado: ${title} (${id})`);
                 } else {
-                    // 1. Intentar API backend
-                    let apiSuccess = false;
                     let dbId = null;
                     try {
                         const apiRes = await apiFetch('/api/vehicles', { method: 'POST', body: vehicleData });
                         if (apiRes && apiRes.ok && apiRes.data?.data?.id) {
-                            apiSuccess = true;
                             dbId = apiRes.data.data.id;
                         }
                     } catch(e) {}
-
-                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
-                    if (!apiSuccess) {
-                        try {
-                            const { data: insData, error } = await supabaseClient.from('vehicles').insert([vehicleData]).select();
-                            if (!error && insData && insData.length > 0) {
-                                dbId = insData[0].id;
-                            } else if (error) {
-                                console.warn('Modo compatibilidad: aviso Supabase direct:', error.message);
-                            }
-                        } catch(insErr) {
-                            console.warn('Modo compatibilidad: error Supabase:', insErr);
-                        }
-                    }
 
                     savedId = dbId || ('loc_' + Date.now());
                     const newVeh = { ...vehicleData, id: savedId, created_at: new Date().toISOString() };
@@ -6529,22 +6273,7 @@
                 const sId = String(idVal);
                 const v = vehicles.find(item => String(item.id) === sId);
 
-                // 1. Intentar API backend
-                apiFetch(`/api/vehicles/${idVal}`, { method: 'DELETE' }).catch(() => {});
-
-                // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no está disponible
-                try {
-                    const numId = parseInt(idVal);
-                    if (!isNaN(numId)) {
-                        await supabaseClient.from('vehicles').delete().eq('id', numId);
-                    }
-                    await supabaseClient.from('vehicles').delete().eq('id', idVal);
-                    if (v && v.title) {
-                        await supabaseClient.from('vehicles').delete().eq('title', v.title);
-                    }
-                } catch(e) {
-                    console.warn('Modo compatibilidad: Supabase bulk delete notice:', e);
-                }
+                await apiFetch(`/api/vehicles/${idVal}`, { method: 'DELETE' }).catch(() => {});
 
                 if (v && v.title) {
                     const tKey = v.title.toLowerCase().trim();
@@ -6587,26 +6316,11 @@
 
             showToast('Eliminando vehículo...', 'info');
 
-            // 1. Intentar API backend
             try {
                 await apiFetch(`/api/vehicles/${id}`, { method: 'DELETE' });
             } catch(e) {}
 
-            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
-            try {
-                const numericId = parseInt(id);
-                if (!isNaN(numericId)) {
-                    await supabaseClient.from('vehicles').delete().eq('id', numericId);
-                }
-                await supabaseClient.from('vehicles').delete().eq('id', id);
-                if (v && v.title) {
-                    await supabaseClient.from('vehicles').delete().eq('title', v.title);
-                }
-            } catch(e) {
-                console.warn('Modo compatibilidad: Supabase DB delete notice:', e);
-            }
-
-            // 2. Save in localStorage deleted blacklist so static/cache units hide permanently
+            // Save in localStorage deleted blacklist so static/cache units hide permanently
             let deleted = [];
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
             if (v && v.title) {
@@ -6923,86 +6637,41 @@
 
             let items = [];
 
-            // 1. Intentar API backend autenticada
             try {
                 const apiRes = await apiFetch('/api/inquiries');
-                if (apiRes && apiRes.ok && Array.isArray(apiRes.data) && apiRes.data.length > 0) {
-                    items = apiRes.data;
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data)) {
+                    items = apiRes.data.data;
                 }
             } catch (err) {
                 console.warn('API /api/inquiries notice:', err);
             }
 
-            // 2. Si no retornó por API (ej. entorno local sin Vercel Functions), consultar directamente Supabase con Auth
-            if (!items || items.length === 0) {
-                if (supabaseClient) {
-                    try {
-                        if (supabaseClient.auth) {
-                            const sessRes = await supabaseClient.auth.getSession();
-                            if (!sessRes?.data?.session) {
-                                await supabaseClient.auth.signInWithPassword({
-                                    email: 'jvaask16@gmail.com',
-                                    password: 'Jvaask2006..'
-                                });
-                            }
-                        }
-                        const { data: sbData, error: sbErr } = await supabaseClient
-                            .from('inquiries')
-                            .select('*')
-                            .order('created_at', { ascending: false });
-                        if (!sbErr && sbData && sbData.length > 0) {
-                            items = sbData;
-                        }
-                    } catch (sbEx) {
-                        console.warn('Direct Supabase inquiries notice:', sbEx);
-                    }
-                }
-            }
-
-            // 3. Fallback / combinación complementaria con site_leads para garantizar que NUNCA falte un registro
+            // Complementar con leads del CRM (site_leads) que no tengan ya una inquiry asociada
             try {
-                if (supabaseClient) {
-                    const { data: leadsData } = await supabaseClient
-                        .from('site_leads')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-                    
-                    if (leadsData && leadsData.length > 0) {
-                        if (!items || items.length === 0) {
-                            items = leadsData.map(l => ({
-                                id: l.id,
-                                name: l.name || 'Sin nombre',
+                const leadsRes = await apiFetch('/api/analytics/leads');
+                const leadsData = leadsRes?.ok ? leadsRes.data?.data : null;
+
+                if (leadsData && leadsData.length > 0) {
+                    const knownEmails = new Set(items.map(i => (i.email || '').toLowerCase().trim()).filter(Boolean));
+                    const knownPhones = new Set(items.map(i => (i.phone || '').replace(/\D/g, '')).filter(Boolean));
+
+                    leadsData.forEach(l => {
+                        const cleanP = (l.phone || '').replace(/\D/g, '');
+                        const cleanE = (l.email || '').toLowerCase().trim();
+                        const exists = (cleanE && knownEmails.has(cleanE)) || (cleanP && knownPhones.has(cleanP));
+                        if (!exists) {
+                            items.push({
+                                id: 'lead-' + l.id,
+                                name: l.full_name || 'Sin nombre',
                                 phone: l.phone || '',
                                 email: l.email || '',
-                                service: 'Lead / Postulación',
-                                message: l.notes || 'Registro recibido a través del sitio web.',
+                                service: 'Lead Web',
+                                message: l.notes || 'Registro capturado desde la web.',
                                 status: 'new',
                                 created_at: l.created_at || l.last_active
-                            }));
-                        } else {
-                            // Si ya tenemos items de inquiries, agregar leads que no estén en inquiries
-                            const knownEmails = new Set(items.map(i => (i.email || '').toLowerCase().trim()).filter(Boolean));
-                            const knownPhones = new Set(items.map(i => (i.phone || '').replace(/\D/g, '')).filter(Boolean));
-                            
-                            leadsData.forEach(l => {
-                                const cleanP = (l.phone || '').replace(/\D/g, '');
-                                const cleanE = (l.email || '').toLowerCase().trim();
-                                const exists = (cleanE && knownEmails.has(cleanE)) || (cleanP && knownPhones.has(cleanP));
-                                if (!exists) {
-                                    items.push({
-                                        id: 'lead-' + l.id,
-                                        name: l.name || 'Sin nombre',
-                                        phone: l.phone || '',
-                                        email: l.email || '',
-                                        service: 'Lead Web',
-                                        message: l.notes || 'Registro capturado desde la web.',
-                                        status: 'new',
-                                        created_at: l.created_at || l.last_active
-                                    });
-                                }
                             });
                         }
-                    }
+                    });
                 }
             } catch (leadEx) {
                 console.warn('site_leads check notice:', leadEx);
@@ -7024,7 +6693,7 @@
             const filterVal = document.getElementById('inquiryFilter')?.value || 'all';
 
             const filtered = allInquiriesList.filter(inq => {
-                const name = (inq.name || '').toLowerCase();
+                const name = (inq.full_name || inq.name || '').toLowerCase();
                 const email = (inq.email || '').toLowerCase();
                 const phone = (inq.phone || '').toLowerCase();
                 const msg = (inq.message || '').toLowerCase();
@@ -7065,8 +6734,8 @@
                 
                 // Generar enlace dinámico de WhatsApp según tipo de solicitud
                 const waText = isPostulacion 
-                    ? `Hola ${inq.name || ''}, te contactamos de Seminuevos Agency en relación a tu postulación como vendedor.`
-                    : `Hola ${inq.name || ''}, te contactamos de Seminuevos Agency para atender tu consulta en nuestro portal web.`;
+                    ? `Hola ${inq.full_name || inq.name || ''}, te contactamos de Seminuevos Agency en relación a tu postulación como vendedor.`
+                    : `Hola ${inq.full_name || inq.name || ''}, te contactamos de Seminuevos Agency para atender tu consulta en nuestro portal web.`;
                 const waLink = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waText)}` : null;
 
                 // Formatear enlaces URL dentro del mensaje para que sean clickeables
@@ -7085,7 +6754,7 @@
                 <div class="inquiry-card" style="${isPostulacion ? 'border-left: 4px solid var(--accent); background: rgba(39, 92, 234, 0.04);' : ''}">
                     <div class="inquiry-top" style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
                         <div>
-                            <span class="inquiry-name" style="font-weight:700; color:var(--text); font-size:1.05rem;">${inq.name || 'Anónimo'}</span>
+                            <span class="inquiry-name" style="font-weight:700; color:var(--text); font-size:1.05rem;">${inq.full_name || inq.name || 'Anónimo'}</span>
                             <div style="font-size:0.8rem; color:var(--text3); margin-top:2px;">ID: ${inq.id || '-'}</div>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -7126,16 +6795,14 @@
         // ===== SETTINGS =====
         async function loadSettings() {
             let map = {};
-            if (supabaseClient && typeof supabaseClient.from === 'function') {
-                try {
-                    const res = await supabaseClient.from('site_settings').select('*');
-                    if (!res.error && res.data && res.data.length > 0) {
-                        res.data.forEach(s => {
-                            try { map[s.key] = JSON.parse(s.value); } catch(e) { map[s.key] = s.value; }
-                        });
-                    }
-                } catch(e) {}
-            }
+            try {
+                const res = await apiFetch('/api/site-settings');
+                if (res.ok && Array.isArray(res.data?.data)) {
+                    res.data.data.forEach(s => {
+                        try { map[s.key] = JSON.parse(s.value); } catch(e) { map[s.key] = s.value; }
+                    });
+                }
+            } catch(e) {}
             if (Object.keys(map).length === 0) {
                 try {
                     map = JSON.parse(localStorage.getItem('sn_site_settings') || '{}');
@@ -7715,18 +7382,17 @@
                 console.warn('Fallback hero upload', e);
             }
 
-            const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, uploadBlob, { contentType: 'image/jpeg' });
+            const publicUrl = await uploadImageToBackend(uploadBlob, fname);
 
-            if (error) {
-                showToast('Error subiendo imagen: ' + error.message, 'error');
+            if (!publicUrl) {
+                showToast('Error subiendo imagen', 'error');
                 return;
             }
 
-            const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
-            heroSlides[index].image = urlData.publicUrl;
-            updateHeroSlideField(index, 'image', urlData.publicUrl);
+            heroSlides[index].image = publicUrl;
+            updateHeroSlideField(index, 'image', publicUrl);
             const inputUrl = document.getElementById(`hpImgUrlInput-${index}`);
-            if (inputUrl) inputUrl.value = urlData.publicUrl;
+            if (inputUrl) inputUrl.value = publicUrl;
             showToast('✓ Imagen de hero actualizada', 'success');
         };
 
@@ -7749,11 +7415,9 @@
                 calc_service_fee: parseFloat(document.getElementById('sServiceFeeSetting').value),
                 hero_slides: heroSlides
             };
-            for (const [key, val] of Object.entries(settings)) {
-                try {
-                    await supabaseClient.from('site_settings').upsert({ key, value: JSON.stringify(val), updated_at: new Date().toISOString() });
-                } catch(e) {}
-            }
+            try {
+                await apiFetch('/api/site-settings', { method: 'PUT', body: settings });
+            } catch(e) {}
             try {
                 localStorage.setItem('sn_site_settings', JSON.stringify(settings));
                 localStorage.removeItem('sn_supabase_cache');
@@ -7790,24 +7454,15 @@
 
         // ===== SECURITY LOGS =====
         // ===== SECURITY SYSTEM (REAL DATA) =====
-        async function logSecurityEvent(type, severity, details, metadata = {}) {
+        async function logSecurityEvent(type, severity, details) {
+            // La IP real la captura el backend del request — el cliente ya no
+            // necesita pedirle su propia IP a un tercero (ipify.org) ni
+            // insertar directo en Supabase.
             try {
-                // Get IP via third party (client-side)
-                let ip = 'Unknown';
-                try {
-                    const res = await fetch('https://api.ipify.org?format=json');
-                    const json = await res.json();
-                    ip = json.ip;
-                } catch(e) {}
-
-                await supabaseClient.from('security_logs').insert([{
-                    event_type: type,
-                    severity: severity,
-                    ip_address: ip,
-                    details: details,
-                    user_agent: navigator.userAgent,
-                    metadata: metadata
-                }]);
+                await apiFetch('/api/security/log', {
+                    method: 'POST',
+                    body: { event_type: type, severity, details }
+                });
             } catch (e) {
                 console.warn('Security logging failed:', e);
             }
@@ -7818,14 +7473,10 @@
             const search = document.getElementById('securitySearch')?.value.toLowerCase() || '';
             
             try {
-                const { data, error } = await supabaseClient
-                    .from('security_logs')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                const res = await apiFetch('/api/security/log');
+                if (!res.ok) throw new Error(res.error || 'Error al cargar logs');
 
-                if (error) throw error;
-
-                const logs = data || [];
+                const logs = res.data?.data || [];
 
                 const filtered = logs.filter(l => 
                     l.event_type.toLowerCase().includes(search) || 
@@ -7873,18 +7524,16 @@
 
         window.blockIP = async (ip) => {
             if (!confirm(`¿Estás seguro de bloquear permanentemente la IP ${ip}?`)) return;
-            try {
-                const { error } = await supabaseClient.from('ip_blacklist').upsert({
-                    ip: ip,
-                    reason: 'Bloqueo manual desde panel administrativo',
-                    blocked_at: new Date().toISOString()
-                });
-                if (error) throw error;
-                showToast(`IP ${ip} bloqueada exitosamente`, 'success');
-                logSecurityEvent('IP_BLOCK', 'info', `IP ${ip} bloqueada por administrador`);
-            } catch(e) {
-                showToast('Error al bloquear IP: ' + e.message, 'error');
+            const res = await apiFetch('/api/security/ip-blacklist', {
+                method: 'POST',
+                body: { ip, reason: 'Bloqueo manual desde panel administrativo' }
+            });
+            if (!res.ok) {
+                showToast('Error al bloquear IP: ' + (res.error || ''), 'error');
+                return;
             }
+            showToast(`IP ${ip} bloqueada exitosamente`, 'success');
+            logSecurityEvent('IP_BLOCK', 'info', `IP ${ip} bloqueada por administrador`);
         };
 
         document.getElementById('securitySearch')?.addEventListener('input', () => loadSecurityLogs());
@@ -7897,10 +7546,10 @@
 
         async function loadAnalyticsData() {
             try {
-                const { data, error } = await supabaseClient.from('site_analytics').select('*').order('created_at', { ascending: false });
-                if (error) throw error;
+                const res = await apiFetch('/api/analytics');
+                if (!res.ok) throw new Error(res.error || 'Error al cargar analíticas');
 
-                const events = data || [];
+                const events = res.data?.data || [];
 
                 // 1. Métricas Principales: Calcular Sesiones Únicas Reales por Sesión de Navegador (sessionStorage / Session ID)
                 const sessionIds = new Set();
@@ -8470,22 +8119,13 @@
                         images: cleanImgs.length > 0 ? cleanImgs : ['images/hero1.png']
                     };
 
-                    // 1. Intentar API backend
                     let importedOk = false;
                     try {
                         const apiRes = await apiFetch('/api/vehicles', { method: 'POST', body: vehicleData });
                         if (apiRes && apiRes.ok) importedOk = true;
                     } catch(e) {}
 
-                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no responde
-                    if (!importedOk) {
-                        try {
-                            const { error: dbErr } = await supabaseClient.from('vehicles').insert([vehicleData]);
-                            if (!dbErr) importedOk = true;
-                        } catch(e) {}
-                    }
-
-                    // 3. Respaldo local inmediato si la DB está protegida por RLS
+                    // Respaldo local inmediato si la API falla
                     if (!importedOk) {
                         const locId = 'loc_' + Date.now();
                         let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
@@ -8669,15 +8309,9 @@
             try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
 
             for (const v of garbage) {
-                // 1. Intentar API
-                apiFetch(`/api/vehicles/${v.id}`, { method: 'DELETE' }).catch(() => {});
+                await apiFetch(`/api/vehicles/${v.id}`, { method: 'DELETE' }).catch(() => {});
 
-                // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase
-                try {
-                    await supabaseClient.from('vehicles').delete().eq('id', v.id);
-                } catch(e) {}
-
-                // 3. Respaldo local
+                // Respaldo local
                 if (v.id) deleted.push(String(v.id));
                 if (v.title) deleted.push((v.title || '').toLowerCase().trim());
             }
@@ -8708,13 +8342,8 @@
                 });
 
                 if (modified) {
-                    // 1. Intentar API
-                    apiFetch(`/api/vehicles/${v.id}`, { method: 'PUT', body: { images: cleanedImages } }).catch(() => {});
-                    // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase
-                    try {
-                        await supabaseClient.from('vehicles').update({ images: cleanedImages }).eq('id', v.id);
-                    } catch(e) {}
-                    // 3. Respaldo local
+                    await apiFetch(`/api/vehicles/${v.id}`, { method: 'PUT', body: { images: cleanedImages } }).catch(() => {});
+                    // Respaldo local
                     try {
                         let ov = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
                         ov[String(v.id)] = { ...(ov[String(v.id)] || {}), images: cleanedImages };
@@ -8735,14 +8364,9 @@
         let allLeads = [];
         async function loadLeads() {
             try {
-                // 1. Obtener leads de la tabla site_leads
-                const { data: leadsData, error: leadsError } = await supabaseClient
-                    .from('site_leads')
-                    .select('*')
-                    .order('last_active', { ascending: false });
-
-                if (leadsError) throw leadsError;
-                allLeads = leadsData || [];
+                const res = await apiFetch('/api/analytics/leads');
+                if (!res.ok) throw new Error(res.error || 'Error al cargar leads');
+                allLeads = res.data?.data || [];
 
                 // 2. Obtener estadísticas básicas
                 const total = allLeads.length;
@@ -8764,7 +8388,7 @@
             const search = document.getElementById('crmSearch').value.toLowerCase();
             
             const filtered = allLeads.filter(l => 
-                (l.name && l.name.toLowerCase().includes(search)) || 
+                (l.full_name && l.full_name.toLowerCase().includes(search)) || 
                 (l.email && l.email.toLowerCase().includes(search)) ||
                 l.visitor_id.includes(search)
             );
@@ -8788,7 +8412,7 @@
                         ${filtered.map(l => `
                             <tr style="border-bottom:1px solid var(--border);">
                                 <td style="padding:12px;">
-                                    <div style="font-weight:600;">${l.name || 'Visitante Anónimo'}</div>
+                                    <div style="font-weight:600;">${l.full_name || 'Visitante Anónimo'}</div>
                                     <div style="font-size:0.7rem; color:var(--text3); font-family:monospace;">${l.visitor_id}</div>
                                 </td>
                                 <td style="padding:12px;">
@@ -8801,7 +8425,7 @@
                                 <td style="padding:12px;">
                                     <div class="action-btns">
                                         <button class="action-btn" onclick="viewLeadDetails('${l.visitor_id}')" title="Ver Historial"><i class="fas fa-history"></i></button>
-                                        ${l.email ? `<button class="action-btn" onclick="openMarketingEmail('${l.email}', '${l.name || ''}')" title="Enviar Email Marketing" style="color:var(--primary)"><i class="fas fa-paper-plane"></i></button>` : ''}
+                                        ${l.email ? `<button class="action-btn" onclick="openMarketingEmail('${l.email}', '${l.full_name || ''}')" title="Enviar Email Marketing" style="color:var(--primary)"><i class="fas fa-paper-plane"></i></button>` : ''}
                                     </div>
                                 </td>
                             </tr>
@@ -8822,21 +8446,17 @@
             modal.style.display = 'flex';
 
             try {
-                // Obtener historial de analytics
-                const { data: history, error } = await supabaseClient
-                    .from('site_analytics')
-                    .select('*')
-                    .eq('visitor_id', visitorId)
-                    .order('created_at', { ascending: false })
-                    .limit(50);
-
-                if (error) throw error;
+                const res = await apiFetch('/api/analytics');
+                if (!res.ok) throw new Error(res.error || 'Error al cargar el historial');
+                const history = (res.data?.data || [])
+                    .filter(e => e.visitor_id === visitorId)
+                    .slice(0, 50);
 
                 let html = `
                     <div style="background:var(--bg3); padding:15px; border-radius:var(--radius); margin-bottom:20px;">
                         <h4 style="margin-bottom:10px; color:var(--accent);">Información del Perfil</h4>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.9rem;">
-                            <div><strong>Nombre:</strong> ${lead.name || 'N/A'}</div>
+                            <div><strong>Nombre:</strong> ${lead.full_name || 'N/A'}</div>
                             <div><strong>Email:</strong> ${lead.email || 'N/A'}</div>
                             <div><strong>ID Visitante:</strong> <span style="font-family:monospace; font-size:0.7rem;">${lead.visitor_id}</span></div>
                             <div><strong>Creado:</strong> ${new Date(lead.created_at).toLocaleDateString('es')}</div>
@@ -8974,11 +8594,10 @@
             localStorage.setItem('sn_promo_subtitle', subtitle);
 
             try {
-                await supabaseClient.from('site_settings').upsert([
-                    { key: 'promo_tag', value: JSON.stringify(tag) },
-                    { key: 'promo_title', value: JSON.stringify(title) },
-                    { key: 'promo_subtitle', value: JSON.stringify(subtitle) }
-                ]);
+                await apiFetch('/api/site-settings', {
+                    method: 'PUT',
+                    body: { promo_tag: tag, promo_title: title, promo_subtitle: subtitle }
+                });
             } catch(e) {}
 
             showToast('Encabezado de promociones actualizado ✓', 'success');
@@ -9019,9 +8638,10 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
         async function fetchPromosFromSupabaseSettings() {
             try {
-                const { data } = await supabaseClient.from('site_settings').select('value').eq('key', 'promotions_list').maybeSingle();
-                if (data && data.value) {
-                    try { return typeof data.value === 'string' ? JSON.parse(data.value) : data.value; } catch(e) { return []; }
+                const res = await apiFetch('/api/site-settings');
+                const row = res.ok ? (res.data?.data || []).find(s => s.key === 'promotions_list') : null;
+                if (row && row.value) {
+                    try { return typeof row.value === 'string' ? JSON.parse(row.value) : row.value; } catch(e) { return []; }
                 }
             } catch(e) {}
             return null;
@@ -9029,9 +8649,7 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
         async function syncPromosToSupabaseSettings(promos) {
             try {
-                await supabaseClient.from('site_settings').upsert([
-                    { key: 'promotions_list', value: JSON.stringify(promos) }
-                ]);
+                await apiFetch('/api/site-settings', { method: 'PUT', body: { promotions_list: promos } });
             } catch(e) {}
         }
 
@@ -9114,7 +8732,8 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
             // Ensure vehicles are loaded so selector has list
             if (!vehicles || vehicles.length === 0) {
                 try {
-                    const { data } = await supabaseClient.from('vehicles').select('*').order('created_at', { ascending: false });
+                    const res = await apiFetch('/api/vehicles');
+                    const data = res.ok ? res.data?.data : null;
                     if (data) vehicles = data.filter(v => v.title && !v.title.includes('Vehículo'));
                 } catch(e) {}
             }
@@ -12821,26 +12440,21 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 .replace(/'/g, '&#039;');
         }
 
+        // Antes leía site_settings.agency_users_directory — un directorio de
+        // usuarios (con contraseñas en texto plano) que vivía en una tabla de
+        // lectura pública. Ahora usa /api/users, la única fuente de verdad
+        // (tabla agency_users, contraseñas siempre con bcrypt).
         async function syncUsersFromSupabase() {
             try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    const { data, error } = await supabaseClient
-                        .from('site_settings')
-                        .select('value')
-                        .eq('key', 'agency_users_directory')
-                        .maybeSingle();
-
-                    if (!error && data && data.value) {
-                        const list = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
-                        if (Array.isArray(list) && list.length > 0) {
-                            _allAgencyUsers = list;
-                            try { localStorage.setItem('sn_agency_users', JSON.stringify(list)); } catch(e) {}
-                            return list;
-                        }
-                    }
+                const res = await apiFetch('/api/users');
+                if (res.ok && Array.isArray(res.data?.data) && res.data.data.length > 0) {
+                    const list = res.data.data;
+                    _allAgencyUsers = list;
+                    try { localStorage.setItem('sn_agency_users', JSON.stringify(list)); } catch(e) {}
+                    return list;
                 }
             } catch (e) {
-                console.warn('Sync users from Supabase error:', e);
+                console.warn('Sync users from API error:', e);
             }
             return null;
         }
@@ -13247,26 +12861,17 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                         role: role,
                         branch: branch,
                         status: status,
-                        notes: notes,
-                        updated_at: new Date().toISOString()
+                        notes: notes
                     };
-                    if (password && password.length >= 6) {
+                    if (password && password.length >= 8) {
                         updateObj.password = password;
-                        if (email.toLowerCase() === 'jvaask16@gmail.com') {
-                            try { localStorage.setItem('sn_master_pwd', password); } catch(e) {}
-                        }
-                        try {
-                            const curUser = (await supabaseClient?.auth?.getUser())?.data?.user;
-                            if (curUser && curUser.email?.toLowerCase() === email.toLowerCase()) {
-                                await supabaseClient.auth.updateUser({ password: password });
-                            }
-                        } catch(e) {}
                     }
 
                     // Guardar de forma síncrona en el servidor en la nube
+                    const { id: _omitId, ...updatePayload } = updateObj;
                     const apiRes = await apiFetch(`/api/users/${encodeURIComponent(id)}`, {
                         method: 'PUT',
-                        body: updateObj
+                        body: updatePayload
                     });
 
                     if (!apiRes || !apiRes.ok) {
@@ -13308,34 +12913,10 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                         updated_at: new Date().toISOString()
                     };
 
-                    // Enlazar en Supabase Auth si está disponible
-                    if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
-                        try {
-                            const { data: sbSign, error: sbSignErr } = await supabaseClient.auth.signUp({
-                                email: email,
-                                password: password,
-                                options: {
-                                    data: {
-                                        full_name: fullName,
-                                        role: role,
-                                        branch: branch,
-                                        phone: phone
-                                    }
-                                }
-                            });
-                            if (!sbSignErr && sbSign?.user?.id) {
-                                newId = sbSign.user.id;
-                                targetUser.id = newId;
-                            }
-                        } catch (e) {
-                            console.warn('Supabase auth signup notice:', e);
-                        }
-                    }
-
                     // Guardar de forma síncrona en el servidor en la nube
                     const apiRes = await apiFetch('/api/users', {
                         method: 'POST',
-                        body: targetUser
+                        body: { email, full_name: fullName, password, phone, role, branch, notes }
                     });
 
                     if (!apiRes || !apiRes.ok) {
@@ -13464,39 +13045,11 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                     throw new Error(apiRes?.error || 'Error al guardar la contraseña en el servidor');
                 }
 
-                user.password = cleanPwd;
                 user.updated_at = new Date().toISOString();
-
-                if (user.email && user.email.toLowerCase() === 'jvaask16@gmail.com') {
-                    try { localStorage.setItem('sn_master_pwd', cleanPwd); } catch(e) {}
-                }
-
-                try {
-                    const uStr = sessionStorage.getItem('sn_current_user') || sessionStorage.getItem('sn_admin_user');
-                    if (uStr) {
-                        const activeUser = JSON.parse(uStr);
-                        if (activeUser && (activeUser.email?.toLowerCase() === user.email?.toLowerCase() || String(activeUser.id) === String(userId))) {
-                            activeUser.password = cleanPwd;
-                            sessionStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                            sessionStorage.setItem('sn_admin_user', JSON.stringify(activeUser));
-                            localStorage.setItem('sn_current_user', JSON.stringify(activeUser));
-                        }
-                    }
-                } catch(e) {}
 
                 saveStoredUsers(_allAgencyUsers);
                 renderUsersTable();
                 showToast('✓ Contraseña guardada permanentemente en la base de datos', 'success');
-
-                // Sincronizar en Supabase Auth si es la sesión activa en el navegador
-                try {
-                    if (supabaseClient && supabaseClient.auth) {
-                        const curAuthUser = (await supabaseClient.auth.getUser())?.data?.user;
-                        if (curAuthUser && curAuthUser.email?.toLowerCase() === user.email?.toLowerCase()) {
-                            await supabaseClient.auth.updateUser({ password: cleanPwd });
-                        }
-                    }
-                } catch(e) {}
 
                 const sendWa = confirm('¿Deseas abrir WhatsApp para enviarle la nueva contraseña a ' + user.full_name + '?');
                 if (sendWa) sendUserCredentialsWhatsApp(userId, cleanPwd);

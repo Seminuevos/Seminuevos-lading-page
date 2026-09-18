@@ -30,4 +30,9 @@ export class CreateInquiryDto {
   @IsString()
   @MaxLength(50)
   source?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  visitor_id?: string;
 }

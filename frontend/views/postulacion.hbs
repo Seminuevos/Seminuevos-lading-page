@@ -648,7 +648,6 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script>
         // Toggle mobile menu
@@ -712,25 +711,23 @@
 ${aboutMe}`;
 
             try {
-                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
-                    const visitorId = getVisitorId();
-                    const { error } = await supabaseClient
-                        .from('inquiries')
-                        .insert([{
-                            name: name,
-                            phone: phone,
-                            email: email,
-                            service: 'Postulación Vendedor',
-                            message: formattedMessage,
-                            status: 'new',
-                            visitor_id: visitorId
-                        }]);
-                    if (error) {
-                        console.error("Supabase insert error:", error);
+                const visitorId = getVisitorId();
+                const res = await apiFetch('/api/inquiries', {
+                    method: 'POST',
+                    body: {
+                        full_name: name,
+                        phone: phone,
+                        email: email,
+                        source: 'postulacion',
+                        message: formattedMessage,
+                        visitor_id: visitorId
                     }
+                });
+                if (!res.ok) {
+                    console.error("Inquiry insert error:", res.error);
                 }
             } catch (err) {
-                console.warn("Supabase notice:", err);
+                console.warn("Inquiry notice:", err);
             }
 
             // Preparar mensaje de WhatsApp

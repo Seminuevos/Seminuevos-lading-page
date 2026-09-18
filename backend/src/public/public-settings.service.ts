@@ -31,11 +31,22 @@ const PUBLIC_KEYS = new Set([
   'promotions_list',
 ]);
 
+export interface SiteSettingRow {
+  key: string;
+  value: unknown;
+}
+
 @Injectable()
 export class PublicSettingsService {
   constructor(private readonly supabase: SupabaseService) {}
 
-  async getPublicSettings(): Promise<Record<string, unknown>> {
+  /**
+   * Devuelve las filas [{key, value}] tal cual las devolvía
+   * `supabase.from('site_settings').select('*')` desde el navegador — así el
+   * frontend (script.js/vehiculo.js) no tuvo que rehacer su lógica de
+   * `sData.forEach(s => map[s.key] = ...)`, solo cambiar de dónde la pide.
+   */
+  async getPublicSettings(): Promise<SiteSettingRow[]> {
     const { data, error } = await this.supabase
       .getClient()
       .from(TABLE)
@@ -46,11 +57,8 @@ export class PublicSettingsService {
       throw new BadRequestException('Error al obtener la configuración pública');
     }
 
-    const result: Record<string, unknown> = {};
-    for (const row of (data ?? []) as { key: string; value: unknown }[]) {
-      if (!PUBLIC_KEYS.has(row.key)) continue; // defensa en profundidad
-      result[row.key] = row.value;
-    }
-    return result;
+    // Defensa en profundidad: aunque la key no debería salir del .in() de
+    // arriba, nunca reenviamos una fila cuya key no esté en la allowlist.
+    return (data ?? []).filter((row): row is SiteSettingRow => PUBLIC_KEYS.has(row.key));
   }
 }

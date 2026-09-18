@@ -23,7 +23,7 @@ describe('PublicController', () => {
       findOnePublic: jest.fn().mockResolvedValue(fakeVehicles[0]),
     };
     settingsService = {
-      getPublicSettings: jest.fn().mockResolvedValue({ company_name: '"SemiNuevo"' }),
+      getPublicSettings: jest.fn().mockResolvedValue([{ key: 'company_name', value: 'SemiNuevo' }]),
     };
     analyticsService = {
       track: jest.fn().mockResolvedValue(undefined),
@@ -71,10 +71,11 @@ describe('PublicController', () => {
 
   it('expone únicamente settings de la lista blanca (nunca API keys ni el directorio de usuarios)', async () => {
     const response = await controller.findSettings();
-    expect(response.data).toEqual({ company_name: '"SemiNuevo"' });
-    expect(response.data).not.toHaveProperty('resend_api_key');
-    expect(response.data).not.toHaveProperty('scraper_proxy_key');
-    expect(response.data).not.toHaveProperty('agency_users_directory');
+    expect(response.data).toEqual([{ key: 'company_name', value: 'SemiNuevo' }]);
+    const keys = response.data.map((row: { key: string }) => row.key);
+    expect(keys).not.toContain('resend_api_key');
+    expect(keys).not.toContain('scraper_proxy_key');
+    expect(keys).not.toContain('agency_users_directory');
   });
 
   it('registra una vista de vehículo sin autenticación', async () => {

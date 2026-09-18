@@ -1,4 +1,4 @@
-import { ArrayMaxSize, IsArray, IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 
 const STATUSES = ['active', 'inactive', 'sold'];
 
@@ -75,4 +75,23 @@ export class CreateVehicleDto {
   @IsOptional()
   @IsIn(STATUSES)
   status?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  origin?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  badge?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  catalog?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  mastertech?: boolean;
 }

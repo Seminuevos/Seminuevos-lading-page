@@ -123,4 +123,26 @@ export class VehiclesService {
       throw new BadRequestException('Error al eliminar vehículo');
     }
   }
+
+  /**
+   * Proxy de subida a Supabase Storage (bucket `vehicle-images`). El
+   * frontend ya no habla con Storage directamente — sube el archivo aquí y
+   * el backend lo sube con la service_role key, devolviendo la URL pública.
+   */
+  async uploadImage(file: { buffer: Buffer; mimetype: string; originalname: string }): Promise<string> {
+    const ext = (file.originalname.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const fileName = `upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    const { error } = await this.supabase
+      .getClient()
+      .storage.from('vehicle-images')
+      .upload(fileName, file.buffer, { contentType: file.mimetype || 'image/jpeg' });
+
+    if (error) {
+      throw new BadRequestException('Error al subir la imagen');
+    }
+
+    const { data } = this.supabase.getClient().storage.from('vehicle-images').getPublicUrl(fileName);
+    return data.publicUrl;
+  }
 }

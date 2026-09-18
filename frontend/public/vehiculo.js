@@ -10,17 +10,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let car = null;
 
     try {
-        // Fetch from Supabase
-        const { data: vDataRaw } = await supabaseClient.from('vehicles').select('*').eq('id', carId).maybeSingle();
+        const res = await apiFetch(`/api/public/vehicles/${encodeURIComponent(carId)}`);
+        const vDataRaw = res.ok ? res.data?.data : null;
         if (vDataRaw) {
             car = { ...vDataRaw, bodyType: vDataRaw.bodyType || vDataRaw.body_type };
-            
-            // Increment views
-            const newViews = (car.views || 0) + 1;
-            supabaseClient.rpc('increment_vehicle_views', { vehicle_id: car.id })
-                .then(({ error }) => {
-                    if (error) console.warn('Views RPC error:', error.message);
-                });
+
+            // Increment views (fire and forget)
+            apiFetch(`/api/public/vehicles/${encodeURIComponent(car.id)}/view`, { method: 'POST' }).catch(() => {});
         }
     } catch (e) {
         console.warn('Error fetching car:', e);
@@ -64,9 +60,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Configs
     let whatsappNumber = "584248700438";
     try {
-        const { data: sData } = await supabaseClient.from('site_settings').select('value').eq('key', 'whatsapp_number').maybeSingle();
-        if (sData && sData.value) {
-            whatsappNumber = String(JSON.parse(sData.value)).replace(/[^0-9]/g, '');
+        const settingsRes = await apiFetch('/api/public/settings');
+        const row = settingsRes.ok ? (settingsRes.data?.data || []).find(s => s.key === 'whatsapp_number') : null;
+        if (row && row.value) {
+            whatsappNumber = String(row.value).replace(/[^0-9]/g, '');
         }
     } catch (e) {}
 

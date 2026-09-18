@@ -9,53 +9,42 @@ window.WHATSAPP_NUMBER = "584248700438"; // Default fallback
 
 document.addEventListener('DOMContentLoaded', () => {
     // ===== SECURITY FIREWALL & IDS =====
+    // El bloqueo real de IPs ya lo hace el backend en cada request
+    // (IpBlacklistGuard, con la IP real del servidor — un chequeo del lado
+    // del cliente nunca protegía nada, cualquiera podía simplemente no
+    // ejecutar ese JS). Este ping solo detecta si el visitante actual está
+    // bloqueado para mostrarle la pantalla de aviso.
     async function checkSecurity() {
         try {
-            // 1. Get current IP
-            let ip = 'Unknown';
-            try {
-                const ctrl = new AbortController();
-                const tid = setTimeout(() => ctrl.abort(), 2000);
-                const res = await fetch('https://api.ipify.org?format=json', { signal: ctrl.signal });
-                clearTimeout(tid);
-                const json = await res.json();
-                ip = json.ip;
-            } catch(e) {}
-
-            // 2. Check Blacklist
-            const { data: isBlocked } = await supabaseClient
-                .from('ip_blacklist')
-                .select('*')
-                .eq('ip', ip)
-                .maybeSingle();
-
-            if (isBlocked) {
+            const res = await apiFetch('/api/public/settings');
+            if (res.status === 403) {
                 document.body.innerHTML = `
                     <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:20px;">
                         <i class="fas fa-shield-virus" style="font-size:4rem; color:#ff5252; margin-bottom:20px;"></i>
                         <h1 style="font-size:2rem; margin-bottom:10px;">ACCESO RESTRINGIDO</h1>
-                        <p style="color:#888; max-width:500px;">Tu dirección IP (${ip}) ha sido bloqueada permanentemente por nuestro sistema de ciberseguridad debido a actividades sospechosas.</p>
+                        <p style="color:#888; max-width:500px;">Tu dirección IP ha sido bloqueada permanentemente por nuestro sistema de ciberseguridad debido a actividades sospechosas.</p>
                         <p style="font-size:0.8rem; margin-top:20px; color:#444;">Ref: FW-BLOCK-SYSTEM-01</p>
                     </div>
                 `;
                 return false;
             }
 
-            // 3. Proactive Intrusion Detection (URL & Forms)
+            // Detección proactiva de intrusión (URL) — reporta al backend,
+            // que ya captura la IP real del request.
             const suspiciousPatterns = [
                 /<script/i, /UNION SELECT/i, /OR '1'='1'/i, /DROP TABLE/i, /<img/i, /onerror/i
             ];
-            
+
             const checkSuspicious = (str) => suspiciousPatterns.some(p => p.test(str));
 
             if (checkSuspicious(window.location.search) || checkSuspicious(window.location.hash)) {
-                await supabaseClient.from('security_logs').insert([{
-                    event_type: 'IDS_URL_ALERT',
-                    severity: 'warning',
-                    ip_address: ip,
-                    details: `Patrón sospechoso detectado en la URL: ${window.location.href}`,
-                    user_agent: navigator.userAgent
-                }]);
+                await apiFetch('/api/public/security-events', {
+                    method: 'POST',
+                    body: {
+                        event_type: 'IDS_URL_ALERT',
+                        details: `Patrón sospechoso detectado en la URL: ${window.location.href}`
+                    }
+                });
             }
 
             return true;
@@ -108,12 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 intent_category: data.intent || detectIntent(data.section || window.location.pathname || 'home')
             };
 
-            await supabaseClient.from('site_analytics').insert([{
-                event_type: type,
-                event_data: enrichedData,
-                url: window.location.pathname,
-                visitor_id: visitorId
-            }]);
+            await apiFetch('/api/public/analytics', {
+                method: 'POST',
+                body: {
+                    event_type: type,
+                    event_data: enrichedData,
+                    url: window.location.pathname,
+                    visitor_id: visitorId
+                }
+            });
         } catch (e) {
             console.warn('Analytics error:', e);
         }
@@ -738,12 +730,12 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initSupabaseData() {
         if (window.location.pathname.includes('vehiculo')) return;
         try {
-            const [vDataRes, sDataRes] = await Promise.all([
-                supabaseClient.from('vehicles').select('*').eq('status', 'active'),
-                supabaseClient.from('site_settings').select('*')
+            const [vRes, sRes] = await Promise.all([
+                apiFetch('/api/public/vehicles'),
+                apiFetch('/api/public/settings')
             ]);
-            const vData = vDataRes?.data || [];
-            const sData = sDataRes?.data || [];
+            const vData = (vRes.ok && vRes.data?.data) || [];
+            const sData = (sRes.ok && sRes.data?.data) || [];
 
             try {
                 localStorage.setItem(cacheKey, JSON.stringify({
@@ -1308,11 +1300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const service = document.getElementById('formService').value;
         const message = document.getElementById('formMessage').value;
 
-        // 1. Save to Supabase (Async background)
+        // 1. Save the inquiry (async, non-blocking for WhatsApp below)
         const formData = {
-            name, phone, email, service,
+            full_name: name, phone, email,
+            source: service || 'contact_form',
             message: message || 'Interesado en ' + service,
-            status: 'new',
             visitor_id: visitorId
         };
 
@@ -1321,8 +1313,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
 
             // Attempt to save to DB but don't block WhatsApp if it's slow
-            const { error } = await supabaseClient.from('inquiries').insert([formData]);
-            if (error) console.warn("Supabase insert error:", error);
+            const res = await apiFetch('/api/inquiries', { method: 'POST', body: formData });
+            if (!res.ok) console.warn("Inquiry insert error:", res.error);
 
             // 2. Open WhatsApp
             const waMessage = `¡Hola! Soy *${name}*.\n\n` +

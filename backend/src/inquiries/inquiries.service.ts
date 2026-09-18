@@ -34,6 +34,7 @@ export class InquiriesService {
           message: dto.message,
           vehicle_id: dto.vehicle_id ?? null,
           source: dto.source ?? 'web',
+          visitor_id: dto.visitor_id ?? null,
           ip_address: ip,
           status: 'pending',
         },

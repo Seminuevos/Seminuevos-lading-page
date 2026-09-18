@@ -2015,7 +2015,6 @@
     </footer>
 
     <!-- Supabase and Data dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="data.js"></script>
 
@@ -2127,13 +2126,11 @@
 
         async function syncSupabaseInventory() {
             try {
-                if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
-
                 const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3500));
-                const fetchPromise = supabaseClient.from('vehicles').select('*').eq('status', 'active');
-                
+                const fetchPromise = apiFetch('/api/public/vehicles');
+
                 const res = await Promise.race([fetchPromise, timeoutPromise]);
-                const data = res?.data;
+                const data = res?.ok ? res.data?.data : null;
                 if (data && data.length > 0) {
                     const freshList = data.map(formatVehicleRecord).filter(v => v.price > 0);
                     if (freshList.length > 0) {

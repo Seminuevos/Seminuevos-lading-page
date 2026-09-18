@@ -14,6 +14,12 @@ export async function createApp(expressInstance: Express = express()): Promise<N
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(expressInstance));
   const config = app.get(ConfigService);
 
+  // Vercel (y cualquier proxy) siempre llega vía reverse proxy — sin esto,
+  // req.ip sería la IP interna del proxy, no la del visitante real, y tanto
+  // el rate limiting como el IpBlacklistGuard y los security_logs quedarían
+  // ciegos a la IP real.
+  app.set('trust proxy', 1);
+
   const allowedOrigins = (config.get<string>('CORS_ALLOWED_ORIGINS') ?? '')
     .split(',')
     .map((origin) => origin.trim())
