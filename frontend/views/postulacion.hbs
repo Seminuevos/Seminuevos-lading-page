@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <script>window.API_BASE_URL = "{{apiBaseUrl}}";</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="public, max-age=3600, stale-while-revalidate=86400">
+
+    <!-- ===== SEO GLOBAL CONFIGURATION ===== -->
+    <title>Formulario Oficial de Postulación | Equipo de Ventas Margarita - Seminuevos</title>
+    <meta name="description"
+        content="Formulario Oficial de Postulación para Asesores Comerciales y Vendedores en Seminuevos Agency (Isla de Margarita). Únete a nuestro equipo con excelentes comisiones y respaldo MasterTech.">
+    <link rel="canonical" href="https://seminuevoautos.com/postulacion">
+    <meta name="keywords"
+        content="trabajo ventas autos venezuela, postulación vendedores seminuevos, empleo asesor comercial carros margarita, vacantes concesionario automotriz, broker autos venezuela, comisiones venta vehiculos">
+    <meta name="author" content="Seminuevos Agency">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seminuevoautos.com/postulacion">
+    <meta property="og:site_name" content="Seminuevos">
+    <meta property="og:title" content="Formulario Oficial de Postulación para Vendedores | Seminuevos">
+    <meta property="og:description"
+        content="Únete a nuestro equipo comercial. Comercializa vehículos 0KM y seminuevos certificados con excelentes comisiones y respaldo MasterTech.">
+    <meta property="og:image" content="https://seminuevoautos.com/images/og-logo.png">
+    <meta property="og:image:secure_url" content="https://seminuevoautos.com/images/og-logo.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Logo Oficial Seminuevos">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Formulario Oficial de Postulación para Vendedores | Seminuevos">
+    <meta name="twitter:description"
+        content="Únete a nuestro equipo comercial. Comercializa vehículos 0KM y seminuevos certificados con excelentes comisiones y respaldo MasterTech.">
+    <meta name="twitter:image" content="https://seminuevoautos.com/images/og-logo.png">
+
+    <link rel="alternate" hreflang="es" href="https://seminuevoautos.com/postulacion">
+    <link rel="alternate" hreflang="x-default" href="https://seminuevoautos.com/postulacion">
+
+    <!-- JSON-LD LocalBusiness Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoDealer",
+      "name": "Seminuevos Agency",
+      "image": "https://seminuevoautos.com/images/logo-primary.png",
+      "@id": "https://seminuevoautos.com/#dealer",
+      "url": "https://seminuevoautos.com/postulacion",
+      "telephone": "+584248700438",
+      "priceRange": "$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Porlamar",
+        "addressLocality": "Margarita",
+        "addressRegion": "Nueva Esparta",
+        "postalCode": "6301",
+        "addressCountry": "VE"
+      }
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;700&family=Mina:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=2">
+
+    <style>
+        .postulacion-hero {
+            padding: 140px 0 50px;
+            background: radial-gradient(circle at 50% 20%, rgba(39, 92, 234, 0.15) 0%, transparent 70%), var(--surface-dim);
+            text-align: center;
+            border-bottom: 1px solid var(--ghost-border);
+        }
+
+        .postulacion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(39, 92, 234, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary-fixed);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .postulacion-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--on-surface);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .postulacion-title span {
+            background: var(--gradient-gold-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .postulacion-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            color: var(--on-surface-variant);
+            max-width: 780px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .perks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        .perk-card {
+            background: var(--surface-container-low);
+            border: 1px solid var(--ghost-border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .perk-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .perk-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(39, 92, 234, 0.15);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin-bottom: 16px;
+        }
+
+        .perk-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+        }
+
+        .perk-desc {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--on-surface-variant);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Section Form */
+        .postulacion-section {
+            padding: 60px 0 100px;
+            background: var(--surface);
+        }
+
+        .form-card-container {
+            max-width: 860px;
+            margin: 0 auto;
+            background: var(--surface-container-low);
+            border: 1px solid var(--ghost-border-gold);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .form-card-container {
+                padding: 25px 18px;
+            }
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--outline-variant);
+            padding-bottom: 20px;
+        }
+
+        .form-header h2 {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-header p {
+            color: var(--on-surface-variant);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .form-section-subtitle {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--primary-fixed);
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .p-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .p-group label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            color: var(--on-surface);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .p-group label span.req {
+            color: var(--primary);
+        }
+
+        .p-input,
+        .p-select,
+        .p-textarea {
+            width: 100%;
+            background: var(--surface-container-high);
+            border: 1px solid var(--outline-variant);
+            border-radius: 8px;
+            padding: 13px 16px;
+            color: var(--on-surface);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            outline: none;
+        }
+
+        .p-input:focus,
+        .p-select:focus,
+        .p-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 92, 234, 0.25);
+            background: var(--surface-container-highest);
+        }
+
+        .p-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B2B2B2'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 20px;
+        }
+
+        .p-textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .submit-wrap {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-submit-postulacion {
+            width: 100%;
+            padding: 16px 28px;
+            font-size: 1.05rem;
+            font-family: var(--font-display);
+            letter-spacing: 0.5px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(46, 213, 115, 0.15);
+            color: #2ed573;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            color: var(--on-surface);
+            margin-bottom: 12px;
+        }
+
+        .success-desc {
+            color: var(--on-surface-variant);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        .btn-wa-notify {
+            background: #25D366;
+            color: #ffffff;
+            font-family: var(--font-display);
+            font-weight: 700;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-wa-notify:hover {
+            background: #1eb956;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="images/logo-white.png" alt="SemiNuevos Logo" class="main-logo">
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/" class="nav-link">INICIO</a></li>
+                <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
+                <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
+                <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
+                <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
+                <li><a href="postulacion" class="nav-link active" style="color: var(--primary);">POSTÚLATE</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SOCIAL SIDEBAR ===== -->
+    <div class="social-sidebar">
+        <a href="https://www.facebook.com" target="_blank" rel="noopener" class="social-icon" title="Facebook"><i
+                class="fab fa-facebook-f"></i></a>
+        <a href="https://www.tiktok.com/@seminuevosagency" target="_blank" rel="noopener" class="social-icon"
+            title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" class="social-icon"
+            title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com" target="_blank" rel="noopener" class="social-icon" title="YouTube"><i
+                class="fab fa-youtube"></i></a>
+    </div>
+
+    <!-- ===== FLOATING WHATSAPP ===== -->
+    <a href="https://wa.me/584248700438?text=Hola,%20quisiera%20postularme%20como%20vendedor%20en%20Seminuevos"
+        class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- ===== HERO / INTRO POSTULACIÓN ===== -->
+    <header class="postulacion-hero">
+        <div class="container">
+            <div class="postulacion-badge">
+                <i class="fas fa-map-marker-alt"></i> Oportunidad Comercial en Isla de Margarita
+            </div>
+            <h1 class="postulacion-title">
+                Formulario Oficial de Postulación para <span>Vendedores</span>
+            </h1>
+            <p class="postulacion-subtitle">
+                Únete al equipo comercial de <strong>Seminuevos Agency</strong> en la <strong>Isla de Margarita</strong>. Comercializa el catálogo automotriz más
+                exclusivo (0KM, importados y usados certificados) con atractivas comisiones, respaldo técnico
+                integral de <strong>MasterTech</strong> y acompañamiento constante.
+            </p>
+
+            <div class="perks-grid">
+                <div class="perk-card">
+                    <div class="perk-icon"><i class="fas fa-percentage"></i></div>
+                    <div class="perk-title">Altas Comisiones</div>
+                    <p class="perk-desc">Comisiones altamente competitivas por cada venta cerrada y bonos por colocación de financiamiento.</p>
+                </div>
+                <div class="perk-card">
+                    <div class="perk-icon"><i class="fas fa-car-side"></i></div>
+                    <div class="perk-title">Inventario Exclusivo</div>
+                    <p class="perk-desc">Acceso a unidades en stock para entrega inmediata y catálogo ilimitado de importación por encargo desde USA.</p>
+                </div>
+                <div class="perk-card">
+                    <div class="perk-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="perk-title">Garantía MasterTech</div>
+                    <p class="perk-desc">Tus clientes compran con total confianza gracias al respaldo técnico y certificación de 150 puntos mecánicos.</p>
+                </div>
+                <div class="perk-card">
+                    <div class="perk-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="perk-title">Isla de Margarita</div>
+                    <p class="perk-desc">Oportunidad comercial presencial y de campo con base en la Isla de Margarita por los momentos.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== SECTION FORMULARIO ===== -->
+    <main class="postulacion-section">
+        <div class="container">
+            <div class="form-card-container">
+                <!-- FORMULARIO ACTIVO -->
+                <form id="postulacionForm">
+                    <div class="form-header">
+                        <h2><i class="fas fa-id-badge" style="color: var(--primary);"></i> Registro de Candidatura</h2>
+                        <p>Completa el formulario oficial para que la Dirección Comercial evalúe tu perfil profesional.</p>
+                    </div>
+
+                    <!-- 1. DATOS PERSONALES -->
+                    <div class="form-section-subtitle">
+                        <i class="fas fa-user-circle"></i> 1. Información Personal
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="p-group">
+                            <label for="pName">Nombre Completo <span class="req">*</span></label>
+                            <input type="text" id="pName" class="p-input" placeholder="Ej: Carlos Eduardo Mendoza" required>
+                        </div>
+                        <div class="p-group">
+                            <label for="pIdNumber">Cédula de Identidad / DNI <span class="req">*</span></label>
+                            <input type="text" id="pIdNumber" class="p-input" placeholder="Ej: V-19.876.543" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="p-group">
+                            <label for="pPhone">Teléfono Móvil (WhatsApp) <span class="req">*</span></label>
+                            <input type="tel" id="pPhone" class="p-input" placeholder="Ej: +58 412 1234567" required>
+                        </div>
+                        <div class="p-group">
+                            <label for="pEmail">Correo Electrónico <span class="req">*</span></label>
+                            <input type="email" id="pEmail" class="p-input" placeholder="tu_correo@gmail.com" required>
+                        </div>
+                    </div>
+
+                    <div class="p-group">
+                        <label for="pCity">Sector / Municipio de Residencia (Isla de Margarita) <span class="req">*</span></label>
+                        <input type="text" id="pCity" class="p-input" placeholder="Ej: Porlamar, Pampatar, Maneiro, Mariño, Antolín..." required>
+                    </div>
+
+                    <!-- 2. PERFIL COMERCIAL -->
+                    <div class="form-section-subtitle" style="margin-top: 30px;">
+                        <i class="fas fa-chart-line"></i> 2. Perfil Comercial & Experiencia
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="p-group">
+                            <label for="pExperience">Años de Experiencia en Ventas <span class="req">*</span></label>
+                            <select id="pExperience" class="p-select" required>
+                                <option value="" disabled selected>-- Selecciona un rango --</option>
+                                <option value="Menos de 1 año (Iniciando con alta motivación)">Menos de 1 año (Iniciando con alta motivación)</option>
+                                <option value="1 a 3 años de experiencia comercial">1 a 3 años de experiencia comercial</option>
+                                <option value="3 a 5 años de trayectoria en ventas">3 a 5 años de trayectoria en ventas</option>
+                                <option value="Más de 5 años como profesional de ventas">Más de 5 años como profesional de ventas</option>
+                            </select>
+                        </div>
+                        <div class="p-group">
+                            <label for="pAutoExp">¿Experiencia en el Sector Automotriz? <span class="req">*</span></label>
+                            <select id="pAutoExp" class="p-select" required>
+                                <option value="" disabled selected>-- Selecciona una opción --</option>
+                                <option value="Sí, en concesionario o agencia formal">Sí, en concesionario o agencia formal</option>
+                                <option value="Sí, como vendedor independiente / broker">Sí, como vendedor independiente / broker</option>
+                                <option value="No en autos, pero sí en bienes de alto valor (inmuebles, seguros, etc.)">No en autos, pero sí en bienes de alto valor (inmuebles, etc.)</option>
+                                <option value="No tengo experiencia previa en autos">No tengo experiencia previa en autos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="p-group">
+                            <label for="pModality">Modalidad de Interés <span class="req">*</span></label>
+                            <select id="pModality" class="p-select" required>
+                                <option value="" disabled selected>-- Selecciona modalidad --</option>
+                                <option value="Presencial en Isla de Margarita (Porlamar)">Presencial en Isla de Margarita (Porlamar)</option>
+                                <option value="Híbrido / Campo en Isla de Margarita">Híbrido / Campo en Isla de Margarita</option>
+                                <option value="Comisionista Independiente (Margarita)">Comisionista Independiente (Margarita)</option>
+                            </select>
+                        </div>
+                        <div class="p-group">
+                            <label for="pHasVehicle">¿Posees Vehículo Propio? <span class="req">*</span></label>
+                            <select id="pHasVehicle" class="p-select" required>
+                                <option value="" disabled selected>-- Selecciona una opción --</option>
+                                <option value="Sí, cuento con vehículo propio">Sí, cuento con vehículo propio</option>
+                                <option value="No cuento con vehículo propio">No cuento con vehículo propio</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-group">
+                        <label for="pSocialOrCv">Enlace a LinkedIn, CV en línea o Instagram Profesional (Opcional)</label>
+                        <input type="url" id="pSocialOrCv" class="p-input" placeholder="https://linkedin.com/in/tu-perfil o enlace a Google Drive">
+                    </div>
+
+                    <!-- 3. MOTIVACIÓN -->
+                    <div class="form-section-subtitle" style="margin-top: 30px;">
+                        <i class="fas fa-comment-dots"></i> 3. Cuéntanos sobre ti
+                    </div>
+                    <div class="p-group">
+                        <label for="pAboutMe">¿Por qué deseas unirte a Seminuevos y cuál ha sido tu mayor logro en ventas? <span class="req">*</span></label>
+                        <textarea id="pAboutMe" class="p-textarea" placeholder="Descríbete brevemente, tus metas comerciales y por qué consideras que harás un excelente trabajo asesorando a nuestros clientes..." required></textarea>
+                    </div>
+
+                    <!-- BOTÓN ENVIAR -->
+                    <div class="submit-wrap">
+                        <button type="submit" id="btnSubmitPostulacion" class="btn btn-primary btn-submit-postulacion">
+                            <i class="fas fa-paper-plane"></i> ENVIAR MI POSTULACIÓN OFICIAL
+                        </button>
+                    </div>
+                </form>
+
+                <!-- PANTALLA DE ÉXITO TRAS EL ENVÍO -->
+                <div class="success-box" id="successBox">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="success-title">¡Postulación Enviada con Éxito!</h3>
+                    <p class="success-desc">
+                        Hemos registrado tu postulación satisfactoriamente en nuestro sistema de selección. Nuestro equipo de Dirección Comercial y Recursos Humanos revisará tu perfil con atención.
+                    </p>
+                    <div style="margin-top: 25px; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                        <a id="btnWaConfirmation" href="#" target="_blank" class="btn-wa-notify">
+                            <i class="fab fa-whatsapp" style="font-size: 1.3rem;"></i> Notificar por WhatsApp a Dirección Comercial
+                        </a>
+                        <a href="/" class="btn btn-ghost" style="font-size: 0.9rem;">
+                            <i class="fas fa-arrow-left"></i> Volver a la Página Principal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo">
+                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" style="height: 80px; width: auto;">
+                    </a>
+                    <p class="footer-desc">Semi Nuevo Autos: Tu concesionario de confianza. Los mejores seminuevos autos y vehículos nuevos con garantía y transparencia total en Venezuela.</p>
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" title="Instagram"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@seminuevosagency" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com" target="_blank" rel="noopener" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Links Rápidos</h4>
+                    <a href="/">Inicio</a>
+                    <a href="catalogo">Catálogo</a>
+                    <a href="calculadora">Calculadora</a>
+                    <a href="servicios">Beneficios</a>
+                    <a href="nosotros">Nosotros</a>
+                    <a href="/#contacto">Contacto</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Ecosistema</h4>
+                    <a href="servicios#soporte-mastertech">Soporte MasterTech</a>
+                    <a href="https://www.tallermastertech.com/catalogo" target="_blank" rel="noopener">MT Part Store</a>
+                    <a href="servicios#garantia-electronica">Garantía Electrónica</a>
+                    <a href="servicios#programa-retoma">Programa de Retoma</a>
+                    <a href="postulacion" style="color: var(--primary);">Postulación Vendedores</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <a href="https://maps.google.com/?q=Porlamar,+Isla+de+Margarita,+Venezuela" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Porlamar, Isla de Margarita, Venezuela</a>
+                    <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información" target="_blank" rel="noopener"><i class="fas fa-phone"></i> +58 424-870-0438</a>
+                    <a href="mailto:info@seminuevoautos.com"><i class="fas fa-envelope"></i> info@seminuevoautos.com</a>
+                    <p><i class="fas fa-clock"></i> Lun - Sáb: 9AM - 7PM</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Semi Nuevo Autos | Seminuevos Autos. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#terminos" onclick="event.preventDefault(); alert('Semi Nuevo Autos garantiza la confidencialidad de tus datos y transparencia total en cada operación.');">Política de Privacidad</a>
+                    <a href="#terminos" onclick="event.preventDefault(); alert('Todos los vehículos comercializados cuentan con certificación técnica, revisión de 150 puntos y respaldo legal.');">Términos y Condiciones</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>
+        // Toggle mobile menu
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+        }
+
+        function getVisitorId() {
+            let vid = localStorage.getItem('sn_visitor_id');
+            if (!vid) {
+                vid = 'v-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('sn_visitor_id', vid);
+            }
+            return vid;
+        }
+
+        // Form submission handling
+        const form = document.getElementById('postulacionForm');
+        const submitBtn = document.getElementById('btnSubmitPostulacion');
+        const successBox = document.getElementById('successBox');
+        const btnWaConfirmation = document.getElementById('btnWaConfirmation');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('pName').value.trim();
+            const idNumber = document.getElementById('pIdNumber').value.trim();
+            const phone = document.getElementById('pPhone').value.trim();
+            const email = document.getElementById('pEmail').value.trim();
+            const city = document.getElementById('pCity').value.trim();
+            const experience = document.getElementById('pExperience').value;
+            const autoExp = document.getElementById('pAutoExp').value;
+            const modality = document.getElementById('pModality').value;
+            const hasVehicle = document.getElementById('pHasVehicle').value;
+            const socialOrCv = document.getElementById('pSocialOrCv').value.trim();
+            const aboutMe = document.getElementById('pAboutMe').value.trim();
+
+            if (!name || !phone || !email || !city || !experience || !autoExp || !modality || !aboutMe) {
+                alert('Por favor completa todos los campos requeridos (*).');
+                return;
+            }
+
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO POSTULACIÓN...';
+
+            const formattedMessage = `POSTULACIÓN OFICIAL DE VENDEDOR / ASESOR COMERCIAL:
+• Cédula/ID: ${idNumber}
+• Sector/Municipio: ${city}
+• Experiencia en Ventas: ${experience}
+• Experiencia Automotriz: ${autoExp}
+• Modalidad: ${modality}
+• Vehículo propio: ${hasVehicle}
+• Enlace CV / Perfil: ${socialOrCv || 'No adjunto'}
+• Sobre el candidato / Logros:
+${aboutMe}`;
+
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    const visitorId = getVisitorId();
+                    const { error } = await supabaseClient
+                        .from('inquiries')
+                        .insert([{
+                            name: name,
+                            phone: phone,
+                            email: email,
+                            service: 'Postulación Vendedor',
+                            message: formattedMessage,
+                            status: 'new',
+                            visitor_id: visitorId
+                        }]);
+                    if (error) {
+                        console.error("Supabase insert error:", error);
+                    }
+                }
+            } catch (err) {
+                console.warn("Supabase notice:", err);
+            }
+
+            // Preparar mensaje de WhatsApp
+            const waText = encodeURIComponent(
+`*NUEVA POSTULACIÓN DE VENDEDOR - SEMINUEVOS*
+━━━━━━━━━━━━━━━━━━━━
+*Candidato:* ${name}
+*Cédula:* ${idNumber}
+*Teléfono:* ${phone}
+*Correo:* ${email}
+*Ubicación:* ${city}
+*Exp. en Ventas:* ${experience}
+*Exp. Automotriz:* ${autoExp}
+*Modalidad:* ${modality}
+*Vehículo Propio:* ${hasVehicle}
+${socialOrCv ? `*CV/Perfil:* ${socialOrCv}\n` : ''}*Mensaje / Logros:*
+${aboutMe}
+━━━━━━━━━━━━━━━━━━━━
+Enviado desde el Formulario Oficial de Postulación.`
+            );
+
+            btnWaConfirmation.href = `https://wa.me/584248700438?text=${waText}`;
+
+            // Mostrar pantalla de éxito
+            form.style.display = 'none';
+            successBox.style.display = 'block';
+            window.scrollTo({ top: successBox.offsetTop - 120, behavior: 'smooth' });
+        });
+    </script>
+</body>
+
+</html>
