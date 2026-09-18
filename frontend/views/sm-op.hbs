@@ -3109,6 +3109,7 @@
                 <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
                 <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
+                <button class="sidebar-link" data-tab="rentals"><i class="fas fa-key"></i> Alquileres</button>
                 <button class="sidebar-link" data-tab="users"><i class="fas fa-users-cog"></i> Usuarios & Personal</button>
                 <button class="sidebar-link" data-tab="settings"><i class="fas fa-cog"></i> Configuración</button>
             </nav>
@@ -3865,6 +3866,38 @@
                 </div>
 
                 <div id="inquiriesList"></div>
+            </div>
+
+            <!-- RENTALS TAB -->
+            <div class="tab-content" id="tab-rentals">
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h1 class="page-title">Solicitudes de <span>Alquiler</span></h1>
+                        <p style="color:var(--text3); font-size:0.88rem; margin-top:4px;">Reservas pedidas desde el catálogo de alquiler — contacta al cliente y actualiza el estado a medida que avanza.</p>
+                    </div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span id="rentalRequestsCountBadge" class="badge" style="background:rgba(39,92,234,0.15); color:var(--accent); font-weight:700; padding:6px 14px; border-radius:20px; font-size:0.85rem; border:1px solid rgba(39,92,234,0.3);"><i class="fas fa-list"></i> Cargando...</span>
+                        <button class="btn btn-ghost" id="refreshRentalRequests"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; align-items:center;">
+                    <div style="flex:1; min-width:240px; position:relative;">
+                        <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:0.9rem;"></i>
+                        <input type="text" id="rentalRequestSearch" placeholder="Buscar por nombre, email, teléfono o vehículo..." style="width:100%; padding:10px 14px 10px 38px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:0.9rem; outline:none;">
+                    </div>
+                    <select id="rentalRequestFilter" style="padding:10px 14px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:0.9rem; min-width:190px;">
+                        <option value="all">Todos los estados</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="contacted">Contactado</option>
+                        <option value="confirmed">Confirmado</option>
+                        <option value="paid">Pagado</option>
+                        <option value="completed">Completado</option>
+                        <option value="cancelled">Cancelado</option>
+                    </select>
+                </div>
+
+                <div id="rentalRequestsList"></div>
             </div>
 
             <!-- CRM & METRICS TAB (UNIFIED) -->
@@ -6662,7 +6695,7 @@
                         if (!exists) {
                             items.push({
                                 id: 'lead-' + l.id,
-                                name: l.full_name || 'Sin nombre',
+                                name: l.name || 'Sin nombre',
                                 phone: l.phone || '',
                                 email: l.email || '',
                                 service: 'Lead Web',
@@ -6791,6 +6824,128 @@
         document.getElementById('refreshInquiries')?.addEventListener('click', loadInquiries);
         document.getElementById('inquirySearch')?.addEventListener('input', renderInquiriesList);
         document.getElementById('inquiryFilter')?.addEventListener('change', renderInquiriesList);
+
+        // ===== RENTALS (Solicitudes de Alquiler) =====
+        let allRentalRequests = [];
+
+        const RENTAL_STATUS_LABELS = {
+            pending: 'Pendiente',
+            contacted: 'Contactado',
+            confirmed: 'Confirmado',
+            paid: 'Pagado',
+            completed: 'Completado',
+            cancelled: 'Cancelado'
+        };
+        const RENTAL_STATUS_BADGE = {
+            pending: 'badge-gold',
+            contacted: 'badge-gold',
+            confirmed: 'badge-green',
+            paid: 'badge-green',
+            completed: 'badge-green',
+            cancelled: 'badge-red'
+        };
+
+        async function loadRentalRequests() {
+            const countBadge = document.getElementById('rentalRequestsCountBadge');
+            const listEl = document.getElementById('rentalRequestsList');
+            if (countBadge) countBadge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+            if (listEl) listEl.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text3);"><i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block; color:var(--accent);"></i>Cargando solicitudes de alquiler...</div>';
+
+            try {
+                const res = await apiFetch('/api/rentals/requests');
+                if (!res.ok) throw new Error(res.error || 'Error al cargar solicitudes');
+                allRentalRequests = res.data?.data || [];
+            } catch (e) {
+                console.error('Error cargando alquileres:', e);
+                allRentalRequests = [];
+                if (listEl) listEl.innerHTML = `<div class="info-banner"><i class="fas fa-info-circle"></i><p>Error cargando solicitudes de alquiler: ${e.message}</p></div>`;
+                if (countBadge) countBadge.innerHTML = '<i class="fas fa-list"></i> 0';
+                return;
+            }
+
+            renderRentalRequestsList();
+        }
+
+        function renderRentalRequestsList() {
+            const listEl = document.getElementById('rentalRequestsList');
+            const countBadge = document.getElementById('rentalRequestsCountBadge');
+            if (!listEl) return;
+
+            const searchVal = (document.getElementById('rentalRequestSearch')?.value || '').toLowerCase().trim();
+            const filterVal = document.getElementById('rentalRequestFilter')?.value || 'all';
+
+            const filtered = allRentalRequests.filter(r => {
+                const customer = r.rental_customers || {};
+                const vehicle = r.rental_vehicles || {};
+                const haystack = `${customer.full_name || ''} ${customer.email || ''} ${customer.phone || ''} ${vehicle.title || ''}`.toLowerCase();
+
+                if (filterVal !== 'all' && r.status !== filterVal) return false;
+                if (searchVal && !haystack.includes(searchVal)) return false;
+                return true;
+            });
+
+            if (countBadge) countBadge.innerHTML = `<i class="fas fa-list"></i> ${allRentalRequests.length}`;
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = '<div class="info-banner"><i class="fas fa-info-circle"></i><p>No hay solicitudes de alquiler que coincidan.</p></div>';
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(r => {
+                const customer = r.rental_customers || {};
+                const vehicle = r.rental_vehicles || {};
+                const badgeClass = RENTAL_STATUS_BADGE[r.status] || 'badge-gold';
+                const statusLabel = RENTAL_STATUS_LABELS[r.status] || r.status;
+                const dateRange = `${r.start_date || '?'} → ${r.end_date || '?'}`;
+                const cleanPhone = (customer.phone || '').replace(/\D/g, '');
+                const waLink = cleanPhone
+                    ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hola ${customer.full_name || ''}, te contactamos por tu solicitud de alquiler de ${vehicle.title || 'un vehículo'} (${dateRange}).`)}`
+                    : '#';
+
+                const statusOptions = Object.entries(RENTAL_STATUS_LABELS)
+                    .map(([value, label]) => `<option value="${value}" ${value === r.status ? 'selected' : ''}>${label}</option>`)
+                    .join('');
+
+                return `
+                <div class="inquiry-card" style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <span class="inquiry-name" style="font-weight:700; color:var(--text); font-size:1.05rem;">${customer.full_name || 'Sin nombre'}</span>
+                            <div style="font-size:0.8rem; color:var(--text3); margin-top:2px;">${customer.email || ''} · ${customer.phone || ''}</div>
+                        </div>
+                        <span class="badge ${badgeClass}" style="font-size:0.75rem;">${statusLabel}</span>
+                    </div>
+                    <div style="font-size:0.9rem; color:var(--text2); margin-bottom:10px;">
+                        <strong>${vehicle.title || 'Vehículo #' + r.rental_vehicle_id}</strong> (${vehicle.year || ''}) — ${dateRange}
+                        ${r.estimated_total != null ? ` — Estimado: $${Number(r.estimated_total).toLocaleString()}` : ''}
+                    </div>
+                    ${r.notes ? `<div style="font-size:0.85rem; color:var(--text3); margin-bottom:10px;"><i class="fas fa-comment-dots"></i> ${r.notes}</div>` : ''}
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                        <select onchange="updateRentalRequestStatus(${r.id}, this.value)" style="padding:6px 10px; border-radius:6px; background:var(--bg3); border:1px solid var(--border); color:var(--text); font-size:0.85rem;">
+                            ${statusOptions}
+                        </select>
+                        ${customer.email ? `<a href="mailto:${customer.email}" class="btn btn-sm btn-ghost" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:0.85rem; border-radius:6px;"><i class="fas fa-envelope"></i> Email</a>` : ''}
+                        ${cleanPhone ? `<a href="${waLink}" target="_blank" rel="noopener" class="btn btn-sm" style="background:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border-radius:6px; font-weight:600; padding:6px 14px; font-size:0.85rem;"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.updateRentalRequestStatus = async (id, status) => {
+            const res = await apiFetch(`/api/rentals/requests/${id}`, { method: 'PUT', body: { status } });
+            if (!res.ok) {
+                showToast(res.error || 'Error al actualizar la solicitud', 'danger');
+                return;
+            }
+            const local = allRentalRequests.find(r => r.id === id);
+            if (local) local.status = status;
+            renderRentalRequestsList();
+            showToast('✓ Estado actualizado', 'success');
+        };
+
+        document.getElementById('refreshRentalRequests')?.addEventListener('click', loadRentalRequests);
+        document.getElementById('rentalRequestSearch')?.addEventListener('input', renderRentalRequestsList);
+        document.getElementById('rentalRequestFilter')?.addEventListener('change', renderRentalRequestsList);
 
         // ===== SETTINGS =====
         async function loadSettings() {
@@ -7446,6 +7601,7 @@
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 document.getElementById(`tab-${btn.dataset.tab}`)?.classList.add('active');
                 if (btn.dataset.tab === 'inquiries') loadInquiries();
+                if (btn.dataset.tab === 'rentals') loadRentalRequests();
                 if (btn.dataset.tab === 'settings') loadSettings();
                 if (btn.dataset.tab === 'analytics') { loadAnalyticsData(); loadLeads(); }
                 if (btn.dataset.tab === 'users') loadUsers();
@@ -8388,7 +8544,7 @@
             const search = document.getElementById('crmSearch').value.toLowerCase();
             
             const filtered = allLeads.filter(l => 
-                (l.full_name && l.full_name.toLowerCase().includes(search)) || 
+                (l.name && l.name.toLowerCase().includes(search)) || 
                 (l.email && l.email.toLowerCase().includes(search)) ||
                 l.visitor_id.includes(search)
             );
@@ -8412,7 +8568,7 @@
                         ${filtered.map(l => `
                             <tr style="border-bottom:1px solid var(--border);">
                                 <td style="padding:12px;">
-                                    <div style="font-weight:600;">${l.full_name || 'Visitante Anónimo'}</div>
+                                    <div style="font-weight:600;">${l.name || 'Visitante Anónimo'}</div>
                                     <div style="font-size:0.7rem; color:var(--text3); font-family:monospace;">${l.visitor_id}</div>
                                 </td>
                                 <td style="padding:12px;">
@@ -8425,7 +8581,7 @@
                                 <td style="padding:12px;">
                                     <div class="action-btns">
                                         <button class="action-btn" onclick="viewLeadDetails('${l.visitor_id}')" title="Ver Historial"><i class="fas fa-history"></i></button>
-                                        ${l.email ? `<button class="action-btn" onclick="openMarketingEmail('${l.email}', '${l.full_name || ''}')" title="Enviar Email Marketing" style="color:var(--primary)"><i class="fas fa-paper-plane"></i></button>` : ''}
+                                        ${l.email ? `<button class="action-btn" onclick="openMarketingEmail('${l.email}', '${l.name || ''}')" title="Enviar Email Marketing" style="color:var(--primary)"><i class="fas fa-paper-plane"></i></button>` : ''}
                                     </div>
                                 </td>
                             </tr>
@@ -8456,7 +8612,7 @@
                     <div style="background:var(--bg3); padding:15px; border-radius:var(--radius); margin-bottom:20px;">
                         <h4 style="margin-bottom:10px; color:var(--accent);">Información del Perfil</h4>
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.9rem;">
-                            <div><strong>Nombre:</strong> ${lead.full_name || 'N/A'}</div>
+                            <div><strong>Nombre:</strong> ${lead.name || 'N/A'}</div>
                             <div><strong>Email:</strong> ${lead.email || 'N/A'}</div>
                             <div><strong>ID Visitante:</strong> <span style="font-family:monospace; font-size:0.7rem;">${lead.visitor_id}</span></div>
                             <div><strong>Creado:</strong> ${new Date(lead.created_at).toLocaleDateString('es')}</div>

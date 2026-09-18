@@ -23,20 +23,23 @@ export class InquiriesService {
   }
 
   async create(dto: CreateInquiryDto, ip: string) {
+    // Mapeo a las columnas reales de la tabla `inquiries` (name/service, no
+    // full_name/source — el DTO externo conserva esos nombres porque ya son
+    // los que usa el frontend, esto solo lo traduce en el borde).
     const { data, error } = await this.supabase
       .getClient()
       .from(TABLE)
       .insert([
         {
-          full_name: dto.full_name,
+          name: dto.full_name,
           email: dto.email ?? null,
           phone: dto.phone ?? null,
           message: dto.message,
           vehicle_id: dto.vehicle_id ?? null,
-          source: dto.source ?? 'web',
+          service: dto.source ?? 'web',
           visitor_id: dto.visitor_id ?? null,
           ip_address: ip,
-          status: 'pending',
+          status: 'new',
         },
       ])
       .select()

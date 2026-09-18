@@ -24,10 +24,10 @@ describe('InquiriesService', () => {
     await service.create({ full_name: 'Juan Pérez', message: 'Interesado en el catálogo' }, '203.0.113.5');
 
     const insertPayload = (builder.insert as jest.Mock).mock.calls[0][0][0];
-    expect(insertPayload.full_name).toBe('Juan Pérez');
+    expect(insertPayload.name).toBe('Juan Pérez');
     expect(insertPayload.ip_address).toBe('203.0.113.5');
-    expect(insertPayload.status).toBe('pending');
-    expect(insertPayload.source).toBe('web');
+    expect(insertPayload.status).toBe('new');
+    expect(insertPayload.service).toBe('web');
   });
 
   it('lanza BadRequestException si supabase falla al insertar', async () => {

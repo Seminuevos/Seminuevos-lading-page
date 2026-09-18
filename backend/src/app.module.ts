@@ -15,6 +15,7 @@ import { EmailModule } from './email/email.module';
 import { ScrapeModule } from './scrape/scrape.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { RentalsModule } from './rentals/rentals.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     ScrapeModule,
     SiteSettingsModule,
     AnalyticsModule,
+    RentalsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },
