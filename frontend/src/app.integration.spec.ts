@@ -1,20 +1,13 @@
-import { join } from 'path';
-import { Test } from '@nestjs/testing';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
-import { AppModule } from './app.module';
+import { createApp } from './create-app';
 
 describe('Frontend app (integración HTTP)', () => {
   let app: NestExpressApplication;
 
   beforeAll(async () => {
     process.env.API_BASE_URL = 'http://localhost:3001';
-
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = moduleRef.createNestApplication<NestExpressApplication>();
-    app.useStaticAssets(join(__dirname, '..', 'public'));
-    app.setBaseViewsDir(join(__dirname, '..', 'views'));
-    app.setViewEngine('hbs');
+    app = await createApp();
     await app.init();
   });
 

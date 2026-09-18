@@ -40,6 +40,26 @@ initSupabaseClient();
  * const res = await apiFetch('/api/auth/login', { method: 'POST', body: { email, password } });
  * if (res.ok) { console.log(res.data.token); }
  */
+/**
+ * Resuelve una ruta /api/... contra la URL del backend.
+ * window.API_BASE_URL lo inyecta el servidor (frontend Nest) en cada página;
+ * en producción normalmente apunta al proyecto Vercel del backend.
+ */
+function apiUrl(path) {
+    const base = (typeof window !== 'undefined' && window.API_BASE_URL) || '';
+    if (/^https?:\/\//i.test(path)) return path; // ya es una URL absoluta
+    return base ? `${base.replace(/\/$/, '')}${path}` : path;
+}
+
+/**
+ * Header de autorización para llamadas que no pasan por apiFetch (p. ej.
+ * fetch() directos que necesitan inspeccionar la respuesta cruda).
+ */
+function apiAuthHeader() {
+    const token = sessionStorage.getItem('sn_jwt_token') || localStorage.getItem('sn_jwt_token');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
+
 async function apiFetch(path, options = {}) {
     const token = sessionStorage.getItem('sn_jwt_token') || localStorage.getItem('sn_jwt_token');
 
@@ -58,7 +78,7 @@ async function apiFetch(path, options = {}) {
     }
 
     try {
-        const response = await fetch(path, {
+        const response = await fetch(apiUrl(path), {
             ...options,
             headers,
             body

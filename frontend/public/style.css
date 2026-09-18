@@ -5457,6 +5457,20 @@ img.mastertech-seal {
     }
 }
 
+/* ============================================================
+   Tablas responsive (estimator.html, sm-op.html)
+   Antes se cortaban sin poder verse en pantallas angostas —
+   ahora scrollean horizontalmente en vez de desbordar la página.
+   ============================================================ */
+@media (max-width: 768px) {
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+}
 
 
 

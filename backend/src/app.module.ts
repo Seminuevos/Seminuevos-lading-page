@@ -10,6 +10,8 @@ import { InquiriesModule } from './inquiries/inquiries.module';
 import { SettingsModule } from './settings/settings.module';
 import { SecurityLogModule } from './security-log/security-log.module';
 import { PublicModule } from './public/public.module';
+import { EmailModule } from './email/email.module';
+import { ScrapeModule } from './scrape/scrape.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { PublicModule } from './public/public.module';
     SettingsModule,
     SecurityLogModule,
     PublicModule,
+    EmailModule,
+    ScrapeModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

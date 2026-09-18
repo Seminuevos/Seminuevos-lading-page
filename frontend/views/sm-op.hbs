@@ -6740,7 +6740,7 @@
             const targetSrc = uploadedImages[i].edited || uploadedImages[i].src;
             if (targetSrc.startsWith('http') && !targetSrc.includes('supabase.co')) {
                 editorImg.crossOrigin = "anonymous";
-                editorImg.src = `/api/scrape?proxy=${encodeURIComponent(targetSrc)}`;
+                editorImg.src = apiUrl(`/api/scrape?proxy=${encodeURIComponent(targetSrc)}`);
             } else {
                 if (targetSrc.startsWith('http')) {
                     editorImg.crossOrigin = "anonymous";
@@ -6837,7 +6837,7 @@
 
             if (imgObj.src.startsWith('http') && !imgObj.src.includes('supabase.co')) {
                 tempImg.crossOrigin = "anonymous";
-                tempImg.src = `/api/scrape?proxy=${encodeURIComponent(imgObj.src)}`;
+                tempImg.src = apiUrl(`/api/scrape?proxy=${encodeURIComponent(imgObj.src)}`);
             } else {
                 if (imgObj.src.startsWith('http')) tempImg.crossOrigin = "anonymous";
                 tempImg.src = imgObj.edited || imgObj.src;
@@ -6898,7 +6898,7 @@
 
                     if (imgObj.src.startsWith('http') && !imgObj.src.includes('supabase.co')) {
                         tempImg.crossOrigin = "anonymous";
-                        tempImg.src = `/api/scrape?proxy=${encodeURIComponent(imgObj.src)}`;
+                        tempImg.src = apiUrl(`/api/scrape?proxy=${encodeURIComponent(imgObj.src)}`);
                     } else {
                         if (imgObj.src.startsWith('http')) tempImg.crossOrigin = "anonymous";
                         tempImg.src = imgObj.src;
@@ -7150,8 +7150,10 @@
             document.getElementById('sInstagram').value = map.social_instagram || '';
             document.getElementById('sTiktok').value = map.social_tiktok || '';
             document.getElementById('sYoutube').value = map.social_youtube || '';
-            document.getElementById('sProxyKey').value = map.scraper_proxy_key || '';
-            document.getElementById('sResendKey').value = map.resend_api_key || '';
+            // Las API keys (Apify/Resend) ya no se leen ni guardan en site_settings
+            // (era de lectura pública). Ahora viven solo en el entorno del backend.
+            document.getElementById('sProxyKey').value = '';
+            document.getElementById('sResendKey').value = '';
             document.getElementById('sFlete').value = map.calc_flete || 3500;
             document.getElementById('sAduana').value = map.calc_aduana || 3500;
             document.getElementById('sDocVzla').value = map.calc_doc_vzla || 1000;
@@ -7739,8 +7741,8 @@
                 social_instagram: document.getElementById('sInstagram').value,
                 social_tiktok: document.getElementById('sTiktok').value,
                 social_youtube: document.getElementById('sYoutube').value,
-                scraper_proxy_key: document.getElementById('sProxyKey').value,
-                resend_api_key: document.getElementById('sResendKey').value,
+                // scraper_proxy_key / resend_api_key ya no se guardan aquí — ahora son
+                // variables de entorno del backend (APIFY_API_KEY / RESEND_API_KEY).
                 calc_flete: parseFloat(document.getElementById('sFlete').value),
                 calc_aduana: parseFloat(document.getElementById('sAduana').value),
                 calc_doc_vzla: parseFloat(document.getElementById('sDocVzla').value),
@@ -8187,13 +8189,11 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            const proxyKey = getApifyToken();
-
             try {
-                const response = await fetch('/api/scrape', {
+                const response = await fetch(apiUrl('/api/scrape'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url, proxyKey })
+                    headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
+                    body: JSON.stringify({ url })
                 });
                 const result = await response.json();
                 if (result.success) {
@@ -8224,7 +8224,6 @@
 
             const btn = document.getElementById('startBulkImport');
             const statusBox = document.getElementById('bulkStatus');
-            const token = getApifyToken();
 
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando Lote...';
@@ -8276,20 +8275,16 @@
                     let rawItem = null;
                     if (liveTimerEl) liveTimerEl.innerHTML = `⚡ [${index + 1}/${links.length}] Consultando servidor para ${label}...`;
                     
-                    // 1. Probar endpoints de la API (local y producción en Vercel)
-                    const candidateEndpoints = [
-                        '/api/scrape',
-                        'https://seminuevos-lading-page.vercel.app/api/scrape',
-                        'https://seminuevoautos.com/api/scrape'
-                    ];
+                    // 1. Probar el endpoint del backend configurado
+                    const candidateEndpoints = [apiUrl('/api/scrape')];
 
                     for (const ep of candidateEndpoints) {
                         if (rawItem && (rawItem.make || rawItem.title || rawItem.year)) break;
                         try {
                             const proxyRes = await fetch(ep, {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ url: cleanUrl, proxyKey: token }),
+                                headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
+                                body: JSON.stringify({ url: cleanUrl }),
                                 signal: AbortSignal.timeout(12000)
                             });
 
@@ -8547,9 +8542,9 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
             try {
-                const response = await fetch('/api/scrape', {
+                const response = await fetch(apiUrl('/api/scrape'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
                     body: JSON.stringify({ url, html })
                 });
                 const result = await response.json();
@@ -8599,13 +8594,11 @@
                 uploadedImages = [];
                 renderImagePreviews();
 
-                // Get key from settings
-                const proxyKey = document.getElementById('sProxyKey')?.value || '';
-
                 for (const src of data.images) {
                     try {
-                        // Proxy through our API to avoid CORS and get blob
-                        const proxyUrl = `/api/scrape?proxy=${encodeURIComponent(src)}${proxyKey ? '&key=' + proxyKey : ''}`;
+                        // Proxy through our API to avoid CORS and get blob (la key de Apify
+                        // vive solo en el backend, ya no se manda desde el cliente)
+                        const proxyUrl = apiUrl(`/api/scrape?proxy=${encodeURIComponent(src)}`);
                         const res = await fetch(proxyUrl);
                         if (!res.ok) throw new Error("Proxy error");
                         const blob = await res.blob();
@@ -8649,9 +8642,9 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             try {
-                const response = await fetch('/api/scrape', {
+                const response = await fetch(apiUrl('/api/scrape'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
                     body: JSON.stringify({ url: importData.url, html: importData.html })
                 });
                 const result = await response.json();
@@ -8927,22 +8920,19 @@
             const message = document.getElementById('mailMessage').value;
             const btn = document.getElementById('btnSendMail');
             
-            // Obtener Resend Key de los settings locales (en el DOM)
-            const resendKey = document.getElementById('sResendKey').value;
-            if (!resendKey) { showToast('Configura tu Resend API Key primero', 'error'); return; }
-
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
             try {
-                const res = await fetch('/api/send-email', {
+                // La API key de Resend vive solo en el backend (RESEND_API_KEY),
+                // ya no se manda desde el cliente.
+                const res = await fetch(apiUrl('/api/email/send'), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
                     body: JSON.stringify({
                         to: email,
                         subject,
-                        text: message,
-                        apiKey: resendKey
+                        text: message
                     })
                 });
 
@@ -10732,10 +10722,10 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
                     }
 
                     try {
-                        const proxyRes = await fetch('/api/scrape', {
+                        const proxyRes = await fetch(apiUrl('/api/scrape'), {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ url: cleanUrl, proxyKey: token })
+                            headers: { 'Content-Type': 'application/json', ...apiAuthHeader() },
+                            body: JSON.stringify({ url: cleanUrl })
                         });
                         if (proxyRes.ok) {
                             const proxyJson = await proxyRes.json();
