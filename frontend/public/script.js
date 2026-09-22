@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderVehicles(dataSource, gridElement, typeConditionFilter = 'todos', brandFilter = 'todos') {
+    function renderVehicles(dataSource, gridElement, typeConditionFilter = 'todos', brandFilter = 'todos', modelFilter = 'todos', yearFilter = 'todos', doorsFilter = 'todos') {
         if (!gridElement) return;
         let filtered = dataSource;
 
@@ -381,7 +381,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         if (brandFilter !== 'todos') {
-            filtered = filtered.filter(v => (v.title || '').toLowerCase().includes(brandFilter));
+            // Preferir la columna real `brand` (agregada para estos filtros); si un
+            // vehículo todavía no la tiene cargada, cae al match por texto en title
+            // que ya existía antes (compatibilidad hacia atrás).
+            filtered = filtered.filter(v => v.brand ? v.brand.toLowerCase() === brandFilter : (v.title || '').toLowerCase().includes(brandFilter));
+        }
+        if (modelFilter !== 'todos') {
+            filtered = filtered.filter(v => (v.model || '').toLowerCase() === modelFilter);
+        }
+        if (yearFilter !== 'todos') {
+            filtered = filtered.filter(v => String(v.year) === String(yearFilter));
+        }
+        if (doorsFilter !== 'todos') {
+            filtered = filtered.filter(v => String(v.doors) === String(doorsFilter));
         }
         filtered = sortVehicles(filtered);
         gridElement.innerHTML = '';
@@ -518,9 +530,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let appVehicles0km = [];
 
     function renderAllPanels() {
-        renderVehicles(appVehiclesSeminuevos, seminuevosGrid, filtersState.seminuevos.type, filtersState.seminuevos.brand);
-        renderVehicles(appVehiclesPorPedido, porpedidoGrid, filtersState.porpedido.type, filtersState.porpedido.brand);
-        renderVehicles(appVehicles0km, zerokmGrid, filtersState.zerokm.type, filtersState.zerokm.brand);
+        const s = filtersState.seminuevos, p = filtersState.porpedido, z = filtersState.zerokm;
+        renderVehicles(appVehiclesSeminuevos, seminuevosGrid, s.type, s.brand, s.model, s.year, s.doors);
+        renderVehicles(appVehiclesPorPedido, porpedidoGrid, p.type, p.brand, p.model, p.year, p.doors);
+        renderVehicles(appVehicles0km, zerokmGrid, z.type, z.brand, z.model, z.year, z.doors);
 
         // Featured grid population
         const featuredGrid = document.getElementById('featuredVehiclesGrid');
@@ -534,53 +547,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== FILTER STATE =====
     const filtersState = {
-        seminuevos: { type: 'todos', brand: 'todos' },
-        porpedido: { type: 'todos', brand: 'todos' },
-        zerokm: { type: 'todos', brand: 'todos' }
+        seminuevos: { type: 'todos', brand: 'todos', model: 'todos', year: 'todos', doors: 'todos' },
+        porpedido: { type: 'todos', brand: 'todos', model: 'todos', year: 'todos', doors: 'todos' },
+        zerokm: { type: 'todos', brand: 'todos', model: 'todos', year: 'todos', doors: 'todos' }
     };
 
-    function setupFilters(containerId, brandSelectId, stateKey, gridEl, getDataSource) {
+    function setupFilters(containerId, brandSelectId, modelSelectId, yearSelectId, doorsSelectId, stateKey, gridEl, getDataSource) {
         const container = document.getElementById(containerId);
         const brandSelect = document.getElementById(brandSelectId);
-        
-        // Function to render buttons dynamically
+        const modelSelect = document.getElementById(modelSelectId);
+        const yearSelect = document.getElementById(yearSelectId);
+        const doorsSelect = document.getElementById(doorsSelectId);
+
+        const rerender = () => {
+            const st = filtersState[stateKey];
+            renderVehicles(getDataSource(), gridEl, st.type, st.brand, st.model, st.year, st.doors);
+        };
+
+        function populateSelect(select, values, placeholder, currentValue, formatLabel) {
+            if (!select) return;
+            select.innerHTML = `<option value="todos">${placeholder}</option>` +
+                values.map(v => {
+                    const value = String(v).toLowerCase();
+                    const selected = currentValue === value ? ' selected' : '';
+                    return `<option value="${value}"${selected}>${formatLabel ? formatLabel(v) : v}</option>`;
+                }).join('');
+        }
+
+        // Function to render buttons and selects dynamically, según lo que
+        // realmente exista en esta categoría de vehículos.
         window[`refreshFilters_${stateKey}`] = () => {
             const vehicles = getDataSource();
             if (!container) return;
-            
+
             // Get unique body types present in these vehicles
             const uniqueTypes = [...new Set(vehicles.map(v => v.bodyType || v.body_type).filter(Boolean))];
-            
+
             // Define the most common ones to show even if empty, or just show what exists
             // To satisfy user, we show what exists + the standard ones if we want
             const typesToShow = ['todos', ...uniqueTypes];
-            
+
             container.innerHTML = typesToShow.map(t => {
                 const label = t === 'todos' ? 'Todos' : (BODY_TYPE_LABELS[t.toLowerCase()] || t);
                 const isActive = filtersState[stateKey].type === t;
                 return `<button class="filter-btn ${isActive ? 'active' : ''}" data-filter="${t}">${label}</button>`;
             }).join('');
-            
+
             // Re-attach click events
             container.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     filtersState[stateKey].type = btn.dataset.filter;
-                    renderVehicles(getDataSource(), gridEl, filtersState[stateKey].type, filtersState[stateKey].brand);
+                    rerender();
                 });
             });
+
+            const uniqueModels = [...new Set(vehicles.map(v => v.model).filter(Boolean))].sort();
+            populateSelect(modelSelect, uniqueModels, 'Modelo (Todos)', filtersState[stateKey].model);
+
+            const uniqueYears = [...new Set(vehicles.map(v => v.year).filter(Boolean))].sort((a, b) => b - a);
+            populateSelect(yearSelect, uniqueYears, 'Año (Todos)', filtersState[stateKey].year);
+
+            const uniqueDoors = [...new Set(vehicles.map(v => v.doors).filter(Boolean))].sort((a, b) => a - b);
+            populateSelect(doorsSelect, uniqueDoors, 'Puertas (Todas)', filtersState[stateKey].doors, (d) => `${d} puertas`);
         };
 
         brandSelect?.addEventListener('change', (e) => {
             filtersState[stateKey].brand = e.target.value;
-            renderVehicles(getDataSource(), gridEl, filtersState[stateKey].type, filtersState[stateKey].brand);
+            rerender();
+        });
+        modelSelect?.addEventListener('change', (e) => {
+            filtersState[stateKey].model = e.target.value;
+            rerender();
+        });
+        yearSelect?.addEventListener('change', (e) => {
+            filtersState[stateKey].year = e.target.value;
+            rerender();
+        });
+        doorsSelect?.addEventListener('change', (e) => {
+            filtersState[stateKey].doors = e.target.value;
+            rerender();
         });
     }
 
-    setupFilters('seminuevosFilters', 'seminuevosBrandFilter', 'seminuevos', seminuevosGrid, () => appVehiclesSeminuevos);
-    setupFilters('porpedidoFilters', 'porpedidoBrandFilter', 'porpedido', porpedidoGrid, () => appVehiclesPorPedido);
-    setupFilters('zerokmFilters', 'zerokmBrandFilter', 'zerokm', zerokmGrid, () => appVehicles0km);
+    setupFilters('seminuevosFilters', 'seminuevosBrandFilter', 'seminuevosModelFilter', 'seminuevosYearFilter', 'seminuevosDoorsFilter', 'seminuevos', seminuevosGrid, () => appVehiclesSeminuevos);
+    setupFilters('porpedidoFilters', 'porpedidoBrandFilter', 'porpedidoModelFilter', 'porpedidoYearFilter', 'porpedidoDoorsFilter', 'porpedido', porpedidoGrid, () => appVehiclesPorPedido);
+    setupFilters('zerokmFilters', 'zerokmBrandFilter', 'zerokmModelFilter', 'zerokmYearFilter', 'zerokmDoorsFilter', 'zerokm', zerokmGrid, () => appVehicles0km);
 
     // Helper Discriminator 1: Detect 0KM vehicles (strictly 0 KM mileage & zero km badges, never seminuevos or subasta lots)
     const isZeroKmVehicle = (v) => {
