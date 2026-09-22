@@ -1,5 +1,19 @@
 # Esquema de base de datos — SemiNuevo Agency
 
+> **Estos archivos quedan como referencia histórica.** Las migraciones ahora se manejan
+> con el [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+> desde `supabase/migrations/` en la raíz del repo (mismo contenido, solo renombrado al
+> formato `<timestamp>_<nombre>.sql` que el CLI espera). Para crear una migración nueva:
+>
+> ```bash
+> npx supabase migration new nombre_de_la_migracion   # crea supabase/migrations/<ts>_nombre_de_la_migracion.sql
+> # editar el archivo generado
+> npx supabase db push                                 # aplica contra el proyecto linkeado
+> ```
+>
+> Ya no hace falta copiar/pegar SQL a mano en el dashboard de Supabase. Ver
+> `supabase/README.md` para el setup inicial (`link`) de esta máquina.
+
 Estos archivos reemplazan a los `.sql` sueltos en la raíz del repo. Aplican en orden
 (`001` → `007`) sobre un proyecto Supabase nuevo o existente; todos usan
 `IF NOT EXISTS` / `DROP POLICY IF EXISTS` por lo que son seguros de re-ejecutar.
