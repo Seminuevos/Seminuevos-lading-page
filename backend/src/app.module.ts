@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
+import { VehicleInquiriesModule } from './vehicle-inquiries/vehicle-inquiries.module';
+import { ConcesionariosModule } from './concesionarios/concesionarios.module';
 import { SettingsModule } from './settings/settings.module';
 import { SecurityLogModule } from './security-log/security-log.module';
 import { IpBlacklistGuard } from './security-log/guards/ip-blacklist.guard';
@@ -26,6 +28,8 @@ import { RentalsModule } from './rentals/rentals.module';
     UsersModule,
     VehiclesModule,
     InquiriesModule,
+    VehicleInquiriesModule,
+    ConcesionariosModule,
     SettingsModule,
     SecurityLogModule,
     PublicModule,

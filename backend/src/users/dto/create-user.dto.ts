@@ -1,7 +1,7 @@
-import { IsEmail, IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsIn, IsInt, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { AgencyRole } from '../../auth/interfaces/jwt-payload.interface';
 
-const ROLES: AgencyRole[] = ['admin', 'super_admin', 'sales', 'credit', 'mechanic'];
+const ROLES: AgencyRole[] = ['admin', 'super_admin', 'sales', 'credit', 'mechanic', 'concesionario'];
 
 export class CreateUserDto {
   @IsEmail()
@@ -31,6 +31,10 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(100)
   branch?: string;
+
+  @IsOptional()
+  @IsInt()
+  concesionario_id?: number;
 
   @IsOptional()
   @IsString()

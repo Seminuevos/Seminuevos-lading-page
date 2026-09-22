@@ -13,7 +13,8 @@ import { AgencyUserRecord, SafeAgencyUser, toSafeUser } from './entities/agency-
 import { AuthenticatedUser } from '../auth/interfaces/jwt-payload.interface';
 
 const USERS_TABLE = 'agency_users';
-const SAFE_COLUMNS = 'id, email, full_name, phone, role, branch, status, notes, created_at, updated_at';
+const SAFE_COLUMNS =
+  'id, email, full_name, phone, role, branch, concesionario_id, status, notes, created_at, updated_at';
 const BCRYPT_ROUNDS = 12;
 
 function isAdmin(user: AuthenticatedUser): boolean {
@@ -80,6 +81,11 @@ export class UsersService {
       throw new ConflictException('Ya existe un usuario con este correo electrónico');
     }
 
+    const role = dto.role ?? 'sales';
+    if (role === 'concesionario' && !dto.concesionario_id) {
+      throw new BadRequestException('Un usuario concesionario requiere concesionario_id');
+    }
+
     const password_hash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
 
     const { data, error } = await this.supabase
@@ -91,8 +97,9 @@ export class UsersService {
           full_name: dto.full_name,
           password_hash,
           phone: dto.phone ?? null,
-          role: dto.role ?? 'sales',
+          role,
           branch: dto.branch ?? 'Porlamar (Sede Principal)',
+          concesionario_id: role === 'concesionario' ? dto.concesionario_id : null,
           status: 'active',
           notes: dto.notes ?? null,
         },
@@ -125,6 +132,14 @@ export class UsersService {
       if (dto.role !== undefined) payload.role = dto.role;
       if (dto.status !== undefined) payload.status = dto.status;
       if (dto.email !== undefined) payload.email = dto.email.toLowerCase().trim();
+      if (dto.concesionario_id !== undefined) payload.concesionario_id = dto.concesionario_id;
+
+      const nextRole = (dto.role ?? undefined) as string | undefined;
+      const nextConcesionarioId =
+        dto.concesionario_id !== undefined ? dto.concesionario_id : undefined;
+      if (nextRole === 'concesionario' && nextConcesionarioId === null) {
+        throw new BadRequestException('Un usuario concesionario requiere concesionario_id');
+      }
     }
 
     if (dto.password) {

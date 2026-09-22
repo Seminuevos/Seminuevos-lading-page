@@ -12,7 +12,11 @@ const PUBLIC_COLUMNS =
   'id, title, price, year, km, engine, transmission, fuel, body_type, condition, ' +
   'availability, origin, color, badge, description, features, images, catalog, ' +
   'mastertech, views, created_at, trade_in_eligible, financing_eligible, has_title, ' +
-  'available_for_rental';
+  'available_for_rental, for_sale, for_import, concesionario_id, brand, model, doors';
+
+function isConcesionario(user?: AuthenticatedUser): user is AuthenticatedUser {
+  return !!user && user.role === 'concesionario';
+}
 
 @Injectable()
 export class VehiclesService {
@@ -52,26 +56,28 @@ export class VehiclesService {
     return data;
   }
 
-  async findAll() {
-    const { data, error } = await this.supabase
-      .getClient()
-      .from(TABLE)
-      .select('*')
-      .order('created_at', { ascending: false });
+  async findAll(requester?: AuthenticatedUser) {
+    let query = this.supabase.getClient().from(TABLE).select('*').order('created_at', { ascending: false });
 
+    if (isConcesionario(requester)) {
+      query = query.eq('concesionario_id', requester.concesionario_id);
+    }
+
+    const { data, error } = await query;
     if (error) {
       throw new BadRequestException('Error al obtener inventario');
     }
     return data ?? [];
   }
 
-  async findOne(id: string) {
-    const { data, error } = await this.supabase
-      .getClient()
-      .from(TABLE)
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
+  async findOne(id: string, requester?: AuthenticatedUser) {
+    let query = this.supabase.getClient().from(TABLE).select('*').eq('id', id);
+
+    if (isConcesionario(requester)) {
+      query = query.eq('concesionario_id', requester.concesionario_id);
+    }
+
+    const { data, error } = await query.maybeSingle();
 
     if (error || !data) {
       throw new NotFoundException('Vehículo no encontrado');
@@ -89,6 +95,9 @@ export class VehiclesService {
           year: dto.year ?? new Date().getFullYear(),
           status: dto.status ?? 'active',
           created_by: user.email,
+          // Un concesionario solo puede crear vehículos para sí mismo — se
+          // ignora cualquier concesionario_id que venga en el DTO.
+          ...(isConcesionario(user) ? { concesionario_id: user.concesionario_id } : {}),
         },
       ])
       .select()
@@ -100,14 +109,18 @@ export class VehiclesService {
     return data;
   }
 
-  async update(id: string, dto: UpdateVehicleDto) {
-    const { data, error } = await this.supabase
+  async update(id: string, dto: UpdateVehicleDto, requester?: AuthenticatedUser) {
+    let query = this.supabase
       .getClient()
       .from(TABLE)
       .update({ ...dto, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .maybeSingle();
+      .eq('id', id);
+
+    if (isConcesionario(requester)) {
+      query = query.eq('concesionario_id', requester.concesionario_id);
+    }
+
+    const { data, error } = await query.select().maybeSingle();
 
     if (error) {
       throw new BadRequestException('Error al actualizar vehículo');
@@ -118,10 +131,23 @@ export class VehiclesService {
     return data;
   }
 
-  async remove(id: string) {
-    const { error } = await this.supabase.getClient().from(TABLE).delete().eq('id', id);
+  async remove(id: string, requester?: AuthenticatedUser) {
+    let query = this.supabase.getClient().from(TABLE).delete().eq('id', id);
+
+    if (isConcesionario(requester)) {
+      query = query.eq('concesionario_id', requester.concesionario_id);
+    }
+
+    // .delete() sin .select() no informa cuántas filas afectó: un WHERE que no
+    // matchea nada (id inexistente, o de otro concesionario) igual devuelve
+    // error: null. Pedimos las filas borradas para distinguir "borrado" de
+    // "no encontrado" y no reportar éxito cuando en realidad no se borró nada.
+    const { data, error } = await query.select();
     if (error) {
       throw new BadRequestException('Error al eliminar vehículo');
+    }
+    if (!data || data.length === 0) {
+      throw new NotFoundException('Vehículo no encontrado');
     }
   }
 

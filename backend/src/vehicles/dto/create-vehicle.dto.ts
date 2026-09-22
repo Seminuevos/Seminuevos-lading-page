@@ -83,6 +83,21 @@ export class CreateVehicleDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(50)
+  brand?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  model?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  doors?: number;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(100)
   badge?: string;
 
@@ -110,4 +125,16 @@ export class CreateVehicleDto {
   @IsOptional()
   @IsBoolean()
   available_for_rental?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  for_sale?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  for_import?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  concesionario_id?: number;
 }

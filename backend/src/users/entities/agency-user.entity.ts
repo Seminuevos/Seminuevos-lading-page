@@ -8,6 +8,7 @@ export interface AgencyUserRecord {
   phone: string | null;
   role: AgencyRole;
   branch: string | null;
+  concesionario_id: number | null;
   status: 'active' | 'inactive';
   notes: string | null;
   created_at: string;

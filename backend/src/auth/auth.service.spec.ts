@@ -21,6 +21,7 @@ describe('AuthService', () => {
     phone: null,
     role: 'admin',
     branch: 'Porlamar (Sede Principal)',
+    concesionario_id: null,
     status: 'active',
     notes: null,
     created_at: new Date().toISOString(),

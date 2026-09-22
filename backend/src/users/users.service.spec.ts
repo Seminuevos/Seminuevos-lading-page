@@ -29,6 +29,7 @@ function buildUserRecord(overrides: Partial<AgencyUserRecord> = {}): AgencyUserR
     phone: null,
     role: 'sales',
     branch: 'Porlamar (Sede Principal)',
+    concesionario_id: null,
     status: 'active',
     notes: null,
     created_at: new Date().toISOString(),
@@ -114,6 +115,38 @@ describe('UsersService', () => {
       expect(result.email).toBe('nuevo@seminuevos.com');
       expect((result as unknown as Record<string, unknown>).password_hash).toBeUndefined();
       expect((result as unknown as Record<string, unknown>).password).toBeUndefined();
+    });
+
+    it('lanza BadRequestException al crear un concesionario sin concesionario_id', async () => {
+      client.from.mockReturnValue(createQueryBuilderMock({ data: null, error: null })); // findByEmail
+
+      await expect(
+        service.create({
+          email: 'dealer@partner.com',
+          full_name: 'Dealer',
+          password: 'password123',
+          role: 'concesionario',
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+
+    it('crea un usuario concesionario con su concesionario_id', async () => {
+      const record = buildUserRecord({ role: 'concesionario', concesionario_id: 7 });
+      const { password_hash: _unused, ...safeInsertedRecord } = record;
+
+      client.from
+        .mockReturnValueOnce(createQueryBuilderMock({ data: null, error: null })) // findByEmail
+        .mockReturnValueOnce(createQueryBuilderMock({ data: safeInsertedRecord, error: null }));
+
+      const result = await service.create({
+        email: 'dealer@partner.com',
+        full_name: 'Dealer',
+        password: 'password123',
+        role: 'concesionario',
+        concesionario_id: 7,
+      });
+
+      expect(result.concesionario_id).toBe(7);
     });
   });
 

@@ -43,13 +43,13 @@ export class VehiclesController {
   }
 
   @Get()
-  findAll() {
-    return this.vehiclesService.findAll().then((data) => ({ data }));
+  findAll(@CurrentUser() user: AuthenticatedUser) {
+    return this.vehiclesService.findAll(user).then((data) => ({ data }));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vehiclesService.findOne(id).then((data) => ({ data }));
+  findOne(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.vehiclesService.findOne(id, user).then((data) => ({ data }));
   }
 
   @Post()
@@ -58,12 +58,12 @@ export class VehiclesController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateVehicleDto) {
-    return this.vehiclesService.update(id, dto).then((data) => ({ data }));
+  update(@Param('id') id: string, @Body() dto: UpdateVehicleDto, @CurrentUser() user: AuthenticatedUser) {
+    return this.vehiclesService.update(id, dto, user).then((data) => ({ data }));
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vehiclesService.remove(id).then(() => ({ message: 'Vehículo eliminado correctamente' }));
+  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.vehiclesService.remove(id, user).then(() => ({ message: 'Vehículo eliminado correctamente' }));
   }
 }
