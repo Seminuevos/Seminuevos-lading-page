@@ -25,8 +25,14 @@ export async function createApp(expressInstance: Express = express()): Promise<N
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+  // `cors` matches array entries literally against the request's Origin
+  // header, so a literal "*" in the list would never actually match a real
+  // browser origin — it has to be passed as `origin: true` to mean "allow
+  // any origin".
+  const allowAllOrigins = allowedOrigins.includes('*');
+
   app.enableCors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+    origin: allowAllOrigins ? true : allowedOrigins.length > 0 ? allowedOrigins : false,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
