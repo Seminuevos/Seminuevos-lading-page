@@ -192,44 +192,61 @@
                 <p class="catalog-section-desc">Vehículos inspeccionados y certificados, listos para entrega inmediata.
                 </p>
             </div>
-            <div class="catalog-filters-container">
-                <div class="catalog-filters" id="seminuevosFilters">
-                    <button class="filter-btn active" data-filter="todos">Todos</button>
-                    <button class="filter-btn" data-filter="sedan">Sedán</button>
-                    <button class="filter-btn" data-filter="suv">SUV</button>
-                    <button class="filter-btn" data-filter="pickup">Pickup</button>
-                    <button class="filter-btn" data-filter="camion">Camiones</button>
-                    <button class="filter-btn" data-filter="deportivo">Deportivos</button>
-                    <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar">
+                    <h4 class="catalog-sidebar-title"><i class="fas fa-sliders-h"></i> Filtros</h4>
+                    <div class="catalog-filters" id="seminuevosFilters">
+                        <button class="filter-btn active" data-filter="todos">Todos</button>
+                        <button class="filter-btn" data-filter="sedan">Sedán</button>
+                        <button class="filter-btn" data-filter="suv">SUV</button>
+                        <button class="filter-btn" data-filter="pickup">Pickup</button>
+                        <button class="filter-btn" data-filter="camion">Camiones</button>
+                        <button class="filter-btn" data-filter="deportivo">Deportivos</button>
+                        <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="seminuevosBrandFilter">Marca</label>
+                        <select id="seminuevosBrandFilter" class="brand-filter-select">
+                            <option value="todos">Marca (Todas)</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="lexus">Lexus</option>
+                            <option value="honda">Honda</option>
+                            <option value="acura">Acura</option>
+                            <option value="nissan">Nissan</option>
+                            <option value="infiniti">Infiniti</option>
+                            <option value="jeep">Jeep</option>
+                            <option value="dodge">Dodge</option>
+                            <option value="ram">RAM</option>
+                            <option value="chrysler">Chrysler</option>
+                            <option value="hyundai">Hyundai</option>
+                            <option value="kia">Kia</option>
+                            <option value="ford">Ford</option>
+                            <option value="suzuki">Suzuki</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="seminuevosModelFilter">Modelo</label>
+                        <select id="seminuevosModelFilter" class="brand-filter-select">
+                            <option value="todos">Modelo (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="seminuevosYearFilter">Año</label>
+                        <select id="seminuevosYearFilter" class="brand-filter-select">
+                            <option value="todos">Año (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="seminuevosDoorsFilter">Puertas</label>
+                        <select id="seminuevosDoorsFilter" class="brand-filter-select">
+                            <option value="todos">Puertas (Todas)</option>
+                        </select>
+                    </div>
+                </aside>
+                <div class="catalog-results">
+                    <div class="vehicle-grid" id="seminuevosGrid"></div>
                 </div>
-                <select id="seminuevosBrandFilter" class="brand-filter-select">
-                    <option value="todos">Marca (Todas)</option>
-                    <option value="toyota">Toyota</option>
-                    <option value="lexus">Lexus</option>
-                    <option value="honda">Honda</option>
-                    <option value="acura">Acura</option>
-                    <option value="nissan">Nissan</option>
-                    <option value="infiniti">Infiniti</option>
-                    <option value="jeep">Jeep</option>
-                    <option value="dodge">Dodge</option>
-                    <option value="ram">RAM</option>
-                    <option value="chrysler">Chrysler</option>
-                    <option value="hyundai">Hyundai</option>
-                    <option value="kia">Kia</option>
-                    <option value="ford">Ford</option>
-                    <option value="suzuki">Suzuki</option>
-                </select>
-                <select id="seminuevosModelFilter" class="brand-filter-select">
-                    <option value="todos">Modelo (Todos)</option>
-                </select>
-                <select id="seminuevosYearFilter" class="brand-filter-select">
-                    <option value="todos">Año (Todos)</option>
-                </select>
-                <select id="seminuevosDoorsFilter" class="brand-filter-select">
-                    <option value="todos">Puertas (Todas)</option>
-                </select>
             </div>
-            <div class="vehicle-grid" id="seminuevosGrid"></div>
         </div>
     </section>
 <!-- ===== POR PEDIDO SECTION ===== -->
@@ -243,44 +260,61 @@
                 <p class="catalog-section-desc">Vehículos seminuevos importados desde USA con logística integral y
                     soporte MasterTech.</p>
             </div>
-            <div class="catalog-filters-container">
-                <div class="catalog-filters" id="porpedidoFilters">
-                    <button class="filter-btn active" data-filter="todos">Todos</button>
-                    <button class="filter-btn" data-filter="sedan">Sedán</button>
-                    <button class="filter-btn" data-filter="suv">SUV</button>
-                    <button class="filter-btn" data-filter="pickup">Pickup</button>
-                    <button class="filter-btn" data-filter="camion">Camiones</button>
-                    <button class="filter-btn" data-filter="deportivo">Deportivos</button>
-                    <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar">
+                    <h4 class="catalog-sidebar-title"><i class="fas fa-sliders-h"></i> Filtros</h4>
+                    <div class="catalog-filters" id="porpedidoFilters">
+                        <button class="filter-btn active" data-filter="todos">Todos</button>
+                        <button class="filter-btn" data-filter="sedan">Sedán</button>
+                        <button class="filter-btn" data-filter="suv">SUV</button>
+                        <button class="filter-btn" data-filter="pickup">Pickup</button>
+                        <button class="filter-btn" data-filter="camion">Camiones</button>
+                        <button class="filter-btn" data-filter="deportivo">Deportivos</button>
+                        <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="porpedidoBrandFilter">Marca</label>
+                        <select id="porpedidoBrandFilter" class="brand-filter-select">
+                            <option value="todos">Marca (Todas)</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="lexus">Lexus</option>
+                            <option value="honda">Honda</option>
+                            <option value="acura">Acura</option>
+                            <option value="nissan">Nissan</option>
+                            <option value="infiniti">Infiniti</option>
+                            <option value="jeep">Jeep</option>
+                            <option value="dodge">Dodge</option>
+                            <option value="ram">RAM</option>
+                            <option value="chrysler">Chrysler</option>
+                            <option value="hyundai">Hyundai</option>
+                            <option value="kia">Kia</option>
+                            <option value="ford">Ford</option>
+                            <option value="suzuki">Suzuki</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="porpedidoModelFilter">Modelo</label>
+                        <select id="porpedidoModelFilter" class="brand-filter-select">
+                            <option value="todos">Modelo (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="porpedidoYearFilter">Año</label>
+                        <select id="porpedidoYearFilter" class="brand-filter-select">
+                            <option value="todos">Año (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="porpedidoDoorsFilter">Puertas</label>
+                        <select id="porpedidoDoorsFilter" class="brand-filter-select">
+                            <option value="todos">Puertas (Todas)</option>
+                        </select>
+                    </div>
+                </aside>
+                <div class="catalog-results">
+                    <div class="vehicle-grid" id="porpedidoGrid"></div>
                 </div>
-                <select id="porpedidoBrandFilter" class="brand-filter-select">
-                    <option value="todos">Marca (Todas)</option>
-                    <option value="toyota">Toyota</option>
-                    <option value="lexus">Lexus</option>
-                    <option value="honda">Honda</option>
-                    <option value="acura">Acura</option>
-                    <option value="nissan">Nissan</option>
-                    <option value="infiniti">Infiniti</option>
-                    <option value="jeep">Jeep</option>
-                    <option value="dodge">Dodge</option>
-                    <option value="ram">RAM</option>
-                    <option value="chrysler">Chrysler</option>
-                    <option value="hyundai">Hyundai</option>
-                    <option value="kia">Kia</option>
-                    <option value="ford">Ford</option>
-                    <option value="suzuki">Suzuki</option>
-                </select>
-                <select id="porpedidoModelFilter" class="brand-filter-select">
-                    <option value="todos">Modelo (Todos)</option>
-                </select>
-                <select id="porpedidoYearFilter" class="brand-filter-select">
-                    <option value="todos">Año (Todos)</option>
-                </select>
-                <select id="porpedidoDoorsFilter" class="brand-filter-select">
-                    <option value="todos">Puertas (Todas)</option>
-                </select>
             </div>
-            <div class="vehicle-grid" id="porpedidoGrid"></div>
             <div class="import-notice">
                 <i class="fas fa-info-circle"></i>
                 <div>
@@ -304,44 +338,61 @@
                 </div>
                 <p class="catalog-section-desc">Vehículos cero kilómetros disponibles en stock o por pedido directo.</p>
             </div>
-            <div class="catalog-filters-container">
-                <div class="catalog-filters" id="zerokmFilters">
-                    <button class="filter-btn active" data-filter="todos">Todos</button>
-                    <button class="filter-btn" data-filter="sedan">Sedán</button>
-                    <button class="filter-btn" data-filter="suv">SUV</button>
-                    <button class="filter-btn" data-filter="pickup">Pickup</button>
-                    <button class="filter-btn" data-filter="camion">Camiones</button>
-                    <button class="filter-btn" data-filter="deportivo">Deportivos</button>
-                    <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar">
+                    <h4 class="catalog-sidebar-title"><i class="fas fa-sliders-h"></i> Filtros</h4>
+                    <div class="catalog-filters" id="zerokmFilters">
+                        <button class="filter-btn active" data-filter="todos">Todos</button>
+                        <button class="filter-btn" data-filter="sedan">Sedán</button>
+                        <button class="filter-btn" data-filter="suv">SUV</button>
+                        <button class="filter-btn" data-filter="pickup">Pickup</button>
+                        <button class="filter-btn" data-filter="camion">Camiones</button>
+                        <button class="filter-btn" data-filter="deportivo">Deportivos</button>
+                        <button class="filter-btn" data-filter="hibrido">Híbridos / Eléctricos</button>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="zerokmBrandFilter">Marca</label>
+                        <select id="zerokmBrandFilter" class="brand-filter-select">
+                            <option value="todos">Marca (Todas)</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="lexus">Lexus</option>
+                            <option value="honda">Honda</option>
+                            <option value="acura">Acura</option>
+                            <option value="nissan">Nissan</option>
+                            <option value="infiniti">Infiniti</option>
+                            <option value="jeep">Jeep</option>
+                            <option value="dodge">Dodge</option>
+                            <option value="ram">RAM</option>
+                            <option value="chrysler">Chrysler</option>
+                            <option value="hyundai">Hyundai</option>
+                            <option value="kia">Kia</option>
+                            <option value="ford">Ford</option>
+                            <option value="suzuki">Suzuki</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="zerokmModelFilter">Modelo</label>
+                        <select id="zerokmModelFilter" class="brand-filter-select">
+                            <option value="todos">Modelo (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="zerokmYearFilter">Año</label>
+                        <select id="zerokmYearFilter" class="brand-filter-select">
+                            <option value="todos">Año (Todos)</option>
+                        </select>
+                    </div>
+                    <div class="catalog-sidebar-group">
+                        <label class="catalog-sidebar-label" for="zerokmDoorsFilter">Puertas</label>
+                        <select id="zerokmDoorsFilter" class="brand-filter-select">
+                            <option value="todos">Puertas (Todas)</option>
+                        </select>
+                    </div>
+                </aside>
+                <div class="catalog-results">
+                    <div class="vehicle-grid" id="zerokmGrid"></div>
                 </div>
-                <select id="zerokmBrandFilter" class="brand-filter-select">
-                    <option value="todos">Marca (Todas)</option>
-                    <option value="toyota">Toyota</option>
-                    <option value="lexus">Lexus</option>
-                    <option value="honda">Honda</option>
-                    <option value="acura">Acura</option>
-                    <option value="nissan">Nissan</option>
-                    <option value="infiniti">Infiniti</option>
-                    <option value="jeep">Jeep</option>
-                    <option value="dodge">Dodge</option>
-                    <option value="ram">RAM</option>
-                    <option value="chrysler">Chrysler</option>
-                    <option value="hyundai">Hyundai</option>
-                    <option value="kia">Kia</option>
-                    <option value="ford">Ford</option>
-                    <option value="suzuki">Suzuki</option>
-                </select>
-                <select id="zerokmModelFilter" class="brand-filter-select">
-                    <option value="todos">Modelo (Todos)</option>
-                </select>
-                <select id="zerokmYearFilter" class="brand-filter-select">
-                    <option value="todos">Año (Todos)</option>
-                </select>
-                <select id="zerokmDoorsFilter" class="brand-filter-select">
-                    <option value="todos">Puertas (Todas)</option>
-                </select>
             </div>
-            <div class="vehicle-grid" id="zerokmGrid"></div>
         </div>
     </section>
 <!-- Catalog CTA -->

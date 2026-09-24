@@ -3624,23 +3624,86 @@ body::after {
     color: #2ecc71;
 }
 
-/* ===== FILTERS (Brands) ===== */
-.catalog-filters-container {
+/* ===== CATALOG SIDEBAR LAYOUT ===== */
+.catalog-layout {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: var(--space-8);
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 28px;
 }
 
-.catalog-filters {
-    margin-bottom: 0 !important;
+.catalog-sidebar {
+    flex: 0 0 260px;
+    width: 260px;
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--surface-container);
+    border: 1px solid var(--ghost-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+}
+
+.catalog-sidebar-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--ghost-border);
+}
+
+.catalog-sidebar-title i {
+    color: var(--primary);
+}
+
+.catalog-sidebar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.catalog-sidebar-label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--on-surface-variant);
+}
+
+.catalog-results {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Body-type filter buttons become a stacked facet list inside the sidebar
+   (they're horizontal pills everywhere else .filter-btn/.catalog-filters
+   might be reused, so these overrides are scoped to the sidebar only). */
+.catalog-sidebar .catalog-filters {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-bottom: 0;
+}
+
+.catalog-sidebar .filter-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
 }
 
 .brand-filter-select {
+    width: 100%;
     padding: 10px 16px;
-    background: var(--surface-container);
+    background: var(--surface-container-low);
     border: 1px solid var(--outline-variant);
     border-radius: var(--radius-md);
     color: var(--on-surface);
@@ -3648,21 +3711,62 @@ body::after {
     font-size: 0.9rem;
     outline: none;
     cursor: pointer;
-    min-width: 180px;
 }
 
 .brand-filter-select:focus {
     border-color: var(--primary);
 }
 
-@media (max-width: 768px) {
-    .catalog-filters-container {
+/* Grid has less horizontal room now that the sidebar takes ~260px, so it
+   steps down one column count at each breakpoint compared to the old
+   full-width layout (see the base .vehicle-grid rules above). */
+.catalog-results .vehicle-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (min-width: 1680px) {
+    .catalog-results .vehicle-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 1350px) {
+    .catalog-results .vehicle-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .catalog-results .vehicle-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .catalog-layout {
         flex-direction: column;
-        align-items: stretch;
     }
 
-    .brand-filter-select {
+    .catalog-sidebar {
+        position: static;
         width: 100%;
+        flex: 1 1 auto;
+    }
+
+    .catalog-sidebar .catalog-filters {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .catalog-sidebar .filter-btn {
+        width: auto;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .catalog-results .vehicle-grid {
+        grid-template-columns: 1fr;
     }
 }
 
