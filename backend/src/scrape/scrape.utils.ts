@@ -1,7 +1,5 @@
 import * as cheerio from 'cheerio';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export function normalizeTransmission(trans: unknown): string {
   if (!trans) return 'Automático';
   const s = String(trans).toLowerCase();
@@ -229,7 +227,7 @@ export function parseCopart(html: string, url: string, trustHtml = false): Recor
   }
 
   const scripts = html.match(/<script[^>]*>([\s\S]*?)<\/script>/gi) || [];
-  let rawData: Record<string, any> = {};
+  const rawData: Record<string, any> = {};
   for (const s of scripts) {
     if (s.includes('lcy') || s.includes('mkn') || s.includes('lotDetails')) {
       const m = s.match(/\{"[a-z0-9]+"[\s\S]*?\}/g);

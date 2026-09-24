@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fetch from 'node-fetch';
@@ -328,7 +327,7 @@ Contáctanos para cotizar impuestos, logística y precio final.
       const normEng = extractEngine(rawEngine, fullTitle, '');
       const formattedDamage = formatDamage(rawDamage);
 
-      let cleanImages: string[] = [];
+      const cleanImages: string[] = [];
       if (lotId) {
         for (let i = 1; i <= 15; i++) {
           cleanImages.push(`https://vis.iaai.com/resizer?imageKeys=${lotId}~SID~S0~I${i}`);

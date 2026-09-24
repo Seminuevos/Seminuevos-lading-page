@@ -9,7 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AgencyUserRecord, SafeAgencyUser, toSafeUser } from './entities/agency-user.entity';
+import { AgencyUserRecord, SafeAgencyUser } from './entities/agency-user.entity';
 import { AuthenticatedUser } from '../auth/interfaces/jwt-payload.interface';
 
 const USERS_TABLE = 'agency_users';
