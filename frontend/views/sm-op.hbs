@@ -3111,6 +3111,7 @@
                 <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
                 <button class="sidebar-link" data-tab="vehicle-inquiries"><i class="fas fa-car-side"></i> Consultas de Vehículos</button>
                 <button class="sidebar-link" data-tab="rentals" data-roles="admin,super_admin,sales,credit,mechanic"><i class="fas fa-key"></i> Alquileres</button>
+                <button class="sidebar-link" data-tab="concesionarios" data-roles="admin,super_admin"><i class="fas fa-store"></i> Concesionarios</button>
                 <button class="sidebar-link" data-tab="users" data-roles="admin,super_admin,sales,credit,mechanic"><i class="fas fa-users-cog"></i> Usuarios & Personal</button>
                 <button class="sidebar-link" data-tab="settings" data-roles="admin,super_admin,sales,credit,mechanic"><i class="fas fa-cog"></i> Configuración</button>
             </nav>
@@ -4868,6 +4869,32 @@
                 </div>
             </div>
 
+            <!-- CONCESIONARIOS TAB -->
+            <div class="tab-content" id="tab-concesionarios" data-roles="admin,super_admin">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Gestión de <span>Concesionarios</span></h1>
+                        <p style="color:var(--text2); font-size:0.85rem; margin-top:4px;">
+                            Dealers externos con acceso propio y restringido al panel — cada uno solo ve y administra su propio inventario.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openConcesionarioModal()"><i class="fas fa-store"></i> Nuevo Concesionario</button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header" style="gap: 16px;">
+                        <h3><i class="fas fa-store"></i> Directorio de Concesionarios</h3>
+                        <div class="table-search" style="width: 280px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Buscar por nombre, contacto o email..." id="concesionarioSearchInput" oninput="renderConcesionariosTable()">
+                        </div>
+                    </div>
+                    <div id="concesionariosTableBody">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
             <!-- USERS & STAFF MANAGEMENT TAB -->
             <div class="tab-content" id="tab-users" data-roles="admin,super_admin,sales,credit,mechanic">
                 <div class="page-header">
@@ -5323,6 +5350,22 @@
                                 <label class="form-label" for="vForImport" style="margin-bottom: 0;">Para importación</label>
                             </div>
                         </div>
+                        <div class="form-group full" id="vDepositFeeGroup" style="display:none; gap: 12px; align-items:flex-end; padding-top: 4px; border-top: 1px dashed var(--border); margin-top: 4px;">
+                            <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Fee de Depósito (alquiler)</label>
+                                    <select class="form-select" id="vDepositFeeType">
+                                        <option value="">Sin fee de depósito</option>
+                                        <option value="percent">Porcentaje (%)</option>
+                                        <option value="fixed">Monto fijo ($)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <label class="form-label">Valor</label>
+                                    <input type="number" step="0.01" min="0" class="form-input" id="vDepositFeeValue" placeholder="Ej: 15 ó 200">
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group full" id="vConcesionarioGroup" data-roles="admin,super_admin,sales,credit,mechanic">
                             <label class="form-label">Concesionario dueño (opcional)</label>
                             <select class="form-select" id="vConcesionario">
@@ -5483,6 +5526,130 @@
         </div>
     </div>
 
+    <!-- ===== CONCESIONARIO MODAL (crear/editar) ===== -->
+    <div class="modal-overlay" id="concesionarioModal" style="display: none;">
+        <div class="modal" style="max-width: 650px;">
+            <div class="modal-header">
+                <h2 id="concesionarioModalTitle"><i class="fas fa-store" style="color:var(--accent);"></i> Nuevo Concesionario</h2>
+                <button class="modal-close" onclick="closeConcesionarioModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="concesionarioForm" onsubmit="event.preventDefault(); saveConcesionario();">
+                    <input type="hidden" id="ccId">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label"><i class="fas fa-store"></i> Nombre del Concesionario *</label>
+                            <input type="text" class="form-input" id="ccName" placeholder="Ej: Auto Norte C.A." required>
+                        </div>
+
+                        <div class="form-group full">
+                            <label class="form-label"><i class="fas fa-user"></i> Persona de Contacto *</label>
+                            <input type="text" class="form-input" id="ccContactPerson" placeholder="Ej: María Pérez" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-envelope"></i> Correo (Usuario de acceso) *</label>
+                            <input type="email" class="form-input" id="ccEmail" placeholder="dealer@autonorte.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Teléfono</label>
+                            <input type="text" class="form-input" id="ccPhone" placeholder="Ej: +58 424 8700438">
+                        </div>
+
+                        <div class="form-group full" id="ccPasswordGroup">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <label class="form-label" style="margin-bottom:0;"><i class="fas fa-key"></i> Contraseña de Acceso *</label>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="generateConcesionarioPassword()" style="padding:2px 10px; font-size:0.75rem;">
+                                    <i class="fas fa-wand-magic-sparkles" style="color:var(--accent);"></i> Generar Contraseña Segura
+                                </button>
+                            </div>
+                            <input type="text" class="form-input" id="ccPassword" placeholder="Mínimo 8 caracteres">
+                            <small style="color:var(--text3); font-size:0.72rem; display:block; margin-top:4px;">
+                                Guarda esta contraseña para facilitársela al concesionario. Para cambiarla más adelante, usá "Cambiar Contraseña" desde la tabla.
+                            </small>
+                        </div>
+
+                        <div class="form-group full">
+                            <label class="form-label"><i class="fas fa-map-marker-alt"></i> Dirección</label>
+                            <input type="text" class="form-input" id="ccAddress" placeholder="Dirección del concesionario">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-toggle-on"></i> Estado</label>
+                            <select class="form-select" id="ccStatus">
+                                <option value="active" selected>🟢 Activo</option>
+                                <option value="inactive">🔴 Inactivo (acceso suspendido)</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" onclick="closeConcesionarioModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveConcesionario()">
+                    <i class="fas fa-save"></i> Guardar Concesionario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CONDICIONES DEL CONCESIONARIO MODAL ===== -->
+    <div class="modal-overlay" id="concesionarioConditionsModal" style="display: none;">
+        <div class="modal" style="max-width: 560px;">
+            <div class="modal-header">
+                <h2 id="conditionsModalTitle"><i class="fas fa-file-contract" style="color:var(--accent);"></i> Condiciones del Concesionario</h2>
+                <button class="modal-close" onclick="closeConditionsModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="conditionsForm" onsubmit="event.preventDefault(); saveConditions();">
+                    <input type="hidden" id="cdConcesionarioId">
+
+                    <h4 style="margin:0 0 10px; font-size:0.85rem; text-transform:uppercase; color:var(--text3); letter-spacing:0.5px;"><i class="fas fa-tag"></i> Venta</h4>
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label">Comisión de Venta (%)</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-input" id="cdSaleCommission" placeholder="Ej: 5">
+                        </div>
+                    </div>
+
+                    <h4 style="margin:16px 0 10px; font-size:0.85rem; text-transform:uppercase; color:var(--text3); letter-spacing:0.5px;"><i class="fas fa-key"></i> Alquiler</h4>
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label">Comisión de Alquiler (%)</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-input" id="cdRentalCommission" placeholder="Ej: 10">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fee de Reserva</label>
+                            <select class="form-select" id="cdReservationFeeType">
+                                <option value="">Sin fee de reserva</option>
+                                <option value="percent">Porcentaje (%)</option>
+                                <option value="fixed">Monto fijo ($)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Valor</label>
+                            <input type="number" step="0.01" min="0" class="form-input" id="cdReservationFeeValue" placeholder="Ej: 10 ó 50">
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label">Fee de Seguro (%)</label>
+                            <input type="number" step="0.01" min="0" max="100" class="form-input" id="cdInsuranceFee" placeholder="Ej: 3">
+                        </div>
+                    </div>
+                    <small style="color:var(--text3); font-size:0.72rem; display:block; margin-top:4px;">
+                        El Fee de Depósito se configura por vehículo, en la ficha de cada uno (sección de alquiler).
+                    </small>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" onclick="closeConditionsModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveConditions()">
+                    <i class="fas fa-save"></i> Guardar Condiciones
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -5594,6 +5761,271 @@
                 select.innerHTML = '<option value="">Inventario propio de la agencia</option>' +
                     list.map(c => `<option value="${c.id}">${escapeUserHtml(c.name)}</option>`).join('');
             } catch(e) {}
+        }
+
+        // ===== CONCESIONARIOS (admin) =====
+        let _allConcesionarios = [];
+
+        async function loadConcesionariosAdmin() {
+            const container = document.getElementById('concesionariosTableBody');
+            if (!container) return;
+            try {
+                const res = await apiFetch('/api/concesionarios');
+                if (!res.ok) {
+                    container.innerHTML = '<p style="padding:16px;color:var(--text3)">No se pudieron cargar los concesionarios.</p>';
+                    return;
+                }
+                _allConcesionarios = res.data?.data || [];
+                renderConcesionariosTable();
+            } catch (e) {}
+        }
+
+        function renderConcesionariosTable() {
+            const container = document.getElementById('concesionariosTableBody');
+            if (!container) return;
+            const search = (document.getElementById('concesionarioSearchInput')?.value || '').toLowerCase().trim();
+
+            const list = _allConcesionarios.filter(c => {
+                if (!search) return true;
+                return (c.name || '').toLowerCase().includes(search) ||
+                    (c.contact_person || '').toLowerCase().includes(search) ||
+                    (c.contact_email || '').toLowerCase().includes(search);
+            });
+
+            if (!list.length) {
+                container.innerHTML = '<p style="padding:16px;color:var(--text3)">Sin concesionarios todavía.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="data-table" style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Concesionario</th>
+                            <th>Contacto</th>
+                            <th>Correo (Usuario)</th>
+                            <th>Teléfono</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${list.map(c => `
+                            <tr>
+                                <td><strong>${escapeUserHtml(c.name)}</strong></td>
+                                <td>${escapeUserHtml(c.contact_person || '—')}</td>
+                                <td>${escapeUserHtml(c.contact_email || '—')}</td>
+                                <td>${escapeUserHtml(c.contact_phone || '—')}</td>
+                                <td><span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-gold'}">${c.status === 'active' ? 'Activo' : 'Inactivo'}</span></td>
+                                <td style="white-space:nowrap;">
+                                    <button class="btn btn-ghost btn-sm" title="Editar" onclick="openConcesionarioModal(${c.id})"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-ghost btn-sm" title="Condiciones" onclick="openConditionsModal(${c.id})"><i class="fas fa-file-contract"></i></button>
+                                    <button class="btn btn-ghost btn-sm" title="Cambiar Contraseña" onclick="changeConcesionarioPassword(${c.id})"><i class="fas fa-key"></i></button>
+                                    <button class="btn btn-ghost btn-sm" title="Eliminar" onclick="deleteConcesionario(${c.id})" style="color:#ff6b6b;"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function generateConcesionarioPassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+            let pwd = '';
+            for (let i = 0; i < 12; i++) pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+            const input = document.getElementById('ccPassword');
+            if (input) input.value = pwd;
+        }
+
+        function openConcesionarioModal(id = null) {
+            const modal = document.getElementById('concesionarioModal');
+            if (!modal) return;
+            const title = document.getElementById('concesionarioModalTitle');
+            const pwdGroup = document.getElementById('ccPasswordGroup');
+            const pwdInput = document.getElementById('ccPassword');
+
+            document.getElementById('ccId').value = '';
+            document.getElementById('ccName').value = '';
+            document.getElementById('ccContactPerson').value = '';
+            document.getElementById('ccEmail').value = '';
+            document.getElementById('ccPhone').value = '';
+            document.getElementById('ccAddress').value = '';
+            document.getElementById('ccStatus').value = 'active';
+            pwdInput.value = '';
+
+            if (id) {
+                const c = _allConcesionarios.find(x => String(x.id) === String(id));
+                if (!c) { showToast('Concesionario no encontrado', 'danger'); return; }
+                title.innerHTML = '<i class="fas fa-store" style="color:var(--accent);"></i> Editar Concesionario';
+                document.getElementById('ccId').value = c.id;
+                document.getElementById('ccName').value = c.name || '';
+                document.getElementById('ccContactPerson').value = c.contact_person || '';
+                document.getElementById('ccEmail').value = c.contact_email || '';
+                document.getElementById('ccPhone').value = c.contact_phone || '';
+                document.getElementById('ccAddress').value = c.address || '';
+                document.getElementById('ccStatus').value = c.status || 'active';
+                // El email/password de login no se editan acá — el email de
+                // login ya quedó fijado al crear el concesionario, y la
+                // contraseña tiene su propio flujo (Cambiar Contraseña).
+                document.getElementById('ccEmail').disabled = true;
+                pwdGroup.style.display = 'none';
+            } else {
+                title.innerHTML = '<i class="fas fa-store" style="color:var(--accent);"></i> Nuevo Concesionario';
+                document.getElementById('ccEmail').disabled = false;
+                pwdGroup.style.display = 'block';
+                generateConcesionarioPassword();
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeConcesionarioModal() {
+            const modal = document.getElementById('concesionarioModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function saveConcesionario() {
+            const id = document.getElementById('ccId').value.trim();
+            const name = document.getElementById('ccName').value.trim();
+            const contact_person = document.getElementById('ccContactPerson').value.trim();
+            const contact_email = document.getElementById('ccEmail').value.trim().toLowerCase();
+            const contact_phone = document.getElementById('ccPhone').value.trim();
+            const address = document.getElementById('ccAddress').value.trim();
+            const status = document.getElementById('ccStatus').value;
+            const password = document.getElementById('ccPassword').value;
+
+            if (!name || !contact_person || !contact_email) {
+                showToast('Completa Nombre, Persona de Contacto y Correo', 'warning');
+                return;
+            }
+            if (!id && (!password || password.length < 8)) {
+                showToast('La contraseña debe tener al menos 8 caracteres', 'warning');
+                return;
+            }
+
+            showToast('Guardando concesionario...', 'info');
+            try {
+                let res;
+                if (id) {
+                    res = await apiFetch(`/api/concesionarios/${encodeURIComponent(id)}`, {
+                        method: 'PUT',
+                        body: { name, contact_person, contact_phone, address, status }
+                    });
+                } else {
+                    res = await apiFetch('/api/concesionarios', {
+                        method: 'POST',
+                        body: { name, contact_person, contact_email, contact_phone, address, status, password }
+                    });
+                }
+                if (!res || !res.ok) {
+                    throw new Error(res?.data?.message || res?.error || 'Error al guardar el concesionario');
+                }
+                showToast('Concesionario guardado correctamente', 'success');
+                closeConcesionarioModal();
+                loadConcesionariosAdmin();
+                if (typeof loadConcesionarioOptions === 'function') loadConcesionarioOptions();
+            } catch (e) {
+                showToast(e.message || 'Error al guardar el concesionario', 'danger');
+            }
+        }
+
+        async function deleteConcesionario(id) {
+            const c = _allConcesionarios.find(x => String(x.id) === String(id));
+            if (!c) return;
+            if (!confirm(`¿Eliminar el concesionario "${c.name}"? Esto también afecta a su usuario de acceso y a los vehículos asignados a él.`)) return;
+
+            try {
+                const res = await apiFetch(`/api/concesionarios/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (!res || !res.ok) throw new Error(res?.error || 'Error al eliminar');
+                showToast('Concesionario eliminado', 'success');
+                loadConcesionariosAdmin();
+            } catch (e) {
+                showToast(e.message || 'Error al eliminar el concesionario', 'danger');
+            }
+        }
+
+        async function changeConcesionarioPassword(id) {
+            const c = _allConcesionarios.find(x => String(x.id) === String(id));
+            if (!c) return;
+
+            const newPwd = prompt(`Nueva contraseña para ${c.name} (${c.contact_email}):\nMínimo 8 caracteres.`, '');
+            if (newPwd === null) return;
+            const clean = newPwd.trim();
+            if (clean.length < 8) {
+                showToast('La contraseña debe tener al menos 8 caracteres', 'warning');
+                return;
+            }
+
+            try {
+                const res = await apiFetch(`/api/concesionarios/${encodeURIComponent(id)}/password`, {
+                    method: 'PUT',
+                    body: { password: clean }
+                });
+                if (!res || !res.ok) throw new Error(res?.error || 'Error al cambiar la contraseña');
+                showToast('Contraseña actualizada correctamente', 'success');
+            } catch (e) {
+                showToast(e.message || 'Error al cambiar la contraseña', 'danger');
+            }
+        }
+
+        async function openConditionsModal(id) {
+            const modal = document.getElementById('concesionarioConditionsModal');
+            const c = _allConcesionarios.find(x => String(x.id) === String(id));
+            if (!modal || !c) return;
+
+            document.getElementById('conditionsModalTitle').innerHTML =
+                `<i class="fas fa-file-contract" style="color:var(--accent);"></i> Condiciones — ${escapeUserHtml(c.name)}`;
+            document.getElementById('cdConcesionarioId').value = id;
+            document.getElementById('cdSaleCommission').value = '';
+            document.getElementById('cdRentalCommission').value = '';
+            document.getElementById('cdReservationFeeType').value = '';
+            document.getElementById('cdReservationFeeValue').value = '';
+            document.getElementById('cdInsuranceFee').value = '';
+
+            try {
+                const res = await apiFetch(`/api/concesionarios/${encodeURIComponent(id)}/conditions`);
+                if (res && res.ok) {
+                    const cond = res.data?.data || {};
+                    document.getElementById('cdSaleCommission').value = cond.sale_commission_pct ?? '';
+                    document.getElementById('cdRentalCommission').value = cond.rental_commission_pct ?? '';
+                    document.getElementById('cdReservationFeeType').value = cond.reservation_fee_type || '';
+                    document.getElementById('cdReservationFeeValue').value = cond.reservation_fee_value ?? '';
+                    document.getElementById('cdInsuranceFee').value = cond.insurance_fee_pct ?? '';
+                }
+            } catch (e) {}
+
+            modal.style.display = 'flex';
+        }
+
+        function closeConditionsModal() {
+            const modal = document.getElementById('concesionarioConditionsModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function saveConditions() {
+            const id = document.getElementById('cdConcesionarioId').value;
+            const toNum = (v) => (v === '' || v === null || v === undefined) ? null : parseFloat(v);
+
+            const payload = {
+                sale_commission_pct: toNum(document.getElementById('cdSaleCommission').value),
+                rental_commission_pct: toNum(document.getElementById('cdRentalCommission').value),
+                reservation_fee_type: document.getElementById('cdReservationFeeType').value || null,
+                reservation_fee_value: toNum(document.getElementById('cdReservationFeeValue').value),
+                insurance_fee_pct: toNum(document.getElementById('cdInsuranceFee').value),
+            };
+
+            try {
+                const res = await apiFetch(`/api/concesionarios/${encodeURIComponent(id)}/conditions`, {
+                    method: 'PUT',
+                    body: payload
+                });
+                if (!res || !res.ok) throw new Error(res?.error || 'Error al guardar las condiciones');
+                showToast('Condiciones guardadas correctamente', 'success');
+                closeConditionsModal();
+            } catch (e) {
+                showToast(e.message || 'Error al guardar las condiciones', 'danger');
+            }
         }
 
         async function loadVehicleInquiries() {
@@ -6123,6 +6555,14 @@
         // ===== MODAL =====
         const modal = document.getElementById('vehicleModal');
         let isSaving = false;
+
+        function toggleDepositFeeVisibility() {
+            const group = document.getElementById('vDepositFeeGroup');
+            const checked = document.getElementById('vAvailableForRental')?.checked;
+            if (group) group.style.display = checked ? 'flex' : 'none';
+        }
+        document.getElementById('vAvailableForRental')?.addEventListener('change', toggleDepositFeeVisibility);
+
         function openModal(vehicle = null) {
             if (isSaving) { showToast('Por favor espera, guardando cambios...', 'info'); return; }
             uploadedImages = []; currentEditIndex = -1;
@@ -6157,7 +6597,10 @@
                 document.getElementById('vAvailableForRental').checked = !!vehicle.available_for_rental;
                 document.getElementById('vForSale').checked = vehicle.for_sale !== false;
                 document.getElementById('vForImport').checked = !!vehicle.for_import;
+                document.getElementById('vDepositFeeType').value = vehicle.deposit_fee_type || '';
+                document.getElementById('vDepositFeeValue').value = vehicle.deposit_fee_value ?? '';
                 document.getElementById('vConcesionario').value = vehicle.concesionario_id || '';
+                toggleDepositFeeVisibility();
 
                 // Cargar imágenes existentes como miniaturas con cache-buster para evitar versiones antiguas del navegador
                 document.getElementById('vImage').value = '';
@@ -6180,6 +6623,9 @@
                 document.getElementById('vAvailableForRental').checked = false;
                 document.getElementById('vForSale').checked = true;
                 document.getElementById('vForImport').checked = false;
+                document.getElementById('vDepositFeeType').value = '';
+                document.getElementById('vDepositFeeValue').value = '';
+                toggleDepositFeeVisibility();
                 document.getElementById('vConcesionario').value = '';
             }
             modal.classList.add('active');
@@ -6230,6 +6676,9 @@
             const for_import = document.getElementById('vForImport').checked;
             const concesionarioRaw = document.getElementById('vConcesionario').value;
             const concesionario_id = concesionarioRaw ? parseInt(concesionarioRaw, 10) : null;
+            const deposit_fee_type = document.getElementById('vDepositFeeType').value || null;
+            const depositFeeValueRaw = document.getElementById('vDepositFeeValue').value;
+            const deposit_fee_value = depositFeeValueRaw ? parseFloat(depositFeeValueRaw) : null;
             const manualImgs = document.getElementById('vImage').value.split(',').map(s => s.trim()).filter(Boolean);
 
             if (!title || !price || !year) { showToast('Completa los campos obligatorios', 'error'); isSaving = false; return; }
@@ -6268,7 +6717,7 @@
                     title, brand, model, doors, price, year, km, engine, transmission, fuel, body_type, catalog,
                     availability, origin, condition, badge, status, description, images: finalImgs, mastertech,
                     trade_in_eligible, financing_eligible, has_title, available_for_rental,
-                    for_sale, for_import, concesionario_id
+                    for_sale, for_import, concesionario_id, deposit_fee_type, deposit_fee_value
                 };
                 if (vin) vehicleData.vin = vin;
 
@@ -7761,6 +8210,7 @@
                 if (btn.dataset.tab === 'settings') loadSettings();
                 if (btn.dataset.tab === 'analytics') { loadAnalyticsData(); loadLeads(); }
                 if (btn.dataset.tab === 'users') loadUsers();
+                if (btn.dataset.tab === 'concesionarios') loadConcesionariosAdmin();
             });
         });
 

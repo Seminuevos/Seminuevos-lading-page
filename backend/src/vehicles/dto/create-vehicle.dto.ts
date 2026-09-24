@@ -1,6 +1,18 @@
-import { ArrayMaxSize, IsArray, IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 const STATUSES = ['active', 'inactive', 'sold', 'reserved'];
+const FEE_TYPES = ['percent', 'fixed'];
 
 export class CreateVehicleDto {
   @IsString()
@@ -137,4 +149,16 @@ export class CreateVehicleDto {
   @IsOptional()
   @IsInt()
   concesionario_id?: number;
+
+  // Fee de depósito de un alquiler — solo tiene sentido cuando
+  // available_for_rental es true, pero no se valida esa dependencia acá
+  // (el form del panel ya lo muestra condicionalmente).
+  @IsOptional()
+  @IsIn(FEE_TYPES)
+  deposit_fee_type?: 'percent' | 'fixed';
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  deposit_fee_value?: number;
 }

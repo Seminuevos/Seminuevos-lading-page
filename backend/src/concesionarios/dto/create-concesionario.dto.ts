@@ -1,4 +1,4 @@
-import { IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 const STATUSES = ['active', 'inactive'];
 
@@ -7,10 +7,20 @@ export class CreateConcesionarioDto {
   @MaxLength(150)
   name: string;
 
-  @IsOptional()
+  @IsString()
+  @MaxLength(150)
+  contact_person: string;
+
+  // También es el email de login del usuario 'concesionario' que se crea
+  // junto con el concesionario — ver ConcesionariosService.create().
   @IsEmail()
   @MaxLength(254)
-  contact_email?: string;
+  contact_email: string;
+
+  @IsString()
+  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
+  @MaxLength(128)
+  password: string;
 
   @IsOptional()
   @IsString()

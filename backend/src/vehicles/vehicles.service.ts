@@ -12,7 +12,8 @@ const PUBLIC_COLUMNS =
   'id, title, price, year, km, engine, transmission, fuel, body_type, condition, ' +
   'availability, origin, color, badge, description, features, images, catalog, ' +
   'mastertech, views, created_at, trade_in_eligible, financing_eligible, has_title, ' +
-  'available_for_rental, for_sale, for_import, concesionario_id, brand, model, doors';
+  'available_for_rental, for_sale, for_import, concesionario_id, brand, model, doors, ' +
+  'deposit_fee_type, deposit_fee_value';
 
 function isConcesionario(user?: AuthenticatedUser): user is AuthenticatedUser {
   return !!user && user.role === 'concesionario';
