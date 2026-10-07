@@ -1,0 +1,298 @@
+﻿.postulacion-hero {
+            padding: 140px 0 50px;
+            background: radial-gradient(circle at 50% 20%, rgba(39, 92, 234, 0.15) 0%, transparent 70%), var(--surface-dim);
+            text-align: center;
+            border-bottom: 1px solid var(--ghost-border);
+        }
+
+        .postulacion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(39, 92, 234, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary-fixed);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .postulacion-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--on-surface);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .postulacion-title span {
+            background: var(--gradient-gold-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .postulacion-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            color: var(--on-surface-variant);
+            max-width: 780px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .perks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        .perk-card {
+            background: var(--surface-container-low);
+            border: 1px solid var(--ghost-border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .perk-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .perk-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(39, 92, 234, 0.15);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin-bottom: 16px;
+        }
+
+        .perk-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+        }
+
+        .perk-desc {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--on-surface-variant);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Section Form */
+        .postulacion-section {
+            padding: 60px 0 100px;
+            background: var(--surface);
+        }
+
+        .form-card-container {
+            max-width: 860px;
+            margin: 0 auto;
+            background: var(--surface-container-low);
+            border: 1px solid var(--ghost-border-gold);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .form-card-container {
+                padding: 25px 18px;
+            }
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--outline-variant);
+            padding-bottom: 20px;
+        }
+
+        .form-header h2 {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            color: var(--on-surface);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-header p {
+            color: var(--on-surface-variant);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .form-section-subtitle {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--primary-fixed);
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .p-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .p-group label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            color: var(--on-surface);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .p-group label span.req {
+            color: var(--primary);
+        }
+
+        .p-input,
+        .p-select,
+        .p-textarea {
+            width: 100%;
+            background: var(--surface-container-high);
+            border: 1px solid var(--outline-variant);
+            border-radius: 8px;
+            padding: 13px 16px;
+            color: var(--on-surface);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            outline: none;
+        }
+
+        .p-input:focus,
+        .p-select:focus,
+        .p-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(39, 92, 234, 0.25);
+            background: var(--surface-container-highest);
+        }
+
+        .p-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B2B2B2'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 20px;
+        }
+
+        .p-textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .submit-wrap {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-submit-postulacion {
+            width: 100%;
+            padding: 16px 28px;
+            font-size: 1.05rem;
+            font-family: var(--font-display);
+            letter-spacing: 0.5px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(46, 213, 115, 0.15);
+            color: #2ed573;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            color: var(--on-surface);
+            margin-bottom: 12px;
+        }
+
+        .success-desc {
+            color: var(--on-surface-variant);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        .btn-wa-notify {
+            background: #25D366;
+            color: #ffffff;
+            font-family: var(--font-display);
+            font-weight: 700;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-wa-notify:hover {
+            background: #1eb956;
+            transform: translateY(-2px);
+        }
