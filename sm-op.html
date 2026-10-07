@@ -6932,19 +6932,10 @@
                 console.warn('API /api/inquiries notice:', err);
             }
 
-            // 2. Si no retornó por API (ej. entorno local sin Vercel Functions), consultar directamente Supabase con Auth
+            // 2. Si no retornó por API (ej. entorno local sin Vercel Functions), consultar Supabase
             if (!items || items.length === 0) {
                 if (supabaseClient) {
                     try {
-                        if (supabaseClient.auth) {
-                            const sessRes = await supabaseClient.auth.getSession();
-                            if (!sessRes?.data?.session) {
-                                await supabaseClient.auth.signInWithPassword({
-                                    email: 'jvaask16@gmail.com',
-                                    password: 'Jvaask2006..'
-                                });
-                            }
-                        }
                         const { data: sbData, error: sbErr } = await supabaseClient
                             .from('inquiries')
                             .select('*')
@@ -12769,6 +12760,18 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 status: 'active',
                 notes: 'Administrador Principal de Operaciones',
                 created_at: new Date('2026-09-17T18:50:03Z').toISOString()
+            },
+            {
+                id: 'usr-sales-matteo-001',
+                full_name: 'Matteo Lariccia',
+                email: 'matteo@seminuevos.com',
+                password: 'Admin123',
+                phone: '',
+                role: 'sales',
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active',
+                notes: 'Asesor Comercial',
+                created_at: new Date('2026-10-02T00:00:00Z').toISOString()
             },
             {
                 id: 'usr-admin-master-001',

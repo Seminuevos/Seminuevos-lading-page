@@ -4,8 +4,8 @@
  * La anon key solo permite leer el catálogo público (vehicles, gallery).
  * Todas las operaciones admin se hacen a través de /api/* usando apiFetch().
  */
-const SUPABASE_URL     = 'https://gfvmugsbizmvlziljxir.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_g0Iw9r4zRCBadMPtiF5kNA_x8_n4p8v';
+const SUPABASE_URL     = 'https://hknprlgyuwzolgnkwsmx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z';
 
 let supabaseClient = null;
 
