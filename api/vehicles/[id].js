@@ -20,6 +20,25 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'ID de vehículo requerido' });
     }
 
+    // GET — ver detalle de un vehículo
+    if (req.method === 'GET') {
+        try {
+            const { data, error } = await supabase
+                .from('vehicles')
+                .select('*')
+                .eq('id', id)
+                .maybeSingle();
+
+            if (error || !data) {
+                return res.status(404).json({ error: 'Vehículo no encontrado' });
+            }
+
+            return res.status(200).json({ data });
+        } catch (err) {
+            return res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
     // PUT — editar vehículo
     if (req.method === 'PUT') {
         const user = requireAuth(req, res);

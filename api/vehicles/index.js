@@ -14,17 +14,18 @@ export default async function handler(req, res) {
         return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
     }
 
-    // GET — listar vehículos (requiere auth)
+    // GET — listar vehículos (público: solo activos; admin con token: todos)
     if (req.method === 'GET') {
-        const user = requireAuth(req, res);
-        if (!user) return;
+        const authHeader = req.headers.authorization;
+        const isAdmin = authHeader && !authHeader.includes('null') && !authHeader.includes('undefined');
 
         try {
-            const { data, error } = await supabase
-                .from('vehicles')
-                .select('*')
-                .order('created_at', { ascending: false });
+            let query = supabase.from('vehicles').select('*').order('created_at', { ascending: false });
+            if (!isAdmin) {
+                query = query.eq('status', 'active');
+            }
 
+            const { data, error } = await query;
             if (error) {
                 console.error('[GET /api/vehicles]', error);
                 return res.status(500).json({ error: 'Error al obtener inventario' });

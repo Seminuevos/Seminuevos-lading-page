@@ -1,45 +1,22 @@
 /**
- * Supabase Configuration — SOLO PARA OPERACIONES PÚBLICAS DE LECTURA
+ * apiFetch — Helper para llamar a la API interna /api/*
  * =====================================================================
- * La anon key solo permite leer el catálogo público (vehicles, gallery).
- * Todas las operaciones admin se hacen a través de /api/* usando apiFetch().
+ * El frontend NUNCA tiene credenciales de Supabase (ni URL, ni anon key):
+ * toda lectura y escritura pasa por el backend, que es el único que habla
+ * con Supabase (con la service_role key, solo en el servidor).
  */
-const SUPABASE_URL     = 'https://hknprlgyuwzolgnkwsmx.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z';
 
-let supabaseClient = null;
-
-function initSupabaseClient() {
-    try {
-        const _sb = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
-        if (_sb && typeof _sb.createClient === 'function') {
-            supabaseClient = _sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            return supabaseClient;
-        }
-    } catch (e) {
-        console.warn("Supabase init notice:", e);
-    }
-    return null;
+function apiUrl(path) {
+    const base = (typeof window !== 'undefined' && window.API_BASE_URL) || '';
+    if (/^https?:\/\//i.test(path)) return path;
+    return base ? `${base.replace(/\/$/, '')}${path}` : path;
 }
 
-initSupabaseClient();
+function apiAuthHeader() {
+    const token = sessionStorage.getItem('sn_jwt_token') || localStorage.getItem('sn_jwt_token');
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
 
-// ============================================================
-// apiFetch — Helper para llamar a la API interna /api/*
-// Agrega automáticamente el token JWT del localStorage
-// ============================================================
-
-/**
- * Hace un fetch autenticado a un endpoint interno de la API.
- *
- * @param {string} path        - Ruta relativa, ej: '/api/users' o '/api/vehicles/123'
- * @param {object} options     - Opciones fetch (method, body, etc.)
- * @returns {Promise<{ok:boolean, status:number, data:any, error:string|null}>}
- *
- * @example
- * const res = await apiFetch('/api/auth/login', { method: 'POST', body: { email, password } });
- * if (res.ok) { console.log(res.data.token); }
- */
 async function apiFetch(path, options = {}) {
     const token = sessionStorage.getItem('sn_jwt_token') || localStorage.getItem('sn_jwt_token');
 
@@ -58,7 +35,7 @@ async function apiFetch(path, options = {}) {
     }
 
     try {
-        const response = await fetch(path, {
+        const response = await fetch(apiUrl(path), {
             ...options,
             headers,
             body
@@ -89,7 +66,7 @@ async function apiFetch(path, options = {}) {
     }
 }
 
-/** Guarda la sesión temporalmente en sessionStorage (NO en localStorage para evitar auto-login) */
+/** Guarda la sesión temporalmente */
 function _saveSession(token, user) {
     try {
         if (token) sessionStorage.setItem('sn_jwt_token', token);
@@ -109,8 +86,6 @@ function _clearSession() {
     } catch(e) {}
 }
 
-/** Verifica si hay sesión activa: RETORNA NULL SIEMPRE PARA EXIGIR CREDENCIALES */
 function _getSessionUser() {
     return null;
 }
-

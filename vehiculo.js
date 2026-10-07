@@ -10,17 +10,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let car = null;
 
     try {
-        // Fetch from Supabase
-        const { data: vDataRaw } = await supabaseClient.from('vehicles').select('*').eq('id', carId).maybeSingle();
-        if (vDataRaw) {
-            car = { ...vDataRaw, bodyType: vDataRaw.bodyType || vDataRaw.body_type };
-            
-            // Increment views
-            const newViews = (car.views || 0) + 1;
-            supabaseClient.rpc('increment_vehicle_views', { vehicle_id: car.id })
-                .then(({ error }) => {
-                    if (error) console.warn('Views RPC error:', error.message);
-                });
+        const res = await fetch('/api/vehicles/' + carId);
+        if (res.ok) {
+            const json = await res.json();
+            const vDataRaw = json.data;
+            if (vDataRaw) {
+                car = { ...vDataRaw, bodyType: vDataRaw.bodyType || vDataRaw.body_type };
+            }
         }
     } catch (e) {
         console.warn('Error fetching car:', e);

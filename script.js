@@ -738,24 +738,24 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initSupabaseData() {
         if (window.location.pathname.includes('vehiculo')) return;
         try {
-            const [vDataRes, sDataRes] = await Promise.all([
-                supabaseClient.from('vehicles').select('*').eq('status', 'active'),
-                supabaseClient.from('site_settings').select('*')
-            ]);
-            const vData = vDataRes?.data || [];
-            const sData = sDataRes?.data || [];
+            const vRes = await fetch('/api/vehicles');
+            let vData = [];
+            if (vRes.ok) {
+                const json = await vRes.json();
+                vData = json.data || [];
+            }
 
             try {
                 localStorage.setItem(cacheKey, JSON.stringify({
                     timestamp: Date.now(),
                     vehicles: vData,
-                    settings: sData
+                    settings: []
                 }));
             } catch(e) {}
 
-            applyDataToPanels(vData, sData);
+            applyDataToPanels(vData, []);
         } catch(e) {
-            console.warn('Background Supabase sync notice:', e);
+            console.warn('Background sync notice:', e);
         }
     }
 
@@ -1320,9 +1320,14 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
 
-            // Attempt to save to DB but don't block WhatsApp if it's slow
-            const { error } = await supabaseClient.from('inquiries').insert([formData]);
-            if (error) console.warn("Supabase insert error:", error);
+            // Attempt to save to DB via backend API
+            try {
+                await fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+            } catch(e) {}
 
             // 2. Open WhatsApp
             const waMessage = `¡Hola! Soy *${name}*.\n\n` +
