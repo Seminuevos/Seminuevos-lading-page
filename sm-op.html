@@ -5651,84 +5651,15 @@
                     }
                 }
 
-                // 3. Validar contra credenciales autorizadas del sistema (Directorio Supabase Cloud / Local Storage / Clave Maestra)
+                // Si las credenciales no fueron validadas por el servidor, rechazar el acceso
                 if (!authenticatedUser) {
-                    // Siempre sincronizar la lista más fresca desde Supabase site_settings primero
-                    if (typeof syncUsersFromSupabase === 'function') {
-                        try {
-                            const fresh = await syncUsersFromSupabase();
-                            if (fresh && Array.isArray(fresh)) {
-                                _allAgencyUsers = fresh;
-                            }
-                        } catch(e) {}
+                    const msg = 'Correo o contraseña incorrectos. Verifica tus credenciales de acceso.';
+                    if (errEl) {
+                        errEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="margin-right:6px;"></i> ${msg}`;
+                        errEl.style.display = 'block';
                     }
-
-                    let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                    let found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
-
-                    let savedMasterPwd = null;
-                    try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
-                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
-                    const isMasterPassword = [
-                        savedMasterPwd,
-                        'Jvaask2006..',
-                        'jvaask2006..',
-                        'Jvaask2006.',
-                        'jvaask2006.',
-                        'Jvaask2006',
-                        'jvaask2006',
-                        'MasterAdmin2026!',
-                        'masteradmin2026',
-                        'Admin2026!',
-                        'admin2026',
-                        'Admin123',
-                        'admin123',
-                        '12345678'
-                    ].filter(Boolean).includes(cleanPassword);
-
-                    if (found) {
-                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword || found.password.trim().toLowerCase() === cleanPassword.toLowerCase())) ||
-                                          (isMasterAdminEmail && isMasterPassword);
-                        if (passMatch) {
-                            if (found.status === 'inactive') {
-                                if (errEl) {
-                                    errEl.innerHTML = '<i class="fas fa-ban" style="margin-right:6px;"></i> Tu cuenta se encuentra inactiva. Contacta al Administrador.';
-                                    errEl.style.display = 'block';
-                                }
-                                showToast('Cuenta suspendida', 'danger');
-                                return;
-                            }
-                            if (isMasterAdminEmail) {
-                                found.role = 'admin';
-                            }
-                            authenticatedUser = found;
-                            authToken = 'local.' + btoa(JSON.stringify({ id: found.id, email: found.email, role: found.role, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
-                            if (isMasterAdminEmail) {
-                                try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                            }
-
-                            // Auto-registrar en Supabase Auth en segundo plano si aún no está registrado
-                            if (supabaseClient && supabaseClient.auth && found.password) {
-                                supabaseClient.auth.signUp({
-                                    email: cleanEmail,
-                                    password: found.password,
-                                    options: { data: { full_name: found.full_name, role: found.role, branch: found.branch } }
-                                }).catch(() => {});
-                            }
-                        }
-                    } else if (isMasterAdminEmail && isMasterPassword) {
-                        // Credencial maestra registrada
-                        authenticatedUser = {
-                            id: 'master-admin',
-                            email: 'jvaask16@gmail.com',
-                            full_name: 'Administrador Master',
-                            role: 'admin',
-                            branch: 'Porlamar (Sede Principal)',
-                            status: 'active'
-                        };
-                        authToken = 'local.' + btoa(JSON.stringify({ ...authenticatedUser, exp: Math.floor(Date.now()/1000) + 86400*7 })) + '.sig';
-                        try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                    }
+                    showToast(msg, 'danger');
+                    return;
                 }
 
                 // 3. Si las credenciales no son válidas, rechazar el acceso
@@ -12753,7 +12684,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: '5a7725b4-1ee3-496d-b47a-878fdf509925',
                 full_name: 'Jvicente',
                 email: 'jvicente@seminuevos.com',
-                password: 'Admin123',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
@@ -12765,7 +12695,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-sales-matteo-001',
                 full_name: 'Matteo Lariccia',
                 email: 'matteo@seminuevos.com',
-                password: 'Admin123',
                 phone: '',
                 role: 'sales',
                 branch: 'Porlamar (Sede Principal)',
@@ -12777,7 +12706,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-admin-master-001',
                 full_name: 'Administrador Master',
                 email: 'jvaask16@gmail.com',
-                password: 'Jvaask2006..',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
@@ -12789,7 +12717,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-sales-001',
                 full_name: 'Carlos Mendoza',
                 email: 'carlos.ventas@seminuevos.com',
-                password: 'Ventas2026!',
                 phone: '+58 424 8700438',
                 role: 'sales',
                 branch: 'Porlamar (Sede Principal)',
@@ -12801,7 +12728,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-credit-001',
                 full_name: 'María González',
                 email: 'credito@seminuevos.com',
-                password: 'Credito2026!',
                 phone: '+58 412 1234567',
                 role: 'credit',
                 branch: 'Porlamar (Sede Principal)',
@@ -12813,7 +12739,6 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-mechanic-001',
                 full_name: 'Taller MasterTech (Perito)',
                 email: 'taller@mastertech.com',
-                password: 'Taller2026!',
                 phone: '+58 424 9876543',
                 role: 'mechanic',
                 branch: 'Taller MasterTech',
