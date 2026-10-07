@@ -11,3 +11,5 @@ logos carros/
 *.mov
 *.avi
 .env
+setup_new_supabase.sql
+Seminuevos/

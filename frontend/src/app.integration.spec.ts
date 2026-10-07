@@ -32,7 +32,7 @@ describe('Frontend app (integración HTTP)', () => {
       // busca el substring genérico "supabase.co" porque hay comparaciones
       // legítimas de URLs de imágenes (ej. detectar si ya están en Storage);
       // sí se busca la URL real del proyecto, que nunca debería aparecer aquí.
-      expect(res.text).not.toMatch(/gfvmugsbizmvlziljxir\.supabase\.co/i);
+      expect(res.text).not.toMatch(/(gfvmugsbizmvlziljxir|hknprlgyuwzolgnkwsmx)\.supabase\.co/i);
       expect(res.text).not.toMatch(/supabase-js/i);
       expect(res.text).not.toMatch(/createClient\s*\(/);
       expect(res.text).not.toMatch(/SUPABASE_ANON_KEY|SUPABASE_SERVICE_ROLE_KEY/);
@@ -57,7 +57,7 @@ describe('Frontend app (integración HTTP)', () => {
     async (path) => {
       const res = await request(app.getHttpServer()).get(path);
       expect(res.status).toBe(200);
-      expect(res.text).not.toMatch(/gfvmugsbizmvlziljxir\.supabase\.co/i);
+      expect(res.text).not.toMatch(/(gfvmugsbizmvlziljxir|hknprlgyuwzolgnkwsmx)\.supabase\.co/i);
       expect(res.text).not.toMatch(/createClient\s*\(/);
     },
   );

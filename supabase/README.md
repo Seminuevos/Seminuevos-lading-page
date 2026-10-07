@@ -47,11 +47,11 @@ producción ahora mismo. Ver `backend/src/vehicles/vehicles.service.ts` — la m
    (o `SUPABASE_ACCESS_TOKEN=<token>` como variable de entorno si preferís no pasar por el
    flujo interactivo).
 
-2. **Link al proyecto** — pide el ref (`gfvmugsbizmvlziljxir`, el subdominio de
+2. **Link al proyecto** — pide el ref (`hknprlgyuwzolgnkwsmx`, el subdominio de
    `SUPABASE_URL`) y la contraseña de la base de datos (Settings → Database en el
    dashboard de Supabase, **no** es el `service_role key`):
    ```bash
-   npx supabase link --project-ref gfvmugsbizmvlziljxir
+   npx supabase link --project-ref hknprlgyuwzolgnkwsmx
    ```
 
 3. **Adoptar SOLO lo que ya está aplicado de verdad** — marcar como aplicadas en la tabla
