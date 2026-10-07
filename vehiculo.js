@@ -60,9 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Configs
     let whatsappNumber = "584248700438";
     try {
-        const { data: sData } = await supabaseClient.from('site_settings').select('value').eq('key', 'whatsapp_number').maybeSingle();
-        if (sData && sData.value) {
-            whatsappNumber = String(JSON.parse(sData.value)).replace(/[^0-9]/g, '');
+        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+            const { data: sData } = await supabaseClient.from('site_settings').select('value').eq('key', 'whatsapp_number').maybeSingle();
+            if (sData && sData.value) {
+                whatsappNumber = String(JSON.parse(sData.value)).replace(/[^0-9]/g, '');
+            }
         }
     } catch (e) {}
 

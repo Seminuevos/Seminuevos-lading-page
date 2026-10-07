@@ -23,22 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch(e) {}
 
             // 2. Check Blacklist
-            const { data: isBlocked } = await supabaseClient
-                .from('ip_blacklist')
-                .select('*')
-                .eq('ip', ip)
-                .maybeSingle();
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                const { data: isBlocked } = await supabaseClient
+                    .from('ip_blacklist')
+                    .select('*')
+                    .eq('ip', ip)
+                    .maybeSingle();
 
-            if (isBlocked) {
-                document.body.innerHTML = `
-                    <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:20px;">
-                        <i class="fas fa-shield-virus" style="font-size:4rem; color:#ff5252; margin-bottom:20px;"></i>
-                        <h1 style="font-size:2rem; margin-bottom:10px;">ACCESO RESTRINGIDO</h1>
-                        <p style="color:#888; max-width:500px;">Tu dirección IP (${ip}) ha sido bloqueada permanentemente por nuestro sistema de ciberseguridad debido a actividades sospechosas.</p>
-                        <p style="font-size:0.8rem; margin-top:20px; color:#444;">Ref: FW-BLOCK-SYSTEM-01</p>
-                    </div>
-                `;
-                return false;
+                if (isBlocked) {
+                    document.body.innerHTML = `
+                        <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:20px;">
+                            <i class="fas fa-shield-virus" style="font-size:4rem; color:#ff5252; margin-bottom:20px;"></i>
+                            <h1 style="font-size:2rem; margin-bottom:10px;">ACCESO RESTRINGIDO</h1>
+                            <p style="color:#888; max-width:500px;">Tu dirección IP (${ip}) ha sido bloqueada permanentemente por nuestro sistema de ciberseguridad debido a actividades sospechosas.</p>
+                            <p style="font-size:0.8rem; margin-top:20px; color:#444;">Ref: FW-BLOCK-SYSTEM-01</p>
+                        </div>
+                    `;
+                    return false;
+                }
             }
 
             // 3. Proactive Intrusion Detection (URL & Forms)
@@ -48,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const checkSuspicious = (str) => suspiciousPatterns.some(p => p.test(str));
 
-            if (checkSuspicious(window.location.search) || checkSuspicious(window.location.hash)) {
+            if (typeof supabaseClient !== 'undefined' && supabaseClient && (checkSuspicious(window.location.search) || checkSuspicious(window.location.hash))) {
                 await supabaseClient.from('security_logs').insert([{
                     event_type: 'IDS_URL_ALERT',
                     severity: 'warning',
@@ -108,12 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 intent_category: data.intent || detectIntent(data.section || window.location.pathname || 'home')
             };
 
-            await supabaseClient.from('site_analytics').insert([{
-                event_type: type,
-                event_data: enrichedData,
-                url: window.location.pathname,
-                visitor_id: visitorId
-            }]);
+            if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                await supabaseClient.from('site_analytics').insert([{
+                    event_type: type,
+                    event_data: enrichedData,
+                    url: window.location.pathname,
+                    visitor_id: visitorId
+                }]);
+            }
         } catch (e) {
             console.warn('Analytics error:', e);
         }
