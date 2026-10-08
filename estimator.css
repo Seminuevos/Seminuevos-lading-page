@@ -2,8 +2,8 @@
         :root {
             --est-card-bg: #FFFFFF;
             --est-card-border: #E5E7EB;
-            --est-blue: #EB0A1E;
-            --est-blue-glow: rgba(235, 10, 30, 0.25);
+            --est-blue: #2563EB;
+            --est-blue-glow: rgba(37, 99, 235, 0.25);
             --est-green: #10B981;
             --est-amber: #F59E0B;
         }
@@ -11,8 +11,8 @@
         body.estimator-page {
     background-color: #F8F9FA;
     background-image: 
-        radial-gradient(ellipse at 15% 10%, rgba(235, 10, 30, 0.04) 0%, transparent 45%),
-        radial-gradient(ellipse at 85% 60%, rgba(235, 10, 30, 0.03) 0%, transparent 45%),
+        radial-gradient(ellipse at 15% 10%, rgba(37, 99, 235, 0.04) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 60%, rgba(37, 99, 235, 0.03) 0%, transparent 45%),
         radial-gradient(ellipse at 50% 90%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
     background-attachment: fixed;
     color: #111827;
@@ -32,15 +32,15 @@
             gap: 8px;
             padding: 5px 14px;
             border-radius: 999px;
-            background: rgba(235, 10, 30, 0.12);
-            border: 1px solid rgba(235, 10, 30, 0.3);
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.3);
             color: #93c5fd;
             font-size: 0.72rem;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             letter-spacing: 1.2px;
             text-transform: uppercase;
             margin-bottom: 8px;
-            box-shadow: 0 0 20px rgba(235, 10, 30, 0.15);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
         }
 
         .estimator-badge i {
@@ -213,8 +213,8 @@
         }
 
         .vehicle-selected-box:hover {
-            border-color: rgba(235, 10, 30, 0.4);
-            background: rgba(235, 10, 30, 0.04);
+            border-color: rgba(37, 99, 235, 0.4);
+            background: rgba(37, 99, 235, 0.04);
         }
 
         .vehicle-thumb-wrapper {
@@ -263,9 +263,9 @@
         }
 
         .mini-badge.blue {
-            background: rgba(235, 10, 30, 0.2);
+            background: rgba(37, 99, 235, 0.2);
             color: #93c5fd;
-            border: 1px solid rgba(235, 10, 30, 0.4);
+            border: 1px solid rgba(37, 99, 235, 0.4);
         }
 
         .mini-badge.green {
@@ -307,8 +307,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 14px;
-            background: rgba(235, 10, 30, 0.08);
-            border: 1px solid rgba(235, 10, 30, 0.25);
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             border-radius: 10px;
             margin-bottom: 14px;
         }
@@ -358,7 +358,7 @@
 
         .est-select:focus, .est-input:focus {
             border-color: var(--est-blue);
-            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.2);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
             background: rgba(0, 0, 0, 0.7);
         }
 
@@ -385,8 +385,8 @@
         /* Custom Price Box */
         .custom-price-container {
             display: none;
-            background: rgba(235, 10, 30, 0.06);
-            border: 1px dashed rgba(235, 10, 30, 0.3);
+            background: rgba(37, 99, 235, 0.06);
+            border: 1px dashed rgba(37, 99, 235, 0.3);
             border-radius: 12px;
             padding: 16px;
             margin-top: 14px;
@@ -396,8 +396,8 @@
         .buying-power-box {
             text-align: center;
             padding: 18px 16px;
-            background: linear-gradient(180deg, rgba(235, 10, 30, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
-            border: 1px solid rgba(235, 10, 30, 0.25);
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             border-radius: 14px;
             margin-bottom: 14px;
         }
@@ -485,7 +485,7 @@
             border-color: var(--est-blue);
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background: rgba(235, 10, 30, 0.05);
+            background: rgba(37, 99, 235, 0.05);
         }
 
         .compat-car-card.selected-in-grid {
@@ -522,9 +522,9 @@
 
         .compat-car-payment-tag {
             display: inline-block;
-            background: rgba(235, 10, 30, 0.2);
+            background: rgba(37, 99, 235, 0.2);
             color: #93c5fd;
-            border: 1px solid rgba(235, 10, 30, 0.35);
+            border: 1px solid rgba(37, 99, 235, 0.35);
             padding: 3px 8px;
             border-radius: 6px;
             font-size: 0.75rem;
@@ -592,10 +592,10 @@
             font-size: 0.84rem;
             font-weight: 700;
             color: #111827;
-            background: rgba(235, 10, 30, 0.15);
+            background: rgba(37, 99, 235, 0.15);
             padding: 3px 8px;
             border-radius: 6px;
-            border: 1px solid rgba(235, 10, 30, 0.3);
+            border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
         /* Sliders */
@@ -841,7 +841,7 @@
         /* Trade-In Calculated Output Card */
         .tradein-val-result {
             margin-top: 16px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(235, 10, 30, 0.08));
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(37, 99, 235, 0.08));
             border: 1px solid rgba(245, 158, 11, 0.35);
             border-radius: 12px;
             padding: 14px 18px;
@@ -1033,11 +1033,11 @@
 
         .summary-card {
             background: rgba(15, 15, 20, 0.92);
-            border: 1px solid rgba(235, 10, 30, 0.35);
+            border: 1px solid rgba(37, 99, 235, 0.35);
             border-radius: 18px;
             padding: 20px 18px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(235, 10, 30, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(37, 99, 235, 0.15);
         }
 
         .summary-main-display {

@@ -1,4 +1,4 @@
-﻿/* ===== RESET & DESIGN TOKENS (Aether Grandeur System) ===== */
+/* ===== RESET & DESIGN TOKENS (Aether Grandeur System) ===== */
 *,
 *::before,
 *::after {
@@ -19,11 +19,11 @@
     --surface-variant: #F8F9FA;
     --surface-bright: #FFFFFF;
 
-    /* Primary (Official Toyota Red) */
-    --primary: #EB0A1E;
-    --primary-container: #C50818;
-    --primary-fixed: #FEE2E2;
-    --primary-dim: #EF4444;
+    /* Primary (Official Blue of Logo) */
+    --primary: #2563EB;
+    --primary-container: #1D4ED8;
+    --primary-fixed: #DBEAFE;
+    --primary-dim: #3B82F6;
     --on-primary: #FFFFFF;
 
     /* Secondary */
@@ -41,19 +41,19 @@
     --error: #DC2626;
 
     /* Gradients */
-    --gradient-gold: linear-gradient(135deg, #EB0A1E 0%, #C50818 100%);
-    --gradient-gold-text: linear-gradient(135deg, #EB0A1E 0%, #B91C1C 100%);
+    --gradient-gold: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    --gradient-gold-text: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
     --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 250, 0.85) 100%);
     --gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%);
-    --gradient-mesh: radial-gradient(ellipse at 20% 50%, rgba(235, 10, 30, 0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(17, 24, 39, 0.02) 0%, transparent 50%);
+    --gradient-mesh: radial-gradient(ellipse at 20% 50%, rgba(37, 99, 235, 0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(17, 24, 39, 0.02) 0%, transparent 50%);
 
     /* Ghost Borders */
     --ghost-border: rgba(0, 0, 0, 0.08);
-    --ghost-border-gold: rgba(235, 10, 30, 0.25);
+    --ghost-border-gold: rgba(37, 99, 235, 0.25);
 
     /* Effects */
-    --glow-gold: 0 4px 20px rgba(235, 10, 30, 0.18);
-    --glow-gold-strong: 0 6px 30px rgba(235, 10, 30, 0.32);
+    --glow-gold: 0 4px 20px rgba(37, 99, 235, 0.2);
+    --glow-gold-strong: 0 6px 30px rgba(37, 99, 235, 0.35);
     --shadow-ambient: 0 2px 12px rgba(0, 0, 0, 0.04);
     --shadow-float: 0 12px 32px rgba(17, 24, 39, 0.08);
 
@@ -161,7 +161,7 @@ body::before {
     left: -10%;
     width: 600px;
     height: 600px;
-    background: rgba(235, 10, 30, 0.04);
+    background: rgba(37, 99, 235, 0.04);
     animation: orbFloat 20s ease-in-out infinite;
 }
 
@@ -392,42 +392,31 @@ body::after {
 }
 
 .nav-link {
-    padding: 10px 18px;
+    padding: 8px 16px;
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.82rem;
-    letter-spacing: 1.5px;
-    color: #374151;
+    letter-spacing: 1px;
+    color: #475569;
     transition: var(--transition);
-    border-radius: var(--radius-full);
+    border-radius: 8px;
     position: relative;
+    background: transparent;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    color: var(--on-surface);
+.nav-link:hover {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.06);
 }
 
 .nav-link.active {
-    background: rgba(235, 10, 30, 0.08);
+    color: var(--primary);
+    font-weight: 700;
+    background: rgba(37, 99, 235, 0.1);
 }
 
 .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--gradient-gold);
-    transition: var(--transition);
-    transform: translateX(-50%);
-    border-radius: 1px;
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-    width: 20px;
+    display: none !important;
 }
 
 .nav-actions {
@@ -689,7 +678,7 @@ body::after {
 .hero-tag {
     display: inline-block;
     padding: 10px 22px;
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border: 1px solid var(--ghost-border-gold);
     border-radius: var(--radius-full);
     color: var(--primary);
@@ -710,10 +699,11 @@ body::after {
     margin-bottom: 20px;
     text-transform: none;
     word-break: break-word;
+    color: #FFFFFF !important;
 }
 
 .hero-title .text-accent {
-    background: var(--gradient-gold-text);
+    background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -765,7 +755,7 @@ body::after {
 .hero-arrow:hover {
     border-color: var(--primary);
     color: var(--primary);
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     box-shadow: var(--glow-gold);
 }
 
@@ -787,7 +777,7 @@ body::after {
     background: var(--primary);
     width: 32px;
     border-radius: 4px;
-    box-shadow: 0 0 12px rgba(235, 10, 30, 0.4);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
 }
 
 .hero-scroll-indicator {
@@ -983,7 +973,7 @@ body::after {
 .section-tag {
     display: inline-block;
     padding: 10px 24px;
-    background: rgba(235, 10, 30, 0.06);
+    background: rgba(37, 99, 235, 0.06);
     border: 1px solid var(--ghost-border-gold);
     border-radius: var(--radius-full);
     color: var(--primary);
@@ -1101,7 +1091,7 @@ body::after {
 }
 
 .catalog-main-tab.active {
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border-color: var(--primary);
     box-shadow: var(--glow-gold);
 }
@@ -1250,7 +1240,7 @@ body::after {
     background: var(--primary);
     color: #FFFFFF;
     border-color: var(--primary);
-    box-shadow: 0 4px 15px rgba(235, 10, 30, 0.25);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
 /* ===== VEHICLE GRID (5-6 CARDS PER ROW) ===== */
@@ -1317,7 +1307,7 @@ body::after {
 
 .vehicle-card:hover {
     transform: translateY(-8px) translateZ(0);
-    border-color: rgba(235, 10, 30, 0.35);
+    border-color: rgba(37, 99, 235, 0.35);
     box-shadow: 0 16px 36px rgba(17, 24, 39, 0.1), var(--glow-gold);
 }
 
@@ -1534,7 +1524,7 @@ body::after {
     color: #FFFFFF;
     font-weight: 700;
     border: none;
-    box-shadow: 0 4px 15px rgba(235, 10, 30, 0.25);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
 .btn-card-details {
@@ -1554,13 +1544,13 @@ body::after {
     color: #FFFFFF;
     font-weight: 700;
     border: none;
-    box-shadow: 0 4px 15px rgba(235, 10, 30, 0.25);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
 .btn-card-whatsapp:hover {
     transform: translateY(-2px);
     background: var(--primary-container);
-    box-shadow: 0 6px 20px rgba(235, 10, 30, 0.4);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
     color: #FFFFFF;
 }
 
@@ -1702,7 +1692,7 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border-radius: var(--radius-md);
     margin-bottom: var(--space-6);
     font-size: 1.3rem;
@@ -1711,8 +1701,8 @@ body::after {
 }
 
 .service-card:hover .service-icon {
-    background: rgba(235, 10, 30, 0.15);
-    box-shadow: 0 0 20px rgba(235, 10, 30, 0.1);
+    background: rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.1);
 }
 
 .service-title {
@@ -1762,7 +1752,7 @@ body::after {
     width: 700px;
     height: 700px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(235, 10, 30, 0.06) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.06) 0%, transparent 60%);
     pointer-events: none;
     animation: orbFloat 15s ease-in-out infinite;
 }
@@ -1869,7 +1859,7 @@ body::after {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 6px 14px;
     border-radius: var(--radius-full);
@@ -2083,7 +2073,7 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(235, 10, 30, 0.06);
+    background: rgba(37, 99, 235, 0.06);
     border-radius: var(--radius-md);
     color: var(--primary);
     font-size: 1.1rem;
@@ -2092,8 +2082,8 @@ body::after {
 }
 
 .contact-item:hover .contact-icon {
-    background: rgba(235, 10, 30, 0.12);
-    box-shadow: 0 0 15px rgba(235, 10, 30, 0.1);
+    background: rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
 }
 
 .contact-item strong {
@@ -2143,7 +2133,7 @@ body::after {
     width: 38px;
     height: 38px;
     border-radius: 10px;
-    background: rgba(235, 10, 30, 0.12);
+    background: rgba(37, 99, 235, 0.12);
     color: var(--primary);
     display: flex;
     align-items: center;
@@ -2239,7 +2229,7 @@ body::after {
 .form-group textarea:focus {
     border-color: var(--primary);
     background: var(--surface-bright);
-    box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.2);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 /* Custom Select Box Styling */
@@ -2286,7 +2276,7 @@ body::after {
     border-color: var(--primary);
     border-left-color: var(--primary-dim);
     background: var(--surface-bright);
-    box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.25), 0 6px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25), 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .custom-select-wrapper:hover::after {
@@ -2419,15 +2409,15 @@ body::after {
 
 /* Option 2: Royal Blue Outline Pill (Grado 2) */
 .repair-pill-item.pill-blue {
-    border: 1.5px solid #EB0A1E !important;
+    border: 1.5px solid #2563EB !important;
 }
 
 .repair-pill-item.pill-blue .pill-icon-box {
-    background: rgba(235, 10, 30, 0.18) !important;
+    background: rgba(37, 99, 235, 0.18) !important;
 }
 
 .repair-pill-item.pill-blue .pill-icon {
-    color: #EB0A1E !important;
+    color: #2563EB !important;
     font-size: 0.72rem;
 }
 
@@ -2436,16 +2426,16 @@ body::after {
 }
 
 .repair-pill-item.pill-blue:hover {
-    background: rgba(235, 10, 30, 0.2) !important;
-    box-shadow: 0 0 14px rgba(235, 10, 30, 0.4) !important;
+    background: rgba(37, 99, 235, 0.2) !important;
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.4) !important;
 }
 
 /* Checked State for Blue Pill */
 .repair-pill-item.pill-blue:has(.repair-checkbox-hidden:checked),
 .repair-pill-item.pill-blue.checked {
-    background: #EB0A1E !important;
-    border-color: #EB0A1E !important;
-    box-shadow: 0 0 20px rgba(235, 10, 30, 0.6) !important;
+    background: #2563EB !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.6) !important;
 }
 
 .repair-pill-item.pill-blue:has(.repair-checkbox-hidden:checked) .pill-title,
@@ -2895,7 +2885,7 @@ body::after {
     background: var(--primary);
     width: 20px;
     border-radius: 4px;
-    box-shadow: 0 0 8px rgba(235, 10, 30, 0.4);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
 }
 
 .modal-info {
@@ -2905,7 +2895,7 @@ body::after {
 .modal-tag {
     display: inline-block;
     padding: 8px 16px;
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     border: 1px solid var(--ghost-border-gold);
     border-radius: var(--radius-full);
     color: var(--primary);
@@ -2983,7 +2973,7 @@ body::after {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #EB0A1E 0%, #C50818 100%);
+    background: linear-gradient(90deg, #2563EB 0%, #1D4ED8 100%);
 }
 
 .footer-grid {
@@ -3186,7 +3176,7 @@ body::after {
     .nav-menu .nav-link:hover,
     .nav-menu .nav-link.active {
         color: var(--primary);
-        background: rgba(235, 10, 30, 0.08);
+        background: rgba(37, 99, 235, 0.08);
     }
 
     .nav-logo {
@@ -3315,20 +3305,35 @@ body::after {
 }
 
 .calculator-results {
-    background: var(--surface-container);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
+    background: #FFFFFF;
+    border-radius: var(--radius-xl);
+    padding: 28px;
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    border: 1px solid rgba(235, 10, 30, 0.1);
+    gap: 12px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
 }
 
 .calc-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.95rem;
-    color: var(--on-surface-variant);
+    align-items: center;
+    font-size: 0.93rem;
+    color: #475569;
+    padding: 9px 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.calc-row span:last-child {
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.calc-row.detailed-fee {
+    font-size: 0.88rem;
+    color: #64748B;
+    padding: 6px 0;
 }
 
 .calc-row.total {
@@ -3378,7 +3383,7 @@ body::after {
 .process-icon {
     width: 60px;
     height: 60px;
-    background: rgba(235, 10, 30, 0.1);
+    background: rgba(37, 99, 235, 0.1);
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -3582,7 +3587,7 @@ body::after {
     background: var(--surface-dim);
     padding: var(--space-6);
     border-radius: var(--radius-md);
-    border: 1px solid rgba(235, 10, 30, 0.1);
+    border: 1px solid rgba(37, 99, 235, 0.1);
 }
 
 .auction-portal-form .form-group {
@@ -3660,7 +3665,7 @@ body::after {
 
 .catalog-sort-bar .search-container input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(235, 10, 30, 0.15);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 .sort-select {
@@ -3689,7 +3694,7 @@ body::after {
 .sort-select:focus {
     border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(235, 10, 30, 0.1);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
 /* ===== TESTIMONIALS CAROUSEL ===== */
@@ -3737,7 +3742,7 @@ body::after {
 .carousel-arrow:hover {
     border-color: var(--primary);
     color: var(--primary);
-    background: rgba(235, 10, 30, 0.08);
+    background: rgba(37, 99, 235, 0.08);
     box-shadow: var(--glow-gold);
 }
 
@@ -3761,7 +3766,7 @@ body::after {
     background: var(--primary);
     width: 28px;
     border-radius: 4px;
-    box-shadow: 0 0 12px rgba(235, 10, 30, 0.4);
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
 }
 
 /* ===== FAQ SECTION ===== */
@@ -3884,7 +3889,7 @@ body::after {
     align-items: center;
     gap: var(--space-3);
     padding: var(--space-5);
-    background: rgba(235, 10, 30, 0.05);
+    background: rgba(37, 99, 235, 0.05);
     border: 1px solid var(--ghost-border-gold);
     border-radius: var(--radius-md);
     color: var(--on-surface-variant);
@@ -3996,8 +4001,8 @@ body::after {
 }
 
 .vehicle-card-image:hover .views-badge {
-    background: rgba(235, 10, 30, 0.25);
-    border-color: rgba(235, 10, 30, 0.4);
+    background: rgba(37, 99, 235, 0.25);
+    border-color: rgba(37, 99, 235, 0.4);
 }
 
 /* ===== CALCULATOR RANGE TOTAL ===== */
@@ -4005,17 +4010,22 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 0 4px;
+    background: #EFF6FF;
+    border: 1.5px solid #BFDBFE;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 14px;
     flex-wrap: wrap;
     gap: 8px;
 }
 
 .calc-row.total-range>span:first-child {
     font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    color: var(--on-surface);
+    font-weight: 800;
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+    color: #1E3A8A;
+    text-transform: uppercase;
 }
 
 .total-range-values {
@@ -4028,28 +4038,29 @@ body::after {
 
 .total-range-values #resTotal {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1.35rem;
+    color: #2563EB;
 }
 
 .text-accent-max {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1.35rem;
-    color: #4d7aef;
+    color: #1D4ED8;
 }
 
 .range-separator {
     font-size: 1.1rem;
-    color: var(--outline);
-    font-weight: 300;
+    color: #94A3B8;
+    font-weight: 400;
 }
 
 .calc-range-note {
-    font-size: 0.7rem;
-    color: var(--outline);
-    text-align: right;
-    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #64748B;
+    text-align: center;
+    margin-top: 10px;
     padding-bottom: 4px;
 }
 
@@ -4071,8 +4082,8 @@ body::after {
     align-items: center;
     gap: 8px;
     padding: 8px 20px;
-    background: rgba(235, 10, 30, 0.15);
-    border: 1px solid rgba(235, 10, 30, 0.4);
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.4);
     border-radius: var(--radius-full);
     color: var(--primary);
     font-family: var(--font-display);
@@ -4088,11 +4099,11 @@ body::after {
 
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(235, 10, 30, 0);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
     }
 
     50% {
-        box-shadow: 0 0 0 6px rgba(235, 10, 30, 0.08);
+        box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.08);
     }
 }
 
@@ -4369,7 +4380,7 @@ body::after {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background-color: #000;
+    background-color: #0B0F19;
 }
 
 .yaris-gr-video-container {
@@ -4398,7 +4409,7 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.9) 100%);
+    background: linear-gradient(to bottom, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.5) 50%, rgba(11, 15, 25, 0.95) 100%);
     z-index: 1;
 }
 
@@ -4413,9 +4424,9 @@ body::after {
 
 .yaris-badge {
     display: inline-block;
-    background: rgba(220, 20, 60, 0.2);
-    border: 1px solid #dc143c;
-    color: #ff4d6d;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #60A5FA;
     padding: 8px 16px;
     border-radius: 30px;
     font-family: var(--font-display);
@@ -4435,8 +4446,8 @@ body::after {
 }
 
 .gr-red {
-    color: #dc143c;
-    text-shadow: 0 0 20px rgba(220, 20, 60, 0.6);
+    color: #3B82F6;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
 }
 
 .yaris-subtitle {
@@ -4501,10 +4512,10 @@ body::after {
 .status-dot {
     width: 12px;
     height: 12px;
-    background-color: #dc143c;
+    background-color: #2563EB;
     border-radius: 50%;
     display: inline-block;
-    box-shadow: 0 0 10px #dc143c;
+    box-shadow: 0 0 10px #2563EB;
 }
 
 @keyframes blink {
@@ -4524,7 +4535,7 @@ body::after {
 }
 
 .btn-gr-primary {
-    background: #dc143c;
+    background: #2563EB;
     color: #fff;
     padding: 16px 36px;
     font-size: 1.1rem;
@@ -4534,13 +4545,13 @@ body::after {
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 20px rgba(220, 20, 60, 0.3);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
 }
 
 .btn-gr-primary:hover {
-    background: #ff1a48;
+    background: #1D4ED8;
     transform: translateY(-3px);
-    box-shadow: 0 15px 25px rgba(220, 20, 60, 0.5);
+    box-shadow: 0 15px 25px rgba(37, 99, 235, 0.5);
     color: #fff;
 }
 
@@ -4756,7 +4767,7 @@ img.mastertech-seal {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--promo-color, #EB0A1E) 0%, rgba(10,10,10,0.8) 100%);
+    background: linear-gradient(135deg, var(--promo-color, #2563EB) 0%, rgba(10,10,10,0.8) 100%);
     font-size: 3.5rem;
     color: rgba(255,255,255,0.25);
 }
@@ -4874,7 +4885,7 @@ img.mastertech-seal {
     gap: 10px;
     padding: 12px 24px;
     border-radius: var(--radius-full);
-    background: linear-gradient(135deg, var(--promo-color, #EB0A1E) 0%, #1545c8 100%);
+    background: linear-gradient(135deg, var(--promo-color, #2563EB) 0%, #1545c8 100%);
     color: #fff;
     font-family: var(--font-display);
     font-weight: 700;
@@ -4886,13 +4897,13 @@ img.mastertech-seal {
     margin-top: 8px;
     border: 1px solid rgba(255,255,255,0.15);
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(235, 10, 30, 0.25);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
 }
 
 .promo-card-cta:hover {
     filter: brightness(1.15);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(235, 10, 30, 0.45);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
 }
 
 .promo-card-cta i {

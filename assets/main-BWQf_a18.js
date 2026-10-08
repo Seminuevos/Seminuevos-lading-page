@@ -565,15 +565,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set active link based on current page
     const currentPath = window.location.pathname.split('/').pop().replace('.html', '');
+    const isHomePage = !currentPath || currentPath === 'index' || currentPath === '';
+    
     navLinks.forEach(link => {
         link.classList.remove('active');
-        const rawHref = link.getAttribute('href') || '';
-        const href = rawHref.split('#')[0].replace('.html', '');
+        const rawHref = (link.getAttribute('href') || '').trim();
         
-        const isHomePage = !currentPath || currentPath === 'index' || currentPath === '';
-        
-        if (href === currentPath || (isHomePage && (href === '/' || href === 'index' || href === '' || href === '#inicio'))) {
-            link.classList.add('active');
+        if (isHomePage) {
+            if (rawHref === '/' || rawHref === '/index.html' || rawHref === 'index.html') {
+                link.classList.add('active');
+            }
+        } else {
+            const pageName = rawHref.split(/[?#]/)[0].replace('.html', '').replace(/^\//, '');
+            if (pageName && pageName === currentPath) {
+                link.classList.add('active');
+            }
         }
     });
 
