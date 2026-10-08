@@ -1,4 +1,67 @@
 /**
+ * ============================================
+ *  DATOS DEL INVENTARIO DE VEHÍCULOS - SEMINUEVO
+ * ============================================
+ */
+
+// ============================================
+//  SEMINUEVOS - ENTREGA INMEDIATA (en Porlamar)
+// ============================================
+const vehiclesSeminuevos = [];
+const vehicles0km = [];
+const allVehicles = [];
+
+/**
+ *  NÚMERO DE WHATSAPP PARA CONSULTAS
+ */
+const WHATSAPP_NUMBER = "584147977832";
+
+/**
+ *  INFORMACIÓN DE LA EMPRESA
+ */
+const COMPANY_INFO = {
+    name: "SemiNuevos Agency",
+    slogan: "Conduce a Otro Nivel",
+    phone: "+58 414-797-7832",
+    email: "info@seminuevoautos.com",
+    address: "Porlamar, Isla de Margarita, Venezuela",
+    hours: "Lun - Sáb: 9:00 AM - 7:00 PM",
+    socialMedia: {
+        facebook: "#",
+        instagram: "https://www.instagram.com/seminuevosagency/",
+        tiktok: "#",
+        youtube: "#"
+    }
+};
+
+/**
+ *  LABELS PARA LOS FILTROS
+ */
+const BODY_TYPE_LABELS = {
+    sedan: "Sedán",
+    suv: "SUV",
+    pickup: "Pickup",
+    deportivo: "Deportivo",
+    coupe: "Coupé",
+    hatchback: "Hatchback"
+};
+
+const ORIGIN_LABELS = {
+    nacional: "Nacional",
+    importado: "Importado"
+};
+
+const CONDITION_LABELS = {
+    seminuevo: "Seminuevo",
+    "0km": "0 KM"
+};
+
+const AVAILABILITY_LABELS = {
+    entrega_inmediata: "Entrega Inmediata",
+    por_pedido: "Por Pedido"
+};
+
+/**
  *  SemiNuevo - Main JavaScript
  *  Handles: Hero slider, Navbar, Catalog tabs, Rendering, Filters, Modal, 
  *  Stats counter, Scroll animations, Contact form
@@ -635,42 +698,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
+    // Purgar inmediatamente cualquier caché obsoleto para garantizar sincronización 100% en vivo
+    try {
+        localStorage.removeItem('sn_supabase_cache');
+        localStorage.removeItem('sn_vehicles');
+        localStorage.removeItem('sn_deleted_vehicles');
+        localStorage.removeItem('sn_vehicle_overrides');
+    } catch(e) {}
+
     function applyDataToPanels(vData = [], sData = []) {
-        const allStatic = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-        const staticSemi = allStatic.filter(isStockLocalVehicle);
-        const staticPorPedido = allStatic.filter(isImportedOrAuctionVehicle);
-        const staticZeroKm = allStatic.filter(isZeroKmVehicle);
+        // La base de datos en Supabase es la ÚNICA fuente de la verdad
+        const liveVehs = (Array.isArray(vData) ? vData : []).filter(v => (v.status || 'active') === 'active');
 
-        let localVehs = [];
-        try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
-        const combinedRaw = [...(vData || []), ...localVehs];
-
-        const dbSemi = combinedRaw.filter(isStockLocalVehicle);
-        const dbPorPedido = combinedRaw.filter(isImportedOrAuctionVehicle);
-        const db0km = combinedRaw.filter(isZeroKmVehicle);
-
-        let deleted = [];
-        try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
-        let overrides = {};
-        try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
-
-        const resolveVehicles = (dbArr, staticArr) => {
-            const source = (dbArr && dbArr.length > 0) ? dbArr : staticArr;
-            return source.filter(item => {
-                const titleKey = (item.title || '').toLowerCase().trim();
-                const idKey = String(item.id || '');
-                return !deleted.includes(titleKey) && !deleted.includes(idKey);
-            }).map(item => {
-                const titleKey = (item.title || '').toLowerCase().trim();
-                const idKey = String(item.id || '');
-                const ov = overrides[idKey] || overrides[titleKey];
-                return ov ? { ...item, ...ov } : item;
-            });
-        };
-
-        appVehiclesSeminuevos = resolveVehicles(dbSemi, staticSemi);
-        appVehiclesPorPedido = resolveVehicles(dbPorPedido, staticPorPedido);
-        appVehicles0km = resolveVehicles(db0km, staticZeroKm);
+        appVehiclesSeminuevos = liveVehs.filter(isStockLocalVehicle);
+        appVehiclesPorPedido = liveVehs.filter(isImportedOrAuctionVehicle);
+        appVehicles0km = liveVehs.filter(isZeroKmVehicle);
 
         renderAllPanels();
 
@@ -678,15 +720,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof refreshFilters_porpedido === 'function') refreshFilters_porpedido();
         if (typeof refreshFilters_zerokm === 'function') refreshFilters_zerokm();
 
-        if (sData && sData.length > 0) {
-            const map = {};
-            sData.forEach(s => {
-                try {
-                    map[s.key] = JSON.parse(s.value);
-                } catch (e) {
-                    map[s.key] = s.value;
-                }
-            });
+        if (sData && typeof sData === 'object') {
+            const map = Array.isArray(sData) ? {} : { ...sData };
+            if (Array.isArray(sData)) {
+                sData.forEach(s => {
+                    try {
+                        map[s.key] = typeof s.value === 'string' ? JSON.parse(s.value) : s.value;
+                    } catch (e) {
+                        map[s.key] = s.value;
+                    }
+                });
+            }
 
             if (map.promotions_list) {
                 let pList = map.promotions_list;
@@ -730,42 +774,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== INSTANT INITIAL RENDER (0ms delay) =====
-    const cacheKey = 'sn_supabase_cache';
-    let initialCached = null;
-    try {
-        const raw = localStorage.getItem(cacheKey);
-        if (raw) initialCached = JSON.parse(raw);
-    } catch(e) {}
-
-    if (initialCached && initialCached.vehicles && initialCached.vehicles.length > 0) {
-        applyDataToPanels(initialCached.vehicles, initialCached.settings || []);
-    } else {
-        applyDataToPanels([], []);
-    }
-
-    // ===== BACKGROUND ASYNC REVALIDATION =====
+    // ===== CARGA EN VIVO DIRECTA (SIN CACHÉ LOCAL RESIDUAL) =====
     async function initSupabaseData() {
         if (window.location.pathname.includes('vehiculo')) return;
         try {
-            const vRes = await fetch('/api/vehicles');
+            const [vRes, sRes] = await Promise.allSettled([
+                fetch(`/api/vehicles?_t=${Date.now()}`, { cache: 'no-store' }),
+                fetch(`/api/settings?_t=${Date.now()}`, { cache: 'no-store' })
+            ]);
+
             let vData = [];
-            if (vRes.ok) {
-                const json = await vRes.json();
-                vData = json.data || [];
+            if (vRes.status === 'fulfilled' && vRes.value.ok) {
+                const json = await vRes.value.json();
+                vData = Array.isArray(json?.data) ? json.data : [];
             }
 
-            try {
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    timestamp: Date.now(),
-                    vehicles: vData,
-                    settings: []
-                }));
-            } catch(e) {}
+            let sData = {};
+            if (sRes.status === 'fulfilled' && sRes.value.ok) {
+                const sJson = await sRes.value.json();
+                sData = sJson?.data || {};
+            }
 
-            applyDataToPanels(vData, []);
+            applyDataToPanels(vData, sData);
         } catch(e) {
-            console.warn('Background sync notice:', e);
+            console.warn('Error al cargar datos en vivo:', e);
         }
     }
 

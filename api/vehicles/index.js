@@ -16,6 +16,10 @@ export default async function handler(req, res) {
 
     // GET — listar vehículos (público: solo activos; admin con token: todos)
     if (req.method === 'GET') {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         const authHeader = req.headers.authorization;
         const isAdmin = authHeader && !authHeader.includes('null') && !authHeader.includes('undefined');
 

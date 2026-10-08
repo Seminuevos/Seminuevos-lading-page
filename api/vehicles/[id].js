@@ -90,27 +90,52 @@ export default async function handler(req, res) {
         }
     }
 
-    // DELETE — eliminar vehículo
+    // DELETE — eliminar vehículo permanentemente
     if (req.method === 'DELETE') {
         const user = requireAuth(req, res);
         if (!user) return;
 
-        try {
-            const { error } = await supabase
-                .from('vehicles')
-                .delete()
-                .eq('id', id);
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
 
-            if (error) {
-                console.error('[DELETE /api/vehicles/:id]', error);
-                return res.status(500).json({ error: 'Error al eliminar vehículo' });
+        const { title } = req.query;
+
+        try {
+            const numericId = parseInt(id, 10);
+            
+            // 1. Borrar por ID numérico en Supabase si es válido
+            if (!isNaN(numericId)) {
+                await supabase
+                    .from('vehicles')
+                    .delete()
+                    .eq('id', numericId);
             }
 
-            return res.status(200).json({ message: 'Vehículo eliminado correctamente' });
+            // 2. Borrar por ID como string/UUID
+            const { error: delErr } = await supabase
+                .from('vehicles')
+                .delete()
+                .eq('id', String(id));
+
+            if (delErr) {
+                console.error('[DELETE /api/vehicles/:id]', delErr);
+                return res.status(500).json({ error: 'Error al eliminar vehículo de la base de datos: ' + delErr.message });
+            }
+
+            // 3. Si se proporciona título, borrar también por coincidencia de título para asegurar borrado absoluto
+            if (title && String(title).trim()) {
+                await supabase
+                    .from('vehicles')
+                    .delete()
+                    .ilike('title', String(title).trim());
+            }
+
+            return res.status(200).json({ success: true, message: 'Vehículo eliminado permanentemente de la base de datos' });
 
         } catch (err) {
             console.error('[DELETE /api/vehicles/:id] catch:', err);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return res.status(500).json({ error: 'Error interno del servidor: ' + err.message });
         }
     }
 

@@ -10,73 +10,97 @@ import { sanitizeString } from '../_middleware/validate.js';
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
 
-    // GET — obtener settings (requiere auth básica)
+    // GET — obtener configuración (site_settings)
     if (req.method === 'GET') {
-        const authUser = requireAuth(req, res);
-        if (!authUser) return;
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+        const { key } = req.query;
 
         try {
+            if (key) {
+                const { data, error } = await supabase
+                    .from('site_settings')
+                    .select('key, value')
+                    .eq('key', key)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error('[GET /api/settings?key]', error);
+                    return res.status(500).json({ error: 'Error al obtener configuración' });
+                }
+
+                let val = data ? data.value : null;
+                if (typeof val === 'string') {
+                    try { val = JSON.parse(val); } catch(e) {}
+                }
+                return res.status(200).json({ key, value: val });
+            }
+
             const { data, error } = await supabase
-                .from('settings')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .maybeSingle();
+                .from('site_settings')
+                .select('key, value');
 
             if (error) {
                 console.error('[GET /api/settings]', error);
                 return res.status(500).json({ error: 'Error al obtener configuración' });
             }
 
-            return res.status(200).json({ data: data || {} });
+            const settingsMap = {};
+            (data || []).forEach(row => {
+                let v = row.value;
+                if (typeof v === 'string') {
+                    try { v = JSON.parse(v); } catch(e) {}
+                }
+                settingsMap[row.key] = v;
+            });
+
+            return res.status(200).json({ data: settingsMap });
         } catch (err) {
             return res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
-    // PUT — actualizar settings (solo admin)
-    if (req.method === 'PUT') {
+    // PUT — actualizar configuración (solo admin)
+    if (req.method === 'PUT' || req.method === 'POST') {
         const authUser = requireAdmin(req, res);
         if (!authUser) return;
 
         const body = req.body || {};
+        const rows = [];
 
-        // Sanitizar todos los campos de configuración
-        const payload = {};
-        const allowedFields = [
-            'agency_name', 'whatsapp_number', 'whatsapp_number2',
-            'email_primary', 'email_secondary', 'address',
-            'business_hours', 'instagram_url', 'facebook_url',
-            'tiktok_url', 'logo_url', 'primary_color',
-            'financing_enabled', 'max_financing_months', 'min_initial_payment_pct'
-        ];
-
-        for (const field of allowedFields) {
-            if (body[field] !== undefined) {
-                payload[field] = typeof body[field] === 'boolean'
-                    ? body[field]
-                    : sanitizeString(String(body[field]), 500);
+        if (body.key && body.value !== undefined) {
+            rows.push({
+                key: String(body.key),
+                value: typeof body.value === 'string' ? body.value : JSON.stringify(body.value),
+                updated_at: new Date().toISOString()
+            });
+        } else {
+            for (const [k, v] of Object.entries(body)) {
+                rows.push({
+                    key: String(k),
+                    value: typeof v === 'string' ? v : JSON.stringify(v),
+                    updated_at: new Date().toISOString()
+                });
             }
         }
 
-        payload.updated_at = new Date().toISOString();
+        if (rows.length === 0) {
+            return res.status(400).json({ error: 'No se enviaron datos para actualizar' });
+        }
 
         try {
-            // Upsert (insert si no existe, update si sí)
             const { data, error } = await supabase
-                .from('settings')
-                .upsert([payload])
-                .select()
-                .single();
+                .from('site_settings')
+                .upsert(rows);
 
             if (error) {
                 console.error('[PUT /api/settings]', error);
-                return res.status(500).json({ error: 'Error al guardar configuración' });
+                return res.status(500).json({ error: 'Error al guardar en site_settings: ' + error.message });
             }
 
-            return res.status(200).json({ data });
+            return res.status(200).json({ success: true, message: 'Configuración guardada correctamente' });
         } catch (err) {
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            return res.status(500).json({ error: 'Error interno del servidor: ' + err.message });
         }
     }
 

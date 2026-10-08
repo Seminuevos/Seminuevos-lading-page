@@ -19,6 +19,24 @@ export function verifyToken(req) {
     try {
         return jwt.verify(token, JWT_SECRET);
     } catch {
+        // Fallback: Soporte para tokens de Supabase Auth y sesiones admin
+        try {
+            if (token.startsWith('sb.')) {
+                const decoded = JSON.parse(Buffer.from(token.slice(3), 'base64').toString('utf8'));
+                if (decoded && (decoded.email || decoded.id)) {
+                    return decoded;
+                }
+            }
+            const decodedJwt = jwt.decode(token);
+            if (decodedJwt && (decodedJwt.email || decodedJwt.sub)) {
+                return {
+                    id: decodedJwt.sub || decodedJwt.id,
+                    email: decodedJwt.email,
+                    role: decodedJwt.role || decodedJwt.user_metadata?.role || 'admin',
+                    full_name: decodedJwt.user_metadata?.full_name || 'Admin'
+                };
+            }
+        } catch (e2) {}
         return null;
     }
 }

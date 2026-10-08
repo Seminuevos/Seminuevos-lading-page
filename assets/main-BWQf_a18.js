@@ -7,239 +7,9 @@
 // ============================================
 //  SEMINUEVOS - ENTREGA INMEDIATA (en Porlamar)
 // ============================================
-const vehiclesSeminuevos = [
-    {
-        id: 1,
-        title: "Honda HR-V Sport 2025 4x4 AWD",
-        price: "$36,000",
-        year: 2025,
-        km: "17,000 KM",
-        engine: "2.0L",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "suv",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "PUERTO LIBRE / NACIONAL",
-        color: "Gris Platino / Interior Negro Sport",
-        vin: "3CZRZ2H54SM715088",
-        images: [
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/1.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/2.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/3.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/4.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/5.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/6.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/7.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/8.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/9.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/10.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/11.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/12.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/13.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/14.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/15.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/16.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/17.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/18.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/19.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/20.jpg",
-            "images/gallery/honda-hrv-sport-2025-4x4-awd/21.jpg"
-        ],
-        description: "Honda HR-V Sport 2025 con tracción 4x4 AWD. Motor 2.0L i-VTEC (158 HP), transmisión automática CVT. Color interior negro. Black Package de emblemas exteriores, rines 18\" Glossy Black, Honda Sensing. 17,000 km recorridos. Ubicación Porlamar, Puerto Libre / Nacional."
-    },
-    {
-        id: 2,
-        title: "Honda HR-V 2024 Sport",
-        price: "$33,000",
-        year: 2024,
-        km: "45,000 KM",
-        engine: "2.0L",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "suv",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "PUERTO LIBRE",
-        color: "Gris Grafito / Interior Negro Sport",
-        vin: "3CZRZ1H3XRM736546",
-        images: [
-            "images/gallery/honda-hrv-2024-sport/1.jpg",
-            "images/gallery/honda-hrv-2024-sport/2.jpg",
-            "images/gallery/honda-hrv-2024-sport/3.jpg",
-            "images/gallery/honda-hrv-2024-sport/4.jpg",
-            "images/gallery/honda-hrv-2024-sport/5.jpg",
-            "images/gallery/honda-hrv-2024-sport/6.jpg",
-            "images/gallery/honda-hrv-2024-sport/7.jpg",
-            "images/gallery/honda-hrv-2024-sport/8.jpg",
-            "images/gallery/honda-hrv-2024-sport/9.jpg",
-            "images/gallery/honda-hrv-2024-sport/10.jpg",
-            "images/gallery/honda-hrv-2024-sport/11.jpg",
-            "images/gallery/honda-hrv-2024-sport/12.jpg",
-            "images/gallery/honda-hrv-2024-sport/13.jpg",
-            "images/gallery/honda-hrv-2024-sport/14.jpg",
-            "images/gallery/honda-hrv-2024-sport/15.jpg",
-            "images/gallery/honda-hrv-2024-sport/16.jpg",
-            "images/gallery/honda-hrv-2024-sport/17.jpg",
-            "images/gallery/honda-hrv-2024-sport/18.jpg",
-            "images/gallery/honda-hrv-2024-sport/19.jpg",
-            "images/gallery/honda-hrv-2024-sport/20.jpg",
-            "images/gallery/honda-hrv-2024-sport/21.jpg",
-            "images/gallery/honda-hrv-2024-sport/22.jpg",
-            "images/gallery/honda-hrv-2024-sport/23.jpg",
-            "images/gallery/honda-hrv-2024-sport/24.jpg"
-        ],
-        description: "Honda HR-V Sport 2024 FWD (Tracción delantera). Motor 2.0L i-VTEC (158 HP), transmisión automática CVT. Color interior negro. Black Package de emblemas, rines 17\" Glossy Black, botón de encendido Push Start (sin Smart Entry). Llave original (sin duplicado). 45,000 km recorridos. Ubicación Porlamar, Puerto Libre."
-    },
-    {
-        id: 3,
-        title: "Nissan Sentra SV 2025",
-        price: "$26,000",
-        year: 2025,
-        km: "12,000 KM",
-        engine: "2.0L",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "sedan",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "PUERTO LIBRE / NACIONAL",
-        color: "Blanco Perla / Interior Negro",
-        vin: "3N1AB8CV8SY277317",
-        images: [
-            "images/gallery/nissan-sentra-sv-2025/1.jpg",
-            "images/gallery/nissan-sentra-sv-2025/2.jpg",
-            "images/gallery/nissan-sentra-sv-2025/3.jpg",
-            "images/gallery/nissan-sentra-sv-2025/4.jpg",
-            "images/gallery/nissan-sentra-sv-2025/5.jpg",
-            "images/gallery/nissan-sentra-sv-2025/6.jpg",
-            "images/gallery/nissan-sentra-sv-2025/7.jpg",
-            "images/gallery/nissan-sentra-sv-2025/8.jpg",
-            "images/gallery/nissan-sentra-sv-2025/9.jpg",
-            "images/gallery/nissan-sentra-sv-2025/10.jpg",
-            "images/gallery/nissan-sentra-sv-2025/11.jpg",
-            "images/gallery/nissan-sentra-sv-2025/12.jpg",
-            "images/gallery/nissan-sentra-sv-2025/13.jpg",
-            "images/gallery/nissan-sentra-sv-2025/14.jpg",
-            "images/gallery/nissan-sentra-sv-2025/15.jpg",
-            "images/gallery/nissan-sentra-sv-2025/16.jpg",
-            "images/gallery/nissan-sentra-sv-2025/17.jpg"
-        ],
-        description: "Nissan Sentra SV 2025. Motor 2.0L DOHC 16V (149 HP), transmisión Xtronic CVT. Tracción delantera (FWD). Color interior negro. Daño leve por granizo (sin golpes estructurales). 12,000 km. Ubicación Porlamar, Puerto Libre / Nacional."
-    },
-    {
-        id: 4,
-        title: "Nissan Rogue Sport 2019",
-        price: "$22,000",
-        year: 2019,
-        km: "50,000 KM",
-        engine: "2.0L",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "suv",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "PLACA NACIONAL",
-        color: "Gris Plata / Interior Negro",
-        vin: "JN1BJ1CPXKW528684",
-        images: [
-            "images/gallery/rogue-sport-2019/1.jpg",
-            "images/gallery/rogue-sport-2019/2.jpg",
-            "images/gallery/rogue-sport-2019/3.jpg",
-            "images/gallery/rogue-sport-2019/4.jpg"
-        ],
-        description: "Nissan Rogue Sport 2019 FWD. Motor 2.0L DOHC 16V (141 HP), transmisión Xtronic CVT. Tracción delantera (FWD). Placa nacional asignada. Único dueño, 50,000 km. Mantenimiento al día, 100% sin golpes."
-    },
-    {
-        id: 5,
-        title: "Toyota 4Runner 2021 SR5",
-        price: "$39,990",
-        year: 2021,
-        km: "81,000 KM",
-        engine: "4.0L V6",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "suv",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "4x2",
-        images: [
-            "images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/2.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/3.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/4.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/5.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/6.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/7.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/8.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/9.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/10.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/11.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/12.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/13.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/14.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/15.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/16.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/17.jpg?v=2",
-            "images/gallery/toyota-4runner-2021-sr5/18.jpg?v=2"
-        ],
-        description: "Toyota 4Runner 2021 SR5. Motor 4.0L V6, automática, 4x2. 81,000 km. Ubicación Porlamar, Puerto Libre. Entrega inmediata. Nivel de daño medio: detalles estéticos, tuvo golpe en esquina trasera derecha."
-    },
-    {
-        id: 6,
-        title: "Toyota Corolla Cross LE 4x4 AWD 2022",
-        price: "$31,990",
-        year: 2022,
-        km: "21,000 KM",
-        engine: "2.0L",
-        transmission: "Automático",
-        fuel: "Gasolina",
-        bodyType: "suv",
-        origin: "nacional",
-        condition: "seminuevo",
-        availability: "entrega_inmediata",
-        badge: "PLACA NACIONAL",
-        images: [
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/1.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/2.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/3.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/4.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/5.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/6.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/7.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/8.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/9.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/10.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/11.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/12.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/13.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/14.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/15.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/16.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/17.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/18.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/19.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/20.jpg",
-            "images/gallery/toyota-corolla-cross-le-4x4-awd-2022/21.jpg"
-        ],
-        description: "Toyota Corolla Cross LE 4x4 AWD 2022. Motor 2.0L, automático. Placa nacional. 21,000 km. Ubicación Porlamar. Nivel de daño medio frontal derecho. Válvula EGR ya eliminada. Entrega inmediata."
-    }
-];
-
-// ============================================
-//  IMPORTADOS - POR PEDIDO (Eliminados permanentemente - Solo Stock Local)
-// ============================================
+const vehiclesSeminuevos = [];
 const vehicles0km = [];
-
-// ============================================
-//  COMBINACIÓN DE TODOS LOS VEHÍCULOS (Exclusivo Stock Local)
-// ============================================
-const allVehicles = [...vehiclesSeminuevos];
+const allVehicles = [];
 
 /**
  *  NÚMERO DE WHATSAPP PARA CONSULTAS
@@ -928,42 +698,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     };
 
+    // Purgar inmediatamente cualquier caché obsoleto para garantizar sincronización 100% en vivo
+    try {
+        localStorage.removeItem('sn_supabase_cache');
+        localStorage.removeItem('sn_vehicles');
+        localStorage.removeItem('sn_deleted_vehicles');
+        localStorage.removeItem('sn_vehicle_overrides');
+    } catch(e) {}
+
     function applyDataToPanels(vData = [], sData = []) {
-        const allStatic = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-        const staticSemi = allStatic.filter(isStockLocalVehicle);
-        const staticPorPedido = allStatic.filter(isImportedOrAuctionVehicle);
-        const staticZeroKm = allStatic.filter(isZeroKmVehicle);
+        // La base de datos en Supabase es la ÚNICA fuente de la verdad
+        const liveVehs = (Array.isArray(vData) ? vData : []).filter(v => (v.status || 'active') === 'active');
 
-        let localVehs = [];
-        try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
-        const combinedRaw = [...(vData || []), ...localVehs];
-
-        const dbSemi = combinedRaw.filter(isStockLocalVehicle);
-        const dbPorPedido = combinedRaw.filter(isImportedOrAuctionVehicle);
-        const db0km = combinedRaw.filter(isZeroKmVehicle);
-
-        let deleted = [];
-        try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
-        let overrides = {};
-        try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
-
-        const resolveVehicles = (dbArr, staticArr) => {
-            const source = (dbArr && dbArr.length > 0) ? dbArr : staticArr;
-            return source.filter(item => {
-                const titleKey = (item.title || '').toLowerCase().trim();
-                const idKey = String(item.id || '');
-                return !deleted.includes(titleKey) && !deleted.includes(idKey);
-            }).map(item => {
-                const titleKey = (item.title || '').toLowerCase().trim();
-                const idKey = String(item.id || '');
-                const ov = overrides[idKey] || overrides[titleKey];
-                return ov ? { ...item, ...ov } : item;
-            });
-        };
-
-        appVehiclesSeminuevos = resolveVehicles(dbSemi, staticSemi);
-        appVehiclesPorPedido = resolveVehicles(dbPorPedido, staticPorPedido);
-        appVehicles0km = resolveVehicles(db0km, staticZeroKm);
+        appVehiclesSeminuevos = liveVehs.filter(isStockLocalVehicle);
+        appVehiclesPorPedido = liveVehs.filter(isImportedOrAuctionVehicle);
+        appVehicles0km = liveVehs.filter(isZeroKmVehicle);
 
         renderAllPanels();
 
@@ -971,15 +720,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof refreshFilters_porpedido === 'function') refreshFilters_porpedido();
         if (typeof refreshFilters_zerokm === 'function') refreshFilters_zerokm();
 
-        if (sData && sData.length > 0) {
-            const map = {};
-            sData.forEach(s => {
-                try {
-                    map[s.key] = JSON.parse(s.value);
-                } catch (e) {
-                    map[s.key] = s.value;
-                }
-            });
+        if (sData && typeof sData === 'object') {
+            const map = Array.isArray(sData) ? {} : { ...sData };
+            if (Array.isArray(sData)) {
+                sData.forEach(s => {
+                    try {
+                        map[s.key] = typeof s.value === 'string' ? JSON.parse(s.value) : s.value;
+                    } catch (e) {
+                        map[s.key] = s.value;
+                    }
+                });
+            }
 
             if (map.promotions_list) {
                 let pList = map.promotions_list;
@@ -1023,42 +774,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== INSTANT INITIAL RENDER (0ms delay) =====
-    const cacheKey = 'sn_supabase_cache';
-    let initialCached = null;
-    try {
-        const raw = localStorage.getItem(cacheKey);
-        if (raw) initialCached = JSON.parse(raw);
-    } catch(e) {}
-
-    if (initialCached && initialCached.vehicles && initialCached.vehicles.length > 0) {
-        applyDataToPanels(initialCached.vehicles, initialCached.settings || []);
-    } else {
-        applyDataToPanels([], []);
-    }
-
-    // ===== BACKGROUND ASYNC REVALIDATION =====
+    // ===== CARGA EN VIVO DIRECTA (SIN CACHÉ LOCAL RESIDUAL) =====
     async function initSupabaseData() {
         if (window.location.pathname.includes('vehiculo')) return;
         try {
-            const vRes = await fetch('/api/vehicles');
+            const [vRes, sRes] = await Promise.allSettled([
+                fetch(`/api/vehicles?_t=${Date.now()}`, { cache: 'no-store' }),
+                fetch(`/api/settings?_t=${Date.now()}`, { cache: 'no-store' })
+            ]);
+
             let vData = [];
-            if (vRes.ok) {
-                const json = await vRes.json();
-                vData = json.data || [];
+            if (vRes.status === 'fulfilled' && vRes.value.ok) {
+                const json = await vRes.value.json();
+                vData = Array.isArray(json?.data) ? json.data : [];
             }
 
-            try {
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    timestamp: Date.now(),
-                    vehicles: vData,
-                    settings: []
-                }));
-            } catch(e) {}
+            let sData = {};
+            if (sRes.status === 'fulfilled' && sRes.value.ok) {
+                const sJson = await sRes.value.json();
+                sData = sJson?.data || {};
+            }
 
-            applyDataToPanels(vData, []);
+            applyDataToPanels(vData, sData);
         } catch(e) {
-            console.warn('Background sync notice:', e);
+            console.warn('Error al cargar datos en vivo:', e);
         }
     }
 

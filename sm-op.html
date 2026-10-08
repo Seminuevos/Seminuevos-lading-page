@@ -2367,6 +2367,12 @@
     <div class="toast" id="toast"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+            window.supabaseClient = window.supabase.createClient('https://hknprlgyuwzolgnkwsmx.supabase.co', 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z');
+        }
+    </script>
     <script src="assets/api-client.js"></script>
     <script src="assets/main-BWQf_a18.js"></script>
     <script>
@@ -2437,47 +2443,8 @@
 
 
         async function autoSyncStockLocal() {
-            try {
-                // Only seed if database is completely empty (0 vehicles)
-                const { data: dbData, error } = await supabaseClient.from('vehicles').select('id').limit(1);
-                if (error || (dbData && dbData.length > 0)) {
-                    return; // Database already has inventory, do not duplicate!
-                }
-
-                const staticSemi = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-                if (!staticSemi.length) return;
-
-                let inserted = false;
-                for (const v of staticSemi) {
-                    const payload = {
-                        title: v.title,
-                        price: v.price || 'Consultar',
-                        year: parseInt(v.year) || 2024,
-                        km: v.km || '0 KM',
-                        engine: v.engine || '',
-                        transmission: v.transmission || 'AutomÃ¡tico',
-                        fuel: v.fuel || 'Gasolina',
-                        body_type: v.bodyType || v.body_type || 'suv',
-                        condition: v.condition || 'seminuevo',
-                        availability: v.availability || 'entrega_inmediata',
-                        origin: v.origin || 'nacional',
-                        badge: v.badge || null,
-                        description: v.description || '',
-                        images: v.images || [],
-                        catalog: 'seminuevos',
-                        status: 'active'
-                    };
-                    const { error: insErr } = await supabaseClient.from('vehicles').insert([payload]);
-                    if (!insErr) inserted = true;
-                }
-
-                if (inserted) {
-                    await loadVehicles();
-                    showToast('âœ“ Stock Local inicializado con Ã©xito', 'success');
-                }
-            } catch (err) {
-                console.log('AutoSync Stock Local notice:', err.message);
-            }
+            // Desactivado: el inventario es administrado exclusivamente por el usuario
+            return;
         }
 
         async function checkBookmarkletImport() {
@@ -2902,71 +2869,35 @@
         async function loadVehicles() {
             let data = null;
 
-            // 1. Intentar API backend
+            // 1. Obtener inventario directamente del backend con timestamp anti-caché
             try {
-                const apiRes = await apiFetch('/api/vehicles');
-                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data) && apiRes.data.data.length > 0) {
+                const apiRes = await apiFetch('/api/vehicles?_t=' + Date.now());
+                if (apiRes && apiRes.ok && Array.isArray(apiRes.data?.data)) {
                     data = apiRes.data.data;
                 }
             } catch(e) {}
 
-            // 2. MODO COMPATIBILIDAD: ConexiÃ³n directa a Supabase si la API no estÃ¡ configurada o falla
-            if (!data && supabaseClient && typeof supabaseClient.from === 'function') {
+            // 2. MODO COMPATIBILIDAD: Conexión directa a Supabase si la API no respondió
+            if (!data && window.supabaseClient && typeof window.supabaseClient.from === 'function') {
                 try {
-                    const res = await supabaseClient.from('vehicles').select('*').order('created_at', { ascending: false });
+                    const res = await window.supabaseClient.from('vehicles').select('*').order('created_at', { ascending: false });
                     if (!res.error && res.data) data = res.data;
                 } catch(e) {
                     console.warn('Modo compatibilidad: Carga directa Supabase:', e);
                 }
             }
             
-            const staticSemi = (typeof vehiclesSeminuevos !== 'undefined') ? vehiclesSeminuevos : [];
-            const static0km = (typeof vehicles0km !== 'undefined') ? vehicles0km : [];
-            const allStatic = (typeof allVehicles !== 'undefined') ? allVehicles : [...staticSemi, ...static0km];
+            // La base de datos es la ÚNICA fuente de la verdad
+            if (data && Array.isArray(data)) {
+                vehicles = data.map(v => ({
+                    ...v,
+                    catalog: v.catalog || (v.availability === 'entrega_inmediata' ? 'seminuevos' : (v.condition === '0km' ? '0km' : 'importados')),
+                    status: v.status || 'active'
+                }));
+            } else {
+                vehicles = [];
+            }
             
-            let localVehs = [];
-            try { localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]'); } catch(e) {}
-            let deleted = [];
-            try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
-            let overrides = {};
-            try { overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}'); } catch(e) {}
-            
-            const dbVehs = data || [];
-            const titleMap = new Map();
-            
-            // 1. DB vehicles (filtered against deleted list so user deletions take immediate effect)
-            dbVehs.forEach(v => {
-                const key = (v.title || '').toLowerCase().trim();
-                const idKey = String(v.id || '');
-                if (key && !deleted.includes(key) && !deleted.includes(idKey)) {
-                    const catalog = v.catalog || (v.availability === 'entrega_inmediata' ? 'seminuevos' : (v.condition === '0km' ? '0km' : 'importados'));
-                    const mapKey = `db_${v.id}_${key}`;
-                    if (!titleMap.has(mapKey)) {
-                        let item = { ...v, catalog: catalog, status: v.status || 'active' };
-                        const ov = overrides[idKey] || overrides[key];
-                        if (ov) item = { ...item, ...ov };
-                        titleMap.set(mapKey, item);
-                    }
-                }
-            });
-
-            // 2. Static vehicles are added if not already in DB and not explicitly deleted
-            [...localVehs, ...allStatic].forEach(v => {
-                const key = (v.title || '').toLowerCase().trim();
-                const idKey = String(v.id || '');
-                if (key && !deleted.includes(key) && !deleted.includes(idKey)) {
-                    const isAlreadyInDb = Array.from(titleMap.values()).some(item => (item.title || '').toLowerCase().trim() === key);
-                    if (!isAlreadyInDb) {
-                        const catalog = v.catalog || (v.availability === 'entrega_inmediata' ? 'seminuevos' : (v.condition === '0km' ? '0km' : 'importados'));
-                        let item = { ...v, catalog: catalog, status: v.status || 'active', isStatic: true };
-                        const ov = overrides[idKey] || overrides[key];
-                        if (ov) item = { ...item, ...ov };
-                        titleMap.set(`static_${v.id}_${key}`, item);
-                    }
-                }
-            });
-            
-            vehicles = Array.from(titleMap.values());
             renderStats();
             renderTable();
             if (typeof populateFichaVehicleSelect === 'function') populateFichaVehicleSelect();
@@ -3425,56 +3356,44 @@
 
         async function deleteSelected() {
             if (selectedVehicles.size === 0) return;
-            if (!confirm(`Â¿EstÃ¡s seguro de eliminar ${selectedVehicles.size} vehÃ­culo(s) seleccionado(s)?\n\nEsta acciÃ³n no se puede deshacer.`)) return;
+            if (!confirm(`¿Estás seguro de eliminar ${selectedVehicles.size} vehículo(s) seleccionado(s) permanentemente?\n\nEsta acción los borrará definitivamente de la base de datos.`)) return;
 
-            showToast('Eliminando vehÃ­culos...', 'info');
+            showToast('Eliminando vehículos de la base de datos...', 'info');
             const rawIds = Array.from(selectedVehicles);
-            let deleted = [];
-            try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
 
             for (const idVal of rawIds) {
                 const sId = String(idVal);
                 const v = vehicles.find(item => String(item.id) === sId);
+                const titleParam = v?.title ? `?title=${encodeURIComponent(v.title)}` : '';
 
-                // 1. Intentar API backend
-                apiFetch(`/api/vehicles/${idVal}`, { method: 'DELETE' }).catch(() => {});
-
-                // 2. MODO COMPATIBILIDAD: ConexiÃ³n directa a Supabase si la API no estÃ¡ disponible
+                // 1. Eliminar vía backend con service_role
                 try {
-                    const numId = parseInt(idVal);
-                    if (!isNaN(numId)) {
-                        await supabaseClient.from('vehicles').delete().eq('id', numId);
-                    }
-                    await supabaseClient.from('vehicles').delete().eq('id', idVal);
-                    if (v && v.title) {
-                        await supabaseClient.from('vehicles').delete().eq('title', v.title);
-                    }
-                } catch(e) {
-                    console.warn('Modo compatibilidad: Supabase bulk delete notice:', e);
-                }
+                    await apiFetch(`/api/vehicles/${idVal}${titleParam}`, { method: 'DELETE' });
+                } catch(e) {}
 
-                if (v && v.title) {
-                    const tKey = v.title.toLowerCase().trim();
-                    if (!deleted.includes(tKey)) deleted.push(tKey);
+                // 2. MODO COMPATIBILIDAD: Borrado directo en Supabase
+                if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                    try {
+                        const numId = parseInt(idVal);
+                        if (!isNaN(numId)) {
+                            await window.supabaseClient.from('vehicles').delete().eq('id', numId);
+                        }
+                        await window.supabaseClient.from('vehicles').delete().eq('id', sId);
+                        if (v && v.title) {
+                            await window.supabaseClient.from('vehicles').delete().ilike('title', v.title.trim());
+                        }
+                    } catch(e) {
+                        console.warn('Supabase bulk delete notice:', e);
+                    }
                 }
-                if (!deleted.includes(sId)) deleted.push(sId);
             }
 
-            localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
-
-            // Clean from sn_vehicles and sn_vehicle_overrides
+            // Purgar cualquier caché local residual
             try {
-                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                localVehs = localVehs.filter(item => !rawIds.includes(String(item.id)) && !rawIds.includes(item.id));
-                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
-
-                let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
-                rawIds.forEach(idVal => {
-                    delete overrides[String(idVal)];
-                });
-                localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
-
                 localStorage.removeItem('sn_supabase_cache');
+                localStorage.removeItem('sn_vehicles');
+                localStorage.removeItem('sn_deleted_vehicles');
+                localStorage.removeItem('sn_vehicle_overrides');
             } catch(e) {}
 
             vehicles = vehicles.filter(item => !rawIds.includes(String(item.id)) && !rawIds.includes(item.id));
@@ -3482,70 +3401,63 @@
             updateBulkBar();
             renderStats();
             renderTable(document.getElementById('searchInput')?.value || '');
-            showToast(`âœ“ ${rawIds.length} vehÃ­culo(s) eliminado(s)`, 'success');
-            logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehÃ­culos eliminados en lote.`);
+            showToast(`✓ ${rawIds.length} vehículo(s) eliminado(s) permanentemente`, 'success');
+            logSecurityEvent('VEHICLE_DELETE_BULK', 'warning', `${rawIds.length} vehículos eliminados en lote.`);
             await loadVehicles();
         }
 
         async function deleteVehicle(id) {
-            if (!confirm('Â¿Eliminar este vehÃ­culo?')) return;
+            if (!confirm('¿Eliminar este vehículo de forma permanente de la base de datos?')) return;
             const targetIdStr = String(id);
             const v = vehicles.find(item => String(item.id) === targetIdStr);
 
-            showToast('Eliminando vehÃ­culo...', 'info');
+            showToast('Eliminando vehículo de la base de datos...', 'info');
 
-            // 1. Intentar API backend
+            const titleParam = v?.title ? `?title=${encodeURIComponent(v.title)}` : '';
+
+            // 1. Eliminar vía backend con service_role (bypassa RLS)
+            let apiDeleted = false;
             try {
-                await apiFetch(`/api/vehicles/${id}`, { method: 'DELETE' });
+                const apiRes = await apiFetch(`/api/vehicles/${id}${titleParam}`, { method: 'DELETE' });
+                if (apiRes && apiRes.ok) apiDeleted = true;
             } catch(e) {}
 
-            // 2. MODO COMPATIBILIDAD: ConexiÃ³n directa a Supabase si la API no responde
-            try {
-                const numericId = parseInt(id);
-                if (!isNaN(numericId)) {
-                    await supabaseClient.from('vehicles').delete().eq('id', numericId);
+            // 2. MODO COMPATIBILIDAD: Borrado directo en Supabase si aplica
+            if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                try {
+                    const numericId = parseInt(id);
+                    if (!isNaN(numericId)) {
+                        await window.supabaseClient.from('vehicles').delete().eq('id', numericId);
+                    }
+                    await window.supabaseClient.from('vehicles').delete().eq('id', targetIdStr);
+                    if (v && v.title) {
+                        await window.supabaseClient.from('vehicles').delete().ilike('title', v.title.trim());
+                    }
+                } catch(e) {
+                    console.warn('Supabase direct delete notice:', e);
                 }
-                await supabaseClient.from('vehicles').delete().eq('id', id);
-                if (v && v.title) {
-                    await supabaseClient.from('vehicles').delete().eq('title', v.title);
-                }
-            } catch(e) {
-                console.warn('Modo compatibilidad: Supabase DB delete notice:', e);
             }
 
-            // 2. Save in localStorage deleted blacklist so static/cache units hide permanently
-            let deleted = [];
-            try { deleted = JSON.parse(localStorage.getItem('sn_deleted_vehicles') || '[]'); } catch(e) {}
-            if (v && v.title) {
-                const tKey = v.title.toLowerCase().trim();
-                if (!deleted.includes(tKey)) deleted.push(tKey);
-            }
-            if (!deleted.includes(targetIdStr)) deleted.push(targetIdStr);
-            localStorage.setItem('sn_deleted_vehicles', JSON.stringify(deleted));
-
-            // Clean from sn_vehicles and sn_vehicle_overrides if it was saved locally
+            // 3. Purgar cualquier residuo en almacenamiento local del navegador
             try {
-                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                localVehs = localVehs.filter(item => String(item.id) !== targetIdStr && (!v || (item.title || '').toLowerCase().trim() !== (v.title || '').toLowerCase().trim()));
-                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
-
+                localStorage.removeItem('sn_supabase_cache');
+                localStorage.removeItem('sn_vehicles');
+                localStorage.removeItem('sn_deleted_vehicles');
                 let overrides = JSON.parse(localStorage.getItem('sn_vehicle_overrides') || '{}');
                 delete overrides[targetIdStr];
                 if (v && v.title) delete overrides[v.title.toLowerCase().trim()];
                 localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
-
-                localStorage.removeItem('sn_supabase_cache');
             } catch(e) {}
 
-            // 3. Remove locally from memory vehicles array & update UI immediately
+            // 4. Remover en memoria y refrescar interfaz inmediatamente
             vehicles = vehicles.filter(item => String(item.id) !== targetIdStr && (!v || (item.title || '').toLowerCase().trim() !== (v.title || '').toLowerCase().trim()));
             selectedVehicles.delete(id);
             selectedVehicles.delete(targetIdStr);
 
             renderStats();
             renderTable(document.getElementById('searchInput')?.value || '');
-            showToast('âœ“ VehÃ­culo eliminado con Ã©xito', 'success');
-            if (v) logSecurityEvent('VEHICLE_DELETE', 'warning', `VehÃ­culo eliminado: ${v ? v.title : id} (${id})`);
+            showToast('✓ Vehículo eliminado permanentemente', 'success');
+            if (v) logSecurityEvent('VEHICLE_DELETE', 'warning', `Vehículo eliminado permanentemente: ${v.title} (${id})`);
             await loadVehicles();
         }
 
@@ -5927,20 +5839,37 @@ CREATE POLICY "Admin all promotions" ON promotions FOR ALL USING (auth.role() = 
 
         async function fetchPromosFromSupabaseSettings() {
             try {
-                const { data } = await supabaseClient.from('site_settings').select('value').eq('key', 'promotions_list').maybeSingle();
-                if (data && data.value) {
-                    try { return typeof data.value === 'string' ? JSON.parse(data.value) : data.value; } catch(e) { return []; }
+                const apiRes = await apiFetch('/api/settings?key=promotions_list&_t=' + Date.now());
+                if (apiRes && apiRes.ok && apiRes.data?.value) {
+                    const val = apiRes.data.value;
+                    return typeof val === 'string' ? JSON.parse(val) : val;
                 }
             } catch(e) {}
+            if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                try {
+                    const { data } = await window.supabaseClient.from('site_settings').select('value').eq('key', 'promotions_list').maybeSingle();
+                    if (data && data.value) {
+                        return typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+                    }
+                } catch(e) {}
+            }
             return null;
         }
 
         async function syncPromosToSupabaseSettings(promos) {
             try {
-                await supabaseClient.from('site_settings').upsert([
-                    { key: 'promotions_list', value: JSON.stringify(promos) }
-                ]);
+                await apiFetch('/api/settings', {
+                    method: 'PUT',
+                    body: { key: 'promotions_list', value: promos }
+                });
             } catch(e) {}
+            if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                try {
+                    await window.supabaseClient.from('site_settings').upsert([
+                        { key: 'promotions_list', value: JSON.stringify(promos), updated_at: new Date().toISOString() }
+                    ]);
+                } catch(e) {}
+            }
         }
 
         async function loadAdminPromos() {

@@ -23,15 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (!car) {
-        // Fallback to data.js if db is empty or failed
-        const allVehs = [];
-        if (typeof vehiclesSeminuevos !== 'undefined') allVehs.push(...vehiclesSeminuevos);
-        if (typeof vehicles0km !== 'undefined') allVehs.push(...vehicles0km);
-        car = allVehs.find(v => String(v.id) === String(carId));
-    }
-
-    if (!car) {
-        document.getElementById('carDetailContainer').innerHTML = '<h2 style="color:white; text-align:center;">Vehículo no encontrado</h2>';
+        document.getElementById('carDetailContainer').innerHTML = `
+            <div style="padding: 80px 20px; text-align: center; max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                <i class="fas fa-car" style="font-size: 3rem; color: #94a3b8; margin-bottom: 16px; display: block;"></i>
+                <h2 style="color: #0f172a; font-family: var(--font-display, sans-serif); font-size: 1.5rem; margin-bottom: 12px;">Vehículo No Disponible</h2>
+                <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">Este vehículo ha sido vendido o retirado de nuestro inventario oficial.</p>
+                <a href="/catalogo" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Explorar Catálogo Disponible
+                </a>
+            </div>
+        `;
         return;
     }
 
