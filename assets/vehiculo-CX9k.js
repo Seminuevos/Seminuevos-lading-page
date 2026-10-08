@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
             <div class="vehicle-page-right" style="background: var(--surface-container); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--ghost-border);">
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center;">
-                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; background: rgba(39,92,234,0.15); color: #60a5fa; border: 1px solid rgba(39,92,234,0.3); font-size: 0.8rem; font-weight: 700; font-family: system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-car-side"></i> ${fallbackBodyType}</span>
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 100px; background: #F1F3F5; color: #1F2937; border: 1px solid #D1D5DB; font-size: 0.8rem; font-weight: 700; font-family: system-ui, -apple-system, sans-serif; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-car-side"></i> ${fallbackBodyType}</span>
                     ${availBadgeHtml}
                 </div>
                 <h1 style="font-family: var(--font-display); font-size: 2.3rem; margin-bottom: 10px; line-height: 1.2;">${car.title}</h1>
@@ -135,12 +135,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                             if (vm) displayVin = vm[1].toUpperCase();
                         }
                         return displayVin ? `
-                        <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: rgba(39,92,234,0.08); border: 1px solid rgba(39,92,234,0.3); padding: 12px 16px; border-radius: var(--radius-sm);">
+                        <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: #F8F9FA; border: 1px solid #E5E7EB; padding: 12px 16px; border-radius: var(--radius-sm);">
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-barcode" style="color: #38bdf8; font-size: 1.15rem;"></i>
-                                <span>Serial / VIN: <strong style="font-family: monospace; letter-spacing: 1px; color: #f8fafc; font-size: 0.95rem;">${displayVin}</strong></span>
+                                <i class="fas fa-barcode" style="color: var(--primary); font-size: 1.15rem;"></i>
+                                <span>Serial / VIN: <strong style="font-family: monospace; letter-spacing: 1px; color: #111827; font-size: 0.95rem;">${displayVin}</strong></span>
                             </div>
-                            <span style="font-size: 0.75rem; color: #34d399; font-weight: 600; background: rgba(52,211,153,0.12); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(52,211,153,0.25);">
+                            <span style="font-size: 0.75rem; color: #15803D; font-weight: 600; background: #DCFCE7; padding: 3px 8px; border-radius: 4px; border: 1px solid #BBF7D0;">
                                 <i class="fas fa-check-circle"></i> Verificado
                             </span>
                         </div>` : '';

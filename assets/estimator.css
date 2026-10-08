@@ -1,24 +1,24 @@
-﻿/* ===== ESTIMATOR CUSTOM STYLES (Aether Grandeur Dark) ===== */
+/* ===== ESTIMATOR CUSTOM STYLES (Aether Grandeur Dark) ===== */
         :root {
-            --est-card-bg: rgba(18, 18, 22, 0.75);
-            --est-card-border: rgba(255, 255, 255, 0.08);
-            --est-blue: #275CEA;
-            --est-blue-glow: rgba(39, 92, 234, 0.35);
+            --est-card-bg: #FFFFFF;
+            --est-card-border: #E5E7EB;
+            --est-blue: #EB0A1E;
+            --est-blue-glow: rgba(235, 10, 30, 0.25);
             --est-green: #10B981;
             --est-amber: #F59E0B;
         }
 
         body.estimator-page {
-            background-color: #050507;
-            background-image: 
-                radial-gradient(ellipse at 15% 10%, rgba(39, 92, 234, 0.12) 0%, transparent 45%),
-                radial-gradient(ellipse at 85% 60%, rgba(39, 92, 234, 0.08) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
-            background-attachment: fixed;
-            color: #ffffff;
-            font-family: var(--font-body, 'Mina', sans-serif);
-            min-height: 100vh;
-        }
+    background-color: #F8F9FA;
+    background-image: 
+        radial-gradient(ellipse at 15% 10%, rgba(235, 10, 30, 0.04) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 60%, rgba(235, 10, 30, 0.03) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 90%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+    background-attachment: fixed;
+    color: #111827;
+    font-family: var(--font-body, 'Mina', sans-serif);
+    min-height: 100vh;
+}
 
         .estimator-hero {
             padding: 85px 0 10px 0;
@@ -32,15 +32,15 @@
             gap: 8px;
             padding: 5px 14px;
             border-radius: 999px;
-            background: rgba(39, 92, 234, 0.12);
-            border: 1px solid rgba(39, 92, 234, 0.3);
+            background: rgba(235, 10, 30, 0.12);
+            border: 1px solid rgba(235, 10, 30, 0.3);
             color: #93c5fd;
             font-size: 0.72rem;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             letter-spacing: 1.2px;
             text-transform: uppercase;
             margin-bottom: 8px;
-            box-shadow: 0 0 20px rgba(39, 92, 234, 0.15);
+            box-shadow: 0 0 20px rgba(235, 10, 30, 0.15);
         }
 
         .estimator-badge i {
@@ -73,16 +73,15 @@
         }
 
         .mode-switcher {
-            display: inline-flex;
-            background: rgba(15, 15, 20, 0.85);
-            padding: 5px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            max-width: 100%;
-            overflow-x: auto;
-        }
+    display: inline-flex;
+    background: #FFFFFF;
+    padding: 5px;
+    border-radius: 14px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
+    overflow-x: auto;
+}
 
         .mode-btn {
             display: flex;
@@ -91,7 +90,7 @@
             padding: 9px 20px;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #4B5563;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.78rem;
             font-weight: 600;
@@ -102,13 +101,13 @@
         }
 
         .mode-btn:hover {
-            color: #ffffff;
+            color: #111827;
             background: rgba(255, 255, 255, 0.05);
         }
 
         .mode-btn.active {
             background: var(--est-blue);
-            color: #ffffff;
+            color: #111827;
             box-shadow: 0 4px 20px var(--est-blue-glow);
         }
 
@@ -166,7 +165,7 @@
             border-radius: 18px;
             padding: 20px 22px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 16px rgba(17, 24, 39, 0.05);
             margin-bottom: 16px;
             transition: border-color 0.3s ease;
         }
@@ -191,7 +190,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #ffffff;
+            color: #111827;
         }
 
         .card-title i {
@@ -214,8 +213,8 @@
         }
 
         .vehicle-selected-box:hover {
-            border-color: rgba(39, 92, 234, 0.4);
-            background: rgba(39, 92, 234, 0.04);
+            border-color: rgba(235, 10, 30, 0.4);
+            background: rgba(235, 10, 30, 0.04);
         }
 
         .vehicle-thumb-wrapper {
@@ -264,9 +263,9 @@
         }
 
         .mini-badge.blue {
-            background: rgba(39, 92, 234, 0.2);
+            background: rgba(235, 10, 30, 0.2);
             color: #93c5fd;
-            border: 1px solid rgba(39, 92, 234, 0.4);
+            border: 1px solid rgba(235, 10, 30, 0.4);
         }
 
         .mini-badge.green {
@@ -279,7 +278,7 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.92rem;
             font-weight: 700;
-            color: #ffffff;
+            color: #111827;
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -288,7 +287,7 @@
 
         .vehicle-meta-tags {
             font-size: 0.74rem;
-            color: #94a3b8;
+            color: #4B5563;
             margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
@@ -308,8 +307,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 8px 14px;
-            background: rgba(39, 92, 234, 0.08);
-            border: 1px solid rgba(39, 92, 234, 0.25);
+            background: rgba(235, 10, 30, 0.08);
+            border: 1px solid rgba(235, 10, 30, 0.25);
             border-radius: 10px;
             margin-bottom: 14px;
         }
@@ -350,7 +349,7 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 12px 16px;
-            color: #ffffff;
+            color: #111827;
             font-family: inherit;
             font-size: 0.92rem;
             outline: none;
@@ -359,7 +358,7 @@
 
         .est-select:focus, .est-input:focus {
             border-color: var(--est-blue);
-            box-shadow: 0 0 0 3px rgba(39, 92, 234, 0.2);
+            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.2);
             background: rgba(0, 0, 0, 0.7);
         }
 
@@ -380,14 +379,14 @@
 
         .est-btn-action:hover {
             background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
+            color: #111827;
         }
 
         /* Custom Price Box */
         .custom-price-container {
             display: none;
-            background: rgba(39, 92, 234, 0.06);
-            border: 1px dashed rgba(39, 92, 234, 0.3);
+            background: rgba(235, 10, 30, 0.06);
+            border: 1px dashed rgba(235, 10, 30, 0.3);
             border-radius: 12px;
             padding: 16px;
             margin-top: 14px;
@@ -397,15 +396,15 @@
         .buying-power-box {
             text-align: center;
             padding: 18px 16px;
-            background: linear-gradient(180deg, rgba(39, 92, 234, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
-            border: 1px solid rgba(39, 92, 234, 0.25);
+            background: linear-gradient(180deg, rgba(235, 10, 30, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
+            border: 1px solid rgba(235, 10, 30, 0.25);
             border-radius: 14px;
             margin-bottom: 14px;
         }
 
         .bp-target-label {
             font-size: 0.78rem;
-            color: #94a3b8;
+            color: #4B5563;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 6px;
@@ -415,7 +414,7 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: clamp(2rem, 3.4vw, 2.6rem);
             font-weight: 800;
-            color: #ffffff;
+            color: #111827;
             text-shadow: 0 0 25px var(--est-blue-glow);
             margin-bottom: 10px;
         }
@@ -440,7 +439,7 @@
         .bp-result-banner strong {
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 1.1rem;
-            color: #ffffff;
+            color: #111827;
         }
 
         /* Compatible Vehicles Grid */
@@ -486,7 +485,7 @@
             border-color: var(--est-blue);
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background: rgba(39, 92, 234, 0.05);
+            background: rgba(235, 10, 30, 0.05);
         }
 
         .compat-car-card.selected-in-grid {
@@ -517,15 +516,15 @@
 
         .compat-car-price {
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: #4B5563;
             margin-bottom: 8px;
         }
 
         .compat-car-payment-tag {
             display: inline-block;
-            background: rgba(39, 92, 234, 0.2);
+            background: rgba(235, 10, 30, 0.2);
             color: #93c5fd;
-            border: 1px solid rgba(39, 92, 234, 0.35);
+            border: 1px solid rgba(235, 10, 30, 0.35);
             padding: 3px 8px;
             border-radius: 6px;
             font-size: 0.75rem;
@@ -548,7 +547,7 @@
             padding: 7px 12px;
             border: none;
             background: transparent;
-            color: #94a3b8;
+            color: #4B5563;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.76rem;
             font-weight: 600;
@@ -563,7 +562,7 @@
 
         .ft-tab.active {
             background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            color: #111827;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
@@ -592,11 +591,11 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.84rem;
             font-weight: 700;
-            color: #ffffff;
-            background: rgba(39, 92, 234, 0.15);
+            color: #111827;
+            background: rgba(235, 10, 30, 0.15);
             padding: 3px 8px;
             border-radius: 6px;
-            border: 1px solid rgba(39, 92, 234, 0.3);
+            border: 1px solid rgba(235, 10, 30, 0.3);
         }
 
         /* Sliders */
@@ -651,12 +650,12 @@
 
         .preset-pill:hover {
             background: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
+            color: #111827;
         }
 
         .preset-pill.active {
             background: var(--est-blue);
-            color: #ffffff;
+            color: #111827;
             border-color: var(--est-blue);
             box-shadow: 0 2px 12px var(--est-blue-glow);
         }
@@ -748,7 +747,7 @@
         .tradein-field-label {
             font-size: 0.76rem;
             font-weight: 600;
-            color: #94a3b8;
+            color: #4B5563;
             display: block;
             margin-bottom: 6px;
             display: flex;
@@ -842,7 +841,7 @@
         /* Trade-In Calculated Output Card */
         .tradein-val-result {
             margin-top: 16px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(39, 92, 234, 0.08));
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(235, 10, 30, 0.08));
             border: 1px solid rgba(245, 158, 11, 0.35);
             border-radius: 12px;
             padding: 14px 18px;
@@ -863,7 +862,7 @@
 
         .tradein-factors-info {
             font-size: 0.73rem;
-            color: #94a3b8;
+            color: #4B5563;
         }
 
         .tradein-factors-info b {
@@ -910,7 +909,7 @@
         .formalization-main-title {
             font-weight: 600;
             font-size: 0.86rem;
-            color: #ffffff;
+            color: #111827;
             transition: color 0.2s ease;
         }
 
@@ -931,7 +930,7 @@
 
         .btn-toggle-details:hover {
             background: rgba(56, 189, 248, 0.2);
-            color: #ffffff;
+            color: #111827;
             border-color: #38bdf8;
         }
 
@@ -980,7 +979,7 @@
 
         .fee-input-label {
             font-size: 0.72rem;
-            color: #94a3b8;
+            color: #4B5563;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -994,7 +993,7 @@
             background: rgba(0, 0, 0, 0.45);
             border: 1px solid rgba(56, 189, 248, 0.25);
             border-radius: 8px;
-            color: #ffffff;
+            color: #111827;
             transition: all 0.2s ease;
             width: 100%;
             outline: none;
@@ -1034,11 +1033,11 @@
 
         .summary-card {
             background: rgba(15, 15, 20, 0.92);
-            border: 1px solid rgba(39, 92, 234, 0.35);
+            border: 1px solid rgba(235, 10, 30, 0.35);
             border-radius: 18px;
             padding: 20px 18px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(39, 92, 234, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(235, 10, 30, 0.15);
         }
 
         .summary-main-display {
@@ -1050,7 +1049,7 @@
 
         .sum-label {
             font-size: 0.74rem;
-            color: #94a3b8;
+            color: #4B5563;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -1061,7 +1060,7 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: clamp(2.1rem, 3.4vw, 2.7rem);
             font-weight: 800;
-            color: #ffffff;
+            color: #111827;
             line-height: 1.1;
             letter-spacing: -1px;
             text-shadow: 0 0 30px var(--est-blue-glow);
@@ -1112,7 +1111,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.72rem;
-            color: #94a3b8;
+            color: #4B5563;
             flex-wrap: wrap;
             gap: 6px;
         }
@@ -1151,7 +1150,7 @@
 
         .b-row.highlight {
             font-weight: 700;
-            color: #ffffff;
+            color: #111827;
             font-size: 0.88rem;
             padding-top: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -1207,7 +1206,7 @@
             padding: 9px 14px;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #ffffff;
+            color: #111827;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.74rem;
             font-weight: 600;
