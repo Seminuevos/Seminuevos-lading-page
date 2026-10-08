@@ -136,7 +136,7 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-<div style="padding-top: 100px;"></div>
+<div class="calc-page-spacer"></div>
 
 <!-- ===== COST CALCULATOR SECTION ===== -->
     <section class="calculator-section" id="calculadora">
@@ -151,8 +151,8 @@
             <div class="calculator-wrapper">
                 <div class="calculator-inputs">
                     <div class="form-group">
-                        <label for="calcStatus" class="form-label" style="font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-landmark" style="color: var(--primary);"></i> Estatus del Vehículo
+                        <label for="calcStatus" class="calc-label">
+                            <i class="fas fa-landmark"></i> Estatus del Vehículo
                         </label>
                         <select id="calcStatus" class="calc-select">
                             <option value="puerto_libre">Puerto Libre</option>
@@ -167,14 +167,14 @@
                     </div>
                     <div id="calcFieldsPL">
                         <div class="form-group">
-                            <label for="calcBaseCost" class="form-label" style="font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-dollar-sign" style="color: var(--primary);"></i> Costo de Compra ($)
+                            <label for="calcBaseCost" class="calc-label">
+                                <i class="fas fa-dollar-sign"></i> Costo de Compra ($)
                             </label>
                             <input type="number" id="calcBaseCost" placeholder="Ej. 15000">
                         </div>
                         <div class="form-group">
-                            <label for="calcOrigin" class="form-label" style="font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Ubicación (Estado USA)
+                            <label for="calcOrigin" class="calc-label">
+                                <i class="fas fa-map-marker-alt"></i> Ubicación (Estado USA)
                             </label>
                             <select id="calcOrigin" class="calc-select">
                                 <option value="FL">Florida</option>
@@ -234,8 +234,8 @@
                             <input type="number" id="calcCustomTransport" placeholder="Ej. 1200">
                         </div>
                         <div class="form-group">
-                            <label for="calcDestination" class="form-label" style="font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-warehouse" style="color: var(--primary);"></i> Destino (Puerto / Almacén)
+                            <label for="calcDestination" class="calc-label">
+                                <i class="fas fa-warehouse"></i> Destino (Puerto / Almacén)
                             </label>
                             <select id="calcDestination" class="calc-select">
                                 <option value="FL">Florida / Miami Warehouse</option>
@@ -288,14 +288,14 @@
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
                             </select>
-                            <p style="font-size: 0.73rem; color: var(--on-surface-variant); margin-top: 6px; display: flex; align-items: center; gap: 5px;">
-                                <i class="fas fa-info-circle" style="color: var(--primary);"></i> El sistema calcula $1 por milla aproximada entre puntos.
+                            <p class="calc-help-note">
+                                <i class="fas fa-info-circle"></i> El sistema calcula $1 por milla aproximada entre puntos.
                             </p>
                         </div>
                         <!-- Reparaciones Estimadas (Grado 1 & 2) -->
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px;">
-                            <label class="form-label" style="font-family: var(--font-display); font-size: 0.72rem; font-weight: 700; color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-wrench" style="color: var(--primary);"></i> Estimación de Reparaciones (Opcional)
+                        <div class="form-group calc-repairs-group">
+                            <label class="calc-label">
+                                <i class="fas fa-wrench"></i> Estimación de Reparaciones (Opcional)
                             </label>
                             
                             <div class="repair-pill-grid">
@@ -318,32 +318,30 @@
                                 </label>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-block btn-calc-submit" id="btnCalculateCost" style="margin-top: 15px;">
+                        <button class="btn btn-primary btn-block btn-calc-submit" id="btnCalculateCost">
                             <i class="fas fa-calculator"></i> CALCULAR COSTO TOTAL <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
                 <div class="calculator-results" id="calcResults">
                     <!-- Print Header -->
-                    <div class="print-header"
-                        style="display: none; text-align: center; margin-bottom: 30px; border-bottom: 2px solid var(--primary); padding-bottom: 20px;">
-                        <img src="images/logo-white.png" alt="Logo"
-                            style="height: 50px; filter: brightness(0); margin-bottom: 10px;">
-                        <h2 style="color: #000; margin: 0;">COTIZACIÓN DE IMPORTACIÓN</h2>
-                        <p style="color: #666; font-size: 0.9rem;">SemiNuevos Agency - Tu aliado automotriz</p>
+                    <div class="print-header print-quote-header">
+                        <img src="images/logo-white.png" alt="Logo" class="print-quote-logo">
+                        <h2 class="print-quote-title">COTIZACIÓN DE IMPORTACIÓN</h2>
+                        <p class="print-quote-subtitle">SemiNuevos Agency - Tu aliado automotriz</p>
                     </div>
                     <div class="calc-row"><span>Costo de Compra</span><span id="resBase">$0</span></div>
-                    <div class="calc-row" id="toggleAuctionFees" style="cursor: pointer;">
-                        <span>Tarifa de Subasta <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 5px; transition: transform 0.3s;"></i></span>
+                    <div class="calc-row calc-auction-toggle" id="toggleAuctionFees">
+                        <span>Tarifa de Subasta <i class="fas fa-chevron-down"></i></span>
                         <span id="resTotalAuctionFees">$0</span>
                     </div>
-                    <div id="auctionFeesDetails" style="display: none; padding-left: 15px; border-left: 2px solid var(--ghost-border); margin-bottom: 10px;">
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Tarifa de compra</span><span id="resBuyFee">$0</span></div>
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Tarifa por internet</span><span id="resInternetFee">$0</span></div>
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Tarifa de servicio</span><span id="resAuctionServiceFee">$0</span></div>
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Tarifas ambientales</span><span id="resEnvFee">$0</span></div>
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Trámite de título en USA</span><span id="resTitleFee">$0</span></div>
-                        <div class="calc-row detailed-fee" style="font-size: 0.9rem; margin-bottom: 5px;"><span>Impuestos del estado</span><span id="resStateTax">$0</span></div>
+                    <div id="auctionFeesDetails" class="calc-auction-details">
+                        <div class="calc-row detailed-fee"><span>Tarifa de compra</span><span id="resBuyFee">$0</span></div>
+                        <div class="calc-row detailed-fee"><span>Tarifa por internet</span><span id="resInternetFee">$0</span></div>
+                        <div class="calc-row detailed-fee"><span>Tarifa de servicio</span><span id="resAuctionServiceFee">$0</span></div>
+                        <div class="calc-row detailed-fee"><span>Tarifas ambientales</span><span id="resEnvFee">$0</span></div>
+                        <div class="calc-row detailed-fee"><span>Trámite de título en USA</span><span id="resTitleFee">$0</span></div>
+                        <div class="calc-row detailed-fee"><span>Impuestos del estado</span><span id="resStateTax">$0</span></div>
                     </div>
                     <div class="calc-row detailed-fee"><span>Tarifa broker</span><span id="resBrokerFee">$0</span></div>
                     <div class="calc-row"><span>Tarifa de servicio</span><span id="resServiceFee">$0</span></div>
@@ -364,8 +362,7 @@
                     </div>
                     <p class="calc-range-note"><i class="fas fa-info-circle"></i> Los rangos del precio pueden variar
                         por múltiples factores del proceso.</p>
-                    <button class="btn btn-outline btn-block" id="btnDownloadQuote"
-                        style="margin-top: 15px; font-size: 0.85rem; padding: 12px;">
+                    <button class="btn btn-outline btn-block btn-calc-download" id="btnDownloadQuote">
                         <i class="fas fa-file-pdf"></i> Descargar Cotización
                     </button>
                 </div>
@@ -384,7 +381,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="nav-logo">
-                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" style="height: 80px; width: auto;">
+                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" class="footer-logo-img">
                     </a>
                     <p class="footer-desc">Semi Nuevo Autos: Tu concesionario de confianza. Los mejores seminuevos autos y vehículos nuevos con garantía y transparencia total en Venezuela.</p>
                     <div class="footer-social">

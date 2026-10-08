@@ -5091,3 +5091,282 @@ img.mastertech-seal {
         padding: 22px 18px !important;
     }
 }
+
+/* ===================================================
+   DEALERSHIP UI REFACTORED CLASSES (NO INLINE STYLES)
+   =================================================== */
+
+/* Hero Showcase Components */
+.hero-stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #22c55e;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.hero-price-card {
+    background: rgba(15, 23, 42, 0.78);
+    padding: 20px 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+    margin: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.hero-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.hero-price-row.list-price {
+    color: #94A3B8;
+    text-decoration: line-through;
+}
+
+.hero-price-row.discount {
+    color: #34D399;
+    font-weight: 700;
+}
+
+.hero-price-row.bonus {
+    color: #93C5FD;
+    font-weight: 600;
+}
+
+.hero-price-card.mx-auto {
+    margin: 0 auto;
+}
+
+.hero-price-row.final-price {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 12px;
+    margin-bottom: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    align-items: baseline;
+}
+
+.hero-price-val {
+    color: #60A5FA;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.btn-hero-primary {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.btn-hero-outline {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Featured Showroom */
+.featured-vehicles {
+    padding: 70px 0;
+    background: var(--surface);
+}
+
+.showroom-cta-wrap {
+    text-align: center;
+    margin-top: 35px;
+}
+
+.btn-showroom-more {
+    padding: 14px 38px;
+    font-weight: 700;
+}
+
+/* Contact Section Refined Classes */
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-card-wa-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.contact-wa-icon {
+    font-size: 2.2rem;
+    color: #25D366;
+}
+
+.contact-wa-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.contact-wa-badge {
+    color: #6ee7b7;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.contact-wa-desc {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.contact-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.contact-info-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.contact-info-val {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+.contact-form-title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--on-surface);
+    margin-top: 0;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-form-title i {
+    color: var(--primary);
+}
+
+.footer-logo-img {
+    height: 80px;
+    width: auto;
+}
+
+/* Calculator Dedicated UI Classes */
+.calc-page-spacer {
+    padding-top: 100px;
+}
+
+.calc-label {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.calc-label i {
+    color: var(--primary);
+}
+
+.calc-help-note {
+    font-size: 0.73rem;
+    color: var(--on-surface-variant);
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.calc-help-note i {
+    color: var(--primary);
+}
+
+.calc-repairs-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.btn-calc-submit {
+    margin-top: 15px;
+}
+
+.btn-calc-download {
+    margin-top: 15px;
+    font-size: 0.85rem;
+    padding: 12px;
+}
+
+.calc-auction-toggle {
+    cursor: pointer;
+}
+
+.calc-auction-toggle i {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    transition: transform 0.3s;
+}
+
+.calc-auction-details {
+    display: none;
+    padding-left: 15px;
+    border-left: 2px solid var(--ghost-border);
+    margin-bottom: 10px;
+}
+
+.calc-auction-details .calc-row.detailed-fee {
+    font-size: 0.88rem;
+    margin-bottom: 5px;
+}
+
+/* Print Quote Sheet Components */
+.print-quote-header {
+    display: none;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 20px;
+}
+
+.print-quote-logo {
+    height: 50px;
+    filter: brightness(0);
+    margin-bottom: 10px;
+}
+
+.print-quote-title {
+    color: #000;
+    margin: 0;
+}
+
+.print-quote-subtitle {
+    color: #666;
+    font-size: 0.9rem;
+}

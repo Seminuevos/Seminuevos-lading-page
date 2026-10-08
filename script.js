@@ -800,15 +800,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (showPrice && s.originalPrice) {
                 const fmt = (num) => Number(num || 0).toLocaleString('en-US');
                 let rows = '';
-                rows += `<div style='display: flex; justify-content: space-between; color: var(--on-surface-variant); text-decoration: line-through; margin-bottom: 8px; font-size: 0.95rem;'><span>Precio de Lista</span><span>$${fmt(s.originalPrice)}</span></div>`;
+                rows += `<div class="hero-price-row list-price"><span>Precio de Lista</span><span>$${fmt(s.originalPrice)}</span></div>`;
                 if (s.discountPercentage && Number(s.discountPercentage) > 0) {
-                    rows += `<div style='display: flex; justify-content: space-between; color: #ffb4ab; margin-bottom: 8px; font-size: 0.95rem; opacity: 0; animation: contentReveal 0.6s ease 0.9s forwards;'><span>Descuento Especial</span><span>-$${fmt(s.discountPercentage)}</span></div>`;
+                    rows += `<div class="hero-price-row discount"><span>Descuento Especial</span><span>-$${fmt(s.discountPercentage)}</span></div>`;
                 }
                 if (s.financingBonus && Number(s.financingBonus) > 0) {
-                    rows += `<div style='display: flex; justify-content: space-between; color: #bfcdff; margin-bottom: 12px; font-size: 0.95rem; opacity: 0; animation: contentReveal 0.6s ease 1.2s forwards;'><span>Financiamiento</span><span>-$${fmt(s.financingBonus)}</span></div>`;
+                    rows += `<div class="hero-price-row bonus"><span>Financiamiento</span><span>-$${fmt(s.financingBonus)}</span></div>`;
                 }
-                rows += `<div style='border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 700; opacity: 0; animation: contentReveal 0.6s ease 1.5s forwards;'><span>Llévala por</span><span class='text-accent'>$${fmt(s.finalPrice || 0)}</span></div>`;
-                subtitleHtml = `<div style='background: rgba(10,10,10,0.65); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--ghost-border-gold); backdrop-filter: blur(15px); width: 100%; max-width: 400px; text-align: left; margin: ${textAlign === 'center' ? '0 auto' : (textAlign === 'right' ? '0 0 0 auto' : '0')};'>${rows}</div>`;
+                rows += `<div class="hero-price-row final-price"><span>Llévala por</span><span class="hero-price-val">$${fmt(s.finalPrice || 0)}</span></div>`;
+                subtitleHtml = `<div class="hero-price-card ${textAlign === 'center' ? 'mx-auto' : ''}">${rows}</div>`;
             } else if (s.subtitle && !s.subtitle.includes('<div')) {
                 subtitleHtml = `<p>${s.subtitle}</p>`;
             }
@@ -821,27 +821,27 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (heroBgImage.includes('hero-1781886028689-1.jpg')) heroBgImage = 'images/hero-slides/hero-2.jpg';
             else if (heroBgImage.includes('hero-1789410090103-2.jpg')) heroBgImage = 'images/hero-slides/hero-3.jpg';
 
-            // Re-crear el diseño premium exacto
+            // Re-crear el diseño premium exacto con clases CSS
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
-                    <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.45}) 35%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.35}) 45%, transparent 100%);"></div>
+                    <div class="hero-overlay"></div>
                     <div class="hero-content ${alignClass}">
-                        <div class="hero-tag" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;">
-                            <span style="display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:30px; background:${activeBadge.bg}; border:1px solid ${activeBadge.border}; color:${activeBadge.color}; font-weight:800; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.5px;">
+                        <div class="hero-tag">
+                            <span class="hero-stock-badge">
                                 <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-star' : 'fa-car')}"></i> ${s.tag || 'OFERTA DESTACADA'}
                             </span>
                         </div>
-                        <${isFirst ? 'h1' : 'p'} class="hero-title" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards; margin: 12px 0 16px;">
+                        <${isFirst ? 'h1' : 'p'} class="hero-title">
                             ${(s.title || '').includes('<span') ? s.title : (s.title || '').replace(/\b(20\d{2}|0KM)\b/g, '<span class="text-accent">$1</span>')}
                         </${isFirst ? 'h1' : 'p'}>
-                        <div class="hero-subtitle" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.6s forwards;">
+                        <div class="hero-subtitle">
                             ${subtitleHtml}
                         </div>
-                        <div class="hero-buttons" style="opacity: 0; animation: contentReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;">
-                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta VIP del sitio web.')}" class="btn btn-primary" target="_blank" style="text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
+                        <div class="hero-buttons">
+                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta VIP del sitio web.')}" class="btn btn-primary btn-hero-primary" target="_blank">
                                ${s.ctaPrimary || 'Reclamar Oferta'} <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
                             </a>
-                            <a href="#catalogo" class="btn btn-outline" style="text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
+                            <a href="#catalogo" class="btn btn-outline btn-hero-outline">
                                ${s.ctaSecondary || 'Ver Inventario'}
                             </a>
                         </div>

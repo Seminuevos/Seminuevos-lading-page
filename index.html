@@ -152,32 +152,32 @@
 
 
 
-<!-- ===== HERO SECTION â€” VEHICLE SHOWCASE ===== -->
+<!-- ===== HERO SECTION — VEHICLE SHOWCASE ===== -->
     <section class="hero" id="inicio">
         <div class="hero-slider">
             <div class="hero-slide active" style="background-image: url('images/hero-slides/hero-1.jpg'); background-position: center center; background-size: cover;">
-                <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.38) 35%, transparent 100%), linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 45%, transparent 100%);"></div>
+                <div class="hero-overlay"></div>
                 <div class="hero-content align-left">
-                    <div class="hero-tag" style="opacity: 1;">
-                        <span style="display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:30px; background:rgba(34, 197, 94, 0.15); border:1px solid rgba(34, 197, 94, 0.35); color:#22c55e; font-weight:800; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.5px;">
+                    <div class="hero-tag">
+                        <span class="hero-stock-badge">
                             <i class="fas fa-bolt"></i> STOCK LOCAL
                         </span>
                     </div>
-                    <h1 class="hero-title" style="opacity: 1; margin: 12px 0 16px;">
+                    <h1 class="hero-title">
                         Hyundai Tucson <span class="text-accent">2023</span>
                     </h1>
-                    <div class="hero-subtitle" style="opacity: 1;">
-                        <div style="background: rgba(15, 23, 42, 0.78); padding: 20px 24px; border-radius: var(--radius-lg); border: 1px solid rgba(255, 255, 255, 0.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); width: 100%; max-width: 400px; text-align: left; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
-                            <div style="display: flex; justify-content: space-between; color: #94A3B8; text-decoration: line-through; margin-bottom: 8px; font-size: 0.95rem;"><span>Precio de Lista</span><span>$39,000</span></div>
-                            <div style="display: flex; justify-content: space-between; color: #34D399; font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;"><span>Descuento Especial</span><span>-$1,010</span></div>
-                            <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px; display: flex; justify-content: space-between; align-items: baseline; font-size: 1.35rem; font-weight: 700; color: #FFFFFF;"><span>Llévala por</span><span style="color: #60A5FA; font-size: 1.6rem; font-weight: 800;">$37,990</span></div>
+                    <div class="hero-subtitle">
+                        <div class="hero-price-card">
+                            <div class="hero-price-row list-price"><span>Precio de Lista</span><span>$39,000</span></div>
+                            <div class="hero-price-row discount"><span>Descuento Especial</span><span>-$1,010</span></div>
+                            <div class="hero-price-row final-price"><span>Llévala por</span><span class="hero-price-val">$37,990</span></div>
                         </div>
                     </div>
-                    <div class="hero-buttons" style="opacity: 1;">
-                        <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Toyota%204Runner%202021%20SR5%20(2021).%20%C2%BFMe%20pueden%20cotizar?" class="btn btn-primary" target="_blank" style="text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
-                            PLACA NACIONAL <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                    <div class="hero-buttons">
+                        <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Toyota%204Runner%202021%20SR5%20(2021).%20%C2%BFMe%20pueden%20cotizar?" class="btn btn-primary btn-hero-primary" target="_blank">
+                            PLACA NACIONAL <i class="fas fa-arrow-right"></i>
                         </a>
-                        <a href="#catalogo" class="btn btn-outline" style="text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">
+                        <a href="#catalogo" class="btn btn-outline btn-hero-outline">
                             Ver Inventario
                         </a>
                     </div>
@@ -252,7 +252,7 @@
 <!-- ===== PROMOTIONS SECTION ===== -->
     <section class="promotions-section" id="promociones">
         <div class="container">
-            <div class="section-header" style="text-align:center; margin-bottom:40px;">
+            <div class="section-header">
                 <span class="section-tag"><i class="fas fa-tags"></i> PROMOCIONES ACTIVAS</span>
                 <h2 class="section-title">Ofertas <span class="text-accent">Exclusivas</span></h2>
                 <p class="section-subtitle">Aprovecha nuestras promociones por tiempo limitado. Descuentos reales, entrega garantizada.</p>
@@ -267,9 +267,9 @@
     </section>
 
 <!-- ===== SHOWROOM DESTACADO ===== -->
-    <section class="featured-vehicles" id="showroom" style="padding: 70px 0; background: var(--surface);">
+    <section class="featured-vehicles" id="showroom">
         <div class="container">
-            <div class="section-header" style="text-align:center; margin-bottom:40px;">
+            <div class="section-header">
                 <span class="section-tag"><i class="fas fa-car"></i> SHOWROOM OFICIAL</span>
                 <h2 class="section-title">Vehículos <span class="text-accent">Destacados</span></h2>
                 <p class="section-subtitle">Modelos en tendencia con certificación técnica de 150 puntos y entrega garantizada.</p>
@@ -277,9 +277,9 @@
             <div class="vehicle-grid" id="featuredVehiclesGrid">
                 <!-- Injected automatically by script.js from Supabase -->
             </div>
-            <div style="text-align: center; margin-top: 35px;">
-                <a href="catalogo" class="btn btn-primary" style="padding: 14px 38px; font-weight: 700;">
-                    VER TODO EL CATÁLOGO <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            <div class="showroom-cta-wrap">
+                <a href="catalogo" class="btn btn-primary btn-showroom-more">
+                    VER TODO EL CATÁLOGO <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
@@ -349,50 +349,50 @@
             <p class="section-subtitle">Habla con un asesor ahora o agenda tu cita. Estamos aquí para ayudarte.</p>
         </div>
         <div class="contact-grid">
-            <div class="contact-info" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="contact-info">
                 <!-- WhatsApp Card -->
                 <div class="contact-card-wa">
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="font-size: 2.2rem; color: #25D366;"><i class="fab fa-whatsapp"></i></div>
+                    <div class="contact-card-wa-header">
+                        <div class="contact-wa-icon"><i class="fab fa-whatsapp"></i></div>
                         <div>
-                            <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #f8fafc; margin: 0;">Escríbenos por WhatsApp</h3>
-                            <span style="color: #6ee7b7; font-size: 0.8rem; font-weight: 600;">Respuesta inmediata</span>
+                            <h3 class="contact-wa-title">Escríbenos por WhatsApp</h3>
+                            <span class="contact-wa-badge">Respuesta inmediata</span>
                         </div>
                     </div>
-                    <p style="color: #cbd5e1; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.5;">Atención personalizada de lunes a sábado, 9AM - 7PM. Consulta inventario, cotizaciones e importaciones.</p>
-                    <a href="https://wa.me/584248700438?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20veh%C3%ADculos" class="btn btn-whatsapp btn-block" target="_blank" style="justify-content: center; font-weight: 700;">
+                    <p class="contact-wa-desc">Atención personalizada de lunes a sábado, 9AM - 7PM. Consulta inventario, cotizaciones e importaciones.</p>
+                    <a href="https://wa.me/584248700438?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20veh%C3%ADculos" class="btn btn-whatsapp btn-block" target="_blank">
                         <i class="fab fa-whatsapp"></i> ESCRIBIR AHORA POR WHATSAPP
                     </a>
                 </div>
 
                 <!-- Info Card -->
-                <div class="contact-card-info" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="contact-card-info">
                     <div class="contact-info-row">
                         <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
                         <div>
-                            <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Ubicación</div>
-                            <div style="color: #f8fafc; font-weight: 600;">Porlamar, Isla de Margarita, Venezuela</div>
+                            <div class="contact-info-label">Ubicación</div>
+                            <div class="contact-info-val">Porlamar, Isla de Margarita, Venezuela</div>
                         </div>
                     </div>
                     <div class="contact-info-row">
                         <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
                         <div>
-                            <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Teléfono Comercial</div>
-                            <div style="color: #f8fafc; font-weight: 600;">+58 424-870-0438</div>
+                            <div class="contact-info-label">Teléfono Comercial</div>
+                            <div class="contact-info-val">+58 424-870-0438</div>
                         </div>
                     </div>
                     <div class="contact-info-row">
                         <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
                         <div>
-                            <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Correo Electrónico</div>
-                            <div style="color: #f8fafc; font-weight: 600;">info@seminuevoautos.com</div>
+                            <div class="contact-info-label">Correo Electrónico</div>
+                            <div class="contact-info-val">info@seminuevoautos.com</div>
                         </div>
                     </div>
                     <div class="contact-info-row">
                         <div class="contact-info-icon"><i class="fas fa-clock"></i></div>
                         <div>
-                            <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Horario de Atención</div>
-                            <div style="color: #f8fafc; font-weight: 600;">Lunes a Sábado: 9AM â€“ 7PM</div>
+                            <div class="contact-info-label">Horario de Atención</div>
+                            <div class="contact-info-val">Lunes a Sábado: 9AM - 7PM</div>
                         </div>
                     </div>
                 </div>
@@ -401,8 +401,8 @@
             <!-- Form Wrapper -->
             <div class="contact-form-wrapper">
                 <form class="contact-form" id="contactForm">
-                    <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--on-surface); margin-top:0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
-                        <i class="fas fa-calendar-check" style="color: var(--primary);"></i> Agendar una Cita
+                    <h3 class="contact-form-title">
+                        <i class="fas fa-calendar-check"></i> Agendar una Cita
                     </h3>
 
                     <div class="contact-form-grid">
@@ -451,7 +451,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="nav-logo">
-                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" style="height: 80px; width: auto;" loading="lazy" decoding="async">
+                        <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" class="footer-logo-img" loading="lazy" decoding="async">
                     </a>
                     <p class="footer-desc">Semi Nuevo Autos: Tu concesionario de confianza. Los mejores seminuevos autos y vehículos nuevos con garantía y transparencia total en Venezuela.</p>
                     <div class="footer-social">
