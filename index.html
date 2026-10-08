@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -113,7 +113,30 @@
     <link rel="stylesheet" href="assets/index-DQpKhdUd.css">
 </head>
 <body>
-<nav class="navbar" id="navbar">
+<!-- ===== DEALERSHIP HEADER (TOPBAR + NAVBAR) ===== -->
+<header class="dealership-header" id="dealershipHeader">
+    <div class="dealership-topbar">
+        <div class="topbar-container">
+            <div class="topbar-left">
+                <span class="topbar-badge"><i class="fas fa-certificate"></i> CONCESIONARIO MULTIMARCA & IMPORTACIÓN</span>
+                <span class="topbar-divider">|</span>
+                <span class="topbar-item"><i class="fas fa-map-marker-alt"></i> Porlamar, Isla de Margarita</span>
+                <span class="topbar-divider">|</span>
+                <span class="topbar-item"><i class="fas fa-clock"></i> Lun - Sáb: 9:00 AM - 7:00 PM</span>
+            </div>
+            <div class="topbar-right">
+                <a href="https://wa.me/584248700438?text=Hola,%20quisiera%20asesoría%20sobre%20un%20vehículo" target="_blank" rel="noopener" class="topbar-phone">
+                    <i class="fab fa-whatsapp"></i> +58 424-870-0438
+                </a>
+                <div class="topbar-social">
+                    <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@seminuevosagency" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">
                 <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
@@ -125,9 +148,12 @@
                 <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
                 <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
                 <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
-                <li><a href="/#contacto" class="nav-link">CONTACTO</a></li>
+                <li><a href="#contacto" class="nav-link">CONTACTO</a></li>
             </ul>
             <div class="nav-actions">
+                <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20inventario" class="btn-nav-consult" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
+                </a>
                 <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
                     <span></span>
                     <span></span>
@@ -136,207 +162,432 @@
             </div>
         </div>
     </nav>
-<!-- ===== SOCIAL SIDEBAR ===== -->
-    <div class="social-sidebar">
-        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" class="social-icon" title="Instagram"><i
-                class="fab fa-instagram"></i></a>
-        <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
-    </div>
+</header>
+
 <!-- ===== FLOATING WHATSAPP ===== -->
-    <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20un%20vehículo"
-        class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-
+<a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20un%20vehículo"
+    class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
 <!-- ===== HERO SECTION — VEHICLE SHOWCASE ===== -->
-    <section class="hero" id="inicio">
-        <div class="hero-slider">
-            <div class="hero-slide active" style="background-image: url('images/hero-slides/hero-1.jpg'); background-position: center center; background-size: cover;">
-                <div class="hero-overlay"></div>
-                <div class="hero-content align-left">
-                    <div class="hero-tag">
-                        <span class="hero-stock-badge">
-                            <i class="fas fa-bolt"></i> STOCK LOCAL
-                        </span>
+<section class="hero" id="inicio">
+    <div class="hero-slider">
+        <!-- Slide 1: Hyundai Tucson 2023 -->
+        <div class="hero-slide active hero-slide-1">
+            <div class="hero-overlay"></div>
+            <div class="hero-content align-left">
+                <div class="hero-tag">
+                    <span class="hero-stock-badge">
+                        <i class="fas fa-bolt"></i> STOCK LOCAL | ENTREGA INMEDIATA
+                    </span>
+                </div>
+                <h1 class="hero-title">
+                    Hyundai Tucson <span class="text-accent">2023</span>
+                </h1>
+                <div class="hero-subtitle">
+                    <div class="hero-price-card">
+                        <div class="hero-price-row list-price"><span>Precio de Lista</span><span>$39,000</span></div>
+                        <div class="hero-price-row discount"><span>Bono Especial Concesionario</span><span>-$1,010</span></div>
+                        <div class="hero-price-row final-price"><span>Precio Especial</span><span class="hero-price-val">$37,990</span></div>
                     </div>
-                    <h1 class="hero-title">
-                        Hyundai Tucson <span class="text-accent">2023</span>
-                    </h1>
-                    <div class="hero-subtitle">
-                        <div class="hero-price-card">
-                            <div class="hero-price-row list-price"><span>Precio de Lista</span><span>$39,000</span></div>
-                            <div class="hero-price-row discount"><span>Descuento Especial</span><span>-$1,010</span></div>
-                            <div class="hero-price-row final-price"><span>Llévala por</span><span class="hero-price-val">$37,990</span></div>
-                        </div>
-                    </div>
-                    <div class="hero-buttons">
-                        <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Toyota%204Runner%202021%20SR5%20(2021).%20%C2%BFMe%20pueden%20cotizar?" class="btn btn-primary btn-hero-primary" target="_blank">
-                            PLACA NACIONAL <i class="fas fa-arrow-right"></i>
-                        </a>
-                        <a href="#catalogo" class="btn btn-outline btn-hero-outline">
-                            Ver Inventario
-                        </a>
-                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Hyundai%20Tucson%202023%20en%20stock%20local." class="btn btn-primary btn-hero-primary" target="_blank" rel="noopener">
+                        <i class="fas fa-car"></i> PLACA NACIONAL
+                    </a>
+                    <a href="#showroom" class="btn btn-outline btn-hero-outline">
+                        <i class="fas fa-arrow-down"></i> Ver Inventario
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="hero-controls">
-            <div class="hero-dots-container">
-                <div class="hero-dots" id="heroDots"></div>
+        <!-- Slide 2: Honda HR-V Sport 2025 -->
+        <div class="hero-slide hero-slide-2">
+            <div class="hero-overlay"></div>
+            <div class="hero-content align-left">
+                <div class="hero-tag">
+                    <span class="hero-stock-badge">
+                        <i class="fas fa-shield-alt"></i> CERTIFICADO 150 PUNTOS MASTERTECH
+                    </span>
+                </div>
+                <h1 class="hero-title">
+                    Honda HR-V Sport <span class="text-accent">2025 4x4</span>
+                </h1>
+                <div class="hero-subtitle">
+                    <div class="hero-price-card">
+                        <div class="hero-price-row list-price"><span>Kilometraje</span><span>17,000 KM</span></div>
+                        <div class="hero-price-row bonus"><span>Garantía Mecánica</span><span>100% Certificado</span></div>
+                        <div class="hero-price-row final-price"><span>Precio Especial</span><span class="hero-price-val">$36,000</span></div>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Honda%20HR-V%20Sport%202025%204x4." class="btn btn-primary btn-hero-primary" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> COTIZAR VEHÍCULO
+                    </a>
+                    <a href="#showroom" class="btn btn-outline btn-hero-outline">
+                        <i class="fas fa-arrow-down"></i> Ver Inventario
+                    </a>
+                </div>
             </div>
-
-            <button class="hero-arrow hero-prev" id="heroPrev"><i class="fas fa-chevron-left"></i></button>
-            <button class="hero-arrow hero-next" id="heroNext"><i class="fas fa-chevron-right"></i></button>
         </div>
 
-        <div class="hero-scroll-indicator">
-            <span>Desliza</span>
-            <div class="scroll-line"></div>
+        <!-- Slide 3: Toyota 4Runner SR5 2021 -->
+        <div class="hero-slide hero-slide-3">
+            <div class="hero-overlay"></div>
+            <div class="hero-content align-left">
+                <div class="hero-tag">
+                    <span class="hero-stock-badge">
+                        <i class="fas fa-truck-pickup"></i> TODOTERRENO JAPONÉS 4X4
+                    </span>
+                </div>
+                <h1 class="hero-title">
+                    Toyota 4Runner <span class="text-accent">SR5 4x4</span>
+                </h1>
+                <div class="hero-subtitle">
+                    <div class="hero-price-card">
+                        <div class="hero-price-row list-price"><span>Tracción</span><span>4x4 Part-Time</span></div>
+                        <div class="hero-price-row bonus"><span>Estatus Legal</span><span>Placa Nacional / Llave en mano</span></div>
+                        <div class="hero-price-row final-price"><span>Disponibilidad</span><span class="hero-price-val">Consultar Asesor</span></div>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="https://wa.me/584248700438?text=Hola,%20me%20interesa%20el%20Toyota%204Runner%20SR5%204x4." class="btn btn-primary btn-hero-primary" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> ASESORÍA VIP
+                    </a>
+                    <a href="#showroom" class="btn btn-outline btn-hero-outline">
+                        <i class="fas fa-arrow-down"></i> Ver Inventario
+                    </a>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <div class="hero-controls">
+        <div class="hero-dots-container">
+            <div class="hero-dots" id="heroDots"></div>
+        </div>
+
+        <button class="hero-arrow hero-prev" id="heroPrev" aria-label="Vehículo anterior"><i class="fas fa-chevron-left"></i></button>
+        <button class="hero-arrow hero-next" id="heroNext" aria-label="Siguiente vehículo"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <div class="hero-scroll-indicator">
+        <span>Desliza</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ===== CONSOLA DE BÚSQUEDA INTERACTIVA DE INVENTARIO (TOYOTA / CARMAX STYLE) ===== -->
+<div class="dealership-search-console-wrapper">
+    <div class="dealership-search-console">
+        <div class="search-console-top">
+            <div class="search-console-title">
+                <i class="fas fa-search"></i>
+                <span>BUSCADOR DE INVENTARIO OFICIAL</span>
+            </div>
+            <div class="search-console-tabs" id="consoleTabs">
+                <button type="button" class="search-console-tab active" data-condition="todos">Todos los Vehículos</button>
+                <button type="button" class="search-console-tab" data-condition="seminuevo">Seminuevos Certificados</button>
+                <button type="button" class="search-console-tab" data-condition="0km">0 KM Importados</button>
+                <button type="button" class="search-console-tab" data-condition="por_pedido">Por Pedido USA</button>
+            </div>
+        </div>
+        <div class="search-console-grid">
+            <div class="search-console-group">
+                <label for="dealershipFilterCondition">Condición</label>
+                <select id="dealershipFilterCondition">
+                    <option value="todos">Todas las Condiciones</option>
+                    <option value="seminuevo">Seminuevos Certificados</option>
+                    <option value="0km">0 KM Importación Directa</option>
+                    <option value="por_pedido">Por Pedido / Subasta USA</option>
+                </select>
+            </div>
+            <div class="search-console-group">
+                <label for="dealershipFilterBrand">Marca</label>
+                <select id="dealershipFilterBrand">
+                    <option value="todos">Todas las Marcas</option>
+                    <option value="toyota">Toyota</option>
+                    <option value="honda">Honda</option>
+                    <option value="hyundai">Hyundai</option>
+                    <option value="jeep">Jeep</option>
+                    <option value="nissan">Nissan</option>
+                    <option value="lexus">Lexus</option>
+                    <option value="ford">Ford</option>
+                    <option value="chevrolet">Chevrolet</option>
+                </select>
+            </div>
+            <div class="search-console-group">
+                <label for="dealershipFilterBody">Carrocería</label>
+                <select id="dealershipFilterBody">
+                    <option value="todos">Todos los Tipos</option>
+                    <option value="suv">SUVs & Crossovers</option>
+                    <option value="pickup">Pickups & 4x4</option>
+                    <option value="sedan">Sedanes</option>
+                    <option value="deportivo">Deportivos</option>
+                </select>
+            </div>
+            <div class="search-console-group">
+                <label for="dealershipFilterBudget">Presupuesto</label>
+                <select id="dealershipFilterBudget">
+                    <option value="todos">Cualquier Presupuesto</option>
+                    <option value="under25k">Hasta $25,000</option>
+                    <option value="25k-40k">$25,000 - $40,000</option>
+                    <option value="above40k">Más de $40,000</option>
+                </select>
+            </div>
+            <button type="button" id="dealershipSearchBtn" class="btn-dealership-search">
+                <i class="fas fa-magnifying-glass"></i> BUSCAR VEHÍCULOS
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SELECTOR RÁPIDO POR CARROCERÍA (TOYOTA QUICK SELECTOR) ===== -->
+<section class="dealership-categories-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag"><i class="fas fa-layer-group"></i> EXPLORAR POR CATEGORÍA</span>
+            <h2 class="section-title">Encuentra tu Vehículo por <span class="text-accent">Carrocería</span></h2>
+            <p class="section-subtitle">Selecciona el segmento automotriz que mejor se adapte a tus necesidades de movilidad y estilo de vida.</p>
+        </div>
+        <div class="categories-grid">
+            <a href="catalogo?tipo=suv" class="category-card">
+                <div class="category-icon"><i class="fas fa-truck-monster"></i></div>
+                <span class="category-name">SUVs & Crossovers</span>
+                <span class="category-desc">Espacio, confort familiar y altura</span>
+            </a>
+            <a href="catalogo?tipo=pickup" class="category-card">
+                <div class="category-icon"><i class="fas fa-truck-pickup"></i></div>
+                <span class="category-name">Pickups & 4x4</span>
+                <span class="category-desc">Potencia, carga y tracción todoterreno</span>
+            </a>
+            <a href="catalogo?tipo=sedan" class="category-card">
+                <div class="category-icon"><i class="fas fa-car-side"></i></div>
+                <span class="category-name">Sedanes Ejecutivos</span>
+                <span class="category-desc">Eficiencia, tecnología y confort de marcha</span>
+            </a>
+            <a href="catalogo?seccion=0km" class="category-card">
+                <div class="category-icon"><i class="fas fa-bolt"></i></div>
+                <span class="category-name">0 KM Importación</span>
+                <span class="category-desc">Nuevos de agencia directo de USA</span>
+            </a>
+            <a href="catalogo?seccion=seminuevos" class="category-card">
+                <div class="category-icon"><i class="fas fa-shield-alt"></i></div>
+                <span class="category-name">Seminuevos Certificados</span>
+                <span class="category-desc">Inspección de 150 puntos MasterTech</span>
+            </a>
+            <a href="catalogo?seccion=porpedido" class="category-card">
+                <div class="category-icon"><i class="fas fa-ship"></i></div>
+                <span class="category-name">Subastas & Por Pedido</span>
+                <span class="category-desc">Importación llave en mano a medida</span>
+            </a>
+        </div>
+    </div>
+</section>
+
 <!-- ===== BRAND LOGOS MARQUEE ===== -->
-    <section class="brands-section">
-        <div class="brands-marquee">
-            <div class="brands-track" id="brandsTrack">
-                <div class="brand-item"><img src="images/brands/Toyota_logo_(Red).svg.png" alt="Toyota" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Honda.svg.png" alt="Honda" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Nissan_2020_logo.svg" alt="Nissan" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/jeep-logo-1.png" alt="Jeep" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/dodge-logo-png-transparent.png" alt="Dodge" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/INFINITI_Logo_Primary_Black.png" alt="Infiniti" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/logo-Hyundai.png" alt="Hyundai" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Kia-logo.png" alt="Kia" decoding="async"></div>
-                <!-- Duplicated for infinite scroll -->
-                <div class="brand-item"><img src="images/brands/Toyota_logo_(Red).svg.png" alt="Toyota" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Honda.svg.png" alt="Honda" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Nissan_2020_logo.svg" alt="Nissan" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/jeep-logo-1.png" alt="Jeep" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/dodge-logo-png-transparent.png" alt="Dodge" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/INFINITI_Logo_Primary_Black.png" alt="Infiniti" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/logo-Hyundai.png" alt="Hyundai" decoding="async"></div>
-                <div class="brand-item"><img src="images/brands/Kia-logo.png" alt="Kia" decoding="async"></div>
+<section class="brands-section">
+    <div class="brands-marquee">
+        <div class="brands-track" id="brandsTrack">
+            <div class="brand-item"><img src="images/brands/Toyota_logo_(Red).svg.png" alt="Toyota" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Honda.svg.png" alt="Honda" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Nissan_2020_logo.svg" alt="Nissan" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/jeep-logo-1.png" alt="Jeep" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/dodge-logo-png-transparent.png" alt="Dodge" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/INFINITI_Logo_Primary_Black.png" alt="Infiniti" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/logo-Hyundai.png" alt="Hyundai" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Kia-logo.png" alt="Kia" decoding="async"></div>
+            <!-- Duplicated for infinite scroll -->
+            <div class="brand-item"><img src="images/brands/Toyota_logo_(Red).svg.png" alt="Toyota" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Honda.svg.png" alt="Honda" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Nissan_2020_logo.svg" alt="Nissan" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/jeep-logo-1.png" alt="Jeep" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/dodge-logo-png-transparent.png" alt="Dodge" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/INFINITI_Logo_Primary_Black.png" alt="Infiniti" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/logo-Hyundai.png" alt="Hyundai" decoding="async"></div>
+            <div class="brand-item"><img src="images/brands/Kia-logo.png" alt="Kia" decoding="async"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PILARES OFICIALES DE CERTIFICACIÓN Y GARANTÍA (TOYOTA CERTIFIED STYLE) ===== -->
+<section class="dealership-pillars-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag"><i class="fas fa-award"></i> GARANTÍA Y RESPALDO TÉCNICO</span>
+            <h2 class="section-title">El Estándar Oficial de <span class="text-accent">Nuestro Concesionario</span></h2>
+            <p class="section-subtitle">Tu tranquilidad es nuestra prioridad. Cada vehículo entregado pasa por rigurosos filtros de calidad mecánica y legal.</p>
+        </div>
+        <div class="pillars-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon-wrap"><i class="fas fa-clipboard-check"></i></div>
+                <h3 class="pillar-title">Inspección de 150 Puntos</h3>
+                <p class="pillar-desc">Revisión exhaustiva por técnicos MasterTech: compresión de motor, escaneo OBD-II, caja automática, suspensión, frenos y chasis libre de colisiones.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+                <h3 class="pillar-title">Garantía Mecánica Escrita</h3>
+                <p class="pillar-desc">Respaldo directo con nuestro Taller Especializado MasterTech en Margarita. Cobertura escrita en motor y transmisión para tu absoluta tranquilidad.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon-wrap"><i class="fas fa-ship"></i></div>
+                <h3 class="pillar-title">Importación Llave en Mano</h3>
+                <p class="pillar-desc">Acceso a subastas Manheim, Copart e IAAI en USA. Nos encargamos de la inspección física, flete marítimo, seguro y nacionalización 100% legal con placa.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon-wrap"><i class="fas fa-sync-alt"></i></div>
+                <h3 class="pillar-title">Trade-In & Retoma Inmediata</h3>
+                <p class="pillar-desc">¿Quieres renovar tu vehículo? Tasamos tu auto actual al mejor precio de mercado y lo recibimos como parte de pago para tu próximo seminuevo o 0KM.</p>
             </div>
         </div>
-    </section>
-<!-- ===== STATS BAR ===== -->
-    <section class="stats-bar">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-number" data-target="100">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Vehículos Vendidos</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="98">0</span><span class="stat-suffix">%</span>
-                    <span class="stat-label">Clientes Satisfechos</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="6">0</span><span class="stat-suffix"></span>
-                    <span class="stat-label">Años de Experiencia</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number" data-target="46">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Vehículos en Stock</span>
-                </div>
-            </div>
-        </div>
-    </section>
-<!-- ===== PROMOTIONS SECTION ===== -->
-    <section class="promotions-section" id="promociones">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-tags"></i> PROMOCIONES ACTIVAS</span>
-                <h2 class="section-title">Ofertas <span class="text-accent">Exclusivas</span></h2>
-                <p class="section-subtitle">Aprovecha nuestras promociones por tiempo limitado. Descuentos reales, entrega garantizada.</p>
-            </div>
-            <div class="promotions-grid" id="promotionsGrid">
-                <!-- Injected by script.js from Supabase -->
-                <div class="promo-skeleton"></div>
-                <div class="promo-skeleton"></div>
-                <div class="promo-skeleton"></div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 <!-- ===== SHOWROOM DESTACADO ===== -->
-    <section class="featured-vehicles" id="showroom">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-car"></i> SHOWROOM OFICIAL</span>
-                <h2 class="section-title">Vehículos <span class="text-accent">Destacados</span></h2>
-                <p class="section-subtitle">Modelos en tendencia con certificación técnica de 150 puntos y entrega garantizada.</p>
+<section class="featured-vehicles" id="showroom">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag"><i class="fas fa-car"></i> SHOWROOM OFICIAL</span>
+            <h2 class="section-title">Vehículos <span class="text-accent">Destacados</span></h2>
+            <p class="section-subtitle">Modelos en tendencia con certificación técnica de 150 puntos y entrega garantizada.</p>
+        </div>
+        <div class="vehicle-grid" id="featuredVehiclesGrid">
+            <!-- Injected automatically by script.js from Supabase -->
+        </div>
+        <div class="showroom-cta-wrap">
+            <a href="catalogo" class="btn btn-primary btn-showroom-more">
+                VER TODO EL CATÁLOGO DISPONIBLE <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PROMOTIONS SECTION ===== -->
+<section class="promotions-section" id="promociones">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag"><i class="fas fa-tags"></i> PROMOCIONES ACTIVAS</span>
+            <h2 class="section-title">Ofertas <span class="text-accent">Exclusivas</span></h2>
+            <p class="section-subtitle">Aprovecha nuestras promociones por tiempo limitado. Descuentos reales, entrega garantizada.</p>
+        </div>
+        <div class="promotions-grid" id="promotionsGrid">
+            <!-- Injected by script.js from Supabase -->
+            <div class="promo-skeleton"></div>
+            <div class="promo-skeleton"></div>
+            <div class="promo-skeleton"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== HERRAMIENTAS EJECUTIVAS DEL CONCESIONARIO ===== -->
+<section class="dealership-tools-section">
+    <div class="container">
+        <div class="dealership-tools-grid">
+            <div class="dealership-tool-card tool-calc">
+                <div>
+                    <span class="tool-badge"><i class="fas fa-calculator"></i> HERRAMIENTA DIGITAL EN VIVO</span>
+                    <h3 class="tool-title">Calculadora de Importación USA</h3>
+                    <p class="tool-desc">Cotiza en menos de un minuto el costo real y transparente de traer tu vehículo desde Estados Unidos hasta Venezuela, con tarifas portuarias y flete incluido.</p>
+                </div>
+                <a href="calculadora" class="tool-cta">
+                    <span>USAR CALCULADORA AHORA</span> <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
-            <div class="vehicle-grid" id="featuredVehiclesGrid">
-                <!-- Injected automatically by script.js from Supabase -->
-            </div>
-            <div class="showroom-cta-wrap">
-                <a href="catalogo" class="btn btn-primary btn-showroom-more">
-                    VER TODO EL CATÁLOGO <i class="fas fa-arrow-right"></i>
+            <div class="dealership-tool-card tool-tradein">
+                <div>
+                    <span class="tool-badge"><i class="fas fa-handshake"></i> PROGRAMA DE RETOMA</span>
+                    <h3 class="tool-title">Tasa tu Auto & Programa Trade-In</h3>
+                    <p class="tool-desc">Entrega tu vehículo actual como parte de pago. Nuestro equipo de tasación evalúa tu auto en menos de 24 horas para que salgas manejando tu nuevo seminuevo.</p>
+                </div>
+                <a href="servicios#programa-retoma" class="tool-cta">
+                    <span>SOLICITAR TASACIÓN</span> <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!-- ===== EXCLUSIVE YARIS GR SECTION ===== -->
-    <section class="yaris-gr-section" id="yaris-gr-exclusive">
-        <div class="yaris-gr-video-container">
-            <!-- Mobile Video (Vertical) -->
-            <video loop muted playsinline preload="none" class="yaris-video mobile-video">
-                <source data-src="images/yaris-gr-vertical.mp4" type="video/mp4">
-            </video>
-            <!-- Desktop Video (Horizontal) -->
-            <video loop muted playsinline preload="none" class="yaris-video desktop-video">
-                <source data-src="images/yaris-gr-horizontal.mp4" type="video/mp4">
-            </video>
-            <div class="yaris-overlay"></div>
+<section class="yaris-gr-section" id="yaris-gr-exclusive">
+    <div class="yaris-gr-video-container">
+        <!-- Mobile Video (Vertical) -->
+        <video loop muted playsinline preload="none" class="yaris-video mobile-video">
+            <source data-src="images/yaris-gr-vertical.mp4" type="video/mp4">
+        </video>
+        <!-- Desktop Video (Horizontal) -->
+        <video loop muted playsinline preload="none" class="yaris-video desktop-video">
+            <source data-src="images/yaris-gr-horizontal.mp4" type="video/mp4">
+        </video>
+        <div class="yaris-overlay"></div>
+    </div>
+    
+    <div class="container yaris-gr-content">
+        <div class="yaris-badge">
+            <i class="fas fa-gem"></i> OPORTUNIDAD VIP
         </div>
         
-        <div class="container yaris-gr-content">
-            <div class="yaris-badge">
-                <i class="fas fa-gem"></i> OPORTUNIDAD VIP
-            </div>
-            
-            <h2 class="yaris-title">
-                TOYOTA YARIS <span class="gr-red">GR</span>
-            </h2>
-            
-            <p class="yaris-subtitle">
-                Sólo existe 1 en Venezuela. Traeremos 10 más.<br>
-                ¿Tienes lo que se necesita para domarlo?
-            </p>
+        <h2 class="yaris-title">
+            TOYOTA YARIS <span class="gr-red">GR</span>
+        </h2>
+        
+        <p class="yaris-subtitle">
+            Sólo existe 1 en Venezuela. Traeremos 10 más.<br>
+            ¿Tienes lo que se necesita para domarlo?
+        </p>
 
-            <div class="yaris-scarcity">
-                <div class="scarcity-count">
-                    <span class="count-number">10</span>
-                    <span class="count-text">CUPOS<br>TOTALES</span>
-                </div>
-                <div class="scarcity-divider"></div>
-                <div class="scarcity-status">
-                    <span class="status-dot blink"></span> PRE-VENTA ABIERTA
-                </div>
+        <div class="yaris-scarcity">
+            <div class="scarcity-count">
+                <span class="count-number">10</span>
+                <span class="count-text">CUPOS<br>TOTALES</span>
             </div>
-
-            <div class="yaris-actions">
-                <a href="https://wa.me/584248700438?text=Hola,%20quiero%20aplicar%20por%20uno%20de%20los%2010%20cupos%20VIP%20para%20el%20Toyota%20Yaris%20GR." target="_blank" class="btn btn-gr-primary">
-                    <i class="fab fa-whatsapp"></i> Reservar mi cupo
-                </a>
-                <button onclick="copyYarisLink()" class="btn btn-gr-share" id="shareBtn">
-                    <i class="fas fa-share-alt"></i> Compartir
-                </button>
+            <div class="scarcity-divider"></div>
+            <div class="scarcity-status">
+                <span class="status-dot blink"></span> PRE-VENTA ABIERTA
             </div>
-            <p id="copyMessage" style="display:none; color: #4ade80; font-size: 0.8rem; margin-top: 15px; font-weight: 600;">
-                <i class="fas fa-check-circle"></i> ¡Enlace VIP copiado al portapapeles!
-            </p>
         </div>
-    </section>
+
+        <div class="yaris-actions">
+            <a href="https://wa.me/584248700438?text=Hola,%20quiero%20aplicar%20por%20uno%20de%20los%2010%20cupos%20VIP%20para%20el%20Toyota%20Yaris%20GR." target="_blank" rel="noopener" class="btn btn-gr-primary">
+                <i class="fab fa-whatsapp"></i> Reservar mi cupo
+            </a>
+            <button onclick="copyYarisLink()" class="btn btn-gr-share" id="shareBtn">
+                <i class="fas fa-share-alt"></i> Compartir
+            </button>
+        </div>
+        <p id="copyMessage" class="hidden-success-msg">
+            <i class="fas fa-check-circle"></i> ¡Enlace VIP copiado al portapapeles!
+        </p>
+    </div>
+</section>
+
+<!-- ===== STATS BAR ===== -->
+<section class="stats-bar">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number" data-target="100">0</span><span class="stat-suffix">+</span>
+                <span class="stat-label">Vehículos Vendidos</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="98">0</span><span class="stat-suffix">%</span>
+                <span class="stat-label">Clientes Satisfechos</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="6">0</span><span class="stat-suffix"></span>
+                <span class="stat-label">Años de Experiencia</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="46">0</span><span class="stat-suffix">+</span>
+                <span class="stat-label">Vehículos en Stock</span>
+            </div>
+        </div>
+    </div>
+</section>
 
 
 
@@ -423,11 +674,11 @@
                             <div class="custom-select-wrapper">
                                 <select id="formService" class="custom-select-box" required>
                                     <option value="" disabled selected>-- Selecciona un motivo --</option>
-                                    <option value="Comprar un vehículo">ðŸš— Quiero comprar un vehículo</option>
-                                    <option value="Importación por pedido">ðŸš¢ Importación por pedido desde USA</option>
-                                    <option value="Trade In / Retoma">ðŸ”„ Trade In / Retoma de mi auto</option>
-                                    <option value="Soporte técnico MasterTech">ðŸ› ï¸ Soporte técnico MasterTech</option>
-                                    <option value="Otro">ðŸ’¬ Otro motivo / Asesoría general</option>
+                                    <option value="Comprar un vehículo">🚗 Quiero comprar un vehículo</option>
+                                    <option value="Importación por pedido">🚢 Importación por pedido desde USA</option>
+                                    <option value="Trade In / Retoma">🔄 Trade In / Retoma de mi auto</option>
+                                    <option value="Soporte técnico MasterTech">🛠️ Soporte técnico MasterTech</option>
+                                    <option value="Otro">💬 Otro motivo / Asesoría general</option>
                                 </select>
                             </div>
                         </div>

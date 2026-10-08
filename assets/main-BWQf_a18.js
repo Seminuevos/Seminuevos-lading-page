@@ -2130,7 +2130,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ===== DEEP LINKING =====
+    // ===== DEALERSHIP SEARCH CONSOLE HANDLERS =====
+    const consoleTabs = document.querySelectorAll('#consoleTabs .search-console-tab');
+    const conditionSelect = document.getElementById('dealershipFilterCondition');
+    const brandSelect = document.getElementById('dealershipFilterBrand');
+    const bodySelect = document.getElementById('dealershipFilterBody');
+    const budgetSelect = document.getElementById('dealershipFilterBudget');
+    const searchBtn = document.getElementById('dealershipSearchBtn');
+
+    if (consoleTabs.length && conditionSelect) {
+        consoleTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                consoleTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const cond = tab.dataset.condition;
+                if (cond && conditionSelect) {
+                    conditionSelect.value = cond;
+                }
+            });
+        });
+
+        conditionSelect.addEventListener('change', () => {
+            const val = conditionSelect.value;
+            consoleTabs.forEach(tab => {
+                if (tab.dataset.condition === val) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    searchBtn?.addEventListener('click', () => {
+        const cond = conditionSelect?.value || 'todos';
+        const brand = brandSelect?.value || 'todos';
+        const body = bodySelect?.value || 'todos';
+        const budget = budgetSelect?.value || 'todos';
+
+        const params = new URLSearchParams();
+        if (cond !== 'todos') params.set('condicion', cond);
+        if (brand !== 'todos') params.set('marca', brand);
+        if (body !== 'todos') params.set('carroceria', body);
+        if (budget !== 'todos') params.set('presupuesto', budget);
+
+        window.location.href = 'catalogo' + (params.toString() ? '?' + params.toString() : '');
+    });
+
+    // ===== DEEP LINKING & CATALOG AUTO-FILTERS =====
     const urlParams = new URLSearchParams(window.location.search);
     const vId = urlParams.get('v');
     if (vId) {
@@ -2138,6 +2185,45 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof openModal === 'function') openModal(vId);
             document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' });
         }, 2000);
+    }
+
+    const urlCondition = urlParams.get('condicion') || urlParams.get('seccion');
+    const urlBrand = urlParams.get('marca');
+    const urlBody = urlParams.get('carroceria') || urlParams.get('tipo');
+
+    if (urlCondition) {
+        let targetSection = '';
+        if (urlCondition === '0km') targetSection = '0km';
+        else if (urlCondition === 'por_pedido' || urlCondition === 'porpedido') targetSection = 'porpedido';
+        else if (urlCondition === 'seminuevo' || urlCondition === 'seminuevos') targetSection = 'seminuevos';
+
+        if (targetSection) {
+            const targetTab = document.querySelector(`.catalog-main-tab[data-section="${targetSection}"]`);
+            if (targetTab) {
+                setTimeout(() => targetTab.click(), 100);
+            }
+        }
+    }
+
+    if (urlBrand && urlBrand !== 'todos') {
+        const catalogSearchInput = document.getElementById('catalogSearch');
+        if (catalogSearchInput) {
+            catalogSearchInput.value = urlBrand;
+            setTimeout(() => {
+                catalogSearchInput.dispatchEvent(new Event('input'));
+            }, 300);
+        }
+    }
+
+    if (urlBody && urlBody !== 'todos') {
+        setTimeout(() => {
+            const bodyBtns = document.querySelectorAll('.filter-btn');
+            bodyBtns.forEach(btn => {
+                if ((btn.dataset.filter || '').toLowerCase() === urlBody.toLowerCase()) {
+                    btn.click();
+                }
+            });
+        }, 400);
     }
 
     window.openVehicleModal = function (id) {
