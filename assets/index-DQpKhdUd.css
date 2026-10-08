@@ -576,32 +576,51 @@ body::after {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.88) 42%, rgba(255, 255, 255, 0.35) 75%, rgba(255, 255, 255, 0.05) 100%);
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.15) 50%, rgba(15, 23, 42, 0) 100%);
     pointer-events: none;
 }
 
 @media (max-width: 768px) {
     .hero-overlay {
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 58%, rgba(255, 255, 255, 0.6) 100%);
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.2) 60%, rgba(15, 23, 42, 0.05) 100%);
     }
 }
 
 .hero-content {
     position: absolute;
-    top: 47%;
+    top: 50%;
     transform: translateY(-50%);
-    left: 80px;
-    max-width: 780px;
-    width: calc(100% - 100px);
+    left: 6%;
+    max-width: 530px;
+    width: 90%;
     z-index: 10;
-    transition: all 0.5s ease;
+    padding: 32px 36px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+    transition: all 0.4s ease;
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        position: relative;
+        top: auto;
+        transform: none;
+        left: auto;
+        margin: 20px auto;
+        max-width: 94%;
+        padding: 24px 20px;
+        background: rgba(255, 255, 255, 0.96);
+    }
 }
 
 .hero-content.align-left {
-    left: 80px;
+    left: 6%;
     right: auto;
     text-align: left;
-    transform: translateY(-50%);
 }
 
 .hero-content.align-left .hero-buttons,
@@ -3184,11 +3203,12 @@ body::after {
     }
 
     .main-logo {
-    height: 72px;
-    width: auto;
-    max-height: 72px;
-    object-fit: contain;
-    filter: none;
+        height: 72px;
+        width: auto;
+        max-height: 72px;
+        object-fit: contain;
+        filter: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -3516,6 +3536,7 @@ body::after {
     cursor: pointer;
     transition: var(--transition);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
 }
 
 /* ===== ACCORDION PROCESS ===== */
@@ -3957,6 +3978,7 @@ body::after {
     background-position: right 14px center;
     white-space: nowrap;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
 }
 
 /* ===== VIEWS BADGE ===== */
@@ -4177,11 +4199,12 @@ body::after {
 /* --- LARGE LAPTOPS & DESKTOPS (1440px and below) --- */
 @media (max-width: 1440px) {
     .main-logo {
-    height: 72px;
-    width: auto;
-    max-height: 72px;
-    object-fit: contain;
-    filter: none;
+        height: 72px;
+        width: auto;
+        max-height: 72px;
+        object-fit: contain;
+        filter: none;
+    }
 }
 
 /* --- TABLET & SMALL DESKTOPS (1200px and below) --- */
@@ -4191,31 +4214,33 @@ body::after {
     }
 
     .main-logo {
-    height: 72px;
-    width: auto;
-    max-height: 72px;
-    object-fit: contain;
-    filter: none;
+        height: 72px;
+        width: auto;
+        max-height: 72px;
+        object-fit: contain;
+        filter: none;
+    }
 }
 
 /* --- LARGE TABLETS / SMALL LAPTOPS (1024px and below) --- */
 @media (max-width: 1024px) {
     .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 10px 0;
-    transition: var(--transition);
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid #E5E7EB;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    min-height: 90px;
-    display: flex;
-    align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 10px 0;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid #E5E7EB;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+    }
 }
 
 /* --- MOBILE DEVICES (768px and below) --- */
@@ -4231,21 +4256,22 @@ body::after {
     }
 
     .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 10px 0;
-    transition: var(--transition);
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid #E5E7EB;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    min-height: 90px;
-    display: flex;
-    align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 10px 0;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid #E5E7EB;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        min-height: 90px;
+        display: flex;
+        align-items: center;
+    }
 }
 
 /* --- SMALL MOBILE (480px and below) --- */
@@ -4263,11 +4289,12 @@ body::after {
     }
 
     .main-logo {
-    height: 72px;
-    width: auto;
-    max-height: 72px;
-    object-fit: contain;
-    filter: none;
+        height: 72px;
+        width: auto;
+        max-height: 72px;
+        object-fit: contain;
+        filter: none;
+    }
 }
 
 @media print {
@@ -5113,17 +5140,15 @@ img.mastertech-seal {
 }
 
 .hero-price-card {
-    background: rgba(255, 255, 255, 0.94);
-    padding: 20px 24px;
-    border-radius: var(--radius-lg);
+    background: #F8FAFC;
+    padding: 16px 20px;
+    border-radius: 12px;
     border: 1px solid #E2E8F0;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     width: 100%;
-    max-width: 420px;
+    max-width: 100%;
     text-align: left;
-    margin: 0;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    margin: 0 0 20px 0;
+    box-shadow: none;
 }
 
 .hero-price-row {
@@ -5377,19 +5402,19 @@ img.mastertech-seal {
 
 /* Slide Background Images (Zero inline styles) */
 .hero-slide-1 {
-    background-image: url('images/hero-slides/hero-1.jpg');
+    background-image: url('../images/hero-slides/hero-1.jpg');
     background-position: center center;
     background-size: cover;
 }
 
 .hero-slide-2 {
-    background-image: url('images/hero-slides/hero-2.jpg');
+    background-image: url('../images/hero-slides/hero-2.jpg');
     background-position: center center;
     background-size: cover;
 }
 
 .hero-slide-3 {
-    background-image: url('images/toyota-4runner-2021-sr5.jpg');
+    background-image: url('../images/hero1.jpg');
     background-position: center center;
     background-size: cover;
 }
