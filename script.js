@@ -284,50 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heroSlider.init();
 
-    // ===== YARIS GR LAZY VIDEO OBSERVER =====
-    function initYarisVideoObserver() {
-        const yarisSection = document.getElementById('yaris-gr-exclusive');
-        if (!yarisSection) return;
-
-        let videoLoaded = false;
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const isMobile = window.innerWidth <= 768;
-                const activeVideo = isMobile
-                    ? yarisSection.querySelector('.mobile-video')
-                    : yarisSection.querySelector('.desktop-video');
-                const inactiveVideo = isMobile
-                    ? yarisSection.querySelector('.desktop-video')
-                    : yarisSection.querySelector('.mobile-video');
-
-                if (entry.isIntersecting) {
-                    if (!videoLoaded && activeVideo) {
-                        const source = activeVideo.querySelector('source[data-src]');
-                        if (source) {
-                            source.src = source.getAttribute('data-src');
-                            activeVideo.load();
-                        }
-                        videoLoaded = true;
-                    }
-                    if (activeVideo && activeVideo.paused) {
-                        activeVideo.play().catch(() => {});
-                    }
-                } else {
-                    if (activeVideo && !activeVideo.paused) {
-                        activeVideo.pause();
-                    }
-                    if (inactiveVideo && !inactiveVideo.paused) {
-                        inactiveVideo.pause();
-                    }
-                }
-            });
-        }, { rootMargin: '300px 0px', threshold: 0.05 });
-
-        observer.observe(yarisSection);
-    }
-
-    initYarisVideoObserver();
-
     // ===== NAVBAR SCROLL =====
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-link');
@@ -827,22 +783,36 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             const activeBadge = badgeStyles[s.badgeColor] || badgeStyles.gold;
 
-            let subtitleHtml = s.subtitle || '';
+            let subtitleHtml = '';
             const showPrice = s.showPriceCard !== false;
-            if (showPrice && s.originalPrice) {
-                const fmt = (num) => Number(num || 0).toLocaleString('en-US');
-                let rows = '';
-                rows += `<div class="hero-price-row list-price"><span>Precio de Lista</span><span>$${fmt(s.originalPrice)}</span></div>`;
-                if (s.discountPercentage && Number(s.discountPercentage) > 0) {
-                    rows += `<div class="hero-price-row discount"><span>Descuento Especial</span><span>-$${fmt(s.discountPercentage)}</span></div>`;
-                }
-                if (s.financingBonus && Number(s.financingBonus) > 0) {
-                    rows += `<div class="hero-price-row bonus"><span>Financiamiento</span><span>-$${fmt(s.financingBonus)}</span></div>`;
-                }
-                rows += `<div class="hero-price-row final-price"><span>Llévala por</span><span class="hero-price-val">$${fmt(s.finalPrice || 0)}</span></div>`;
-                subtitleHtml = `<div class="hero-price-card ${textAlign === 'center' ? 'mx-auto' : ''}">${rows}</div>`;
-            } else if (s.subtitle && !s.subtitle.includes('<div')) {
-                subtitleHtml = `<p>${s.subtitle}</p>`;
+            const fmt = (num) => Number(num || 0).toLocaleString('en-US');
+            
+            if (s.subtitle && !s.subtitle.includes('<div')) {
+                subtitleHtml = `<p class="hero-description">${s.subtitle}</p>`;
+            } else {
+                subtitleHtml = `<p class="hero-description">Vehículo certificado, con respaldo pericial MasterTech y entrega inmediata disponible.</p>`;
+            }
+
+            let specsHtml = '';
+            if (showPrice && (s.finalPrice || s.originalPrice)) {
+                specsHtml = `
+                    <div class="hero-specs-row">
+                        <div class="spec-col">
+                            <span class="spec-val">$${fmt(s.finalPrice || s.originalPrice)}</span>
+                            <span class="spec-lbl">Precio Especial</span>
+                        </div>
+                        <div class="spec-divider"></div>
+                        <div class="spec-col">
+                            <span class="spec-val">${s.km || '0 KM'}</span>
+                            <span class="spec-lbl">Recorrido</span>
+                        </div>
+                        <div class="spec-divider"></div>
+                        <div class="spec-col">
+                            <span class="spec-val">100%</span>
+                            <span class="spec-lbl">Garantía Mecánica</span>
+                        </div>
+                    </div>
+                `;
             }
 
             const alignClass = textAlign === 'center' ? 'align-center' : (textAlign === 'right' ? 'align-right' : 'align-left');
@@ -853,28 +823,27 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (heroBgImage.includes('hero-1781886028689-1.jpg')) heroBgImage = 'images/hero-slides/hero-2.jpg';
             else if (heroBgImage.includes('hero-1789410090103-2.jpg')) heroBgImage = 'images/hero-slides/hero-3.jpg';
 
-            // Re-crear el diseño premium exacto con clases CSS
+            // Re-crear el diseño premium oficial de concesionario
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
                     <div class="hero-overlay"></div>
                     <div class="hero-content ${alignClass}">
-                        <div class="hero-tag">
-                            <span class="hero-stock-badge">
-                                <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-star' : 'fa-car')}"></i> ${s.tag || 'OFERTA DESTACADA'}
+                        <div class="hero-eyebrow">
+                            <span class="eyebrow-badge">
+                                <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-shield-alt' : 'fa-car')}"></i> ${s.tag || 'STOCK LOCAL | ENTREGA INMEDIATA'}
                             </span>
                         </div>
                         <${isFirst ? 'h1' : 'p'} class="hero-title">
                             ${(s.title || '').includes('<span') ? s.title : (s.title || '').replace(/\b(20\d{2}|0KM)\b/g, '<span class="text-accent">$1</span>')}
                         </${isFirst ? 'h1' : 'p'}>
-                        <div class="hero-subtitle">
-                            ${subtitleHtml}
-                        </div>
-                        <div class="hero-buttons">
-                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta VIP del sitio web.')}" class="btn btn-primary btn-hero-primary" target="_blank">
-                               ${s.ctaPrimary || 'Reclamar Oferta'} <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                        ${subtitleHtml}
+                        ${specsHtml}
+                        <div class="hero-actions-row">
+                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-hero-deal" target="_blank" rel="noopener">
+                               <span>${s.ctaPrimary || 'Asegurar Oferta'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
-                            <a href="#catalogo" class="btn btn-outline btn-hero-outline">
-                               ${s.ctaSecondary || 'Ver Inventario'}
+                            <a href="#showroom" class="btn-hero-details">
+                               <span>${s.ctaSecondary || 'Ver Detalles'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -1996,21 +1965,3 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
-
-
-// Función para copiar el enlace directo al Yaris GR
-function copyYarisLink() {
-    const url = window.location.origin + window.location.pathname + '#yaris-gr-exclusive';
-    
-    navigator.clipboard.writeText(url).then(() => {
-        const msg = document.getElementById('copyMessage');
-        msg.style.display = 'block';
-        
-        // Ocultar el mensaje después de 3 segundos
-        setTimeout(() => {
-            msg.style.display = 'none';
-        }, 3000);
-    }).catch(err => {
-        console.error('Error al copiar el enlace: ', err);
-    });
-}

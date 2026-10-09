@@ -550,22 +550,24 @@ body::after {
     background-size: cover;
     background-position: center;
     opacity: 0;
-    transition: opacity 1.2s ease-in-out;
-    transform: scale(1.05);
+    visibility: hidden;
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(1.03);
     pointer-events: none;
     z-index: 0;
 }
 
 .hero-slide.active {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
-    z-index: 1;
-    animation: heroZoom 8s ease-out forwards;
+    z-index: 2;
+    animation: heroZoom 10s ease-out forwards;
 }
 
 @keyframes heroZoom {
     from {
-        transform: scale(1.08);
+        transform: scale(1.05);
     }
 
     to {
@@ -576,115 +578,101 @@ body::after {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.15) 50%, rgba(15, 23, 42, 0) 100%);
+    background: linear-gradient(90deg, rgba(11, 19, 43, 0.90) 0%, rgba(11, 19, 43, 0.65) 42%, rgba(11, 19, 43, 0.20) 75%, rgba(11, 19, 43, 0.05) 100%),
+                linear-gradient(180deg, rgba(11, 19, 43, 0.45) 0%, transparent 22%, transparent 75%, rgba(11, 19, 43, 0.85) 100%);
     pointer-events: none;
+    z-index: 1;
 }
 
 @media (max-width: 768px) {
     .hero-overlay {
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.2) 60%, rgba(15, 23, 42, 0.05) 100%);
+        background: linear-gradient(180deg, rgba(11, 19, 43, 0.45) 0%, rgba(11, 19, 43, 0.82) 48%, rgba(11, 19, 43, 0.96) 100%);
     }
 }
 
+/* Hero Content — Clean Official Dealer Style (No white card) */
 .hero-content {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: 6%;
-    max-width: 530px;
+    left: 7%;
+    max-width: 600px;
     width: 90%;
     z-index: 10;
-    padding: 32px 36px;
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
-    transition: all 0.4s ease;
+    padding: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #FFFFFF !important;
+    transition: opacity 0.5s ease;
 }
 
 @media (max-width: 768px) {
     .hero-content {
-        position: relative;
+        position: absolute;
         top: auto;
+        bottom: 85px;
         transform: none;
-        left: auto;
-        margin: 20px auto;
-        max-width: 94%;
-        padding: 24px 20px;
-        background: rgba(255, 255, 255, 0.96);
+        left: 5%;
+        right: 5%;
+        max-width: 90%;
+        margin: 0;
+        text-align: left;
     }
 }
 
 .hero-content.align-left {
-    left: 6%;
+    left: 7%;
     right: auto;
     text-align: left;
 }
 
 .hero-content.align-left .hero-buttons,
-.hero-content.align-left .hero-tag {
+.hero-content.align-left .hero-tag,
+.hero-content.align-left .hero-eyebrow {
     justify-content: flex-start;
 }
 
 .hero-content.align-right {
     left: auto;
-    right: 80px;
+    right: 7%;
     text-align: right;
     transform: translateY(-50%);
 }
 
 .hero-content.align-right .hero-buttons,
-.hero-content.align-right .hero-tag {
+.hero-content.align-right .hero-tag,
+.hero-content.align-right .hero-eyebrow {
     justify-content: flex-end;
 }
 
 .hero-content.align-center {
     left: 50%;
     right: auto;
-    text-align: center;
     transform: translate(-50%, -50%);
+    text-align: center;
 }
 
 .hero-content.align-center .hero-buttons,
-.hero-content.align-center .hero-tag {
+.hero-content.align-center .hero-tag,
+.hero-content.align-center .hero-eyebrow,
+.hero-content.align-center .hero-specs-row {
     justify-content: center;
-}
-
-/* Centrado automático para el primer slide (si no tiene clase de alineación explícita) */
-.hero-slide:first-child .hero-content:not(.align-left):not(.align-right) {
-    left: 50% !important;
-    top: 47% !important;
-    transform: translate(-50%, -50%) !important;
-    text-align: center !important;
-    width: 90%;
-    max-width: 850px;
-}
-
-.hero-slide:first-child .hero-buttons {
-    justify-content: center !important;
-}
-
-.hero-slide:first-child .hero-subtitle {
-    margin-left: auto !important;
-    margin-right: auto !important;
-}
-
-.hero-slide:first-child .hero-tag {
-    justify-content: center;
-    display: flex;
-    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-slide.active .hero-content {
-    animation: contentReveal 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: contentReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes contentReveal {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(24px);
     }
 
     to {
@@ -693,53 +681,245 @@ body::after {
     }
 }
 
+@media (max-width: 768px) {
+    @keyframes contentReveal {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+.hero-eyebrow,
 .hero-tag {
-    display: inline-block;
-    padding: 10px 22px;
-    background: rgba(37, 99, 235, 0.08);
-    border: 1px solid var(--ghost-border-gold);
-    border-radius: var(--radius-full);
-    color: var(--primary);
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 0.72rem;
-    letter-spacing: 4px;
-    margin-bottom: 24px;
-    backdrop-filter: blur(10px);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display, 'Unbounded', sans-serif);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: #38BDF8 !important;
+    margin-bottom: 14px;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-stock-badge,
+.eyebrow-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(56, 189, 248, 0.12) !important;
+    border: 1px solid rgba(56, 189, 248, 0.35) !important;
+    color: #38BDF8 !important;
+    padding: 6px 14px !important;
+    border-radius: 9999px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    backdrop-filter: blur(8px);
 }
 
 .hero-title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(1.8rem, 3.8vw, 3.2rem);
-    line-height: 1.15;
-    letter-spacing: -0.5px;
-    margin-bottom: 20px;
+    font-family: var(--font-display, 'Unbounded', sans-serif);
+    font-weight: 800;
+    font-size: clamp(2.3rem, 4.4vw, 3.8rem);
+    line-height: 1.08;
+    letter-spacing: -0.8px;
+    margin-bottom: 16px;
     text-transform: none;
     word-break: break-word;
-    color: #0F172A !important;
+    color: #FFFFFF !important;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
 }
 
 .hero-title .text-accent {
-    background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #60A5FA !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
 }
 
-.hero-subtitle {
-    font-size: 1.1rem;
-    color: var(--on-surface-variant);
-    margin-bottom: 40px;
-    max-width: 480px;
-    line-height: 1.8;
+.hero-description {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88) !important;
+    margin-bottom: 24px;
+    max-width: 520px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     font-weight: 400;
 }
 
+@media (max-width: 768px) {
+    .hero-description {
+        font-size: 0.92rem;
+        margin-bottom: 18px;
+        line-height: 1.45;
+    }
+}
+
+/* Fila de especificaciones horizontales limpias estilo Nissan Rogue */
+.hero-specs-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 26px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    max-width: 520px;
+}
+
+.hero-specs-row .spec-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.hero-specs-row .spec-val {
+    font-family: var(--font-display, 'Unbounded', sans-serif);
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #FFFFFF !important;
+    line-height: 1.1;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.hero-specs-row .spec-lbl {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94A3B8 !important;
+    font-weight: 600;
+}
+
+.hero-specs-row .spec-divider {
+    width: 1px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .hero-specs-row {
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+    }
+
+    .hero-specs-row .spec-val {
+        font-size: 1.35rem;
+    }
+
+    .hero-specs-row .spec-lbl {
+        font-size: 0.68rem;
+    }
+}
+
+/* Fallback para subtítulo anterior si viniera con div */
+.hero-subtitle {
+    margin-bottom: 24px;
+}
+
+.hero-price-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hero-price-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.92rem;
+}
+
+.hero-price-row.final-price {
+    font-family: var(--font-display, 'Unbounded', sans-serif);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hero-price-row.final-price .hero-price-val {
+    color: #38BDF8 !important;
+}
+
+/* Botones píldora redondeados estilo concesionario oficial */
+.hero-actions-row,
 .hero-buttons {
     display: flex;
+    align-items: center;
     gap: 16px;
     flex-wrap: wrap;
+}
+
+.btn-hero-deal,
+.btn-hero-primary {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 13px 30px !important;
+    background: #FFFFFF !important;
+    color: #0B132B !important;
+    font-family: var(--font-display, 'Unbounded', sans-serif) !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    border-radius: 9999px !important;
+    border: none !important;
+    text-decoration: none !important;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+.btn-hero-deal:hover,
+.btn-hero-primary:hover {
+    background: #38BDF8 !important;
+    color: #0B132B !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(56, 189, 248, 0.45) !important;
+}
+
+.btn-hero-details,
+.btn-hero-outline {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 12px 26px !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #FFFFFF !important;
+    font-family: var(--font-display, 'Unbounded', sans-serif) !important;
+    font-size: 0.83rem !important;
+    font-weight: 600 !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    text-decoration: none !important;
+    backdrop-filter: blur(10px) !important;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-hero-details:hover,
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px) !important;
 }
 
 /* Hero Controls */
@@ -5574,7 +5754,7 @@ img.mastertech-seal {
     position: relative;
     z-index: 30;
     max-width: 1240px;
-    margin: -50px auto 40px auto;
+    margin: 20px auto 45px auto;
     padding: 0 20px;
 }
 
