@@ -103,6 +103,54 @@
             color: #0F172A !important;
         }
 
+        /* SECTION HEADER DEALERSHIP STANDARD (WHITE SHOWROOM) */
+        .section-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(37, 99, 235, 0.08) !important;
+            border: 1px solid rgba(37, 99, 235, 0.25) !important;
+            border-radius: 30px !important;
+            color: #2563eb !important;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-weight: 700;
+            font-size: 0.74rem;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-weight: 800;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            color: #0F172A !important;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .section-title .text-accent {
+            color: #2563eb !important;
+            background: none !important;
+            -webkit-text-fill-color: #2563eb !important;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-body, 'Mina', sans-serif);
+            font-size: 1.05rem;
+            color: #475569 !important;
+            max-width: 680px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
         /* 1. HERO SHOWROOM SPLIT */
         .dealer-about-hero {
             position: relative;
@@ -639,6 +687,20 @@
             transform: translateY(-5px);
             border-color: #2563eb;
             box-shadow: 0 14px 28px rgba(37, 99, 235, 0.1);
+        }
+
+        .eco-dealer-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: #FFFFFF;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
         }
 
         .eco-dealer-icon {
@@ -1181,6 +1243,7 @@
                 <!-- 1. SEMINUEVO AUTOS -->
                 <div class="eco-dealer-card">
                     <div>
+                        <div class="eco-dealer-badge">CONCESIONARIO</div>
                         <div class="eco-dealer-icon"><i class="fas fa-car"></i></div>
                         <h3 class="eco-dealer-title">SemiNuevo Autos</h3>
                         <p class="eco-dealer-desc">
@@ -1193,6 +1256,7 @@
                 <!-- 2. TALLER MASTERTECH -->
                 <div class="eco-dealer-card">
                     <div>
+                        <div class="eco-dealer-badge">TALLER & PERITAJE</div>
                         <div class="eco-dealer-icon"><i class="fas fa-wrench"></i></div>
                         <h3 class="eco-dealer-title">Taller MasterTech</h3>
                         <p class="eco-dealer-desc">
@@ -1205,6 +1269,7 @@
                 <!-- 3. MT PART STORE -->
                 <div class="eco-dealer-card">
                     <div>
+                        <div class="eco-dealer-badge">REPUESTOS</div>
                         <div class="eco-dealer-icon"><i class="fas fa-boxes-stacked"></i></div>
                         <h3 class="eco-dealer-title">MT Part Store</h3>
                         <p class="eco-dealer-desc">
@@ -1217,6 +1282,7 @@
                 <!-- 4. MT WASH & DETAILING -->
                 <div class="eco-dealer-card">
                     <div>
+                        <div class="eco-dealer-badge">ESTÉTICA & DETAILING</div>
                         <div class="eco-dealer-icon"><i class="fas fa-spray-can-sparkles"></i></div>
                         <h3 class="eco-dealer-title">MT Detailing</h3>
                         <p class="eco-dealer-desc">
