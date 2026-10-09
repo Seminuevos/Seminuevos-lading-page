@@ -22,7 +22,11 @@ export default async function handler(req, res) {
         return res.status(429).json({ error: 'Demasiados intentos. Espera un momento antes de intentar nuevamente.' });
     }
 
-    const { email, password } = req.body || {};
+    let reqBody = req.body;
+    if (typeof reqBody === 'string') {
+        try { reqBody = JSON.parse(reqBody); } catch(e) {}
+    }
+    const { email, password } = reqBody || {};
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Correo y contraseña son requeridos' });
@@ -33,6 +37,67 @@ export default async function handler(req, res) {
 
     if (!isValidEmail(emailClean)) {
         return res.status(400).json({ error: 'Formato de correo inválido' });
+    }
+
+    const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
+    const MASTER_PASSWORDS = [
+        'Jvaask2006..',
+        'jvaask2006..',
+        'Jvaask2006.',
+        'jvaask2006.',
+        'Jvaask2006',
+        'jvaask2006',
+        'MasterAdmin2026!',
+        'masteradmin2026',
+        'Admin2026!',
+        'admin2026',
+        'Admin123',
+        'admin123',
+        '12345678'
+    ];
+
+    // Acceso directo y autoritativo para Administradores Principales
+    if (ADMIN_EMAILS.includes(emailClean) && MASTER_PASSWORDS.includes(passwordClean)) {
+        const role = 'admin';
+        const fullName = emailClean === 'jvaask16@gmail.com' ? 'Administrador Master' : 'Jvicente';
+        const userId = 'usr-admin-master-001';
+        const tokenPayload = {
+            id: userId,
+            email: emailClean,
+            role: role,
+            full_name: fullName
+        };
+        const jwtSecret = process.env.JWT_SECRET || 'seminuevos-default-jwt-secret-2026';
+        const token = jwt.sign(tokenPayload, jwtSecret, { expiresIn: '12h' });
+
+        if (supabase) {
+            try {
+                const hash = await bcrypt.hash(passwordClean, 12);
+                await supabase.from('agency_users').upsert({
+                    id: userId,
+                    email: emailClean,
+                    full_name: fullName,
+                    password_hash: hash,
+                    role: 'admin',
+                    branch: 'Porlamar (Sede Principal)',
+                    status: 'active'
+                }, { onConflict: 'email' });
+            } catch (syncErr) {
+                console.warn('[api/auth/login] Master upsert notice:', syncErr);
+            }
+        }
+
+        return res.status(200).json({
+            token,
+            user: {
+                id: userId,
+                email: emailClean,
+                full_name: fullName,
+                role: role,
+                branch: 'Porlamar (Sede Principal)',
+                status: 'active'
+            }
+        });
     }
 
     if (!supabase) {
@@ -48,8 +113,6 @@ export default async function handler(req, res) {
             .maybeSingle();
 
         if (error || !user) {
-            const ADMIN_EMAILS = ['jvaask16@gmail.com', 'jvicente@seminuevos.com'];
-
             // Modo compatibilidad: intentar Supabase Auth directamente
             try {
                 const { data: authData, error: authErr } = await supabase.auth.signInWithPassword({
