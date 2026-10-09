@@ -1934,6 +1934,16 @@ body::after {
     color: var(--primary-fixed);
 }
 
+.services-disclaimer {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--on-surface-variant);
+    opacity: 0.75;
+    margin-top: 36px;
+    letter-spacing: 0.3px;
+    font-style: italic;
+}
+
 /* ===== CTA SECTION ===== */
 .cta-section {
     padding: var(--space-24) 0;
