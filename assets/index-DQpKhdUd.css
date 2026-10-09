@@ -647,8 +647,8 @@ body::after {
     position: relative;
     height: calc(100vh - 68px);
     height: calc(100dvh - 68px);
-    min-height: 500px;
-    max-height: 840px;
+    min-height: 580px;
+    max-height: 860px;
     margin-top: 68px;
     overflow: hidden;
 }
@@ -738,11 +738,11 @@ body::after {
     .hero-content {
         position: absolute;
         top: auto;
-        bottom: 70px;
+        bottom: 75px;
         transform: none;
-        left: 6%;
-        right: 6%;
-        max-width: 92%;
+        left: 5%;
+        right: 5%;
+        max-width: 90%;
         margin: 0;
         text-align: left;
     }
@@ -793,10 +793,10 @@ body::after {
 .hero-nissan-title {
     font-family: var(--font-display);
     font-weight: 800 !important;
-    font-size: clamp(2.4rem, 4.4vw, 3.6rem) !important;
+    font-size: clamp(2.1rem, 3.8vw, 3.3rem) !important;
     line-height: 1.08 !important;
     letter-spacing: -0.025em !important;
-    margin: 0 0 8px 0 !important;
+    margin: 0 0 6px 0 !important;
     text-transform: none !important;
     color: #FFFFFF !important;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
@@ -814,10 +814,10 @@ body::after {
 .hero-tagline,
 .hero-nissan-tagline {
     font-family: var(--font-body);
-    font-size: clamp(0.96rem, 1.2vw, 1.12rem);
+    font-size: clamp(0.92rem, 1.15vw, 1.08rem);
     font-weight: 600;
     color: #F8FAFC;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     line-height: 1.35;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
@@ -826,11 +826,11 @@ body::after {
 .hero-description,
 .hero-nissan-desc {
     font-family: var(--font-body);
-    font-size: clamp(0.84rem, 0.95vw, 0.9rem) !important;
-    line-height: 1.55 !important;
+    font-size: clamp(0.82rem, 0.9vw, 0.88rem) !important;
+    line-height: 1.5 !important;
     color: #CBD5E1 !important;
-    margin-bottom: 16px !important;
-    max-width: 450px !important;
+    margin-bottom: 12px !important;
+    max-width: 460px !important;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
     font-weight: 400 !important;
 }
@@ -839,7 +839,7 @@ body::after {
     .hero-description,
     .hero-nissan-desc {
         font-size: 0.8rem !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
         line-height: 1.35 !important;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -853,7 +853,7 @@ body::after {
 .hero-specs-row {
     display: flex;
     flex-direction: column;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     border: none !important;
     padding: 0 !important;
 }
@@ -874,7 +874,7 @@ body::after {
 .hero-nissan-num,
 .hero-specs-row .spec-val {
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+    font-size: clamp(1.5rem, 2.3vw, 2.1rem) !important;
     font-weight: 800 !important;
     color: #FFFFFF !important;
     line-height: 1 !important;
@@ -898,13 +898,14 @@ body::after {
 .hero-nissan-disclaimer {
     font-family: var(--font-body);
     font-size: 0.72rem;
-    color: #94A3B8;
+    color: #CBD5E1;
     line-height: 1.4;
-    max-width: 440px;
-    margin-top: 4px;
+    max-width: 460px;
+    margin-top: 6px;
     display: flex;
     align-items: center;
     gap: 6px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .hero-specs-row .spec-divider {
@@ -6502,39 +6503,10 @@ img.mastertech-seal {
 
 @media (max-height: 760px) and (min-width: 769px) {
     .hero {
-        min-height: 440px;
-        height: calc(100vh - 88px);
+        min-height: 520px;
     }
     .hero-content {
-        max-width: 480px;
-    }
-    .hero-title {
-        font-size: 1.65rem !important;
-        margin-bottom: 6px !important;
-    }
-    .hero-description {
-        margin-bottom: 10px !important;
-        font-size: 0.82rem !important;
-        line-height: 1.35 !important;
-    }
-    .hero-specs-row {
-        gap: 12px !important;
-        margin-bottom: 10px !important;
-        padding-bottom: 8px !important;
-    }
-    .hero-specs-row .spec-val {
-        font-size: 1.15rem !important;
-    }
-    .hero-specs-row .spec-divider {
-        height: 22px !important;
-    }
-    .btn-hero-deal,
-    .btn-hero-details {
-        padding: 8px 18px !important;
-        font-size: 0.74rem !important;
-    }
-    .hero-controls {
-        bottom: 12px !important;
+        max-width: 500px;
     }
 }
 
