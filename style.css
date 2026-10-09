@@ -72,8 +72,8 @@
     --space-24: 96px;
 
     /* Typography */
-    --font-display: 'Unbounded', sans-serif;
-    --font-body: 'Mina', sans-serif;
+    --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
     /* Roundness */
     --radius-sm: 6px;
@@ -660,74 +660,77 @@ body::after {
     }
 }
 
-/* 1. Kicker / Brand Header (Clean, minimalist, spaced uppercase - Nissan Style) */
+/* 1. Kicker / Brand Header (Clean, minimalist, spaced uppercase) */
 .hero-eyebrow,
 .hero-nissan-kicker {
-    font-family: var(--font-body, 'Mina', sans-serif);
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 3px;
-    color: rgba(255, 255, 255, 0.75) !important;
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #38BDF8 !important;
     text-transform: uppercase;
     margin-bottom: 8px;
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-/* 2. Model Title (Massive, clean, modern, elegant sans-serif - Nissan Style) */
+/* 2. Model Title (Clean, modern, premium automotive sans) */
 .hero-title,
 .hero-nissan-title {
-    font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-weight: 500 !important;
-    font-size: clamp(2.8rem, 5.6vw, 4.6rem) !important;
-    line-height: 1.02 !important;
-    letter-spacing: -1px !important;
-    margin: 0 0 10px 0 !important;
+    font-family: var(--font-display);
+    font-weight: 800 !important;
+    font-size: clamp(2.4rem, 4.4vw, 3.6rem) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.025em !important;
+    margin: 0 0 8px 0 !important;
     text-transform: none !important;
     color: #FFFFFF !important;
-    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65) !important;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
 }
 
 .hero-title sup,
 .hero-nissan-title sup {
-    font-size: 0.38em;
+    font-size: 0.35em;
     top: -0.9em;
-    font-weight: 400;
-    opacity: 0.85;
+    font-weight: 500;
+    opacity: 0.75;
 }
 
 /* 3. Tagline & Description */
 .hero-tagline,
 .hero-nissan-tagline {
-    font-family: var(--font-body, 'Mina', sans-serif);
-    font-size: clamp(1.02rem, 1.25vw, 1.18rem);
+    font-family: var(--font-body);
+    font-size: clamp(0.96rem, 1.2vw, 1.12rem);
     font-weight: 600;
-    color: #FFFFFF;
-    margin-bottom: 6px;
+    color: #F8FAFC;
+    margin-bottom: 8px;
     line-height: 1.35;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .hero-description,
 .hero-nissan-desc {
-    font-family: var(--font-body, 'Mina', sans-serif);
-    font-size: clamp(0.85rem, 1vw, 0.94rem) !important;
+    font-family: var(--font-body);
+    font-size: clamp(0.84rem, 0.95vw, 0.9rem) !important;
     line-height: 1.55 !important;
-    color: rgba(255, 255, 255, 0.82) !important;
-    margin-bottom: 22px !important;
-    max-width: 460px !important;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+    color: #CBD5E1 !important;
+    margin-bottom: 16px !important;
+    max-width: 450px !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
     font-weight: 400 !important;
 }
 
 @media (max-width: 768px) {
     .hero-description,
     .hero-nissan-desc {
-        font-size: 0.82rem !important;
-        margin-bottom: 14px !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 12px !important;
         line-height: 1.35 !important;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -736,12 +739,12 @@ body::after {
     }
 }
 
-/* 4. Financial & Price Block (Exact Nissan Layout) */
+/* 4. Financial & Price Block */
 .hero-nissan-finance,
 .hero-specs-row {
     display: flex;
     flex-direction: column;
-    margin-bottom: 22px;
+    margin-bottom: 16px;
     border: none !important;
     padding: 0 !important;
 }
@@ -749,8 +752,8 @@ body::after {
 .hero-nissan-stats-row {
     display: flex;
     align-items: baseline;
-    gap: 36px;
-    margin-bottom: 6px;
+    gap: 28px;
+    margin-bottom: 4px;
 }
 
 .hero-nissan-stat,
@@ -761,47 +764,50 @@ body::after {
 
 .hero-nissan-num,
 .hero-specs-row .spec-val {
-    font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-size: clamp(1.9rem, 3.2vw, 2.6rem) !important;
-    font-weight: 600 !important;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem) !important;
+    font-weight: 800 !important;
     color: #FFFFFF !important;
     line-height: 1 !important;
-    letter-spacing: -0.5px !important;
+    letter-spacing: -0.02em !important;
     text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5) !important;
     white-space: nowrap;
 }
 
 .hero-nissan-label,
 .hero-specs-row .spec-lbl {
-    font-family: var(--font-body, 'Mina', sans-serif);
-    font-size: 0.8rem !important;
-    color: rgba(255, 255, 255, 0.72) !important;
-    margin-top: 5px !important;
-    font-weight: 500 !important;
-    text-transform: none !important;
-    letter-spacing: 0 !important;
+    font-family: var(--font-body);
+    font-size: 0.68rem !important;
+    color: #94A3B8 !important;
+    margin-top: 4px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
     white-space: nowrap;
 }
 
 .hero-nissan-disclaimer {
-    font-family: var(--font-body, 'Mina', sans-serif);
-    font-size: 0.76rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    color: #94A3B8;
     line-height: 1.4;
     max-width: 440px;
-    margin-top: 2px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .hero-specs-row .spec-divider {
     display: none !important;
 }
 
-/* 5. Action Buttons (Exact Nissan Layout: White Pill + Clean Text Link with Arrow) */
+/* 5. Action Buttons */
 .hero-actions-row,
 .hero-nissan-actions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
@@ -811,18 +817,18 @@ body::after {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 10px !important;
-    padding: 13px 28px !important;
+    gap: 8px !important;
+    padding: 11px 22px !important;
     background: #FFFFFF !important;
     color: #0F172A !important;
-    font-family: var(--font-body, 'Mina', sans-serif) !important;
-    font-size: 0.92rem !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.86rem !important;
     font-weight: 700 !important;
     border-radius: 50px !important;
     border: none !important;
     text-decoration: none !important;
     transition: all 0.22s ease !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
 }
 
 .btn-nissan-white:hover,
@@ -837,7 +843,7 @@ body::after {
 .btn-nissan-white i,
 .btn-hero-deal i,
 .btn-hero-primary i {
-    font-size: 0.85rem !important;
+    font-size: 0.82rem !important;
     transition: transform 0.2s ease !important;
 }
 
@@ -854,20 +860,28 @@ body::after {
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    padding: 13px 18px !important;
-    background: transparent !important;
+    padding: 11px 18px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
     color: #FFFFFF !important;
-    font-family: var(--font-body, 'Mina', sans-serif) !important;
-    font-size: 0.92rem !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.86rem !important;
     font-weight: 600 !important;
     border-radius: 50px !important;
-    border: none !important;
     text-decoration: none !important;
-    backdrop-filter: none !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
     transition: all 0.22s ease !important;
 }
 
 .btn-nissan-link:hover,
+.btn-hero-details:hover,
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px) !important;
+}
 .btn-hero-details:hover,
 .btn-hero-outline:hover {
     color: #93C5FD !important;
