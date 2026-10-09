@@ -842,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-hero-deal" target="_blank" rel="noopener">
                                <span>${s.ctaPrimary || 'Asegurar Oferta'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
-                            <a href="#showroom" class="btn-hero-details">
+                            <a href="catalogo" class="btn-hero-details">
                                <span>${s.ctaSecondary || 'Ver Detalles'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
