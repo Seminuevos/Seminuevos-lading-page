@@ -305,7 +305,7 @@ body::after {
     justify-content: center;
 }
 
-/* ===== EXECUTIVE HEADER & UTILITY BAR (TOYOTA / NISSAN / HONDA SPEC) ===== */
+/* ===== EXECUTIVE HEADER ===== */
 .dealership-header-wrapper {
     position: fixed;
     top: 0;
@@ -315,103 +315,12 @@ body::after {
     background: #FFFFFF;
 }
 
-.dealership-utility-bar {
-    background: #F8FAFC;
-    border-bottom: 1px solid #E2E8F0;
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
-    font-size: 0.74rem;
-    color: #475569;
-    padding: 6px 0;
-    width: 100%;
-}
-
-.dealership-utility-bar .utility-container {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dealership-utility-bar .utility-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 500;
-}
-
-.dealership-utility-bar .utility-left i {
-    color: #2563EB;
-}
-
-.dealership-utility-bar .utility-sep {
-    color: #CBD5E1;
-}
-
-.dealership-utility-bar .utility-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.dealership-utility-bar .utility-link {
-    color: #334155;
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.15s ease;
-    font-size: 0.73rem;
-}
-
-.dealership-utility-bar .utility-link i {
-    font-size: 0.72rem;
-    color: #64748B;
-    transition: color 0.15s ease;
-}
-
-.dealership-utility-bar .utility-link:hover {
-    color: #2563EB;
-}
-
-.dealership-utility-bar .utility-link:hover i {
-    color: #2563EB;
-}
-
 .dealership-header-wrapper .navbar {
     position: relative;
     top: auto;
     left: auto;
     right: auto;
     box-shadow: none;
-}
-
-@media (max-width: 992px) {
-    .dealership-utility-bar {
-        display: none !important;
-    }
-}
-
-@media (min-width: 993px) {
-    body:has(.dealership-header-wrapper) .hero {
-        margin-top: 104px;
-        height: calc(100vh - 104px);
-        height: calc(100dvh - 104px);
-    }
-    body:has(.dealership-header-wrapper) .catalog-hero-header {
-        padding-top: 140px;
-    }
-    body:has(.dealership-header-wrapper) .calc-page-spacer {
-        height: 110px;
-    }
-    body:has(.dealership-header-wrapper) .dealer-about-hero {
-        padding-top: 160px;
-    }
-    body:has(.dealership-header-wrapper) .services-hero-spacer {
-        height: 110px;
-    }
 }
 
 /* ===== NAVBAR (Glassmorphism) ===== */
