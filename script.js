@@ -480,6 +480,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="spec-item"><i class="fas fa-gas-pump"></i> ${car.fuel}</span>
                         <span class="spec-item"><i class="fas fa-gears"></i> ${car.transmission}</span>
                     </div>
+                    <div class="vehicle-card-cta">
+                        <span>Ver Ficha Técnica <i class="fas fa-arrow-right"></i></span>
+                    </div>
                 </div>
             `;
             gridElement.appendChild(card);
