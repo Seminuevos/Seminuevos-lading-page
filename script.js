@@ -700,6 +700,15 @@ document.addEventListener('DOMContentLoaded', () => {
             tabPedido.textContent = appVehiclesPorPedido.length > 0 ? `Por Pedido USA (${appVehiclesPorPedido.length})` : 'Por Pedido USA';
         }
 
+        // Actualizar dinámicamente el contador de vehículos en stock con datos reales en vivo
+        const statStockEl = document.getElementById('statStockCount');
+        if (statStockEl) {
+            statStockEl.dataset.target = liveVehs.length;
+            statStockEl.textContent = liveVehs.length;
+            const suffixEl = document.getElementById('statStockSuffix');
+            if (suffixEl) suffixEl.textContent = liveVehs.length > 0 ? '+' : '';
+        }
+
         renderAllPanels();
 
         if (typeof refreshFilters_seminuevos === 'function') refreshFilters_seminuevos();
