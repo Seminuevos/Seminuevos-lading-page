@@ -1162,9 +1162,9 @@
                 </div>
 
                 <div class="fin-alert-banner">
-                    <i class="fas fa-user-shield" style="font-size: 1.4rem; color: var(--accent);"></i>
+                    <i class="fas fa-user-shield" style="font-size: 1.4rem; color: #2563EB;"></i>
                     <div>
-                        <strong style="color:#ffffff;">Módulo Confidencial / Solo Perfilamiento Interno:</strong>
+                        <strong style="color:#0F172A;">Módulo Confidencial / Solo Perfilamiento Interno:</strong>
                         Herramienta de estructuración financiera y cotizaciones para asesores de crédito. Modela el desembolso inicial, capital financiado, seguro vehicular, fondo de mantenimiento y comisiones por riesgo según el perfil crediticio (Tier 1 vs Tier 2).
                     </div>
                 </div>
@@ -1173,15 +1173,15 @@
                     <!-- Columna Izquierda: Parámetros del Vehículo y Tasas -->
                     <div class="fin-card">
                         <div class="fin-card-title">
-                            <span><i class="fas fa-sliders-h" style="color:var(--accent); margin-right:8px;"></i> Parámetros de Entrada</span>
+                            <span><i class="fas fa-sliders-h" style="color:#2563EB; margin-right:8px;"></i> Parámetros de Entrada</span>
                         </div>
 
                         <!-- Selector rápido desde inventario -->
                         <div class="form-group" style="margin-bottom:14px;">
-                            <label class="form-label" style="font-size:0.78rem;">
-                                <i class="fas fa-car"></i> Cargar desde Inventario (Opcional):
+                            <label class="form-label" style="font-size:0.78rem; font-weight:700; color:#475569;">
+                                <i class="fas fa-car" style="color:#2563EB;"></i> Cargar desde Inventario (Opcional):
                             </label>
-                            <select id="finVehicleSelect" class="form-select" style="padding:8px 10px; font-size:0.85rem;" onchange="onFinVehicleSelected(this)">
+                            <select id="finVehicleSelect" class="form-select" style="padding:9px 12px; font-size:0.85rem; background:#F8FAFC; border:1.5px solid #CBD5E1; color:#0F172A; border-radius:10px;" onchange="onFinVehicleSelected(this)">
                                 <option value="">-- Seleccionar vehículo del inventario --</option>
                             </select>
                         </div>
@@ -1228,8 +1228,8 @@
                             <input type="number" id="fin_maint_annual" class="fin-input" value="1000" oninput="calculateFinancingPlans()">
                         </div>
 
-                        <div class="fin-card-title" style="margin-top:16px; margin-bottom:12px;">
-                            <span><i class="fas fa-percentage" style="color:var(--accent); margin-right:8px;"></i> Tasas Mensuales (%)</span>
+                        <div class="fin-card-title" style="margin-top:20px; margin-bottom:14px;">
+                            <span><i class="fas fa-percentage" style="color:#2563EB; margin-right:8px;"></i> Tasas Mensuales (%)</span>
                         </div>
 
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:18px;">
@@ -1259,7 +1259,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-block" type="button" onclick="calculateFinancingPlans()" style="justify-content:center;">
+                        <button class="btn btn-primary btn-block" type="button" onclick="calculateFinancingPlans()" style="justify-content:center; padding:12px 20px; font-weight:700;">
                             <i class="fas fa-sync-alt"></i> Actualizar Proyecciones
                         </button>
                     </div>
@@ -1268,22 +1268,22 @@
                     <div>
                         <div class="fin-kpi-grid">
                             <div class="fin-kpi-card">
-                                <div class="fin-kpi-label"><i class="fas fa-tag"></i> Precio Vehículo Base</div>
+                                <div class="fin-kpi-label"><i class="fas fa-tag" style="color:#2563EB;"></i> Precio Vehículo Base</div>
                                 <div class="fin-kpi-value" id="fin-kpi-price">$75,000.00</div>
                             </div>
                             <div class="fin-kpi-card">
-                                <div class="fin-kpi-label"><i class="fas fa-file-invoice-dollar"></i> Gastos Fijos Apertura</div>
-                                <div class="fin-kpi-value" id="fin-kpi-fixed-fees" style="color: #60a5fa;">$3,020.00</div>
+                                <div class="fin-kpi-label"><i class="fas fa-file-invoice-dollar" style="color:#2563EB;"></i> Gastos Fijos Apertura</div>
+                                <div class="fin-kpi-value" id="fin-kpi-fixed-fees" style="color: #2563EB;">$3,020.00</div>
                             </div>
                             <div class="fin-kpi-card">
-                                <div class="fin-kpi-label"><i class="fas fa-shield-alt"></i> Seguro Mensual (Cuota)</div>
-                                <div class="fin-kpi-value" id="fin-kpi-insurance" style="color: #f59e0b;">$218.75</div>
+                                <div class="fin-kpi-label"><i class="fas fa-shield-alt" style="color:#D97706;"></i> Seguro Mensual (Cuota)</div>
+                                <div class="fin-kpi-value" id="fin-kpi-insurance" style="color: #D97706;">$218.75</div>
                             </div>
                         </div>
 
-                        <div class="table-container" style="box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-                            <div class="table-header">
-                                <h3><i class="fas fa-table" style="color:var(--accent); margin-right:8px;"></i> Matriz de Proyecciones - SEMINUEVOS AUTOS</h3>
+                        <div class="table-container" style="box-shadow: 0 4px 20px rgba(15,23,42,0.06); border:1px solid #E2E8F0; border-radius:16px; overflow:hidden; background:#FFFFFF;">
+                            <div class="table-header" style="background:#FFFFFF; border-bottom:1px solid #E2E8F0; padding:18px 20px;">
+                                <h3 style="color:#0F172A; font-size:0.95rem; font-weight:800; font-family:'Unbounded',sans-serif;"><i class="fas fa-table" style="color:#2563EB; margin-right:8px;"></i> Matriz de Proyecciones - SEMINUEVOS AUTOS</h3>
                                 <div style="display:flex; gap:8px; align-items:center;">
                                     <span class="fin-badge fin-badge-low">Tier 1: Bajo Riesgo</span>
                                     <span class="fin-badge fin-badge-high">Tier 2: Alto Riesgo</span>
@@ -1310,8 +1310,8 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 14px; font-size: 0.78rem; color: var(--text3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                            <span><i class="fas fa-info-circle"></i> <strong>Desembolso Inicial:</strong> Inicial del vehículo + Gastos Fijos de Apertura + Fondo de Mantenimiento proporcional + Comisión por Riesgo (en planes Tier 2).</span>
+                        <div style="margin-top: 14px; font-size: 0.78rem; color: #64748B; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                            <span><i class="fas fa-info-circle" style="color:#2563EB;"></i> <strong>Desembolso Inicial:</strong> Inicial del vehículo + Gastos Fijos de Apertura + Fondo de Mantenimiento proporcional + Comisión por Riesgo (en planes Tier 2).</span>
                             <span>SEMINUEVOS AUTOS © 2026 - Uso Interno</span>
                         </div>
                     </div>
@@ -8625,15 +8625,15 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 tr.innerHTML = `
                     <td style="text-align: left;">
                         <span class="fin-badge ${badgeClass}">${tierLabel}</span><br>
-                        <strong style="color:#ffffff; font-size:0.88rem;">${p.name}</strong>
+                        <strong style="color:#0F172A; font-size:0.88rem;">${p.name}</strong>
                     </td>
-                    <td><span style="font-weight:700;">${(p.downPct * 100).toFixed(1)}%</span></td>
-                    <td style="font-weight:700; color:#ffffff;">${fmtFin(upfrontTotal)}</td>
-                    <td style="color:var(--text2);">${fmtFin(capital)}</td>
-                    <td><span style="background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">${(p.rate * 100).toFixed(2)}%</span></td>
-                    <td style="font-weight:800; color:#f59e0b; font-size:0.95rem;">${fmtFin(pmtTotal)}</td>
-                    <td style="color:#34d399;">${fmtFin(totalInterest)}</td>
-                    <td style="font-weight:700; color:#60a5fa;">${fmtFin(costoTotal)}</td>
+                    <td><span style="font-weight:700; color:#0F172A;">${(p.downPct * 100).toFixed(1)}%</span></td>
+                    <td style="font-weight:700; color:#0F172A;">${fmtFin(upfrontTotal)}</td>
+                    <td style="color:#475569; font-weight:600;">${fmtFin(capital)}</td>
+                    <td><span style="background:#F1F5F9; color:#1E293B; font-weight:700; padding:3px 8px; border-radius:6px; border:1px solid #E2E8F0;">${(p.rate * 100).toFixed(2)}%</span></td>
+                    <td style="font-weight:800; color:#D97706; font-size:0.95rem;">${fmtFin(pmtTotal)}</td>
+                    <td style="color:#059669; font-weight:700;">${fmtFin(totalInterest)}</td>
+                    <td style="font-weight:800; color:#2563EB;">${fmtFin(costoTotal)}</td>
                 `;
                 tbody.appendChild(tr);
             });
