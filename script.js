@@ -775,84 +775,82 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
         slidesData.forEach((s, i) => {
             const isFirst = i === 0;
-            const isSecond = i === 1;
 
             const posX = s.imgPositionX || 'center';
             const posY = s.imgPositionY || 'center';
             const bgPos = s.imgPosition || `${posX} ${posY}`;
             const bgSize = s.imgZoom ? (s.imgZoom === '100' ? 'cover' : `${s.imgZoom}%`) : 'cover';
-            const darkVal = s.overlayDarkness !== undefined ? (Number(s.overlayDarkness) / 100) : (isFirst ? 0.85 : 0.88);
-            const textAlign = s.textAlign || (isFirst ? 'center' : 'left');
-
-            // Badge color
-            const badgeStyles = {
-                gold: { color: 'var(--primary)', bg: 'rgba(212, 160, 23, 0.15)', border: 'rgba(212, 160, 23, 0.35)' },
-                blue: { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', border: 'rgba(56, 189, 248, 0.35)' },
-                green: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.35)' },
-                red: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.35)' }
-            };
-            const activeBadge = badgeStyles[s.badgeColor] || badgeStyles.gold;
-
-            let subtitleHtml = '';
-            const showPrice = s.showPriceCard !== false;
-            const fmt = (num) => Number(num || 0).toLocaleString('en-US');
-            
-            if (s.subtitle && !s.subtitle.includes('<div')) {
-                subtitleHtml = `<p class="hero-description">${s.subtitle}</p>`;
-            } else {
-                subtitleHtml = `<p class="hero-description">Vehículo certificado, con respaldo pericial MasterTech y entrega inmediata disponible.</p>`;
-            }
-
-            let specsHtml = '';
-            if (showPrice && (s.finalPrice || s.originalPrice)) {
-                specsHtml = `
-                    <div class="hero-nissan-finance">
-                        <div class="hero-nissan-stats-row">
-                            <div class="hero-nissan-stat">
-                                <span class="hero-nissan-num">$${fmt(s.finalPrice || s.originalPrice)}</span>
-                                <span class="hero-nissan-label">Precio Especial</span>
-                            </div>
-                            <div class="hero-nissan-stat">
-                                <span class="hero-nissan-num">${s.km || '0 KM'}</span>
-                                <span class="hero-nissan-label">Recorrido</span>
-                            </div>
-                        </div>
-                        <div class="hero-nissan-disclaimer">Inspección de 150 puntos respaldada por Taller MasterTech.</div>
-                    </div>
-                `;
-            }
-
+            const darkVal = s.overlayDarkness !== undefined ? (Number(s.overlayDarkness) / 100) : 0.70;
+            const textAlign = s.textAlign || 'left';
             const alignClass = textAlign === 'center' ? 'align-center' : (textAlign === 'right' ? 'align-right' : 'align-left');
 
+            const fmt = (num) => isNaN(num) ? num : Number(num || 0).toLocaleString('en-US');
+
             // Mapear URLs pesadas legadas a las versiones optimizadas locales
-            let heroBgImage = s.image || '';
+            let heroBgImage = s.image || 'images/hero-slides/hero-1.jpg';
             if (heroBgImage.includes('hero-1785512729611-0.jpg')) heroBgImage = 'images/hero-slides/hero-1.jpg';
             else if (heroBgImage.includes('hero-1781886028689-1.jpg')) heroBgImage = 'images/hero-slides/hero-2.jpg';
             else if (heroBgImage.includes('hero-1789410090103-2.jpg')) heroBgImage = 'images/hero-slides/hero-3.jpg';
 
-            // Re-crear el diseño premium oficial estilo Nissan
-            const cleanTitle = (s.title || 'Vehículo Certificado').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
-            const cleanKicker = (s.tag || 'SEMINUEVOS 2026').replace(/<[^>]*>/g, '').replace(/[|•].*$/, '').trim();
+            // Datos limpios y normalizados (estilo editorial oficial de lujo)
+            const cleanTitle = (s.title || 'Vehículo Seminuevo').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
+            const cleanKicker = (s.kicker || s.tag || 'STOCK CERTIFICADO').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
+            const tagline = s.tagline || s.subtitle || '';
+            const desc = s.description || s.desc || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.';
+
+            let stat1Val = s.stat1Num;
+            if (!stat1Val) {
+                if (s.finalPrice) stat1Val = `$${fmt(s.finalPrice)}`;
+                else if (s.originalPrice) stat1Val = `$${fmt(s.originalPrice)}`;
+                else stat1Val = 'Consultar';
+            }
+            const stat1Lbl = s.stat1Label || 'Precio Especial';
+
+            let stat2Val = s.stat2Num;
+            if (!stat2Val) {
+                stat2Val = s.km || '0 KM';
+            }
+            const stat2Lbl = s.stat2Label || 'Kilometraje Real';
+
+            const disclaimer = s.disclaimer || 'Inspección de 150 puntos respaldada por Taller MasterTech.';
+            const cta1 = s.ctaPrimary || 'Asegurar esta oferta';
+            const waText = s.waText || `Hola, me interesa el ${cleanTitle}.`;
+            const cta2 = s.ctaSecondary || 'Ver en catálogo';
+            const cta2Link = s.ctaSecondaryLink || 'catalogo';
+
+            const phone = window.WHATSAPP_NUMBER || '584248700438';
 
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
-                    <div class="hero-overlay"></div>
+                    <div class="hero-overlay" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%);"></div>
                     <div class="hero-content ${alignClass}">
-                        <span class="hero-nissan-kicker">${cleanKicker}</span>
+                        <span class="hero-nissan-kicker"><i class="fas fa-shield-halved"></i> ${cleanKicker}</span>
                         <${isFirst ? 'h1' : 'p'} class="hero-nissan-title">
-                            ${cleanTitle}<sup>®</sup>
+                            ${cleanTitle}
                         </${isFirst ? 'h1' : 'p'}>
-                        <h2 class="hero-nissan-tagline">${s.subtitle || 'El crossover expresivo y vanguardista'}</h2>
+                        ${tagline ? `<h2 class="hero-nissan-tagline">${tagline}</h2>` : ''}
                         <p class="hero-nissan-desc">
-                            ${s.description || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.'}
+                            ${desc}
                         </p>
-                        ${specsHtml}
+                        <div class="hero-nissan-finance">
+                            <div class="hero-nissan-stats-row">
+                                <div class="hero-nissan-stat">
+                                    <span class="hero-nissan-num">${stat1Val}</span>
+                                    <span class="hero-nissan-label">${stat1Lbl}</span>
+                                </div>
+                                <div class="hero-nissan-stat">
+                                    <span class="hero-nissan-num">${stat2Val}</span>
+                                    <span class="hero-nissan-label">${stat2Lbl}</span>
+                                </div>
+                            </div>
+                            <div class="hero-nissan-disclaimer"><i class="fas fa-check-circle"></i> ${disclaimer}</div>
+                        </div>
                         <div class="hero-nissan-actions">
-                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-nissan-white" target="_blank" rel="noopener">
-                               <span>${s.ctaPrimary || 'Asegurar esta oferta'}</span> <i class="fas fa-arrow-right"></i>
+                            <a href="https://wa.me/${phone}?text=${encodeURIComponent(waText)}" class="btn-nissan-white" target="_blank" rel="noopener">
+                               <span>${cta1}</span> <i class="fas fa-arrow-right"></i>
                             </a>
-                            <a href="catalogo" class="btn-nissan-link">
-                               <span>${s.ctaSecondary || 'Detalles de oferta'}</span> <i class="fas fa-arrow-right"></i>
+                            <a href="${cta2Link}" class="btn-nissan-link">
+                               <span>${cta2}</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>

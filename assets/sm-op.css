@@ -2476,6 +2476,139 @@
             transition: all 0.2s ease;
         }
 
+        /* ===== HERO NISSAN / TOYOTA LIVE PREVIEW STYLES IN SM-OP ===== */
+        .hero-nissan-kicker {
+            font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #38BDF8 !important;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .hero-nissan-title {
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-weight: 800 !important;
+            font-size: 1.85rem !important;
+            line-height: 1.1 !important;
+            letter-spacing: -0.025em !important;
+            color: #FFFFFF !important;
+            margin: 0 0 8px 0 !important;
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-nissan-tagline {
+            font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #F8FAFC;
+            margin: 0 0 8px 0;
+            line-height: 1.35;
+        }
+
+        .hero-nissan-desc {
+            font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+            font-size: 0.82rem !important;
+            line-height: 1.5 !important;
+            color: #CBD5E1 !important;
+            margin: 0 0 16px 0 !important;
+            max-width: 520px;
+        }
+
+        .hero-nissan-finance {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 18px;
+        }
+
+        .hero-nissan-stats-row {
+            display: flex;
+            align-items: baseline;
+            gap: 24px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
+        .hero-nissan-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-nissan-num {
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-size: 1.6rem !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            line-height: 1 !important;
+            letter-spacing: -0.02em !important;
+            text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .hero-nissan-label {
+            font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+            font-size: 0.65rem !important;
+            color: #94A3B8 !important;
+            margin-top: 4px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.8px !important;
+        }
+
+        .hero-nissan-disclaimer {
+            font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+            font-size: 0.72rem;
+            color: #94A3B8;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-nissan-disclaimer i {
+            color: #38BDF8;
+        }
+
+        .hero-nissan-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nissan-white {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            background: #FFFFFF !important;
+            color: #0F172A !important;
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            padding: 9px 18px !important;
+            border-radius: 50px !important;
+            text-decoration: none !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-nissan-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            background: transparent !important;
+            color: #FFFFFF !important;
+            border: 1px solid rgba(255, 255, 255, 0.35) !important;
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            padding: 8px 18px !important;
+            border-radius: 50px !important;
+            text-decoration: none !important;
+        }
+
         /* ESTILOS DEL PDF EXPORTABLE */
         #cpPdfTemplateWrapper,
         #cronPdfWrapper,

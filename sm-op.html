@@ -4095,14 +4095,75 @@
             document.getElementById('sDocVzla').value = map.calc_doc_vzla || 1000;
             document.getElementById('sServiceFeeSetting').value = map.calc_service_fee || 900;
 
-            if (map.hero_slides) {
+            if (map.hero_slides && Array.isArray(map.hero_slides) && map.hero_slides.length > 0) {
                 heroSlides = map.hero_slides;
                 renderHeroSlides();
             } else {
-                // Fallback a los slides por defecto
+                // Fallback a los slides ejecutivos oficiales
                 heroSlides = [
-                    { tag: "STOCK LOCAL DISPONIBLE", title: "Toyota 4Runner Trail 2021", subtitle: "Mantenimiento al dÃ­a en MasterTech. Lista para traspaso inmediato en Porlamar.", image: "images/hero1.png" },
-                    { tag: "ENTREGA INMEDIATA", title: "Nuevos Modelos 0KM 2025", subtitle: "Disponibilidad de stock fÃ­sico para que conduzcas hoy mismo tu prÃ³ximo vehÃ­culo.", image: "images/hero2.png" }
+                    {
+                        kicker: "HYUNDAI · 2023",
+                        title: "Tucson",
+                        tagline: "El crossover expresivo y vanguardista",
+                        description: "Ingeniería de última generación, bajo consumo y confort de primer nivel. Disponible para entrega inmediata con placa nacional.",
+                        stat1Num: "$37,990",
+                        stat1Label: "Precio Especial",
+                        stat2Num: "0 KM",
+                        stat2Label: "Condición a Estrenar",
+                        disclaimer: "Inspección de 150 puntos respaldada por Taller MasterTech.",
+                        ctaPrimary: "Asegurar esta oferta",
+                        waText: "Hola, me interesa el Hyundai Tucson 2023 en stock local.",
+                        ctaSecondary: "Ver en catálogo",
+                        ctaSecondaryLink: "catalogo",
+                        image: "images/hero-slides/hero-1.jpg",
+                        imgPositionY: "center",
+                        imgPositionX: "center",
+                        imgZoom: "100",
+                        overlayDarkness: "70",
+                        textAlign: "left"
+                    },
+                    {
+                        kicker: "HONDA · 2025",
+                        title: "HR-V Sport",
+                        tagline: "Dinámica inteligente, espacio versátil y tracción AWD",
+                        description: "SUV compacta con tracción integral AWD inteligente y certificación mecánica de 150 puntos respaldada por MasterTech.",
+                        stat1Num: "$36,000",
+                        stat1Label: "Precio Especial",
+                        stat2Num: "17,000 KM",
+                        stat2Label: "Kilometraje Real",
+                        disclaimer: "2 años de revisiones mecánicas gratuitas en Taller MasterTech Margarita.",
+                        ctaPrimary: "Asegurar esta oferta",
+                        waText: "Hola, me interesa el Honda HR-V Sport 2025 4x4.",
+                        ctaSecondary: "Ver en catálogo",
+                        ctaSecondaryLink: "catalogo",
+                        image: "images/hero-slides/hero-2.jpg",
+                        imgPositionY: "center",
+                        imgPositionX: "center",
+                        imgZoom: "100",
+                        overlayDarkness: "70",
+                        textAlign: "left"
+                    },
+                    {
+                        kicker: "TOYOTA · 2021",
+                        title: "4Runner SR5",
+                        tagline: "Auténtico todoterreno japonés 4x4 de leyenda",
+                        description: "Chasis sobre largueros de máxima resistencia, legendario motor V6 4.0L y entrega garantizada llave en mano.",
+                        stat1Num: "Consultar",
+                        stat1Label: "Precio & Stock",
+                        stat2Num: "4.0L V6",
+                        stat2Label: "Motorización",
+                        disclaimer: "Estatus legal nacional con libre tránsito por toda Venezuela.",
+                        ctaPrimary: "Solicitar cotización",
+                        waText: "Hola, me interesa el Toyota 4Runner SR5 4x4.",
+                        ctaSecondary: "Ver en catálogo",
+                        ctaSecondaryLink: "catalogo",
+                        image: "images/hero-slides/hero-3.jpg",
+                        imgPositionY: "center",
+                        imgPositionX: "center",
+                        imgZoom: "100",
+                        overlayDarkness: "70",
+                        textAlign: "left"
+                    }
                 ];
                 renderHeroSlides();
             }
@@ -4117,54 +4178,66 @@
             }
 
             container.innerHTML = heroSlides.map((s, i) => {
-                const orig = s.originalPrice || '';
-                const disc = s.discountPercentage || '';
-                const fin = s.financingBonus || '';
-                const final = s.finalPrice || '';
-                const wa = s.waText || '';
-                const cta1 = s.ctaPrimary || 'Asegurar Oferta';
-                const cta2 = s.ctaSecondary || 'Ver Detalles';
-                const tag = s.tag || 'STOCK LOCAL';
-                const title = s.title || 'VehÃ­culo Seminuevo';
-                const img = s.image || 'images/hero1.png';
+                const kicker = s.kicker || s.tag || 'STOCK CERTIFICADO';
+                const title = (s.title || 'Vehículo Seminuevo').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
+                const tagline = s.tagline || s.subtitle || 'Dinámica inteligente, confort y rendimiento superior';
+                const desc = s.description || s.desc || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.';
+
+                const fmt = (num) => isNaN(num) ? num : Number(num || 0).toLocaleString('en-US');
+
+                let stat1Val = s.stat1Num;
+                if (!stat1Val) {
+                    if (s.finalPrice) stat1Val = `$${fmt(s.finalPrice)}`;
+                    else if (s.originalPrice) stat1Val = `$${fmt(s.originalPrice)}`;
+                    else stat1Val = '$36,000';
+                }
+                const stat1Lbl = s.stat1Label || 'Precio Especial';
+
+                let stat2Val = s.stat2Num;
+                if (!stat2Val) {
+                    stat2Val = s.km || '0 KM';
+                }
+                const stat2Lbl = s.stat2Label || 'Kilometraje Real';
+
+                const disclaimer = s.disclaimer || '2 años de revisiones mecánicas gratuitas en Taller MasterTech Margarita.';
+                const cta1 = s.ctaPrimary || 'Asegurar esta oferta';
+                const wa = s.waText || `Hola, me interesa el ${title}.`;
+                const cta2 = s.ctaSecondary || 'Ver en catálogo';
+                const cta2Link = s.ctaSecondaryLink || 'catalogo';
+
+                const img = s.image || 'images/hero-slides/hero-1.jpg';
                 const posY = s.imgPositionY || 'center';
                 const posX = s.imgPositionX || 'center';
                 const zoom = s.imgZoom || '100';
                 const darkness = s.overlayDarkness !== undefined ? s.overlayDarkness : '70';
                 const align = s.textAlign || 'left';
-                const badgeCol = s.badgeColor || 'gold';
-                const showPrice = s.showPriceCard !== false;
 
                 const bgPos = `${posX} ${posY}`;
                 const bgSize = zoom === '100' ? 'cover' : `${zoom}%`;
                 const darkVal = Number(darkness) / 100;
 
-                const fmt = (num) => Number(num || 0).toLocaleString('en-US');
-
-                // Badge color styles
-                const badgeStyles = {
-                    gold: { color: '#eab308', bg: 'rgba(234, 179, 8, 0.15)', border: 'rgba(234, 179, 8, 0.35)' },
-                    blue: { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', border: 'rgba(56, 189, 248, 0.35)' },
-                    green: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.35)' },
-                    red: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.35)' }
-                };
-                const activeBadge = badgeStyles[badgeCol] || badgeStyles.gold;
-
-                const formattedTitle = title.includes('<span') ? title : title.replace(/\b(20\d{2}|0KM)\b/g, '<span style="color:var(--accent);">$1</span>');
-
                 return `
                 <div class="hero-slide-editor-card" id="heroSlideCard-${i}">
                     <!-- HEADER BAR -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="background:var(--accent); color:#000; font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:6px; font-family:'Unbounded',sans-serif;">
+                            <span style="background:var(--accent); color:#000; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:6px; font-family:'Unbounded',sans-serif;">
                                 SLIDE #${i + 1}
                             </span>
-                            <span style="font-weight:700; color:#fff; font-size:0.9rem;" id="hpHeaderTitle-${i}">
+                            <span style="font-weight:700; color:#fff; font-size:0.95rem;" id="hpHeaderTitle-${i}">
                                 ${title}
                             </span>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="moveHeroSlide(${i}, -1)" ${i === 0 ? 'disabled style="opacity:0.35;"' : ''} title="Subir orden">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="moveHeroSlide(${i}, 1)" ${i === heroSlides.length - 1 ? 'disabled style="opacity:0.35;"' : ''} title="Bajar orden">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="duplicateHeroSlide(${i})" title="Duplicar este slide">
+                                <i class="fas fa-copy"></i>
+                            </button>
                             <button type="button" class="action-btn delete" onclick="removeHeroSlide(${i})" title="Eliminar este slide">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -4172,7 +4245,7 @@
                     </div>
 
                     <div class="hero-editor-layout">
-                        <!-- COLUMNA 1: CONTROLES DE EDICIÃ“N & AJUSTES -->
+                        <!-- COLUMNA 1: CONTROLES DE EDICIÓN & AJUSTES -->
                         <div>
                             <!-- FOTO & ENCUADRE -->
                             <div class="hero-control-group">
@@ -4182,39 +4255,39 @@
                                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
                                     <div style="width:70px; height:50px; background:#000; border-radius:6px; overflow:hidden; position:relative; flex-shrink:0; border:1px solid rgba(255,255,255,0.2);">
                                         <img id="hpThumb-${i}" src="${img}" style="width:100%; height:100%; object-fit:cover;">
-                                        <button type="button" onclick="document.getElementById('heroFile-${i}').click()" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem;">
+                                        <button type="button" onclick="document.getElementById('heroFile-${i}').click()" style="position:absolute; inset:0; background:rgba(0,0,0,0.55); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem;" title="Subir archivo WebP">
                                             <i class="fas fa-upload"></i>
                                         </button>
                                         <input type="file" id="heroFile-${i}" style="display:none" onchange="uploadHeroImage(${i}, this)" accept="image/*">
                                     </div>
                                     <div style="flex:1;">
-                                        <input type="text" class="form-input" id="hpImgUrlInput-${i}" value="${img}" placeholder="URL de la imagen (o sube archivo)" oninput="updateHeroSlideField(${i}, 'image', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                        <input type="text" class="form-input" id="hpImgUrlInput-${i}" value="${img}" placeholder="URL de la imagen (o sube archivo WebP)" oninput="updateHeroSlideField(${i}, 'image', this.value)" style="font-size:0.75rem; padding:6px 10px;">
                                     </div>
                                 </div>
 
-                                <!-- PosiciÃ³n Vertical -->
+                                <!-- Posición Vertical -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">PosiciÃ³n Vertical de la Foto:</label>
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Vertical:</label>
                                     <div class="hero-seg-btn-group">
-                                        <button type="button" class="hero-seg-btn ${posY==='top'?'active':''}" onclick="setHeroImgPosition(${i}, 'top', null)">â¬†ï¸ Arriba</button>
-                                        <button type="button" class="hero-seg-btn ${posY==='center'?'active':''}" onclick="setHeroImgPosition(${i}, 'center', null)">âºï¸ Centro</button>
-                                        <button type="button" class="hero-seg-btn ${posY==='bottom'?'active':''}" onclick="setHeroImgPosition(${i}, 'bottom', null)">â¬‡ï¸ Abajo</button>
+                                        <button type="button" class="hero-seg-btn ${posY==='top'?'active':''}" onclick="setHeroImgPosition(${i}, 'top', null)">⬆️ Arriba</button>
+                                        <button type="button" class="hero-seg-btn ${posY==='center'?'active':''}" onclick="setHeroImgPosition(${i}, 'center', null)">⏺️ Centro</button>
+                                        <button type="button" class="hero-seg-btn ${posY==='bottom'?'active':''}" onclick="setHeroImgPosition(${i}, 'bottom', null)">⬇️ Abajo</button>
                                     </div>
                                 </div>
 
-                                <!-- PosiciÃ³n Horizontal -->
+                                <!-- Posición Horizontal -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">PosiciÃ³n Horizontal de la Foto:</label>
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Horizontal:</label>
                                     <div class="hero-seg-btn-group">
-                                        <button type="button" class="hero-seg-btn ${posX==='left'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'left')">â¬…ï¸ Izquierda</button>
-                                        <button type="button" class="hero-seg-btn ${posX==='center'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'center')">âºï¸ Centro</button>
-                                        <button type="button" class="hero-seg-btn ${posX==='right'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'right')">âž¡ï¸ Derecha</button>
+                                        <button type="button" class="hero-seg-btn ${posX==='left'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'left')">⬅️ Izquierda</button>
+                                        <button type="button" class="hero-seg-btn ${posX==='center'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'center')">⏺️ Centro</button>
+                                        <button type="button" class="hero-seg-btn ${posX==='right'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'right')">➡️ Derecha</button>
                                     </div>
                                 </div>
 
                                 <!-- Zoom / Escala -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Escala / Zoom de la Foto:</label>
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Escala / Zoom:</label>
                                     <div class="hero-seg-btn-group">
                                         <button type="button" class="hero-seg-btn ${zoom==='100'?'active':''}" onclick="setHeroImgZoom(${i}, '100')">100% Ajuste</button>
                                         <button type="button" class="hero-seg-btn ${zoom==='115'?'active':''}" onclick="setHeroImgZoom(${i}, '115')">115% Zoom</button>
@@ -4232,99 +4305,111 @@
                                 </div>
                             </div>
 
-                            <!-- TEXTOS & ALINEACIÃ“N -->
+                            <!-- TEXTOS PRINCIPALES & TIPOGRAFÍA -->
                             <div class="hero-control-group">
                                 <div class="hero-control-header">
-                                    <span><i class="fas fa-font"></i> Textos & AlineaciÃ³n</span>
+                                    <span><i class="fas fa-font"></i> Textos Principales (Editorial)</span>
                                 </div>
 
-                                <!-- AlineaciÃ³n del Contenido -->
+                                <!-- Kicker / Subetiqueta superior -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">AlineaciÃ³n en Pantalla:</label>
-                                    <div class="hero-seg-btn-group">
-                                        <button type="button" class="hero-seg-btn ${align==='left'?'active':''}" onclick="setTextAlign(${i}, 'left')">â¬…ï¸ Izquierda</button>
-                                        <button type="button" class="hero-seg-btn ${align==='center'?'active':''}" onclick="setTextAlign(${i}, 'center')">âºï¸ Centrado</button>
-                                        <button type="button" class="hero-seg-btn ${align==='right'?'active':''}" onclick="setTextAlign(${i}, 'right')">âž¡ï¸ Derecha</button>
-                                    </div>
+                                    <label style="font-size:0.68rem; color:#38bdf8; font-weight:700; display:block; margin-bottom:3px;">
+                                        <i class="fas fa-shield-halved"></i> Kicker / Sub-etiqueta Superior:
+                                    </label>
+                                    <input type="text" class="form-input" value="${kicker}" placeholder="Ej: HONDA · 2025" oninput="updateHeroSlideField(${i}, 'kicker', this.value)" style="font-size:0.8rem; padding:6px 10px; font-weight:600;">
                                 </div>
 
-                                <!-- Badge Tag & Color -->
-                                <div style="display:grid; grid-template-columns:1fr 140px; gap:8px; margin-bottom:10px;">
-                                    <div>
-                                        <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Texto del Badge:</label>
-                                        <input type="text" class="form-input" value="${tag}" placeholder="Ej: EN PROCESO" oninput="updateHeroSlideField(${i}, 'tag', this.value)" style="font-size:0.75rem; padding:6px 10px;">
-                                    </div>
-                                    <div>
-                                        <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Color Badge:</label>
-                                        <select class="form-input" onchange="setBadgeColor(${i}, this.value)" style="font-size:0.75rem; padding:6px 8px;">
-                                            <option value="gold" ${badgeCol==='gold'?'selected':''}>ðŸŸ¡ Dorado VIP</option>
-                                            <option value="blue" ${badgeCol==='blue'?'selected':''}>ðŸ”µ Azul NeÃ³n</option>
-                                            <option value="green" ${badgeCol==='green'?'selected':''}>ðŸŸ¢ Verde Stock</option>
-                                            <option value="red" ${badgeCol==='red'?'selected':''}>ðŸ”´ Rojo Oferta</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- TÃ­tulo Principal -->
+                                <!-- Título Principal del Modelo (Sin ®) -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">TÃ­tulo del VehÃ­culo:</label>
-                                    <input type="text" class="form-input" value="${title}" placeholder="Ej: Hyundai Elantra N 2025" oninput="updateHeroSlideField(${i}, 'title', this.value)" style="font-size:0.85rem; font-weight:700; padding:8px 10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Título del Modelo (Sin ®):</label>
+                                    <input type="text" class="form-input" value="${title}" placeholder="Ej: HR-V Sport" oninput="updateHeroSlideField(${i}, 'title', this.value)" style="font-size:0.9rem; font-weight:800; padding:8px 10px;">
                                 </div>
 
-                                <!-- WhatsApp Message -->
+                                <!-- Subtítulo / Tagline -->
+                                <div style="margin-bottom:10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Subtítulo / Tagline:</label>
+                                    <input type="text" class="form-input" value="${tagline}" placeholder="Ej: Dinámica inteligente, espacio versátil y tracción 4x4" oninput="updateHeroSlideField(${i}, 'tagline', this.value)" style="font-size:0.8rem; padding:7px 10px;">
+                                </div>
+
+                                <!-- Descripción Técnica -->
+                                <div style="margin-bottom:10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Descripción Técnica / Respaldo:</label>
+                                    <textarea class="form-input" rows="2" placeholder="SUV compacta con tracción integral AWD inteligente..." oninput="updateHeroSlideField(${i}, 'description', this.value)" style="font-size:0.75rem; padding:7px 10px; resize:vertical;">${desc}</textarea>
+                                </div>
+
+                                <!-- Alineación del Contenido -->
                                 <div>
-                                    <label style="font-size:0.68rem; color:#25D366; display:flex; align-items:center; gap:4px; margin-bottom:3px;">
-                                        <i class="fab fa-whatsapp"></i> Mensaje Predeterminado al Cotizar:
-                                    </label>
-                                    <input type="text" class="form-input" value="${wa}" placeholder="Â¿Me pueden cotizar?" oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Alineación en Pantalla:</label>
+                                    <div class="hero-seg-btn-group">
+                                        <button type="button" class="hero-seg-btn ${align==='left'?'active':''}" onclick="setTextAlign(${i}, 'left')">⬅️ Izquierda</button>
+                                        <button type="button" class="hero-seg-btn ${align==='center'?'active':''}" onclick="setTextAlign(${i}, 'center')">⏺️ Centrado</button>
+                                        <button type="button" class="hero-seg-btn ${align==='right'?'active':''}" onclick="setTextAlign(${i}, 'right')">➡️ Derecha</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- TARJETA DE PRECIOS & FINANCIAMIENTO -->
+                            <!-- MÉTRICAS CLAVE (STATS) & GARANTÍA -->
                             <div class="hero-control-group">
                                 <div class="hero-control-header">
-                                    <span><i class="fas fa-tags"></i> Precios & Financiamiento</span>
-                                    <label style="display:flex; align-items:center; gap:6px; font-size:0.72rem; cursor:pointer; color:#fff; text-transform:none;">
-                                        <input type="checkbox" ${showPrice?'checked':''} onchange="updateHeroSlideField(${i}, 'showPriceCard', this.checked)"> Mostrar Tarjeta
-                                    </label>
+                                    <span><i class="fas fa-chart-simple"></i> Métricas Clave (Stats) & Garantía</span>
                                 </div>
 
-                                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:10px;">
+                                <!-- Stat 1: Valor y Etiqueta -->
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Precio Lista ($)</label>
-                                        <input type="number" class="form-input" id="hOrig-${i}" value="${orig}" placeholder="33000" oninput="updateHeroSlideField(${i}, 'originalPrice', this.value)" style="font-size:0.8rem; padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:#38bdf8; display:block; margin-bottom:2px;">Métrica 1 (Valor):</label>
+                                        <input type="text" class="form-input" value="${stat1Val}" placeholder="$36,000" oninput="updateHeroSlideField(${i}, 'stat1Num', this.value)" style="font-size:0.8rem; font-weight:700; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#f87171; display:block; margin-bottom:2px;">Descuento Especial ($)</label>
-                                        <input type="number" class="form-input" id="hDisc-${i}" value="${disc}" placeholder="9900" oninput="updateHeroSlideField(${i}, 'discountPercentage', this.value)" style="font-size:0.8rem; padding:6px 8px;">
-                                    </div>
-                                    <div>
-                                        <label style="font-size:0.65rem; color:#93c5fd; display:block; margin-bottom:2px;">Financiamiento ($)</label>
-                                        <input type="number" class="form-input" id="hFin-${i}" value="${fin}" placeholder="10000" oninput="updateHeroSlideField(${i}, 'financingBonus', this.value)" style="font-size:0.8rem; padding:6px 8px;">
-                                    </div>
-                                    <div>
-                                        <label style="font-size:0.65rem; color:var(--accent); font-weight:700; display:block; margin-bottom:2px;">Precio Final ($)</label>
-                                        <input type="number" class="form-input" id="hFinal-${i}" value="${final}" placeholder="13100" oninput="updateHeroSlideField(${i}, 'finalPrice', this.value)" style="font-size:0.85rem; font-weight:800; border-color:rgba(212,160,23,0.5); padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Métrica 1 (Etiqueta):</label>
+                                        <input type="text" class="form-input" value="${stat1Lbl}" placeholder="Precio Especial" oninput="updateHeroSlideField(${i}, 'stat1Label', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-ghost btn-sm" onclick="calcAutoFinalPrice(${i})" style="width:100%; font-size:0.72rem; padding:5px; display:flex; align-items:center; justify-content:center; gap:5px;">
-                                    <i class="fas fa-bolt" style="color:var(--accent);"></i> Calcular Precio Final AutomÃ¡tico (Lista - Descuento - Financiamiento)
-                                </button>
+
+                                <!-- Stat 2: Valor y Etiqueta -->
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#38bdf8; display:block; margin-bottom:2px;">Métrica 2 (Valor):</label>
+                                        <input type="text" class="form-input" value="${stat2Val}" placeholder="17,000 KM" oninput="updateHeroSlideField(${i}, 'stat2Num', this.value)" style="font-size:0.8rem; font-weight:700; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Métrica 2 (Etiqueta):</label>
+                                        <input type="text" class="form-input" value="${stat2Lbl}" placeholder="Kilometraje Real" oninput="updateHeroSlideField(${i}, 'stat2Label', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                    </div>
+                                </div>
+
+                                <!-- Disclaimer / Garantía MasterTech -->
+                                <div>
+                                    <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Texto de Respaldo / Garantía MasterTech:</label>
+                                    <input type="text" class="form-input" value="${disclaimer}" placeholder="2 años de revisiones mecánicas gratuitas..." oninput="updateHeroSlideField(${i}, 'disclaimer', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                </div>
                             </div>
 
-                            <!-- BOTONES DE ACCIÃ“N (CTAS) -->
+                            <!-- BOTONES DE ACCIÓN (CTAS) -->
                             <div class="hero-control-group" style="margin-bottom:0;">
                                 <div class="hero-control-header">
-                                    <span><i class="fas fa-mouse-pointer"></i> Botones de AcciÃ³n</span>
+                                    <span><i class="fas fa-mouse-pointer"></i> Botones de Acción (CTAs)</span>
                                 </div>
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">BotÃ³n 1 (Principal):</label>
-                                        <input type="text" class="form-input" value="${cta1}" placeholder="Asegurar Oferta" oninput="updateHeroSlideField(${i}, 'ctaPrimary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 1 (Blanco Destacado):</label>
+                                        <input type="text" class="form-input" value="${cta1}" placeholder="Asegurar esta oferta" oninput="updateHeroSlideField(${i}, 'ctaPrimary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">BotÃ³n 2 (Secundario):</label>
-                                        <input type="text" class="form-input" value="${cta2}" placeholder="Ver Detalles" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 2 (Secundario/Link):</label>
+                                        <input type="text" class="form-input" value="${cta2}" placeholder="Ver en catálogo" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                    </div>
+                                </div>
+                                <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:8px;">
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#25D366; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                                            <i class="fab fa-whatsapp"></i> Mensaje Predeterminado WhatsApp:
+                                        </label>
+                                        <input type="text" class="form-input" value="${wa}" placeholder="Hola, me interesa este vehículo..." oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Destino Botón 2:</label>
+                                        <input type="text" class="form-input" value="${cta2Link}" placeholder="catalogo" oninput="updateHeroSlideField(${i}, 'ctaSecondaryLink', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
                             </div>
@@ -4345,58 +4430,63 @@
                                             <i class="fas fa-desktop"></i> Escritorio
                                         </button>
                                         <button type="button" id="btnDevMob-${i}" class="hero-seg-btn" onclick="setHeroPreviewDevice(${i}, 'mobile')" style="padding:4px 10px; font-size:0.68rem;">
-                                            <i class="fas fa-mobile-alt"></i> MÃ³vil
+                                            <i class="fas fa-mobile-alt"></i> Móvil
                                         </button>
                                     </div>
                                 </div>
 
-                                <!-- LIENZO HERO INTERACTIVO -->
+                                <!-- LIENZO HERO INTERACTIVO CON DISEÑO EJECUTIVO NISSAN/TOYOTA -->
                                 <div class="hero-preview-canvas" id="hpCanvas-${i}" style="background-image:url('${img}'); background-position:${bgPos}; background-size:${bgSize};">
                                     <!-- CAPA DEGRADADO OSCURO -->
                                     <div class="hero-preview-overlay" id="hpOverlay-${i}" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%);"></div>
 
-                                    <!-- CONTENIDO TEXTO Y PRECIOS -->
+                                    <!-- CONTENIDO EDITORIAL DE LUJO -->
                                     <div class="hero-preview-content" id="hpContent-${i}" style="text-align:${align};">
-                                        <!-- BADGE -->
-                                        <div id="hpTagRow-${i}" style="display:flex; justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')}; margin-bottom:12px;">
-                                            <span id="hpBadgeEl-${i}" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:30px; background:${activeBadge.bg}; border:1px solid ${activeBadge.border}; color:${activeBadge.color}; font-size:0.75rem; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;">
-                                                <i class="fas fa-bolt"></i> <span id="hpTagText-${i}">${tag}</span>
-                                            </span>
+                                        <!-- KICKER -->
+                                        <span class="hero-nissan-kicker" id="hpKicker-${i}">
+                                            <i class="fas fa-shield-halved"></i> <span>${kicker}</span>
+                                        </span>
+
+                                        <!-- TÍTULO PRINCIPAL (NO ®) -->
+                                        <div class="hero-nissan-title" id="hpTitle-${i}">
+                                            ${title}
                                         </div>
 
-                                        <!-- TÃTULO -->
-                                        <div id="hpTitle-${i}" style="font-family:'Unbounded',sans-serif; font-size:1.6rem; font-weight:800; color:#ffffff; line-height:1.2; margin-bottom:14px; text-shadow:0 2px 10px rgba(0,0,0,0.8);">
-                                            ${formattedTitle}
+                                        <!-- SUBTÍTULO / TAGLINE -->
+                                        <div class="hero-nissan-tagline" id="hpTagline-${i}">
+                                            ${tagline}
                                         </div>
 
-                                        <!-- TARJETA GLASS DE PRECIOS -->
-                                        <div id="hpPriceCard-${i}" class="hero-glass-card" style="display:${showPrice?'block':'none'}; margin:${align==='center'?'0 auto 16px auto':(align==='right'?'0 0 16px auto':'0 0 16px 0')};">
-                                            <div style="display:flex; justify-content:space-between; color:#94a3b8; text-decoration:line-through; font-size:0.8rem; margin-bottom:6px;">
-                                                <span>Precio de Lista</span>
-                                                <span id="hpRowOrig-${i}">$${fmt(orig)}</span>
+                                        <!-- DESCRIPCIÓN -->
+                                        <div class="hero-nissan-desc" id="hpDesc-${i}">
+                                            ${desc}
+                                        </div>
+
+                                        <!-- STATS & GARANTÍA -->
+                                        <div class="hero-nissan-finance" id="hpFinance-${i}" style="align-items:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')};">
+                                            <div class="hero-nissan-stats-row" id="hpStatsRow-${i}" style="justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')};">
+                                                <div class="hero-nissan-stat" style="text-align:${align};">
+                                                    <span class="hero-nissan-num" id="hpStat1Num-${i}">${stat1Val}</span>
+                                                    <span class="hero-nissan-label" id="hpStat1Label-${i}">${stat1Lbl}</span>
+                                                </div>
+                                                <div class="hero-nissan-stat" style="text-align:${align};">
+                                                    <span class="hero-nissan-num" id="hpStat2Num-${i}">${stat2Val}</span>
+                                                    <span class="hero-nissan-label" id="hpStat2Label-${i}">${stat2Lbl}</span>
+                                                </div>
                                             </div>
-                                            <div style="display:flex; justify-content:space-between; color:#f87171; font-size:0.8rem; margin-bottom:6px;">
-                                                <span>Descuento Especial</span>
-                                                <span id="hpRowDisc-${i}">-$${fmt(disc)}</span>
-                                            </div>
-                                            <div style="display:flex; justify-content:space-between; color:#93c5fd; font-size:0.8rem; margin-bottom:8px;">
-                                                <span>Financiamiento</span>
-                                                <span id="hpRowFin-${i}">-$${fmt(fin)}</span>
-                                            </div>
-                                            <div style="border-top:1px solid rgba(255,255,255,0.12); padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                                <span style="font-size:0.85rem; font-weight:600; color:#e2e8f0;">LlÃ©vala por</span>
-                                                <span id="hpRowFinal-${i}" style="font-size:1.3rem; font-weight:900; color:var(--accent); font-family:'Unbounded',sans-serif;">$${fmt(final)}</span>
+                                            <div class="hero-nissan-disclaimer" id="hpDisclaimer-${i}">
+                                                <i class="fas fa-check-circle"></i> <span id="hpDisclaimerText-${i}">${disclaimer}</span>
                                             </div>
                                         </div>
 
                                         <!-- BOTONES CTA -->
-                                        <div id="hpButtonsRow-${i}" style="display:flex; gap:10px; justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')}; flex-wrap:wrap;">
-                                            <span id="hpBtn1-${i}" style="display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:#000; padding:8px 16px; border-radius:8px; font-weight:800; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 0 12px rgba(212,160,23,0.35);">
-                                                <span id="hpBtnText1-${i}">${cta1}</span> <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i>
-                                            </span>
-                                            <span id="hpBtn2-${i}" style="display:inline-flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:8px 16px; border-radius:8px; font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">
-                                                <span id="hpBtnText2-${i}">${cta2}</span>
-                                            </span>
+                                        <div class="hero-nissan-actions" id="hpActions-${i}" style="justify-content:${align==='center'?'center':(align==='right'?'flex-end':'flex-start')};">
+                                            <div class="btn-nissan-white">
+                                                <span id="hpBtnText1-${i}">${cta1}</span> <i class="fas fa-arrow-right"></i>
+                                            </div>
+                                            <div class="btn-nissan-link">
+                                                <span id="hpBtnText2-${i}">${cta2}</span> <i class="fas fa-arrow-right"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -4411,19 +4501,39 @@
         window.updateHeroSlideField = (index, field, value) => {
             if (!heroSlides[index]) return;
             heroSlides[index][field] = value;
-            
-            const fmt = (num) => Number(num || 0).toLocaleString('en-US');
 
             if (field === 'title') {
                 const headerTitle = document.getElementById(`hpHeaderTitle-${index}`);
-                if (headerTitle) headerTitle.textContent = value || 'VehÃ­culo Seminuevo';
+                if (headerTitle) headerTitle.textContent = value || 'Vehículo Seminuevo';
                 const el = document.getElementById(`hpTitle-${index}`);
-                if (el) {
-                    el.innerHTML = (value || '').includes('<span') ? value : (value || '').replace(/\b(20\d{2}|0KM)\b/g, '<span style="color:var(--accent);">$1</span>');
-                }
-            } else if (field === 'tag') {
-                const el = document.getElementById(`hpTagText-${index}`);
-                if (el) el.textContent = value || 'OFERTA';
+                if (el) el.textContent = value || 'Vehículo Seminuevo';
+            } else if (field === 'kicker') {
+                heroSlides[index].tag = value;
+                const el = document.querySelector(`#hpKicker-${index} span`);
+                if (el) el.textContent = value || 'STOCK CERTIFICADO';
+            } else if (field === 'tagline') {
+                heroSlides[index].subtitle = value;
+                const el = document.getElementById(`hpTagline-${index}`);
+                if (el) el.textContent = value || '';
+            } else if (field === 'description') {
+                heroSlides[index].desc = value;
+                const el = document.getElementById(`hpDesc-${index}`);
+                if (el) el.textContent = value || '';
+            } else if (field === 'stat1Num') {
+                const el = document.getElementById(`hpStat1Num-${index}`);
+                if (el) el.textContent = value || '$0';
+            } else if (field === 'stat1Label') {
+                const el = document.getElementById(`hpStat1Label-${index}`);
+                if (el) el.textContent = value || '';
+            } else if (field === 'stat2Num') {
+                const el = document.getElementById(`hpStat2Num-${index}`);
+                if (el) el.textContent = value || '0 KM';
+            } else if (field === 'stat2Label') {
+                const el = document.getElementById(`hpStat2Label-${index}`);
+                if (el) el.textContent = value || '';
+            } else if (field === 'disclaimer') {
+                const el = document.getElementById(`hpDisclaimerText-${index}`);
+                if (el) el.textContent = value || '';
             } else if (field === 'image') {
                 const canvas = document.getElementById(`hpCanvas-${index}`);
                 if (canvas) canvas.style.backgroundImage = `url('${value}')`;
@@ -4437,27 +4547,12 @@
                     const darkVal = Number(value) / 100;
                     overlay.style.background = `linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%)`;
                 }
-            } else if (field === 'originalPrice') {
-                const el = document.getElementById(`hpRowOrig-${index}`);
-                if (el) el.textContent = `$${fmt(value)}`;
-            } else if (field === 'discountPercentage') {
-                const el = document.getElementById(`hpRowDisc-${index}`);
-                if (el) el.textContent = `-$${fmt(value)}`;
-            } else if (field === 'financingBonus') {
-                const el = document.getElementById(`hpRowFin-${index}`);
-                if (el) el.textContent = `-$${fmt(value)}`;
-            } else if (field === 'finalPrice') {
-                const el = document.getElementById(`hpRowFinal-${index}`);
-                if (el) el.textContent = `$${fmt(value)}`;
-            } else if (field === 'showPriceCard') {
-                const el = document.getElementById(`hpPriceCard-${index}`);
-                if (el) el.style.display = value ? 'block' : 'none';
             } else if (field === 'ctaPrimary') {
                 const el = document.getElementById(`hpBtnText1-${index}`);
-                if (el) el.textContent = value || 'Asegurar Oferta';
+                if (el) el.textContent = value || 'Asegurar esta oferta';
             } else if (field === 'ctaSecondary') {
                 const el = document.getElementById(`hpBtnText2-${index}`);
-                if (el) el.textContent = value || 'Ver Detalles';
+                if (el) el.textContent = value || 'Ver en catálogo';
             }
         };
 
@@ -4509,16 +4604,14 @@
             const content = document.getElementById(`hpContent-${index}`);
             if (content) content.style.textAlign = align;
 
-            const tagRow = document.getElementById(`hpTagRow-${index}`);
-            if (tagRow) tagRow.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
+            const finance = document.getElementById(`hpFinance-${index}`);
+            if (finance) finance.style.alignItems = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
 
-            const priceCard = document.getElementById(`hpPriceCard-${index}`);
-            if (priceCard) {
-                priceCard.style.margin = align === 'center' ? '0 auto 16px auto' : (align === 'right' ? '0 0 16px auto' : '0 0 16px 0');
-            }
+            const statsRow = document.getElementById(`hpStatsRow-${index}`);
+            if (statsRow) statsRow.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
 
-            const btnRow = document.getElementById(`hpButtonsRow-${index}`);
-            if (btnRow) btnRow.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
+            const actions = document.getElementById(`hpActions-${index}`);
+            if (actions) actions.style.justifyContent = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
 
             const card = document.getElementById(`heroSlideCard-${index}`);
             if (card) {
@@ -4527,23 +4620,6 @@
                     else b.classList.remove('active');
                 });
             }
-        };
-
-        window.setBadgeColor = (index, color) => {
-            if (!heroSlides[index]) return;
-            heroSlides[index].badgeColor = color;
-            const badgeEl = document.getElementById(`hpBadgeEl-${index}`);
-            if (!badgeEl) return;
-            const badgeStyles = {
-                gold: { color: '#eab308', bg: 'rgba(234, 179, 8, 0.15)', border: 'rgba(234, 179, 8, 0.35)' },
-                blue: { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', border: 'rgba(56, 189, 248, 0.35)' },
-                green: { color: '#22c55e', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34, 197, 94, 0.35)' },
-                red: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.15)', border: 'rgba(239, 68, 68, 0.35)' }
-            };
-            const s = badgeStyles[color] || badgeStyles.gold;
-            badgeEl.style.color = s.color;
-            badgeEl.style.background = s.bg;
-            badgeEl.style.borderColor = s.border;
         };
 
         window.setHeroPreviewDevice = (index, device) => {
@@ -4563,22 +4639,27 @@
             }
         };
 
-        window.calcAutoFinalPrice = (index) => {
-            const s = heroSlides[index];
-            if (!s) return;
-            const orig = parseFloat(s.originalPrice) || 0;
-            const disc = parseFloat(s.discountPercentage) || 0;
-            const fin = parseFloat(s.financingBonus) || 0;
-            const final = Math.max(0, orig - disc - fin);
-            s.finalPrice = final.toString();
-            const finalInput = document.getElementById(`hFinal-${index}`);
-            if (finalInput) finalInput.value = final;
-            updateHeroSlideField(index, 'finalPrice', final.toString());
-            showToast(`Precio final calculado: $${final.toLocaleString('en-US')}`, 'success');
+        window.moveHeroSlide = (index, delta) => {
+            const target = index + delta;
+            if (target < 0 || target >= heroSlides.length) return;
+            const temp = heroSlides[index];
+            heroSlides[index] = heroSlides[target];
+            heroSlides[target] = temp;
+            renderHeroSlides();
+            showToast('Orden de slides actualizado', 'info');
+        };
+
+        window.duplicateHeroSlide = (index) => {
+            if (!heroSlides[index]) return;
+            const clone = JSON.parse(JSON.stringify(heroSlides[index]));
+            clone.title = (clone.title || 'Vehículo') + ' (Copia)';
+            heroSlides.splice(index + 1, 0, clone);
+            renderHeroSlides();
+            showToast('Slide duplicado correctamente', 'success');
         };
 
         window.removeHeroSlide = (index) => {
-            if (confirm('Â¿Eliminar este slide?')) {
+            if (confirm('¿Eliminar este slide permanentemente?')) {
                 heroSlides.splice(index, 1);
                 renderHeroSlides();
                 showToast('Slide eliminado', 'info');
@@ -4587,26 +4668,28 @@
 
         document.getElementById('addHeroSlideBtn')?.addEventListener('click', () => {
             heroSlides.push({ 
-                tag: "EN PROCESO", 
-                title: "Nuevo VehÃ­culo", 
-                originalPrice: "30000",
-                discountPercentage: "5000",
-                financingBonus: "5000",
-                finalPrice: "20000",
-                waText: "Hola, me interesa este vehÃ­culo.",
-                ctaPrimary: "Asegurar Oferta",
-                ctaSecondary: "Ver Detalles",
-                image: "images/hero1.png",
+                kicker: "SEMINUEVOS · 2026",
+                title: "Nuevo Modelo",
+                tagline: "Ingeniería de vanguardia y confort de primer nivel",
+                description: "Inspección pericial de 150 puntos MasterTech y entrega inmediata garantizada en Margarita.",
+                stat1Num: "Consultar",
+                stat1Label: "Precio Especial",
+                stat2Num: "0 KM",
+                stat2Label: "Kilometraje Real",
+                disclaimer: "Inspección de 150 puntos respaldada por Taller MasterTech.",
+                ctaPrimary: "Asegurar esta oferta",
+                waText: "Hola, me interesa este vehículo en stock.",
+                ctaSecondary: "Ver en catálogo",
+                ctaSecondaryLink: "catalogo",
+                image: "images/hero-slides/hero-1.jpg",
                 imgPositionY: "center",
                 imgPositionX: "center",
                 imgZoom: "100",
                 overlayDarkness: "70",
-                textAlign: "left",
-                badgeColor: "gold",
-                showPriceCard: true
+                textAlign: "left"
             });
             renderHeroSlides();
-            showToast('Nuevo slide aÃ±adido', 'success');
+            showToast('Nuevo slide añadido', 'success');
         });
 
         window.uploadHeroImage = async (index, input) => {
