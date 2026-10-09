@@ -536,11 +536,11 @@ body::after {
 /* ===== HERO ===== */
 .hero {
     position: relative;
-    height: calc(100vh - 92px);
-    height: calc(100dvh - 92px);
+    height: calc(100vh - 68px);
+    height: calc(100dvh - 68px);
     min-height: 500px;
     max-height: 840px;
-    margin-top: 92px;
+    margin-top: 68px;
     overflow: hidden;
 }
 
@@ -6346,19 +6346,16 @@ img.mastertech-seal {
     box-shadow: 0 5px 16px rgba(37, 99, 235, 0.4);
 }
 
-/* Hero Section adjustments for Fixed Topbar */
+/* Hero Section adjustments for Fixed Navbar */
 .hero {
-    margin-top: 92px;
+    margin-top: 68px;
 }
 
 @media (max-width: 992px) {
-    .dealership-topbar .topbar-left .topbar-item:last-child {
-        display: none;
-    }
     .hero {
-        margin-top: 88px;
-        height: calc(100vh - 88px);
-        height: calc(100dvh - 88px);
+        margin-top: 68px;
+        height: calc(100vh - 68px);
+        height: calc(100dvh - 68px);
         min-height: 480px;
     }
 }

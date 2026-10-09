@@ -113,61 +113,31 @@
     <link rel="stylesheet" href="assets/index-DQpKhdUd.css">
 </head>
 <body>
-<!-- ===== DEALERSHIP HEADER (TOPBAR + NAVBAR) ===== -->
-<header class="dealership-header" id="dealershipHeader">
-    <div class="dealership-topbar">
-        <div class="topbar-container">
-            <div class="topbar-left">
-                <span class="topbar-chip topbar-chip-brand">
-                    <i class="fas fa-shield-halved"></i> Concesionario Multimarca &amp; Importación
-                </span>
-                <span class="topbar-dot">•</span>
-                <span class="topbar-chip">
-                    <i class="fas fa-location-dot"></i> Porlamar, Isla de Margarita
-                </span>
-                <span class="topbar-dot">•</span>
-                <span class="topbar-chip">
-                    <i class="fas fa-clock"></i> Lun - Sáb: 9:00 AM - 7:00 PM
-                </span>
-            </div>
-            <div class="topbar-right">
-                <a href="https://wa.me/584248700438?text=Hola,%20quisiera%20asesoría%20sobre%20un%20vehículo" target="_blank" rel="noopener" class="topbar-phone">
-                    <i class="fab fa-whatsapp"></i> +58 424-870-0438
-                </a>
-                <span class="topbar-dot">•</span>
-                <div class="topbar-social">
-                    <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@seminuevosagency" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                </div>
-            </div>
+<!-- ===== MAIN NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-logo">
+            <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
+        </a>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="/" class="nav-link active">INICIO</a></li>
+            <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
+            <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
+            <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
+            <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20inventario" class="btn-nav-consult" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </div>
-    
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="nav-logo">
-                <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="/" class="nav-link active">INICIO</a></li>
-                <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
-                <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
-                <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
-                <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20inventario" class="btn-nav-consult" target="_blank" rel="noopener">
-                    <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
-                </a>
-                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-</header>
+</nav>
 
 <!-- ===== FLOATING WHATSAPP ===== -->
 <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20un%20vehículo"
@@ -297,12 +267,6 @@
                 <i class="fas fa-car-side"></i>
                 <span>BUSCADOR DE INVENTARIO OFICIAL</span>
                 <span class="dealership-verified-tag"><i class="fas fa-shield-halved"></i> MasterTech Verified</span>
-            </div>
-            <div class="search-console-tabs">
-                <button type="button" class="search-console-tab active" data-condition="todos">Todos en Stock (46)</button>
-                <button type="button" class="search-console-tab" data-condition="seminuevo">Seminuevos Certificados</button>
-                <button type="button" class="search-console-tab" data-condition="0km">0 KM Nuevos</button>
-                <button type="button" class="search-console-tab" data-condition="por_pedido">Por Pedido USA</button>
             </div>
         </div>
         <div class="search-console-grid">
