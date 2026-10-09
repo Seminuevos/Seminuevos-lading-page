@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (car.images && car.images.length > 0) {
         imagesHtml = `
             <div class="vehicle-page-gallery">
-                <div id="mainVehicleImageContainer" class="main-vehicle-stage" onclick="openVehicleLightbox(window.currentImageIndex)">
-                    <div id="mainVehicleBgBlur" class="stage-bg-blur" style="background-image: url('${car.images[0]}');"></div>
-                    <img id="mainVehicleImage" class="stage-main-img" src="${car.images[0]}" alt="${car.title}">
+                <div id="mainVehicleImageContainer" class="main-vehicle-stage" style="position:relative; width:100%; height:480px; max-height:480px; overflow:hidden; border-radius:20px; display:flex; align-items:center; justify-content:center; background:#030712;" onclick="openVehicleLightbox(window.currentImageIndex)">
+                    <div id="mainVehicleBgBlur" class="stage-bg-blur" style="background-image: url('${car.images[0]}'); position:absolute; inset:0; background-size:cover; background-position:center; filter:blur(45px) brightness(0.25); transform:scale(1.15); opacity:0.9; pointer-events:none;"></div>
+                    <img id="mainVehicleImage" class="stage-main-img" src="${car.images[0]}" alt="${car.title}" style="position:relative; z-index:2; max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain;">
                     <img src="images/logo-mastertech.png" class="badge-stage-seal" alt="MasterTech Verified" onerror="this.style.display='none'">
                     <div class="badge-stage-fullscreen">
                         <i class="fas fa-expand-alt" style="color: #38bdf8;"></i> Pantalla Completa
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                         </div>
                         <div class="spec-dash-cell">
-                            <i class="fas fa-engine spec-dash-icon"></i>
+                            <i class="fas fa-gauge-high spec-dash-icon"></i>
                             <div class="spec-dash-data">
                                 <span class="spec-dash-label">Motor</span>
                                 <span class="spec-dash-value">${car.engine || 'N/A'}</span>
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
                         </div>
                         <div class="spec-dash-cell">
-                            <i class="fas fa-shield-check spec-dash-icon"></i>
+                            <i class="fas fa-shield-halved spec-dash-icon"></i>
                             <div class="spec-dash-data">
                                 <span class="spec-dash-label">Estatus Legal</span>
                                 <span class="spec-dash-value">100% Verificado</span>

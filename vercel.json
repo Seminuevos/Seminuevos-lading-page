@@ -57,6 +57,30 @@
             ]
         },
         {
+            "source": "/vehiculo",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/vehiculo.html",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/catalogo",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/catalogo.html",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
             "source": "/SM-OP",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },

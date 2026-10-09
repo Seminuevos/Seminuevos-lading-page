@@ -293,13 +293,21 @@
     <div class="dealership-search-console">
         <div class="search-console-top">
             <div class="search-console-title">
-                <i class="fas fa-search"></i>
+                <span class="live-dot-pulse"></span>
+                <i class="fas fa-car-side"></i>
                 <span>BUSCADOR DE INVENTARIO OFICIAL</span>
+                <span class="dealership-verified-tag"><i class="fas fa-shield-halved"></i> MasterTech Verified</span>
+            </div>
+            <div class="search-console-tabs">
+                <button type="button" class="search-console-tab active" data-condition="todos">Todos en Stock (46)</button>
+                <button type="button" class="search-console-tab" data-condition="seminuevo">Seminuevos Certificados</button>
+                <button type="button" class="search-console-tab" data-condition="0km">0 KM Nuevos</button>
+                <button type="button" class="search-console-tab" data-condition="por_pedido">Por Pedido USA</button>
             </div>
         </div>
         <div class="search-console-grid">
             <div class="search-console-group">
-                <label for="dealershipFilterCondition">Condición</label>
+                <label for="dealershipFilterCondition"><i class="fas fa-certificate"></i> Condición</label>
                 <select id="dealershipFilterCondition">
                     <option value="todos">Todas las Condiciones</option>
                     <option value="seminuevo">Seminuevos Certificados</option>
@@ -308,7 +316,7 @@
                 </select>
             </div>
             <div class="search-console-group">
-                <label for="dealershipFilterBrand">Marca</label>
+                <label for="dealershipFilterBrand"><i class="fas fa-star"></i> Marca</label>
                 <select id="dealershipFilterBrand">
                     <option value="todos">Todas las Marcas</option>
                     <option value="toyota">Toyota</option>
@@ -322,17 +330,17 @@
                 </select>
             </div>
             <div class="search-console-group">
-                <label for="dealershipFilterBody">Carrocería</label>
+                <label for="dealershipFilterBody"><i class="fas fa-car"></i> Carrocería</label>
                 <select id="dealershipFilterBody">
                     <option value="todos">Todos los Tipos</option>
-                    <option value="suv">SUVs & Crossovers</option>
-                    <option value="pickup">Pickups & 4x4</option>
+                    <option value="suv">SUVs &amp; Crossovers</option>
+                    <option value="pickup">Pickups &amp; 4x4</option>
                     <option value="sedan">Sedanes</option>
                     <option value="deportivo">Deportivos</option>
                 </select>
             </div>
             <div class="search-console-group">
-                <label for="dealershipFilterBudget">Presupuesto</label>
+                <label for="dealershipFilterBudget"><i class="fas fa-dollar-sign"></i> Presupuesto</label>
                 <select id="dealershipFilterBudget">
                     <option value="todos">Cualquier Presupuesto</option>
                     <option value="under25k">Hasta $25,000</option>
@@ -344,11 +352,26 @@
                 <i class="fas fa-magnifying-glass"></i> BUSCAR VEHÍCULOS
             </button>
         </div>
+        <div class="search-console-chips">
+            <span class="chips-label"><i class="fas fa-fire"></i> Búsquedas frecuentes:</span>
+            <a href="catalogo?marca=toyota" class="search-chip">Toyota Hilux</a>
+            <a href="catalogo?marca=honda" class="search-chip">Honda HR-V</a>
+            <a href="catalogo?marca=nissan" class="search-chip">Nissan Sentra</a>
+            <a href="catalogo?carroceria=suv" class="search-chip">SUVs Familiares</a>
+            <a href="catalogo?carroceria=pickup" class="search-chip">Pickups 4x4</a>
+            <a href="catalogo?presupuesto=under25k" class="search-chip">Hasta $25,000</a>
+        </div>
     </div>
 </div>
 
 <!-- ===== BRAND LOGOS MARQUEE ===== -->
 <section class="brands-section">
+    <div class="container">
+        <div class="brands-header">
+            <span class="brands-kicker"><i class="fas fa-shield-halved"></i> SHOWROOM MULTIMARCA &amp; GESTIÓN DIRECTA</span>
+            <h3 class="brands-headline">Marcas Disponibles en Showroom &amp; Subastas Directas</h3>
+        </div>
+    </div>
     <div class="brands-marquee">
         <div class="brands-track" id="brandsTrack">
             <div class="brand-item"><img src="images/brands/Toyota_logo_(Red).svg.png" alt="Toyota" decoding="async"></div>
@@ -378,38 +401,50 @@
         <div class="section-header">
             <span class="section-tag"><i class="fas fa-layer-group"></i> EXPLORAR POR CATEGORÍA</span>
             <h2 class="section-title">Encuentra tu Vehículo por <span class="text-accent">Carrocería</span></h2>
-            <p class="section-subtitle">Selecciona el segmento automotriz que mejor se adapte a tus necesidades de movilidad y estilo de vida.</p>
+            <p class="section-subtitle">Inventario clasificado bajo estándares periciales de concesionario. Entrega inmediata o importación llave en mano.</p>
         </div>
         <div class="categories-grid">
             <a href="catalogo?tipo=suv" class="category-card">
+                <span class="category-stock-badge">14 en Stock</span>
                 <div class="category-icon"><i class="fas fa-truck-monster"></i></div>
-                <span class="category-name">SUVs & Crossovers</span>
-                <span class="category-desc">Espacio, confort familiar y altura</span>
+                <span class="category-name">SUVs &amp; Crossovers</span>
+                <span class="category-desc">Espacio, confort familiar y altura al suelo</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="catalogo?tipo=pickup" class="category-card">
+                <span class="category-stock-badge">8 en Stock</span>
                 <div class="category-icon"><i class="fas fa-truck-pickup"></i></div>
-                <span class="category-name">Pickups & 4x4</span>
-                <span class="category-desc">Potencia, carga y tracción todoterreno</span>
+                <span class="category-name">Pickups &amp; 4x4</span>
+                <span class="category-desc">Potencia, carga pesada y tracción todoterreno</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="catalogo?tipo=sedan" class="category-card">
+                <span class="category-stock-badge">10 en Stock</span>
                 <div class="category-icon"><i class="fas fa-car-side"></i></div>
                 <span class="category-name">Sedanes Ejecutivos</span>
                 <span class="category-desc">Eficiencia, tecnología y confort de marcha</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="catalogo?seccion=0km" class="category-card">
+                <span class="category-stock-badge">A Estrenar</span>
                 <div class="category-icon"><i class="fas fa-bolt"></i></div>
                 <span class="category-name">0 KM Importación</span>
-                <span class="category-desc">Nuevos de agencia directo de USA</span>
+                <span class="category-desc">Nuevos de agencia directo de USA con factura</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="catalogo?seccion=seminuevos" class="category-card">
+                <span class="category-stock-badge">Certificados</span>
                 <div class="category-icon"><i class="fas fa-shield-alt"></i></div>
                 <span class="category-name">Seminuevos Certificados</span>
-                <span class="category-desc">Inspección de 150 puntos MasterTech</span>
+                <span class="category-desc">Inspección de 150 puntos y garantía MasterTech</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
             <a href="catalogo?seccion=porpedido" class="category-card">
+                <span class="category-stock-badge">Copart / IAAI</span>
                 <div class="category-icon"><i class="fas fa-ship"></i></div>
-                <span class="category-name">Subastas & Por Pedido</span>
-                <span class="category-desc">Importación llave en mano a medida</span>
+                <span class="category-name">Subastas &amp; Por Pedido</span>
+                <span class="category-desc">Importación llave en mano puerta a puerta</span>
+                <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
             </a>
         </div>
     </div>
@@ -440,7 +475,12 @@
                 <div>
                     <span class="tool-badge"><i class="fas fa-calculator"></i> HERRAMIENTA DIGITAL EN VIVO</span>
                     <h3 class="tool-title">Calculadora de Importación USA</h3>
-                    <p class="tool-desc">Cotiza en menos de un minuto el costo real y transparente de traer tu vehículo desde Estados Unidos hasta Venezuela, con tarifas portuarias y flete incluido.</p>
+                    <p class="tool-desc">Cotiza en menos de un minuto el costo real y transparente de traer tu vehículo desde Estados Unidos hasta Venezuela, con tarifas portuarias, seguro y flete marítimo certificado.</p>
+                    <div class="tool-feature-list">
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:var(--primary);"></i> Tarifas Portuarias 2026</span>
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:var(--primary);"></i> Fletes Consolidados</span>
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:var(--primary);"></i> Sin Costos Ocultos</span>
+                    </div>
                 </div>
                 <a href="calculadora" class="tool-cta">
                     <span>USAR CALCULADORA AHORA</span> <i class="fas fa-arrow-right"></i>
@@ -448,9 +488,14 @@
             </div>
             <div class="dealership-tool-card tool-tradein">
                 <div>
-                    <span class="tool-badge"><i class="fas fa-handshake"></i> PROGRAMA DE RETOMA</span>
-                    <h3 class="tool-title">Tasa tu Auto & Programa Trade-In</h3>
-                    <p class="tool-desc">Entrega tu vehículo actual como parte de pago. Nuestro equipo de tasación evalúa tu auto en menos de 24 horas para que salgas manejando tu nuevo seminuevo.</p>
+                    <span class="tool-badge"><i class="fas fa-handshake"></i> PROGRAMA DE RETOMA VIP</span>
+                    <h3 class="tool-title">Tasa tu Auto &amp; Programa Trade-In</h3>
+                    <p class="tool-desc">Entrega tu vehículo actual como parte de pago. Nuestro equipo de tasación pericial MasterTech evalúa tu auto en menos de 24 horas para que estrenes tu nuevo seminuevo hoy mismo.</p>
+                    <div class="tool-feature-list">
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:#059669;"></i> Tasación Oficial en 24h</span>
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:#059669;"></i> Mejor Valor de Retoma</span>
+                        <span class="tool-feature-item"><i class="fas fa-check-circle" style="color:#059669;"></i> Traspaso INTT Garantizado</span>
+                    </div>
                 </div>
                 <a href="servicios#programa-retoma" class="tool-cta">
                     <span>SOLICITAR TASACIÓN</span> <i class="fas fa-arrow-right"></i>
