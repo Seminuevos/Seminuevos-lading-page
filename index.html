@@ -113,31 +113,48 @@
     <link rel="stylesheet" href="assets/index-DQpKhdUd.css">
 </head>
 <body>
-<!-- ===== MAIN NAVBAR ===== -->
-<nav class="navbar" id="navbar">
-    <div class="nav-container">
-        <a href="/" class="nav-logo">
-            <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
-        </a>
-        <ul class="nav-menu" id="navMenu">
-            <li><a href="/" class="nav-link active">INICIO</a></li>
-            <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
-            <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
-            <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
-            <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
-        </ul>
-        <div class="nav-actions">
-            <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20inventario" class="btn-nav-consult" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
-            </a>
-            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+<!-- ===== EXECUTIVE DEALERSHIP HEADER ===== -->
+<header class="dealership-header-wrapper">
+    <div class="dealership-utility-bar">
+        <div class="utility-container">
+            <div class="utility-left">
+                <span><i class="fas fa-location-dot"></i> Showroom Porlamar, Isla de Margarita</span>
+                <span class="utility-sep">·</span>
+                <span><i class="fas fa-shield-halved"></i> Peritaje 150 Puntos MasterTech</span>
+            </div>
+            <div class="utility-right">
+                <a href="calculadora" class="utility-link"><i class="fas fa-sliders"></i> Diseñar y Cotizar</a>
+                <a href="catalogo" class="utility-link"><i class="fas fa-magnifying-glass"></i> Buscar en Inventario</a>
+                <a href="#promociones" class="utility-link"><i class="fas fa-tags"></i> Ver Ofertas</a>
+                <a href="calculadora" class="utility-link"><i class="fas fa-calculator"></i> Calcular Pagos</a>
+            </div>
         </div>
     </div>
-</nav>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="/" class="nav-link active">INICIO</a></li>
+                <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
+                <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
+                <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
+                <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20inventario" class="btn-nav-consult" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</header>
 
 <!-- ===== FLOATING WHATSAPP ===== -->
 <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20un%20vehículo"
@@ -415,6 +432,25 @@
                 <span class="category-name">Subastas &amp; Por Pedido</span>
                 <span class="category-desc">Importación llave en mano puerta a puerta</span>
                 <span class="category-action-link">Ver catálogo <i class="fas fa-arrow-right"></i></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SHOWROOM DE INVENTARIO DESTACADO ===== -->
+<section class="dealership-featured-section" id="inventario-destacado" style="padding: 85px 0 60px 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag"><i class="fas fa-star"></i> SHOWROOM DE ÉLITE</span>
+            <h2 class="section-title">Vehículos <span class="text-accent">Destacados</span></h2>
+            <p class="section-subtitle">Unidades seleccionadas bajo peritaje pericial MasterTech de 150 puntos. Disponibilidad para entrega inmediata o gestión prioritaria.</p>
+        </div>
+        <div class="vehicle-grid" id="featuredVehiclesGrid">
+            <!-- Cargado dinámicamente por script.js -->
+        </div>
+        <div style="text-align: center; margin-top: 45px;">
+            <a href="catalogo" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 10px; padding: 15px 36px; font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; letter-spacing: 0.5px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);">
+                <span>EXPLORAR CATÁLOGO COMPLETO</span> <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>

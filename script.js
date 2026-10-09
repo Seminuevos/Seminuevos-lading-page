@@ -461,6 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const loadingAttr = index < 4 ? 'eager' : 'lazy';
             const priorityAttr = index < 4 ? 'fetchpriority="high"' : '';
 
+            const waCarText = encodeURIComponent(`Hola, deseo asegurar la oferta del ${car.title} (${car.year}) publicado en Seminuevos.`);
+
             card.innerHTML = `
                 <div class="vehicle-card-image">
                     <img src="${carImg}" alt="${optimizedAlt}" loading="${loadingAttr}" ${priorityAttr} decoding="async" onerror="this.onerror=null; this.src='${fallbackImg}';">
@@ -480,8 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="spec-item"><i class="fas fa-gas-pump"></i> ${car.fuel}</span>
                         <span class="spec-item"><i class="fas fa-gears"></i> ${car.transmission}</span>
                     </div>
-                    <div class="vehicle-card-cta">
-                        <span>Ver Ficha Técnica <i class="fas fa-arrow-right"></i></span>
+                    <div class="vehicle-card-footer">
+                        <button type="button" class="btn-card-details view-details" data-id="${car.id}">
+                            <i class="fas fa-circle-info"></i> Ver Vehículo
+                        </button>
+                        <a href="https://wa.me/584248700438?text=${waCarText}" target="_blank" rel="noopener" class="btn-card-whatsapp track-whatsapp" data-title="${car.title}">
+                            <i class="fab fa-whatsapp"></i> Asegurar Oferta
+                        </a>
                     </div>
                 </div>
             `;
@@ -559,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let allVehicles = [...appVehiclesSeminuevos, ...appVehicles0km, ...appVehiclesPorPedido];
             // Sort by views descending to show the most popular cars
             allVehicles.sort((a, b) => (b.views || 0) - (a.views || 0));
-            renderVehicles(allVehicles.slice(0, 3), featuredGrid, 'todos', 'todos');
+            renderVehicles(allVehicles.slice(0, 6), featuredGrid, 'todos', 'todos');
         }
     }
 

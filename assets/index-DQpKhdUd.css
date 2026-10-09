@@ -305,6 +305,115 @@ body::after {
     justify-content: center;
 }
 
+/* ===== EXECUTIVE HEADER & UTILITY BAR (TOYOTA / NISSAN / HONDA SPEC) ===== */
+.dealership-header-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: #FFFFFF;
+}
+
+.dealership-utility-bar {
+    background: #F8FAFC;
+    border-bottom: 1px solid #E2E8F0;
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.74rem;
+    color: #475569;
+    padding: 6px 0;
+    width: 100%;
+}
+
+.dealership-utility-bar .utility-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dealership-utility-bar .utility-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.dealership-utility-bar .utility-left i {
+    color: #2563EB;
+}
+
+.dealership-utility-bar .utility-sep {
+    color: #CBD5E1;
+}
+
+.dealership-utility-bar .utility-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.dealership-utility-bar .utility-link {
+    color: #334155;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s ease;
+    font-size: 0.73rem;
+}
+
+.dealership-utility-bar .utility-link i {
+    font-size: 0.72rem;
+    color: #64748B;
+    transition: color 0.15s ease;
+}
+
+.dealership-utility-bar .utility-link:hover {
+    color: #2563EB;
+}
+
+.dealership-utility-bar .utility-link:hover i {
+    color: #2563EB;
+}
+
+.dealership-header-wrapper .navbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    box-shadow: none;
+}
+
+@media (max-width: 992px) {
+    .dealership-utility-bar {
+        display: none !important;
+    }
+}
+
+@media (min-width: 993px) {
+    body:has(.dealership-header-wrapper) .hero {
+        margin-top: 104px;
+        height: calc(100vh - 104px);
+        height: calc(100dvh - 104px);
+    }
+    body:has(.dealership-header-wrapper) .catalog-hero-header {
+        padding-top: 140px;
+    }
+    body:has(.dealership-header-wrapper) .calc-page-spacer {
+        height: 110px;
+    }
+    body:has(.dealership-header-wrapper) .dealer-about-hero {
+        padding-top: 160px;
+    }
+    body:has(.dealership-header-wrapper) .services-hero-spacer {
+        height: 110px;
+    }
+}
+
 /* ===== NAVBAR (Glassmorphism) ===== */
 .navbar {
     position: fixed;
@@ -1632,15 +1741,15 @@ body::after {
 }
 
 .origin-badge.nacional {
-    background: rgba(37, 211, 102, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(37, 211, 102, 0.28);
+    background: #ECFDF5;
+    color: #047857;
+    border: 1px solid #A7F3D0;
 }
 
 .origin-badge.importado {
-    background: rgba(96, 165, 250, 0.15);
-    color: #60a5fa;
-    border: 1px solid rgba(96, 165, 250, 0.28);
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border: 1px solid #BFDBFE;
 }
 
 .vehicle-card-body {
@@ -1762,48 +1871,57 @@ body::after {
 
 /* Vehicle Card Footer (2 equal action buttons, no outer box) */
 .vehicle-card-footer {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-top: 14px;
     padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid #E2E8F0;
 }
 
 .btn-card-details,
 .btn-card-whatsapp {
-    background: var(--primary);
-    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: var(--font-display, 'Outfit', sans-serif);
+    font-size: 0.78rem;
     font-weight: 700;
-    border: none;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+    padding: 9px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .btn-card-details {
-    background: #F8F9FA;
-    color: #111827;
-    border: 1px solid #D1D5DB;
+    background: #F1F5F9;
+    color: #0F172A;
+    border: 1px solid #CBD5E1;
 }
 
 .btn-card-details:hover {
-    background: #E5E7EB;
-    color: #111827;
-    border-color: #9CA3AF;
+    background: #E2E8F0;
+    color: #0F172A;
+    border-color: #94A3B8;
 }
 
 .btn-card-whatsapp {
-    background: var(--primary);
+    background: #2563EB;
     color: #FFFFFF;
-    font-weight: 700;
-    border: none;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+    border: 1px solid #2563EB;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .btn-card-whatsapp:hover {
-    transform: translateY(-2px);
-    background: var(--primary-container);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    background: #1D4ED8;
+    border-color: #1D4ED8;
     color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 /* Import Notice */
@@ -1873,69 +1991,54 @@ body::after {
 /* ===== SERVICES ===== */
 .services-section {
     padding: var(--space-24) 0;
-    background: var(--surface-container-lowest);
+    background: #FFFFFF;
     position: relative;
     z-index: 1;
 }
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: var(--space-6);
 }
 
 .service-card {
-    padding: var(--space-10) var(--space-8);
-    background: var(--surface-container-low);
+    padding: 36px 30px;
+    background: #FFFFFF;
     border-radius: var(--radius-xl);
-    transition: var(--transition);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
-    border: 1px solid transparent;
-}
-
-.service-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: transparent;
-    transition: var(--transition);
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
 }
 
 .service-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--ghost-border-gold);
-    box-shadow: var(--shadow-ambient);
-}
-
-.service-card:hover::before {
-    background: var(--gradient-gold);
+    transform: translateY(-6px);
+    border-color: #2563EB;
+    box-shadow: 0 16px 36px rgba(37, 99, 235, 0.08);
 }
 
 .service-card.featured {
-    border-color: var(--ghost-border-gold);
-    background: var(--surface-container);
-}
-
-.service-card.featured::before {
-    background: var(--gradient-gold);
+    border-color: #2563EB;
+    background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
 }
 
 .service-badge {
     position: absolute;
     top: 18px;
     right: 18px;
-    padding: 5px 14px;
-    background: var(--gradient-gold);
-    color: var(--on-primary);
+    padding: 5px 12px;
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.2);
     border-radius: var(--radius-full);
-    font-family: var(--font-display);
+    font-family: var(--font-display, 'Outfit', sans-serif);
     font-weight: 700;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
+    font-size: 0.65rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .service-icon {
@@ -3481,20 +3584,21 @@ body::after {
 /* ===== CALCULATOR SECTION ===== */
 .calculator-section {
     padding: var(--space-16) 0;
-    background: var(--surface);
+    background: #F8FAFC;
     position: relative;
 }
 
 .calculator-wrapper {
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1.2fr;
     gap: var(--space-8);
-    background: var(--surface-dim);
+    background: #FFFFFF;
     border-radius: var(--radius-xl);
     padding: var(--space-8);
-    border: 1px solid var(--ghost-border);
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
 }
 
 @media (max-width: 768px) {
@@ -3510,25 +3614,27 @@ body::after {
 .calculator-inputs label:not(.repair-pill-item) {
     display: block;
     position: static;
-    margin-bottom: var(--space-2);
-    color: var(--on-surface-variant);
-    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 0.88rem;
+    font-weight: 600;
 }
 
 .calculator-inputs input[type="number"] {
     width: 100%;
-    padding: 14px;
-    background: var(--surface);
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--radius-md);
-    color: var(--on-surface);
+    padding: 13px 15px;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    color: #0F172A;
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: var(--transition);
 }
 
 .calculator-inputs input[type="number"]:focus {
-    border-color: var(--primary);
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     outline: none;
 }
 
@@ -3541,30 +3647,32 @@ body::after {
 .checkbox-group label {
     display: inline-block !important;
     margin-bottom: 0 !important;
-    color: var(--on-surface) !important;
+    color: #334155 !important;
 }
 
 .checkbox-group input {
     width: 18px;
     height: 18px;
-    accent-color: var(--primary);
+    accent-color: #2563EB;
     flex-shrink: 0;
 }
 
 .calc-select {
     width: 100%;
-    padding: 14px;
-    background: var(--surface);
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--radius-md);
-    color: var(--on-surface);
+    padding: 13px 15px;
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    color: #0F172A;
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.95rem;
     outline: none;
+    transition: var(--transition);
 }
 
 .calc-select:focus {
-    border-color: var(--primary);
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .calculator-results {
