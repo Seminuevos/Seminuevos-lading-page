@@ -5642,22 +5642,25 @@ img.mastertech-seal {
 }
 
 /* Dealership Header & Topbar */
+/* Dealership Header & Topbar */
 .dealership-header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
     z-index: 1000;
-    background: #FFFFFF;
+    background: #070B14;
     transition: var(--transition);
 }
 
 .dealership-topbar {
-    background: #0B132B;
+    background: #070B14;
     color: #94A3B8;
-    font-size: 0.73rem;
-    padding: 4px 0;
+    font-size: 0.71rem;
+    padding: 6px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
 }
 
 .dealership-topbar .topbar-container {
@@ -5673,43 +5676,60 @@ img.mastertech-seal {
 .dealership-topbar .topbar-left {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.dealership-topbar .topbar-badge {
+.topbar-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #94A3B8;
+    font-size: 0.71rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+.topbar-chip i {
+    font-size: 0.72rem;
+    color: #64748B;
+}
+
+.topbar-chip-brand {
     color: #38BDF8;
     font-weight: 700;
     letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    text-transform: uppercase;
+    font-size: 0.67rem;
+    font-family: var(--font-display);
 }
 
-.dealership-topbar .topbar-divider {
-    color: rgba(255, 255, 255, 0.2);
+.topbar-chip-brand i {
+    color: #38BDF8;
 }
 
-.dealership-topbar .topbar-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #CBD5E1;
+.topbar-dot {
+    color: rgba(255, 255, 255, 0.22);
+    font-size: 0.72rem;
+    user-select: none;
 }
 
 .dealership-topbar .topbar-right {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 14px;
 }
 
 .dealership-topbar .topbar-phone {
     color: #38BDF8;
     text-decoration: none;
     font-weight: 600;
+    font-size: 0.72rem;
     display: flex;
     align-items: center;
     gap: 6px;
     transition: color 0.2s;
+    letter-spacing: 0.3px;
 }
 
 .dealership-topbar .topbar-phone:hover {
@@ -5719,12 +5739,16 @@ img.mastertech-seal {
 .dealership-topbar .topbar-social {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .dealership-topbar .topbar-social a {
     color: #94A3B8;
+    font-size: 0.76rem;
     transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dealership-topbar .topbar-social a:hover {
@@ -5736,7 +5760,9 @@ img.mastertech-seal {
     top: auto !important;
     left: auto !important;
     right: auto !important;
-    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+    background: #FFFFFF;
+    border-bottom: 1px solid #E2E8F0;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
 }
 
 .btn-nav-consult {
