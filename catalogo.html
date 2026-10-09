@@ -100,49 +100,40 @@
             color: #0F172A;
         }
 
-        /* 1. SHOWROOM HERO HEADER */
+        /* 1. SHOWROOM HERO HEADER (COMPACT DEALERSHIP SPEC) */
         .catalog-hero-header {
             position: relative;
             background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-            padding: 135px 0 40px 0;
+            padding: 120px 0 25px 0;
             border-bottom: 1px solid #E2E8F0;
             text-align: center;
-        }
-
-        .catalog-hero-header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px);
-            background-size: 28px 28px;
-            pointer-events: none;
         }
 
         .catalog-hero-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #EFF6FF;
-            border: 1px solid #BFDBFE;
-            color: #1D4ED8;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            color: #2563EB;
             font-family: var(--font-display);
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            letter-spacing: 1.2px;
-            padding: 6px 18px;
+            letter-spacing: 1px;
+            padding: 5px 16px;
             border-radius: 50px;
             text-transform: uppercase;
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
 
         .catalog-hero-title {
             font-family: var(--font-display);
-            font-size: clamp(2.1rem, 4vw, 3.2rem);
+            font-size: clamp(2rem, 3.6vw, 2.9rem);
             font-weight: 800;
             color: #0F172A;
             line-height: 1.18;
-            max-width: 920px;
-            margin: 0 auto 14px auto;
+            max-width: 900px;
+            margin: 0 auto 10px auto;
             letter-spacing: -0.5px;
         }
 
@@ -155,137 +146,100 @@
 
         .catalog-hero-sub {
             font-family: var(--font-body);
-            font-size: clamp(0.95rem, 1.25vw, 1.1rem);
-            color: #475569;
-            max-width: 760px;
-            margin: 0 auto 28px auto;
-            line-height: 1.65;
+            font-size: 0.98rem;
+            color: #64748B;
+            max-width: 680px;
+            margin: 0 auto 24px auto;
+            line-height: 1.6;
         }
 
-        .catalog-hero-badges-row {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 36px;
-        }
-
-        .hero-guarantee-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            color: #334155;
-            padding: 7px 16px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-            transition: all 0.2s ease;
-        }
-
-        .hero-guarantee-pill:hover {
-            border-color: #BFDBFE;
-            background: #F8FAFC;
-        }
-
-        .hero-guarantee-pill i {
-            color: #2563EB;
-            font-size: 0.9rem;
-        }
-
-        /* 2. SELECTOR DE 3 CATEGORÍAS PRINCIPALES */
+        /* 2. SELECTOR DE CATEGORÍAS PRINCIPALES (MODERNO DEALERSHIP SEGMENT CONTROL) */
         .catalog-main-tabs {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            max-width: 1100px;
-            margin: 0 auto 30px auto;
+            gap: 12px;
+            max-width: 980px;
+            margin: 0 auto 22px auto;
             padding: 0 15px;
         }
 
         .catalog-main-tab {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 18px 22px;
+            gap: 14px;
+            padding: 14px 20px;
             background: #FFFFFF;
-            border: 2px solid #E2E8F0;
-            border-radius: 16px;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s ease;
             text-align: left;
             position: relative;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
         }
 
         .catalog-main-tab:hover {
-            border-color: #93C5FD;
+            border-color: #2563EB;
             background: #F8FAFC;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
         }
 
         .catalog-main-tab.active {
-            background: #EFF6FF;
+            background: #2563EB;
             border-color: #2563EB;
-            box-shadow: 0 10px 28px rgba(37, 99, 235, 0.14);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.28);
         }
 
         .tab-icon-wrap {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             background: #F1F5F9;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            color: #475569;
-            flex-shrink: 0;
-            transition: all 0.25s ease;
-        }
-
-        .catalog-main-tab:hover .tab-icon-wrap {
+            font-size: 1.15rem;
             color: #2563EB;
-            background: #DBEAFE;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
 
         .catalog-main-tab.active .tab-icon-wrap {
-            background: #2563EB;
+            background: rgba(255, 255, 255, 0.2);
             color: #FFFFFF;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
         }
 
         .tab-text-wrap {
             display: flex;
             flex-direction: column;
+            gap: 2px;
         }
 
         .tab-text-wrap span {
             font-family: var(--font-display);
-            font-size: 0.98rem;
+            font-size: 0.92rem;
             font-weight: 700;
             color: #0F172A;
-            line-height: 1.25;
-            margin-bottom: 4px;
+            line-height: 1.2;
+            transition: color 0.2s ease;
         }
 
         .catalog-main-tab.active .tab-text-wrap span {
-            color: #1E40AF;
+            color: #FFFFFF;
         }
 
         .tab-text-wrap small {
             font-family: var(--font-body);
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             color: #64748B;
-            line-height: 1.25;
+            line-height: 1.2;
+            transition: color 0.2s ease;
         }
 
         .catalog-main-tab.active .tab-text-wrap small {
-            color: #2563EB;
-            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
         }
 
         /* 3. CONSOLA DE BÚSQUEDA Y ORDENAMIENTO */
@@ -386,19 +340,19 @@
         .catalog-section-header {
             background: #F8FAFC;
             border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 22px 28px;
-            margin-bottom: 24px;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 12px;
         }
 
         .catalog-section-title {
             font-family: var(--font-display);
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #0F172A;
             display: flex;
@@ -412,10 +366,7 @@
         }
 
         .catalog-section-desc {
-            color: #64748B;
-            font-size: 0.9rem;
-            margin: 5px 0 0 0;
-            line-height: 1.5;
+            display: none;
         }
 
         /* 5. FILTROS POR CARROCERÍA Y MARCA */
@@ -963,45 +914,30 @@
                 Catálogo de Vehículos <span>Certificados</span>
             </h1>
             <p class="catalog-hero-sub">
-                Explora nuestra selección oficial de seminuevos revisados en Margarita, vehículos 0KM a estrenar y gestión de importación directa llave en mano desde Estados Unidos.
+                Inventario verificado con peritaje pericial MasterTech de 150 puntos, documentación legal al día y entrega llave en mano.
             </p>
-
-            <div class="catalog-hero-badges-row">
-                <div class="hero-guarantee-pill">
-                    <i class="fas fa-shield-halved"></i> Inspección 150 Puntos MasterTech
-                </div>
-                <div class="hero-guarantee-pill">
-                    <i class="fas fa-wrench"></i> 2 Años de Revisiones Mecánicas
-                </div>
-                <div class="hero-guarantee-pill">
-                    <i class="fas fa-file-circle-check"></i> Traspaso &amp; Título Garantizado
-                </div>
-                <div class="hero-guarantee-pill">
-                    <i class="fas fa-location-dot"></i> Entrega Inmediata en Margarita
-                </div>
-            </div>
 
             <!-- 2. SELECTOR DE CATEGORÍA PRINCIPAL (3 TABS) -->
             <div class="catalog-main-tabs" id="catalogMainTabs">
                 <button class="catalog-main-tab active" data-section="seminuevos">
-                    <div class="tab-icon-wrap"><i class="fas fa-bolt"></i></div>
+                    <div class="tab-icon-wrap"><i class="fas fa-car-side"></i></div>
                     <div class="tab-text-wrap">
-                        <span>Semi Nuevo: Stock Local</span>
-                        <small>Entrega Inmediata · Llave en Mano</small>
+                        <span>Stock Local</span>
+                        <small>Entrega Inmediata · Margarita</small>
                     </div>
                 </button>
                 <button class="catalog-main-tab" data-section="porpedido">
                     <div class="tab-icon-wrap"><i class="fas fa-ship"></i></div>
                     <div class="tab-text-wrap">
-                        <span>Semi Nuevo: Por Pedido</span>
-                        <small>Importación USA · Copart &amp; Dealers</small>
+                        <span>Por Pedido USA</span>
+                        <small>Importación Directa Llave en Mano</small>
                     </div>
                 </button>
                 <button class="catalog-main-tab" data-section="0km">
-                    <div class="tab-icon-wrap"><i class="fas fa-star"></i></div>
+                    <div class="tab-icon-wrap"><i class="fas fa-award"></i></div>
                     <div class="tab-text-wrap">
-                        <span>0KM: Stock y/o Pedido</span>
-                        <small>A Estrenar · Concesionario Directo</small>
+                        <span>0KM Nuevos</span>
+                        <small>Unidades 0KM a Estrenar</small>
                     </div>
                 </button>
             </div>
