@@ -670,6 +670,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('sn_vehicles');
         localStorage.removeItem('sn_deleted_vehicles');
         localStorage.removeItem('sn_vehicle_overrides');
+        sessionStorage.removeItem('sn_supabase_cache');
+        sessionStorage.removeItem('sn_vehicles');
     } catch(e) {}
 
     function applyDataToPanels(vData = [], sData = []) {
@@ -679,6 +681,24 @@ document.addEventListener('DOMContentLoaded', () => {
         appVehiclesSeminuevos = liveVehs.filter(isStockLocalVehicle);
         appVehiclesPorPedido = liveVehs.filter(isImportedOrAuctionVehicle);
         appVehicles0km = liveVehs.filter(isZeroKmVehicle);
+
+        // Actualizar dinámicamente las pestañas de la consola de búsqueda según el inventario real en vivo
+        const tabTodos = document.querySelector('#consoleTabs [data-condition="todos"]');
+        if (tabTodos) {
+            tabTodos.textContent = liveVehs.length > 0 ? `Todos en Stock (${liveVehs.length})` : 'Todos en Stock';
+        }
+        const tabSemi = document.querySelector('#consoleTabs [data-condition="seminuevo"]');
+        if (tabSemi) {
+            tabSemi.textContent = appVehiclesSeminuevos.length > 0 ? `Seminuevos Certificados (${appVehiclesSeminuevos.length})` : 'Seminuevos Certificados';
+        }
+        const tab0km = document.querySelector('#consoleTabs [data-condition="0km"]');
+        if (tab0km) {
+            tab0km.textContent = appVehicles0km.length > 0 ? `0 KM Nuevos (${appVehicles0km.length})` : '0 KM Nuevos';
+        }
+        const tabPedido = document.querySelector('#consoleTabs [data-condition="por_pedido"]');
+        if (tabPedido) {
+            tabPedido.textContent = appVehiclesPorPedido.length > 0 ? `Por Pedido USA (${appVehiclesPorPedido.length})` : 'Por Pedido USA';
+        }
 
         renderAllPanels();
 

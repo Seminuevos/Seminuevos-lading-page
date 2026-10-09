@@ -2930,6 +2930,13 @@
         async function loadVehicles() {
             let data = null;
 
+            // Purgar inmediatamente cualquier residuo de caché local
+            try {
+                localStorage.removeItem('sn_vehicles');
+                localStorage.removeItem('sn_supabase_cache');
+                sessionStorage.removeItem('sn_vehicles');
+            } catch(e) {}
+
             // 1. Obtener inventario directamente del backend con timestamp anti-caché
             try {
                 const apiRes = await apiFetch('/api/vehicles?_t=' + Date.now());
@@ -3261,14 +3268,10 @@
                         localStorage.setItem('sn_vehicle_overrides', JSON.stringify(overrides));
                     } catch(e) {}
 
-                    // Also update in sn_vehicles if present
+                    // Purgar caché residual
                     try {
-                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                        const lIdx = localVehs.findIndex(lv => String(lv.id) === String(id) || (lv.title || '').toLowerCase().trim() === tKey);
-                        if (lIdx !== -1) {
-                            localVehs[lIdx] = { ...localVehs[lIdx], ...vehicleData, id: id };
-                            localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
-                        }
+                        localStorage.removeItem('sn_vehicles');
+                        localStorage.removeItem('sn_supabase_cache');
                     } catch(e) {}
 
                     showToast('✓ Vehículo actualizado con éxito', 'success');
@@ -3303,9 +3306,8 @@
                     const newVeh = { ...vehicleData, id: savedId, created_at: new Date().toISOString() };
 
                     try {
-                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                        localVehs.unshift(newVeh);
-                        localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+                        localStorage.removeItem('sn_vehicles');
+                        localStorage.removeItem('sn_supabase_cache');
                     } catch(e) {}
 
                     showToast('✓ Vehículo agregado con éxito', 'success');
@@ -5491,13 +5493,11 @@
                         } catch(e) {}
                     }
 
-                    // 3. Respaldo local inmediato si la DB está protegida por RLS
-                    if (!importedOk) {
-                        const locId = 'loc_' + Date.now();
-                        let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                        localVehs.unshift({ ...vehicleData, id: locId });
-                        localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
-                    }
+                    // Purgar caché residual
+                    try {
+                        localStorage.removeItem('sn_vehicles');
+                        localStorage.removeItem('sn_supabase_cache');
+                    } catch(e) {}
 
                     successCount++;
                     completed++;
@@ -5691,10 +5691,9 @@
             }
 
             try {
-                localStorage.setItem('sn_deleted_vehicles', JSON.stringify([...new Set(deleted)]));
-                let localVehs = JSON.parse(localStorage.getItem('sn_vehicles') || '[]');
-                localVehs = localVehs.filter(lv => !garbage.some(g => String(g.id) === String(lv.id)));
-                localStorage.setItem('sn_vehicles', JSON.stringify(localVehs));
+                localStorage.removeItem('sn_vehicles');
+                localStorage.removeItem('sn_supabase_cache');
+                localStorage.removeItem('sn_deleted_vehicles');
             } catch(e) {}
 
             showToast('Limpieza completada', 'success');
