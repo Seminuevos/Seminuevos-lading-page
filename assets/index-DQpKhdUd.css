@@ -584,25 +584,33 @@ body::after {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(11, 19, 43, 0.90) 0%, rgba(11, 19, 43, 0.65) 42%, rgba(11, 19, 43, 0.20) 75%, rgba(11, 19, 43, 0.05) 100%),
-                linear-gradient(180deg, rgba(11, 19, 43, 0.45) 0%, transparent 22%, transparent 75%, rgba(11, 19, 43, 0.85) 100%);
+    background: linear-gradient(90deg, 
+        rgba(0, 0, 0, 0.88) 0%, 
+        rgba(0, 0, 0, 0.62) 32%, 
+        rgba(0, 0, 0, 0.18) 58%, 
+        transparent 78%
+    );
     pointer-events: none;
     z-index: 1;
 }
 
 @media (max-width: 768px) {
     .hero-overlay {
-        background: linear-gradient(180deg, rgba(11, 19, 43, 0.45) 0%, rgba(11, 19, 43, 0.82) 48%, rgba(11, 19, 43, 0.96) 100%);
+        background: linear-gradient(180deg, 
+            rgba(0, 0, 0, 0.35) 0%, 
+            rgba(0, 0, 0, 0.75) 42%, 
+            rgba(0, 0, 0, 0.95) 100%
+        );
     }
 }
 
-/* Hero Content — Clean Official Dealer Style (No white card) */
+/* Hero Content — Official Automotive Showroom Style (Nissan / Pure Luxury) */
 .hero-content {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: 6%;
-    max-width: 580px;
+    left: 7%;
+    max-width: 530px;
     width: 90%;
     z-index: 10;
     padding: 0 !important;
@@ -613,6 +621,7 @@ body::after {
     border: none !important;
     box-shadow: none !important;
     color: #FFFFFF !important;
+    text-align: left;
     transition: opacity 0.5s ease;
 }
 
@@ -620,11 +629,11 @@ body::after {
     .hero-content {
         position: absolute;
         top: auto;
-        bottom: 75px;
+        bottom: 70px;
         transform: none;
-        left: 5%;
-        right: 5%;
-        max-width: 90%;
+        left: 6%;
+        right: 6%;
+        max-width: 92%;
         margin: 0;
         text-align: left;
     }
@@ -636,41 +645,6 @@ body::after {
     text-align: left;
 }
 
-.hero-content.align-left .hero-buttons,
-.hero-content.align-left .hero-tag,
-.hero-content.align-left .hero-eyebrow {
-    justify-content: flex-start;
-}
-
-.hero-content.align-right {
-    left: auto;
-    right: 7%;
-    text-align: right;
-    transform: translateY(-50%);
-}
-
-.hero-content.align-right .hero-buttons,
-.hero-content.align-right .hero-tag,
-.hero-content.align-right .hero-eyebrow {
-    justify-content: flex-end;
-}
-
-.hero-content.align-center {
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-
-.hero-content.align-center .hero-buttons,
-.hero-content.align-center .hero-tag,
-.hero-content.align-center .hero-eyebrow,
-.hero-content.align-center .hero-specs-row {
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .hero-slide.active .hero-content {
     animation: contentReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -678,97 +652,83 @@ body::after {
 @keyframes contentReveal {
     from {
         opacity: 0;
-        transform: translateY(24px);
+        transform: translateY(20px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-@media (max-width: 768px) {
-    @keyframes contentReveal {
-        from {
-            opacity: 0;
-            transform: translateY(16px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-}
-
+/* 1. Kicker / Brand Header (Clean, minimalist, spaced uppercase - Nissan Style) */
 .hero-eyebrow,
-.hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+.hero-nissan-kicker {
+    font-family: var(--font-body, 'Mina', sans-serif);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.75) !important;
     text-transform: uppercase;
-    color: #38BDF8 !important;
     margin-bottom: 8px;
+    display: block;
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
-.hero-stock-badge,
-.eyebrow-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(56, 189, 248, 0.14) !important;
-    border: 1px solid rgba(56, 189, 248, 0.35) !important;
-    color: #38BDF8 !important;
-    padding: 4px 12px !important;
-    border-radius: 9999px !important;
-    font-size: 0.68rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 1.2px !important;
-    backdrop-filter: blur(8px);
-}
-
-.hero-title {
+/* 2. Model Title (Massive, clean, modern, elegant sans-serif - Nissan Style) */
+.hero-title,
+.hero-nissan-title {
     font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-weight: 800;
-    font-size: clamp(1.65rem, 2.7vw, 2.4rem);
-    line-height: 1.1;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
-    text-transform: none;
-    word-break: break-word;
+    font-weight: 500 !important;
+    font-size: clamp(2.8rem, 5.6vw, 4.6rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -1px !important;
+    margin: 0 0 10px 0 !important;
+    text-transform: none !important;
     color: #FFFFFF !important;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65) !important;
 }
 
-.hero-title .text-accent {
-    color: #60A5FA !important;
-    background: none !important;
-    -webkit-text-fill-color: initial !important;
-}
-
-.hero-description {
-    font-size: clamp(0.82rem, 0.95vw, 0.92rem);
-    line-height: 1.45;
-    color: rgba(255, 255, 255, 0.9) !important;
-    margin-bottom: 12px;
-    max-width: 480px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+.hero-title sup,
+.hero-nissan-title sup {
+    font-size: 0.38em;
+    top: -0.9em;
     font-weight: 400;
+    opacity: 0.85;
+}
+
+/* 3. Tagline & Description */
+.hero-tagline,
+.hero-nissan-tagline {
+    font-family: var(--font-body, 'Mina', sans-serif);
+    font-size: clamp(1.02rem, 1.25vw, 1.18rem);
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+    line-height: 1.35;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.hero-description,
+.hero-nissan-desc {
+    font-family: var(--font-body, 'Mina', sans-serif);
+    font-size: clamp(0.85rem, 1vw, 0.94rem) !important;
+    line-height: 1.55 !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    margin-bottom: 22px !important;
+    max-width: 460px !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+    font-weight: 400 !important;
 }
 
 @media (max-width: 768px) {
-    .hero-description {
-        font-size: 0.82rem;
-        margin-bottom: 10px;
-        line-height: 1.35;
+    .hero-description,
+    .hero-nissan-desc {
+        font-size: 0.82rem !important;
+        margin-bottom: 14px !important;
+        line-height: 1.35 !important;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -776,172 +736,218 @@ body::after {
     }
 }
 
-/* Fila de especificaciones horizontales limpias estilo Nissan Rogue */
+/* 4. Financial & Price Block (Exact Nissan Layout) */
+.hero-nissan-finance,
 .hero-specs-row {
     display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 14px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-    max-width: 500px;
-    width: max-content;
+    flex-direction: column;
+    margin-bottom: 22px;
+    border: none !important;
+    padding: 0 !important;
 }
 
+.hero-nissan-stats-row {
+    display: flex;
+    align-items: baseline;
+    gap: 36px;
+    margin-bottom: 6px;
+}
+
+.hero-nissan-stat,
 .hero-specs-row .spec-col {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    flex-shrink: 0;
 }
 
+.hero-nissan-num,
 .hero-specs-row .spec-val {
     font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-size: clamp(1.1rem, 1.45vw, 1.35rem);
-    font-weight: 700;
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem) !important;
+    font-weight: 600 !important;
     color: #FFFFFF !important;
-    line-height: 1.1;
+    line-height: 1 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5) !important;
     white-space: nowrap;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
+.hero-nissan-label,
 .hero-specs-row .spec-lbl {
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: #94A3B8 !important;
-    font-weight: 600;
+    font-family: var(--font-body, 'Mina', sans-serif);
+    font-size: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    margin-top: 5px !important;
+    font-weight: 500 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
     white-space: nowrap;
+}
+
+.hero-nissan-disclaimer {
+    font-family: var(--font-body, 'Mina', sans-serif);
+    font-size: 0.76rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    max-width: 440px;
+    margin-top: 2px;
 }
 
 .hero-specs-row .spec-divider {
-    width: 1px;
-    height: 26px;
-    background: rgba(255, 255, 255, 0.2);
-    flex-shrink: 0;
+    display: none !important;
 }
 
-@media (max-width: 768px) {
-    .hero-specs-row {
-        gap: 12px;
-        margin-bottom: 14px;
-        padding-bottom: 12px;
-        width: 100%;
-        max-width: 100%;
-        justify-content: space-between;
-    }
-
-    .hero-specs-row .spec-val {
-        font-size: 1.15rem;
-    }
-
-    .hero-specs-row .spec-lbl {
-        font-size: 0.62rem;
-    }
-
-    .hero-specs-row .spec-divider {
-        height: 26px;
-    }
-}
-
-/* Fallback para subtítulo anterior si viniera con div */
-.hero-subtitle {
-    margin-bottom: 24px;
-}
-
-.hero-price-card {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.hero-price-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.92rem;
-}
-
-.hero-price-row.final-price {
-    font-family: var(--font-display, 'Unbounded', sans-serif);
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    margin-top: 6px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.hero-price-row.final-price .hero-price-val {
-    color: #38BDF8 !important;
-}
-
-/* Botones píldora redondeados estilo concesionario oficial */
+/* 5. Action Buttons (Exact Nissan Layout: White Pill + Clean Text Link with Arrow) */
 .hero-actions-row,
-.hero-buttons {
+.hero-nissan-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
 }
 
+.btn-nissan-white,
 .btn-hero-deal,
 .btn-hero-primary {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 8px !important;
-    padding: 10px 22px !important;
+    gap: 10px !important;
+    padding: 13px 28px !important;
     background: #FFFFFF !important;
-    color: #0B132B !important;
-    font-family: var(--font-display, 'Unbounded', sans-serif) !important;
-    font-size: 0.78rem !important;
+    color: #0F172A !important;
+    font-family: var(--font-body, 'Mina', sans-serif) !important;
+    font-size: 0.92rem !important;
     font-weight: 700 !important;
-    border-radius: 9999px !important;
+    border-radius: 50px !important;
     border: none !important;
     text-decoration: none !important;
-    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+    transition: all 0.22s ease !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
 }
 
+.btn-nissan-white:hover,
 .btn-hero-deal:hover,
 .btn-hero-primary:hover {
-    background: #38BDF8 !important;
-    color: #0B132B !important;
+    background: #F1F5F9 !important;
+    color: #0F172A !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
 }
 
+.btn-nissan-white i,
+.btn-hero-deal i,
+.btn-hero-primary i {
+    font-size: 0.85rem !important;
+    transition: transform 0.2s ease !important;
+}
+
+.btn-nissan-white:hover i,
+.btn-hero-deal:hover i,
+.btn-hero-primary:hover i {
+    transform: translateX(4px) !important;
+}
+
+.btn-nissan-link,
 .btn-hero-details,
 .btn-hero-outline {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 7px !important;
-    padding: 9px 20px !important;
-    background: rgba(255, 255, 255, 0.12) !important;
+    gap: 8px !important;
+    padding: 13px 18px !important;
+    background: transparent !important;
     color: #FFFFFF !important;
-    font-family: var(--font-display, 'Unbounded', sans-serif) !important;
-    font-size: 0.76rem !important;
+    font-family: var(--font-body, 'Mina', sans-serif) !important;
+    font-size: 0.92rem !important;
     font-weight: 600 !important;
-    border-radius: 9999px !important;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 50px !important;
+    border: none !important;
     text-decoration: none !important;
-    backdrop-filter: blur(10px) !important;
-    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    backdrop-filter: none !important;
+    transition: all 0.22s ease !important;
 }
 
+.btn-nissan-link:hover,
 .btn-hero-details:hover,
 .btn-hero-outline:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: #FFFFFF !important;
-    color: #FFFFFF !important;
-    transform: translateY(-2px) !important;
+    color: #93C5FD !important;
+    background: transparent !important;
+    transform: none !important;
+}
+
+.btn-nissan-link i,
+.btn-hero-details i,
+.btn-hero-outline i {
+    font-size: 0.85rem !important;
+    transition: transform 0.2s ease !important;
+}
+
+.btn-nissan-link:hover i,
+.btn-hero-details:hover i,
+.btn-hero-outline:hover i {
+    transform: translateX(4px) !important;
+}
+
+/* 6. Clean Minimalist Slider Controls */
+.hero-controls {
+    position: absolute;
+    bottom: 24px;
+    right: 6%;
+    left: auto;
+    transform: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+}
+
+.hero-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    backdrop-filter: blur(8px);
+}
+
+.hero-arrow:hover {
+    background: #FFFFFF;
+    color: #0F172A;
+    border-color: #FFFFFF;
+}
+
+.hero-dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    padding: 0;
+}
+
+.hero-dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background: #FFFFFF;
+}
+
+/* Remove vertical Desliza clutter */
+.hero-scroll-indicator {
+    display: none !important;
 }
 
 /* Hero Controls */
@@ -5657,10 +5663,14 @@ img.mastertech-seal {
 .dealership-topbar {
     background: #070B14;
     color: #94A3B8;
-    font-size: 0.71rem;
-    padding: 6px 0;
+    font-size: 0.74rem;
+    padding: 8px 0;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     width: 100%;
+    box-sizing: border-box;
 }
 
 .dealership-topbar .topbar-container {

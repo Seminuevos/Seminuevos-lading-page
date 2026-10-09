@@ -799,21 +799,18 @@ document.addEventListener('DOMContentLoaded', () => {
             let specsHtml = '';
             if (showPrice && (s.finalPrice || s.originalPrice)) {
                 specsHtml = `
-                    <div class="hero-specs-row">
-                        <div class="spec-col">
-                            <span class="spec-val">$${fmt(s.finalPrice || s.originalPrice)}</span>
-                            <span class="spec-lbl">Precio Especial</span>
+                    <div class="hero-nissan-finance">
+                        <div class="hero-nissan-stats-row">
+                            <div class="hero-nissan-stat">
+                                <span class="hero-nissan-num">$${fmt(s.finalPrice || s.originalPrice)}</span>
+                                <span class="hero-nissan-label">Precio Especial</span>
+                            </div>
+                            <div class="hero-nissan-stat">
+                                <span class="hero-nissan-num">${s.km || '0 KM'}</span>
+                                <span class="hero-nissan-label">Recorrido</span>
+                            </div>
                         </div>
-                        <div class="spec-divider"></div>
-                        <div class="spec-col">
-                            <span class="spec-val">${s.km || '0 KM'}</span>
-                            <span class="spec-lbl">Recorrido</span>
-                        </div>
-                        <div class="spec-divider"></div>
-                        <div class="spec-col">
-                            <span class="spec-val">100%</span>
-                            <span class="spec-lbl">Garantía Mecánica</span>
-                        </div>
+                        <div class="hero-nissan-disclaimer">Inspección de 150 puntos respaldada por Taller MasterTech.</div>
                     </div>
                 `;
             }
@@ -826,27 +823,29 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (heroBgImage.includes('hero-1781886028689-1.jpg')) heroBgImage = 'images/hero-slides/hero-2.jpg';
             else if (heroBgImage.includes('hero-1789410090103-2.jpg')) heroBgImage = 'images/hero-slides/hero-3.jpg';
 
-            // Re-crear el diseño premium oficial de concesionario
+            // Re-crear el diseño premium oficial estilo Nissan
+            const cleanTitle = (s.title || 'Vehículo Certificado').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
+            const cleanKicker = (s.tag || 'SEMINUEVOS 2026').replace(/<[^>]*>/g, '').replace(/[|•].*$/, '').trim();
+
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
                     <div class="hero-overlay"></div>
                     <div class="hero-content ${alignClass}">
-                        <div class="hero-eyebrow">
-                            <span class="eyebrow-badge">
-                                <i class="fas ${isFirst ? 'fa-bolt' : (isSecond ? 'fa-shield-alt' : 'fa-car')}"></i> ${s.tag || 'STOCK LOCAL | ENTREGA INMEDIATA'}
-                            </span>
-                        </div>
-                        <${isFirst ? 'h1' : 'p'} class="hero-title">
-                            ${(s.title || '').includes('<span') ? s.title : (s.title || '').replace(/\b(20\d{2}|0KM)\b/g, '<span class="text-accent">$1</span>')}
+                        <span class="hero-nissan-kicker">${cleanKicker}</span>
+                        <${isFirst ? 'h1' : 'p'} class="hero-nissan-title">
+                            ${cleanTitle}<sup>®</sup>
                         </${isFirst ? 'h1' : 'p'}>
-                        ${subtitleHtml}
+                        <h2 class="hero-nissan-tagline">${s.subtitle || 'El crossover expresivo y vanguardista'}</h2>
+                        <p class="hero-nissan-desc">
+                            ${s.description || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.'}
+                        </p>
                         ${specsHtml}
-                        <div class="hero-actions-row">
-                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-hero-deal" target="_blank" rel="noopener">
-                               <span>${s.ctaPrimary || 'Asegurar Oferta'}</span> <i class="fas fa-arrow-right"></i>
+                        <div class="hero-nissan-actions">
+                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-nissan-white" target="_blank" rel="noopener">
+                               <span>${s.ctaPrimary || 'Asegurar esta oferta'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
-                            <a href="catalogo" class="btn-hero-details">
-                               <span>${s.ctaSecondary || 'Ver Detalles'}</span> <i class="fas fa-arrow-right"></i>
+                            <a href="catalogo" class="btn-nissan-link">
+                               <span>${s.ctaSecondary || 'Detalles de oferta'}</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
