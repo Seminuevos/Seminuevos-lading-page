@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -220,7 +220,7 @@
                             </select>
                         </div>
                         <div class="p-group">
-                            <label for="pAutoExp">Â¿Experiencia en el Sector Automotriz? <span class="req">*</span></label>
+                            <label for="pAutoExp">¿Experiencia en el Sector Automotriz? <span class="req">*</span></label>
                             <select id="pAutoExp" class="p-select" required>
                                 <option value="" disabled selected>-- Selecciona una opción --</option>
                                 <option value="Sí, en concesionario o agencia formal">Sí, en concesionario o agencia formal</option>
@@ -242,7 +242,7 @@
                             </select>
                         </div>
                         <div class="p-group">
-                            <label for="pHasVehicle">Â¿Posees Vehículo Propio? <span class="req">*</span></label>
+                            <label for="pHasVehicle">¿Posees Vehículo Propio? <span class="req">*</span></label>
                             <select id="pHasVehicle" class="p-select" required>
                                 <option value="" disabled selected>-- Selecciona una opción --</option>
                                 <option value="Sí, cuento con vehículo propio">Sí, cuento con vehículo propio</option>
@@ -256,7 +256,7 @@
                         <input type="url" id="pSocialOrCv" class="p-input" placeholder="https://linkedin.com/in/tu-perfil o enlace a Google Drive">
                     </div>
 
-                    <!-- 3. MOTIVACIÃ“N -->
+                    <!-- 3. MOTIVACIÓN -->
                     <div class="form-section-subtitle" style="margin-top: 30px;">
                         <i class="fas fa-comment-dots"></i> 3. Cuéntanos sobre ti
                     </div>
@@ -273,7 +273,7 @@
                     </div>
                 </form>
 
-                <!-- PANTALLA DE ÉXITO TRAS EL ENVÃO -->
+                <!-- PANTALLA DE ÉXITO TRAS EL ENVÍO -->
                 <div class="success-box" id="successBox">
                     <div class="success-icon">
                         <i class="fas fa-check"></i>
@@ -399,14 +399,14 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO POSTULACIÓN...';
 
             const formattedMessage = `POSTULACIÓN OFICIAL DE VENDEDOR / ASESOR COMERCIAL:
-â€¢ Cédula/ID: ${idNumber}
-â€¢ Sector/Municipio: ${city}
-â€¢ Experiencia en Ventas: ${experience}
-â€¢ Experiencia Automotriz: ${autoExp}
-â€¢ Modalidad: ${modality}
-â€¢ Vehículo propio: ${hasVehicle}
-â€¢ Enlace CV / Perfil: ${socialOrCv || 'No adjunto'}
-â€¢ Sobre el candidato / Logros:
+• Cédula/ID: ${idNumber}
+• Sector/Municipio: ${city}
+• Experiencia en Ventas: ${experience}
+• Experiencia Automotriz: ${autoExp}
+• Modalidad: ${modality}
+• Vehículo propio: ${hasVehicle}
+• Enlace CV / Perfil: ${socialOrCv || 'No adjunto'}
+• Sobre el candidato / Logros:
 ${aboutMe}`;
 
             try {
@@ -434,7 +434,7 @@ ${aboutMe}`;
             // Preparar mensaje de WhatsApp
             const waText = encodeURIComponent(
 `*NUEVA POSTULACIÓN DE VENDEDOR - SEMINUEVOS*
-â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+━━━━━━━━━━━━━━━━━━━━
 *Candidato:* ${name}
 *Cédula:* ${idNumber}
 *Teléfono:* ${phone}
@@ -446,13 +446,13 @@ ${aboutMe}`;
 *Vehículo Propio:* ${hasVehicle}
 ${socialOrCv ? `*CV/Perfil:* ${socialOrCv}\n` : ''}*Mensaje / Logros:*
 ${aboutMe}
-â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+━━━━━━━━━━━━━━━━━━━━
 Enviado desde el Formulario Oficial de Postulación.`
             );
 
             btnWaConfirmation.href = `https://wa.me/584248700438?text=${waText}`;
 
-            // Mostrar pantalla de Ã©xito
+            // Mostrar pantalla de éxito
             form.style.display = 'none';
             successBox.style.display = 'block';
             window.scrollTo({ top: successBox.offsetTop - 120, behavior: 'smooth' });
