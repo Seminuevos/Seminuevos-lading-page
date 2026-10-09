@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="public, max-age=3600, stale-while-revalidate=86400">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <!-- ===== SEO GLOBAL CONFIGURATION ===== -->
     <title>Sobre Nosotros | Semi Nuevo Autos Venezuela & Respaldo MasterTech</title>
     <meta name="description"
@@ -89,697 +91,830 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Mina:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="assets/index-DQpKhdUd.css">
+    <link rel="stylesheet" href="style.css?v=20261009">
+    <link rel="stylesheet" href="assets/index-DQpKhdUd.css?v=20261009">
 
     <style>
-        /* ===== ESTILOS ESPECÍFICOS REDISEÑO NOSOTROS ===== */
-        .nosotros-hero {
+        /* ==========================================================================
+           REDISEÑO OFICIAL CONCESIONARIO: SOBRE NOSOTROS (SHOWROOM BLANCO ELEGANTE)
+           ========================================================================== */
+        body {
+            background-color: #FFFFFF !important;
+            color: #0F172A !important;
+        }
+
+        /* 1. HERO SHOWROOM SPLIT */
+        .dealer-about-hero {
             position: relative;
-            background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.18) 0%, rgba(10, 15, 30, 0.98) 70%), #070B14;
-            padding: 130px 0 80px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+            padding: 145px 0 65px 0;
+            border-bottom: 1px solid #E2E8F0;
             overflow: hidden;
-            text-align: center;
         }
 
-        .nosotros-hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 80% 30%, rgba(37, 99, 235, 0.12) 0%, transparent 60%);
-            pointer-events: none;
+        .dealer-hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 48px;
+            align-items: center;
         }
 
-        .hero-badge-pill {
+        .dealer-kicker-tag {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(37, 99, 235, 0.15);
-            border: 1px solid rgba(37, 99, 235, 0.4);
-            color: #60a5fa;
-            font-family: var(--font-display);
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            padding: 7px 18px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            margin-bottom: 22px;
-        }
-
-        .nosotros-hero-title {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 4.2vw, 3.4rem);
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.18;
-            max-width: 950px;
-            margin: 0 auto 20px auto;
-            letter-spacing: -0.5px;
-        }
-
-        .nosotros-hero-title span {
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
             color: #2563eb;
-            background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nosotros-hero-desc {
-            font-family: var(--font-body);
-            font-size: clamp(1rem, 1.3vw, 1.15rem);
-            color: #94a3b8;
-            max-width: 780px;
-            margin: 0 auto 40px auto;
-            line-height: 1.7;
-        }
-
-        /* STATS COUNTERS BAR */
-        .nosotros-stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            max-width: 1080px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .n-stat-card {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 24px 18px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-
-        .n-stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(37, 99, 235, 0.4);
-            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.15);
-            background: rgba(20, 30, 55, 0.85);
-        }
-
-        .n-stat-num {
-            font-family: var(--font-display);
-            font-size: clamp(1.8rem, 2.5vw, 2.4rem);
-            font-weight: 800;
-            color: #ffffff;
-            display: block;
-            margin-bottom: 6px;
-            line-height: 1;
-        }
-
-        .n-stat-num .plus {
-            color: #2563eb;
-        }
-
-        .n-stat-label {
-            font-family: var(--font-display);
-            font-size: 0.72rem;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.74rem;
             font-weight: 700;
-            color: #94a3b8;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
-        /* SECTION: HISTORIA & PROPÓSITO */
-        .nosotros-story-section {
-            padding: 90px 0;
-            background: #0B1120;
-            position: relative;
-        }
-
-        .story-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.15fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .story-visual-wrap {
-            position: relative;
-            background: radial-gradient(circle at center, rgba(37, 99, 235, 0.15) 0%, rgba(15, 23, 42, 0.95) 80%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px 30px;
-            text-align: center;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
-        }
-
-        .story-visual-wrap img {
-            max-width: 280px;
-            width: 100%;
-            height: auto;
-            margin: 0 auto;
-            display: block;
-            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
-            transition: transform 0.4s ease;
-        }
-
-        .story-visual-wrap:hover img {
-            transform: scale(1.04) rotate(-1deg);
-        }
-
-        .story-visual-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(37, 99, 235, 0.2);
-            border: 1px solid #2563eb;
-            color: #93c5fd;
-            font-family: var(--font-display);
-            font-size: 0.68rem;
-            font-weight: 700;
+            letter-spacing: 1px;
             padding: 6px 16px;
             border-radius: 30px;
-            margin-top: 25px;
-            letter-spacing: 1px;
             text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
-        .story-commitment-box {
-            margin-top: 22px;
-            background: rgba(2, 6, 23, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 16px 20px;
-            text-align: left;
-        }
-
-        .story-commitment-box p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            line-height: 1.5;
-        }
-
-        .story-commitment-box p strong {
-            color: #ffffff;
-            display: block;
-            margin-bottom: 3px;
-        }
-
-        .story-content .story-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            color: #2563eb;
-            font-family: var(--font-display);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-        }
-
-        .story-content h2 {
-            font-family: var(--font-display);
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            color: #ffffff;
+        .dealer-hero-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(2.2rem, 3.8vw, 3.2rem);
             font-weight: 800;
-            line-height: 1.22;
-            margin-bottom: 22px;
+            color: #0F172A;
+            line-height: 1.15;
+            margin: 0 0 18px 0;
+            letter-spacing: -1px;
         }
 
-        .story-content h2 span {
+        .dealer-hero-title span {
             color: #2563eb;
         }
 
-        .story-text {
-            font-size: 1rem;
-            color: #94a3b8;
-            line-height: 1.8;
-            margin-bottom: 18px;
+        .dealer-hero-desc {
+            font-family: var(--font-body, 'Mina', sans-serif);
+            font-size: 1.05rem;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            max-width: 620px;
         }
 
-        .story-pillars-list {
-            display: flex;
-            flex-direction: column;
+        .dealer-hero-pills {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 14px;
-            margin-top: 30px;
+            margin-bottom: 32px;
         }
 
-        .story-pillar-item {
+        .dealer-pill-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 14px 16px;
             display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 14px;
-            padding: 16px 20px;
-            transition: all 0.25s ease;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+            transition: all 0.2s ease;
         }
 
-        .story-pillar-item:hover {
-            border-color: rgba(37, 99, 235, 0.4);
-            background: rgba(23, 37, 84, 0.4);
-            transform: translateX(4px);
+        .dealer-pill-card:hover {
+            border-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
         }
 
-        .story-pillar-icon {
-            width: 42px;
-            height: 42px;
-            background: rgba(37, 99, 235, 0.15);
+        .dealer-pill-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #60a5fa;
             font-size: 1.15rem;
             flex-shrink: 0;
         }
 
-        .story-pillar-info strong {
+        .dealer-pill-text strong {
             display: block;
-            font-family: var(--font-display);
-            font-size: 0.95rem;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.84rem;
             font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 4px;
+            color: #0F172A;
+            line-height: 1.2;
+            margin-bottom: 2px;
         }
 
-        .story-pillar-info p {
+        .dealer-pill-text span {
+            font-size: 0.74rem;
+            color: #64748B;
+        }
+
+        .dealer-hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-dealer-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #2563eb;
+            color: #FFFFFF !important;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.85rem;
-            color: #94a3b8;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-dealer-primary:hover {
+            background: #1D4ED8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-dealer-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            color: #0F172A !important;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 14px 26px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-dealer-outline:hover {
+            border-color: #2563eb;
+            color: #2563eb !important;
+            background: rgba(37, 99, 235, 0.04);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Right Vehicle Stage */
+        .dealer-showcase-frame {
+            position: relative;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        .dealer-showcase-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #0F172A;
+        }
+
+        .dealer-showcase-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.6s ease;
+        }
+
+        .dealer-showcase-frame:hover .dealer-showcase-img-wrap img {
+            transform: scale(1.04);
+        }
+
+        .showcase-floating-badge {
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            color: #FFFFFF;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .showcase-floating-seal {
+            position: absolute;
+            bottom: 28px;
+            right: 28px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid #E2E8F0;
+        }
+
+        .showcase-floating-seal img {
+            height: 32px;
+            width: auto;
+        }
+
+        .showcase-floating-seal span {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #0F172A;
+            line-height: 1.2;
+        }
+
+        /* 2. STATS BAR */
+        .dealer-stats-strip {
+            background: #FFFFFF;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 35px 0;
+        }
+
+        .dealer-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            align-items: center;
+        }
+
+        .d-stat-item {
+            text-align: center;
+            border-right: 1px solid #E2E8F0;
+            padding: 0 16px;
+        }
+
+        .d-stat-item:last-child {
+            border-right: none;
+        }
+
+        .d-stat-num {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(2rem, 3vw, 2.6rem);
+            font-weight: 800;
+            color: #2563eb;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .d-stat-label {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* 3. STORY SECTION */
+        .dealer-story-section {
+            padding: 85px 0;
+            background: #FFFFFF;
+        }
+
+        .story-split-grid {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .story-media-box {
+            position: relative;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 36px 30px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.04);
+        }
+
+        .story-media-box img.cert-img {
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+
+        .story-badge-highlight {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            color: #2563eb;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 30px;
+            text-transform: uppercase;
+        }
+
+        .story-guarantee-note {
+            margin-top: 20px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .story-guarantee-note strong {
+            color: #0F172A;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .story-info-side .story-kicker {
+            color: #2563eb;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+        }
+
+        .story-info-side h2 {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+            font-weight: 800;
+            color: #0F172A;
+            line-height: 1.25;
+            margin-bottom: 20px;
+        }
+
+        .story-info-side h2 span {
+            color: #2563eb;
+        }
+
+        .story-paragraph {
+            font-size: 0.98rem;
+            color: #475569;
+            line-height: 1.75;
+            margin-bottom: 18px;
+        }
+
+        .story-pillars-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .story-deck-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: all 0.2s ease;
+        }
+
+        .story-deck-item:hover {
+            border-color: #2563eb;
+            background: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+            transform: translateX(4px);
+        }
+
+        .story-deck-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .story-deck-text strong {
+            display: block;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 3px;
+        }
+
+        .story-deck-text p {
+            font-size: 0.84rem;
+            color: #64748B;
             margin: 0;
             line-height: 1.5;
         }
 
-        /* SECTION: MISIÓN, VISIÓN, VALORES */
-        .nosotros-mvv-section {
-            padding: 90px 0;
-            background: #070B14;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        /* 4. PRINCIPIOS Y VALORES */
+        .dealer-principles-section {
+            padding: 85px 0;
+            background: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
+            border-bottom: 1px solid #E2E8F0;
         }
 
-        .mvv-header {
-            text-align: center;
-            max-width: 750px;
-            margin: 0 auto 55px auto;
-        }
-
-        .mvv-grid {
+        .principles-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
+            margin-top: 45px;
         }
 
-        .mvv-card {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 38px 28px;
+        .principle-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 34px 28px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
 
-        .mvv-card::before {
+        .principle-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: transparent;
-            transition: background 0.3s ease;
-        }
-
-        .mvv-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(37, 99, 235, 0.4);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
-            background: rgba(17, 27, 49, 0.85);
-        }
-
-        .mvv-card:hover::before {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
             background: #2563eb;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .mvv-icon-wrap {
-            width: 58px;
-            height: 58px;
-            background: rgba(37, 99, 235, 0.12);
-            border-radius: 14px;
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.1);
+            border-color: #2563eb;
+        }
+
+        .principle-card:hover::before {
+            opacity: 1;
+        }
+
+        .principle-icon-wrap {
+            width: 54px;
+            height: 54px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #3b82f6;
-            font-size: 1.45rem;
-            margin-bottom: 24px;
-        }
-
-        .mvv-title {
-            font-family: var(--font-display);
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 14px;
-        }
-
-        .mvv-desc {
-            font-size: 0.92rem;
-            color: #94a3b8;
-            line-height: 1.75;
-            margin: 0;
-        }
-
-        /* SECTION: ECOSISTEMA MT GROUP */
-        .nosotros-ecosystem-section {
-            padding: 95px 0;
-            background: #0B1120;
-            position: relative;
-        }
-
-        .ecosystem-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 22px;
-            margin-top: 50px;
-        }
-
-        .eco-card {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 30px 22px;
-            text-align: center;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .eco-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(37, 99, 235, 0.45);
-            box-shadow: 0 14px 30px rgba(37, 99, 235, 0.12);
-            background: rgba(20, 32, 58, 0.9);
-        }
-
-        .eco-card-icon {
-            width: 56px;
-            height: 56px;
-            background: rgba(37, 99, 235, 0.14);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #60a5fa;
+            color: #2563eb;
             font-size: 1.4rem;
-            margin: 0 auto 20px auto;
+            margin-bottom: 22px;
         }
 
-        .eco-card-title {
-            font-family: var(--font-display);
-            font-size: 1.05rem;
+        .principle-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #ffffff;
+            color: #0F172A;
             margin-bottom: 12px;
         }
 
-        .eco-card-desc {
+        .principle-desc {
+            font-size: 0.9rem;
+            color: #64748B;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* 5. ECOSISTEMA MT GROUP */
+        .dealer-ecosystem-section {
+            padding: 85px 0;
+            background: #FFFFFF;
+        }
+
+        .eco-dealership-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-top: 45px;
+        }
+
+        .eco-dealer-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .eco-dealer-card:hover {
+            transform: translateY(-5px);
+            border-color: #2563eb;
+            box-shadow: 0 14px 28px rgba(37, 99, 235, 0.1);
+        }
+
+        .eco-dealer-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(37, 99, 235, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            font-size: 1.35rem;
+            margin-bottom: 18px;
+        }
+
+        .eco-dealer-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 10px;
+        }
+
+        .eco-dealer-desc {
             font-size: 0.86rem;
-            color: #94a3b8;
-            line-height: 1.65;
+            color: #64748B;
+            line-height: 1.6;
             margin-bottom: 22px;
             flex-grow: 1;
         }
 
-        .eco-card-link {
+        .eco-dealer-link {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            color: #3b82f6;
-            font-family: var(--font-display);
+            color: #2563eb;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.78rem;
             font-weight: 700;
             text-decoration: none;
-            transition: gap 0.2s ease, color 0.2s ease;
+            transition: gap 0.2s ease;
         }
 
-        .eco-card-link:hover {
-            color: #60a5fa;
+        .eco-dealer-link:hover {
             gap: 12px;
+            color: #1D4ED8;
         }
 
-        /* SECTION: PROCESO DE CERTIFICACIÓN 150 PUNTOS */
-        .nosotros-process-section {
-            padding: 95px 0;
-            background: #070B14;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        /* 6. PROCESO DE CERTIFICACIÓN */
+        .dealer-process-section {
+            padding: 85px 0;
+            background: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
         }
 
-        .process-steps-grid {
+        .process-steps-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-top: 50px;
-            position: relative;
+            margin-top: 45px;
         }
 
-        .process-step-card {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .process-step-box {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
             border-radius: 16px;
             padding: 28px 22px;
-            position: relative;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
             transition: all 0.3s ease;
         }
 
-        .process-step-card:hover {
-            border-color: rgba(37, 99, 235, 0.4);
+        .process-step-box:hover {
+            border-color: #2563eb;
             transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.08);
         }
 
-        .process-step-num {
-            font-family: var(--font-display);
-            font-size: 1.8rem;
+        .step-num-badge {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 1.6rem;
             font-weight: 800;
-            color: rgba(37, 99, 235, 0.3);
+            color: rgba(37, 99, 235, 0.25);
             line-height: 1;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
-        .process-step-card:hover .process-step-num {
+        .process-step-box:hover .step-num-badge {
             color: #2563eb;
         }
 
-        .process-step-title {
-            font-family: var(--font-display);
-            font-size: 1rem;
+        .step-heading {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: 0.98rem;
             font-weight: 700;
-            color: #ffffff;
+            color: #0F172A;
             margin-bottom: 10px;
         }
 
-        .process-step-desc {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            line-height: 1.65;
+        .step-text {
+            font-size: 0.84rem;
+            color: #64748B;
+            line-height: 1.6;
             margin: 0;
         }
 
-        /* SECTION: UBICACIÓN Y SHOWROOM */
-        .nosotros-location-section {
+        /* 7. SHOWROOM Y UBICACIÓN */
+        .dealer-location-section {
             padding: 80px 0;
-            background: #0B1120;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: #FFFFFF;
         }
 
-        .location-banner {
-            background: radial-gradient(circle at 10% 50%, rgba(37, 99, 235, 0.18) 0%, rgba(15, 23, 42, 0.85) 70%), #0d1527;
-            border: 1px solid rgba(37, 99, 235, 0.25);
-            border-radius: 22px;
+        .location-banner-card {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 20px;
             padding: 45px 50px;
             display: grid;
             grid-template-columns: 1.3fr 1fr;
             gap: 40px;
             align-items: center;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
         }
 
-        .location-info h3 {
-            font-family: var(--font-display);
-            font-size: clamp(1.4rem, 2.3vw, 1.9rem);
-            color: #ffffff;
-            font-weight: 700;
-            margin-bottom: 14px;
+        .loc-title {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+            color: #0F172A;
+            font-weight: 800;
+            margin: 10px 0 14px 0;
         }
 
-        .location-info p {
-            color: #94a3b8;
+        .loc-desc {
+            color: #475569;
             font-size: 0.95rem;
             line-height: 1.7;
             margin-bottom: 22px;
         }
 
-        .location-details-list {
+        .loc-details-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .location-item {
+        .loc-detail-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #cbd5e1;
-            font-size: 0.9rem;
+            color: #334155;
+            font-size: 0.88rem;
+            font-weight: 500;
         }
 
-        .location-item i {
-            color: #3b82f6;
-            font-size: 1.05rem;
-            width: 22px;
+        .loc-detail-row i {
+            color: #2563eb;
+            font-size: 1rem;
+            width: 20px;
             text-align: center;
         }
 
-        .location-actions {
-            text-align: right;
+        .loc-cta-stack {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
             align-items: flex-end;
         }
 
-        /* SECTION: CARRERA COMERCIAL (RECRUITMENT) */
-        .nosotros-careers-section {
-            padding: 85px 0;
-            background: #070B14;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        /* 8. CAREERS SECTION */
+        .dealer-careers-section {
+            padding: 80px 0;
+            background: #F8FAFC;
+            border-top: 1px solid #E2E8F0;
             text-align: center;
         }
 
-        .careers-container {
+        .careers-dealership-card {
             max-width: 820px;
             margin: 0 auto;
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
             border-radius: 20px;
             padding: 45px 35px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
         }
 
-        .careers-badge {
+        .careers-tag {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(37, 99, 235, 0.15);
-            border: 1px solid rgba(37, 99, 235, 0.35);
-            color: #60a5fa;
-            font-family: var(--font-display);
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            color: #2563eb;
+            font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 1px;
             padding: 6px 16px;
-            border-radius: 50px;
+            border-radius: 30px;
             text-transform: uppercase;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
-        .careers-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.5rem, 2.6vw, 2.1rem);
-            color: #ffffff;
-            font-weight: 700;
+        .careers-heading {
+            font-family: var(--font-display, 'Unbounded', sans-serif);
+            font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+            color: #0F172A;
+            font-weight: 800;
             margin-bottom: 14px;
         }
 
-        .careers-desc {
-            font-size: 0.98rem;
-            color: #94a3b8;
+        .careers-subtext {
+            font-size: 0.96rem;
+            color: #64748B;
             line-height: 1.7;
             margin-bottom: 28px;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* BOTONES */
-        .btn-nosotros-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #2563eb;
-            color: #ffffff !important;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 14px 28px;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-nosotros-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
-        }
-
-        .btn-nosotros-outline {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff !important;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 14px 26px;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .btn-nosotros-outline:hover {
-            border-color: #2563eb;
-            background: rgba(37, 99, 235, 0.1);
-            color: #60a5fa !important;
-        }
-
-        /* RESPONSIVE BREAKPOINTS */
+        /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .nosotros-stats-bar {
+            .dealer-hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .story-split-grid {
+                grid-template-columns: 1fr;
+            }
+            .dealer-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+            .d-stat-item:nth-child(2) {
+                border-right: none;
+            }
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+            .eco-dealership-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .story-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            .mvv-grid {
-                grid-template-columns: 1fr;
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            .ecosystem-grid {
+            .process-steps-row {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .process-steps-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .location-banner {
+            .location-banner-card {
                 grid-template-columns: 1fr;
-                text-align: left;
+                padding: 30px 24px;
             }
-            .location-actions {
+            .loc-cta-stack {
                 align-items: flex-start;
-                text-align: left;
             }
         }
 
         @media (max-width: 640px) {
-            .nosotros-stats-bar {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            .ecosystem-grid {
+            .dealer-hero-pills {
                 grid-template-columns: 1fr;
             }
-            .process-steps-grid {
+            .dealer-stats-grid {
                 grid-template-columns: 1fr;
             }
-            .careers-container {
-                padding: 30px 20px;
+            .d-stat-item {
+                border-right: none;
+                border-bottom: 1px solid #E2E8F0;
+                padding-bottom: 16px;
+            }
+            .d-stat-item:last-child {
+                border-bottom: none;
+            }
+            .eco-dealership-grid {
+                grid-template-columns: 1fr;
+            }
+            .process-steps-row {
+                grid-template-columns: 1fr;
+            }
+            .dealer-showcase-img-wrap {
+                height: 260px;
             }
         }
     </style>
@@ -814,103 +949,168 @@
     <div class="social-sidebar">
         <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" class="social-icon" title="Instagram"><i
+        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" class="social-icon" title="Instagram"><i
                 class="fab fa-instagram"></i></a>
         <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
     </div>
 
     <!-- ===== FLOATING WHATSAPP ===== -->
     <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20un%20vehículo"
-        class="whatsapp-float" target="_blank" rel="noopener" title="Contáctanos por WhatsApp">
+        class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <!-- ========================================== -->
-    <!-- 1. HERO HEADER OFICIAL                     -->
+    <!-- 1. HERO SHOWROOM OFICIAL (SPLIT CLEAN)    -->
     <!-- ========================================== -->
-    <header class="nosotros-hero">
+    <header class="dealer-about-hero">
         <div class="container">
-            <div class="hero-badge-pill">
-                <i class="fas fa-certificate"></i> CONCESIONARIO OFICIAL & CENTRO TÉCNICO
-            </div>
-            <h1 class="nosotros-hero-title">
-                Excelencia Automotriz con <span>Respaldo Real</span>
-            </h1>
-            <p class="nosotros-hero-desc">
-                Transformamos la compra, venta e importación de vehículos en Venezuela con peritaje riguroso de 150 puntos, respaldo del ecosistema Taller MasterTech y seguridad jurídica 100% garantizada.
-            </p>
+            <div class="dealer-hero-grid">
+                <!-- Columna Izquierda: Información Corporativa -->
+                <div>
+                    <span class="dealer-kicker-tag">
+                        <i class="fas fa-shield-halved"></i> SEMINUEVOS AGENCY • RESPALDO MASTERTECH
+                    </span>
+                    <h1 class="dealer-hero-title">
+                        El Estándar Oficial de <span>Confianza Automotriz</span>
+                    </h1>
+                    <p class="dealer-hero-desc">
+                        Lideramos la comercialización, importación directa y certificación pericial de vehículos en Venezuela. Transformamos la experiencia de compra eliminando riesgos informales mediante diagnóstico computarizado y blindaje legal total.
+                    </p>
 
-            <!-- STATS BAR -->
-            <div class="nosotros-stats-bar">
-                <div class="n-stat-card">
-                    <span class="n-stat-num">+6<span class="plus">AÑOS</span></span>
-                    <span class="n-stat-label">Trayectoria en Venezuela</span>
+                    <div class="dealer-hero-pills">
+                        <div class="dealer-pill-card">
+                            <div class="dealer-pill-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="dealer-pill-text">
+                                <strong>150 Puntos de Peritaje</strong>
+                                <span>Diagnóstico técnico computarizado</span>
+                            </div>
+                        </div>
+                        <div class="dealer-pill-card">
+                            <div class="dealer-pill-icon"><i class="fas fa-file-contract"></i></div>
+                            <div class="dealer-pill-text">
+                                <strong>Traspaso Jurídico Inmediato</strong>
+                                <span>Documentación INTT 100% verificada</span>
+                            </div>
+                        </div>
+                        <div class="dealer-pill-card">
+                            <div class="dealer-pill-icon"><i class="fas fa-wrench"></i></div>
+                            <div class="dealer-pill-text">
+                                <strong>2 Años de Revisiones</strong>
+                                <span>Mano de obra bonificada en MasterTech</span>
+                            </div>
+                        </div>
+                        <div class="dealer-pill-card">
+                            <div class="dealer-pill-icon"><i class="fas fa-truck-ramp-box"></i></div>
+                            <div class="dealer-pill-text">
+                                <strong>Envíos Nacionales</strong>
+                                <span>Traslado asegurado puerta a puerta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dealer-hero-actions">
+                        <a href="catalogo" class="btn-dealer-primary">
+                            <span>Ver Inventario Certificado</span> <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="https://wa.me/584248700438?text=Hola,%20deseo%20comunicarme%20con%20la%20gerencia%20comercial%20de%20SemiNuevo%20Autos" target="_blank" rel="noopener" class="btn-dealer-outline">
+                            <i class="fab fa-whatsapp"></i> Hablar con Gerencia
+                        </a>
+                    </div>
                 </div>
-                <div class="n-stat-card">
-                    <span class="n-stat-num">150<span class="plus">PTS</span></span>
-                    <span class="n-stat-label">Inspección Certificada</span>
-                </div>
-                <div class="n-stat-card">
-                    <span class="n-stat-num">100<span class="plus">%</span></span>
-                    <span class="n-stat-label">Transparencia Legal</span>
-                </div>
-                <div class="n-stat-card">
-                    <span class="n-stat-num">2<span class="plus">AÑOS</span></span>
-                    <span class="n-stat-label">Revisiones MasterTech</span>
+
+                <!-- Columna Derecha: Escenario Fotográfico de Concesionario -->
+                <div class="dealer-showcase-frame">
+                    <div class="dealer-showcase-img-wrap">
+                        <img src="images/hero-slides/hero-1.jpg" alt="Showroom Oficial SemiNuevo Autos" loading="eager">
+                        <div class="showcase-floating-badge">
+                            <i class="fas fa-location-dot" style="color: #38bdf8;"></i> Showroom Porlamar, Isla de Margarita
+                        </div>
+                        <div class="showcase-floating-seal">
+                            <img src="images/logo-mastertech.png" alt="MasterTech Alliance" onerror="this.style.display='none'">
+                            <span>MASTERTECH<br>CERTIFIED</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- ========================================== -->
-    <!-- 2. NUESTRA HISTORIA & PROPÓSITO            -->
+    <!-- 2. RACK DE CIFRAS Y CREDENCIALES           -->
     <!-- ========================================== -->
-    <section class="nosotros-story-section" id="historia">
+    <section class="dealer-stats-strip">
         <div class="container">
-            <div class="story-grid">
-                <!-- COLUMNA VISUAL -->
-                <div class="story-visual-wrap">
-                    <img src="images/monograma-final-3d.png" alt="SemiNuevo Autos Monograma 3D Oficial" loading="lazy">
-                    <div class="story-visual-badge">
-                        <i class="fas fa-shield-alt"></i> MASTERTECH CERTIFIED ALLIANCE
-                    </div>
-                    <div class="story-commitment-box">
-                        <p><strong>Compromiso Institucional:</strong></p>
-                        <p>Cero compras a ciegas. Cada vehículo es auditado técnica, legal y estéticamente antes de llegar a tus manos.</p>
+            <div class="dealer-stats-grid">
+                <div class="d-stat-item">
+                    <div class="d-stat-num">+6 Años</div>
+                    <div class="d-stat-label">Trayectoria Ininterrumpida</div>
+                </div>
+                <div class="d-stat-item">
+                    <div class="d-stat-num">+100</div>
+                    <div class="d-stat-label">Vehículos Entregados</div>
+                </div>
+                <div class="d-stat-item">
+                    <div class="d-stat-num">150 Pts</div>
+                    <div class="d-stat-label">Inspección Pericial Certificada</div>
+                </div>
+                <div class="d-stat-item">
+                    <div class="d-stat-num">100%</div>
+                    <div class="d-stat-label">Transparencia Jurídica &amp; Títulos</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. NUESTRA HISTORIA & ALIANZA MASTERTECH   -->
+    <!-- ========================================== -->
+    <section class="dealer-story-section" id="historia">
+        <div class="container">
+            <div class="story-split-grid">
+                <!-- Columna Visual: Certificación Oficial -->
+                <div class="story-media-box">
+                    <img src="CERTIFICADO---MASTERTECH.png" alt="Certificado Oficial MasterTech Alliance" class="cert-img" loading="lazy">
+                    <span class="story-badge-highlight">
+                        <i class="fas fa-award"></i> Protocolo de Inspección Pericial
+                    </span>
+                    <div class="story-guarantee-note">
+                        <strong>Compromiso Institucional de Concesionario:</strong>
+                        Ningún vehículo ingresa al inventario sin haber superado la auditoría integral mecánica, eléctrica, estructural y legal de 150 puntos.
                     </div>
                 </div>
 
-                <!-- COLUMNA CONTENIDO -->
-                <div class="story-content">
-                    <span class="story-tag"><i class="fas fa-history"></i> NUESTRA HISTORIA</span>
+                <!-- Columna Contenido: Historia & Modelo -->
+                <div class="story-info-side">
+                    <span class="story-kicker"><i class="fas fa-history"></i> NUESTRO ORIGEN</span>
                     <h2>¿Por qué nace <br><span>SemiNuevo Autos</span>?</h2>
-                    <p class="story-text">
-                        <strong>SemiNuevo Autos</strong> nace para responder a una necesidad crítica en Venezuela: la falta de transparencia y respaldo real en un mercado automotor envejecido y dominado por transacciones informales entre particulares sin ninguna garantía.
+                    <p class="story-paragraph">
+                        <strong>SemiNuevo Autos</strong> se fundó para erradicar la incertidumbre en el mercado automotriz venezolano. Durante años, la compra y venta de autos usados en el país estuvo marcada por la falta de garantías, vicios ocultos y transacciones desprotegidas entre particulares.
                     </p>
-                    <p class="story-text">
-                        Nos propusimos elevar el estándar nacional creando un concesionario con infraestructura integral. Gracias a nuestra alianza con <strong>MT GROUP</strong>, cada cliente accede a un ecosistema completo que abarca peritaje técnico computarizado en <strong>MasterTech</strong>, stock de repuestos originales en <strong>MT Parts</strong> y servicio estético de alta gama en <strong>MT Wash</strong>.
+                    <p class="story-paragraph">
+                        Creamos un modelo de agencia profesional con infraestructura física real. En alianza con <strong>MT GROUP</strong> y el centro técnico <strong>Taller MasterTech</strong>, brindamos a cada cliente un ecosistema integral que incluye diagnóstico computarizado con escáner OBD-II, stock de repuestos originales y servicio postventa continuo.
                     </p>
 
-                    <div class="story-pillars-list">
-                        <div class="story-pillar-item">
-                            <div class="story-pillar-icon"><i class="fas fa-file-shield"></i></div>
-                            <div class="story-pillar-info">
-                                <strong>Transparencia Jurídica Total</strong>
-                                <p>Revisión minuciosa de seriales, historial y documentación legal ante entes oficiales. Entrega llave en mano con placas.</p>
+                    <div class="story-pillars-deck">
+                        <div class="story-deck-item">
+                            <div class="story-deck-icon"><i class="fas fa-shield-halved"></i></div>
+                            <div class="story-deck-text">
+                                <strong>Transparencia Jurídica y Traspaso INTT</strong>
+                                <p>Comprobación rigurosa de seriales, solvencias y legalidad documental para firmar sin contratiempos.</p>
                             </div>
                         </div>
-                        <div class="story-pillar-item">
-                            <div class="story-pillar-icon"><i class="fas fa-microchip"></i></div>
-                            <div class="story-pillar-info">
-                                <strong>Diagnóstico Computarizado Avanzado</strong>
-                                <p>Inspección integral de 150 puntos: motor, transmisión, electrónica y chasis libre de colisiones.</p>
+                        <div class="story-deck-item">
+                            <div class="story-deck-icon"><i class="fas fa-microchip"></i></div>
+                            <div class="story-deck-text">
+                                <strong>Peritaje Mecánico de 150 Puntos</strong>
+                                <p>Evaluación de compresión de motor, transmisión, electrónica a bordo y chasis libre de colisiones.</p>
                             </div>
                         </div>
-                        <div class="story-pillar-item">
-                            <div class="story-pillar-icon"><i class="fas fa-hands-holding-circle"></i></div>
-                            <div class="story-pillar-info">
-                                <strong>Acompañamiento Post-Venta Real</strong>
-                                <p>No te dejamos solo tras la compra; cuentas con el respaldo técnico y stock de repuestos de por vida.</p>
+                        <div class="story-deck-item">
+                            <div class="story-deck-icon"><i class="fas fa-handshake-angle"></i></div>
+                            <div class="story-deck-text">
+                                <strong>Respaldo Postventa Permanente</strong>
+                                <p>Acompañamiento continuo con 2 años de revisiones preventivas gratuitas en Taller MasterTech.</p>
                             </div>
                         </div>
                     </div>
@@ -920,44 +1120,44 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 3. MISIÓN, VISIÓN Y VALORES               -->
+    <!-- 4. PRINCIPIOS Y VALORES CORPORATIVOS       -->
     <!-- ========================================== -->
-    <section class="nosotros-mvv-section">
+    <section class="dealer-principles-section">
         <div class="container">
-            <div class="mvv-header">
+            <div class="section-header">
                 <span class="section-tag"><i class="fas fa-compass"></i> PRINCIPIOS CORPORATIVOS</span>
                 <h2 class="section-title">Nuestra Guía de <span class="text-accent">Excelencia</span></h2>
-                <p class="section-subtitle">Pilares sólidos que definen cada una de nuestras operaciones y relaciones con nuestros clientes.</p>
+                <p class="section-subtitle">Pilares sólidos que definen cada una de nuestras operaciones comerciales y relaciones con los clientes.</p>
             </div>
 
-            <div class="mvv-grid">
+            <div class="principles-grid">
                 <!-- MISIÓN -->
-                <div class="mvv-card">
-                    <div class="mvv-icon-wrap"><i class="fas fa-bullseye"></i></div>
-                    <h3 class="mvv-title">Nuestra Misión</h3>
-                    <p class="mvv-desc">
-                        Democratizar el acceso a vehículos de calidad en Venezuela mediante un modelo de compra, venta e importación seguro, transparente y respaldado técnicamente, eliminando el riesgo y la incertidumbre en cada operación.
+                <div class="principle-card">
+                    <div class="principle-icon-wrap"><i class="fas fa-bullseye"></i></div>
+                    <h3 class="principle-title">Nuestra Misión</h3>
+                    <p class="principle-desc">
+                        Facilitar el acceso a vehículos de calidad en Venezuela mediante un modelo de compra, venta e importación seguro, transparente y respaldado técnicamente, eliminando el riesgo y la incertidumbre en cada operación.
                     </p>
                 </div>
 
                 <!-- VISIÓN -->
-                <div class="mvv-card">
-                    <div class="mvv-icon-wrap"><i class="fas fa-eye"></i></div>
-                    <h3 class="mvv-title">Nuestra Visión</h3>
-                    <p class="mvv-desc">
-                        Consolidarnos como el concesionario automotriz y ecosistema de servicios de mayor reputación e innovación en Venezuela, siendo el estándar de confianza indiscutible para conductores y familias en todo el territorio nacional.
+                <div class="principle-card">
+                    <div class="principle-icon-wrap"><i class="fas fa-eye"></i></div>
+                    <h3 class="principle-title">Nuestra Visión</h3>
+                    <p class="principle-desc">
+                        Consolidarnos como el concesionario multimarca y ecosistema de servicios automotrices de mayor reputación en Venezuela, siendo el estándar de referencia indiscutible para conductores y familias en todo el país.
                     </p>
                 </div>
 
                 <!-- VALORES -->
-                <div class="mvv-card">
-                    <div class="mvv-icon-wrap"><i class="fas fa-gem"></i></div>
-                    <h3 class="mvv-title">Nuestros Valores</h3>
-                    <p class="mvv-desc">
-                        <strong>Transparencia Radical:</strong> Cero vicios ocultos. <br>
-                        <strong>Rigor Técnico:</strong> Certificación basada en datos y escaneo.<br>
-                        <strong>Compromiso:</strong> Respaldo genuino después de la entrega.<br>
-                        <strong>Ética:</strong> Trato honesto y profesional en cada asesoría.
+                <div class="principle-card">
+                    <div class="principle-icon-wrap"><i class="fas fa-gem"></i></div>
+                    <h3 class="principle-title">Nuestros Valores</h3>
+                    <p class="principle-desc">
+                        <strong>Transparencia:</strong> Cero vicios ocultos ni sorpresas.<br>
+                        <strong>Rigor Técnico:</strong> Certificación sustentada en datos de escaneo.<br>
+                        <strong>Compromiso:</strong> Respaldo genuino posterior a la entrega.<br>
+                        <strong>Ética Profesional:</strong> Trato honesto y cercano en cada asesoría.
                     </p>
                 </div>
             </div>
@@ -965,9 +1165,9 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 4. ECOSISTEMA MT GROUP                    -->
+    <!-- 5. ECOSISTEMA MT GROUP                    -->
     <!-- ========================================== -->
-    <section class="nosotros-ecosystem-section">
+    <section class="dealer-ecosystem-section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag"><i class="fas fa-network-wired"></i> ALIANZA ESTRATÉGICA</span>
@@ -977,62 +1177,62 @@
                 </p>
             </div>
 
-            <div class="ecosystem-grid">
+            <div class="eco-dealership-grid">
                 <!-- 1. SEMINUEVO AUTOS -->
-                <div class="eco-card">
+                <div class="eco-dealer-card">
                     <div>
-                        <div class="eco-card-icon"><i class="fas fa-car"></i></div>
-                        <h3 class="eco-card-title">SemiNuevo Autos</h3>
-                        <p class="eco-card-desc">
+                        <div class="eco-dealer-icon"><i class="fas fa-car"></i></div>
+                        <h3 class="eco-dealer-title">SemiNuevo Autos</h3>
+                        <p class="eco-dealer-desc">
                             Venta de vehículos seleccionados, Trade-In (programa de retoma), financiamiento flexible e importación directa llave en mano desde subastas en USA.
                         </p>
                     </div>
-                    <a href="catalogo" class="eco-card-link">Ver Inventario <i class="fas fa-arrow-right"></i></a>
+                    <a href="catalogo" class="eco-dealer-link">Ver Inventario <i class="fas fa-arrow-right"></i></a>
                 </div>
 
                 <!-- 2. TALLER MASTERTECH -->
-                <div class="eco-card">
+                <div class="eco-dealer-card">
                     <div>
-                        <div class="eco-card-icon"><i class="fas fa-wrench"></i></div>
-                        <h3 class="eco-card-title">Taller MasterTech</h3>
-                        <p class="eco-card-desc">
+                        <div class="eco-dealer-icon"><i class="fas fa-wrench"></i></div>
+                        <h3 class="eco-dealer-title">Taller MasterTech</h3>
+                        <p class="eco-dealer-desc">
                             Centro de servicio automotriz especializado con tecnología OBD-II de vanguardia, mecánicos certificados y 2 años de revisiones gratis para nuestros clientes.
                         </p>
                     </div>
-                    <a href="servicios#soporte-mastertech" class="eco-card-link">Conocer Taller <i class="fas fa-arrow-right"></i></a>
+                    <a href="servicios#soporte-mastertech" class="eco-dealer-link">Conocer Taller <i class="fas fa-arrow-right"></i></a>
                 </div>
 
                 <!-- 3. MT PART STORE -->
-                <div class="eco-card">
+                <div class="eco-dealer-card">
                     <div>
-                        <div class="eco-card-icon"><i class="fas fa-boxes-stacked"></i></div>
-                        <h3 class="eco-card-title">MT Part Store</h3>
-                        <p class="eco-card-desc">
-                            Acceso directo a repuestos 100% originales, fluidos certificados y consumibles para vehículos importados y nacionales, con envíos a nivel nacional.
+                        <div class="eco-dealer-icon"><i class="fas fa-boxes-stacked"></i></div>
+                        <h3 class="eco-dealer-title">MT Part Store</h3>
+                        <p class="eco-dealer-desc">
+                            Acceso directo a repuestos 100% originales, fluidos certificados y consumibles para vehículos importados y nacionales, con envíos a todo el territorio nacional.
                         </p>
                     </div>
-                    <a href="https://www.tallermastertech.com/catalogo" target="_blank" rel="noopener" class="eco-card-link">Ver Repuestos <i class="fas fa-arrow-right"></i></a>
+                    <a href="https://www.tallermastertech.com/catalogo" target="_blank" rel="noopener" class="eco-dealer-link">Ver Repuestos <i class="fas fa-arrow-right"></i></a>
                 </div>
 
                 <!-- 4. MT WASH & DETAILING -->
-                <div class="eco-card">
+                <div class="eco-dealer-card">
                     <div>
-                        <div class="eco-card-icon"><i class="fas fa-spray-can-sparkles"></i></div>
-                        <h3 class="eco-card-title">MT Wash & Detailing</h3>
-                        <p class="eco-card-desc">
+                        <div class="eco-dealer-icon"><i class="fas fa-spray-can-sparkles"></i></div>
+                        <h3 class="eco-dealer-title">MT Detailing</h3>
+                        <p class="eco-dealer-desc">
                             Estética automotriz de alta gama, descontaminado, corrección de pintura, protección cerámica y detallado interior para conservar el valor de tu auto.
                         </p>
                     </div>
-                    <a href="servicios" class="eco-card-link">Ver Servicios <i class="fas fa-arrow-right"></i></a>
+                    <a href="servicios" class="eco-dealer-link">Ver Servicios <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- 5. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
+    <!-- 6. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
     <!-- ========================================== -->
-    <section class="nosotros-process-section">
+    <section class="dealer-process-section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag"><i class="fas fa-clipboard-check"></i> FILTROS DE CALIDAD</span>
@@ -1042,32 +1242,32 @@
                 </p>
             </div>
 
-            <div class="process-steps-grid">
-                <div class="process-step-card">
-                    <div class="process-step-num">01</div>
-                    <h3 class="process-step-title">Selección Rigurosa</h3>
-                    <p class="process-step-desc">
-                        Filtro estricto de procedencia: descartamos autos con historial de choques graves, inundaciones o kilometrajes adulterados.
+            <div class="process-steps-row">
+                <div class="process-step-box">
+                    <div class="step-num-badge">01</div>
+                    <h3 class="step-heading">Selección Rigurosa</h3>
+                    <p class="step-text">
+                        Filtro estricto de procedencia: descartamos vehículos con historial de choques estructurales graves, inundaciones o kilometrajes adulterados.
                     </p>
                 </div>
-                <div class="process-step-card">
-                    <div class="process-step-num">02</div>
-                    <h3 class="process-step-title">Inspección de 150 Puntos</h3>
-                    <p class="process-step-desc">
-                        Revisión integral por técnicos MasterTech: compresión de motor, escáner en vivo, caja de cambios, suspensión y frenos.
+                <div class="process-step-box">
+                    <div class="step-num-badge">02</div>
+                    <h3 class="step-heading">Inspección 150 Puntos</h3>
+                    <p class="step-text">
+                        Revisión integral por técnicos MasterTech: compresión de motor, escaneo en vivo de módulos, caja de cambios, suspensión y frenos.
                     </p>
                 </div>
-                <div class="process-step-card">
-                    <div class="process-step-num">03</div>
-                    <h3 class="process-step-title">Auditoría Jurídica</h3>
-                    <p class="process-step-desc">
-                        Verificación exhaustiva de seriales, solvencias fiscales y legalidad ante las autoridades competentes. Documentación 100% en regla.
+                <div class="process-step-box">
+                    <div class="step-num-badge">03</div>
+                    <h3 class="step-heading">Auditoría Jurídica</h3>
+                    <p class="step-text">
+                        Verificación exhaustiva de seriales y legalidad ante las autoridades competentes. Documentación y títulos 100% listos para firmar.
                     </p>
                 </div>
-                <div class="process-step-card">
-                    <div class="process-step-num">04</div>
-                    <h3 class="process-step-title">Entrega Llave en Mano</h3>
-                    <p class="process-step-desc">
+                <div class="process-step-box">
+                    <div class="step-num-badge">04</div>
+                    <h3 class="step-heading">Entrega Llave en Mano</h3>
+                    <p class="step-text">
                         Puesta a punto final, detallado estético y entrega personalizada con carpeta técnica oficial y respaldo de revisiones gratis.
                     </p>
                 </div>
@@ -1076,37 +1276,39 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 6. SHOWROOM & PRESENCIA FÍSICA             -->
+    <!-- 7. SHOWROOM & PRESENCIA FÍSICA             -->
     <!-- ========================================== -->
-    <section class="nosotros-location-section">
+    <section class="dealer-location-section">
         <div class="container">
-            <div class="location-banner">
-                <div class="location-info">
-                    <span class="section-tag" style="background: rgba(37,99,235,0.2);"><i class="fas fa-map-marker-alt"></i> SEDE PRINCIPAL</span>
-                    <h3>Visita Nuestro Showroom Oficial</h3>
-                    <p>
-                        Te esperamos en nuestras instalaciones en la Isla de Margarita para conocer de cerca nuestro inventario. También realizamos envíos asegurados puerta a puerta hacia Caracas, Valencia, Lechería, Maracaibo y toda Venezuela.
+            <div class="location-banner-card">
+                <div>
+                    <span class="dealer-kicker-tag" style="margin-bottom: 8px;">
+                        <i class="fas fa-location-dot"></i> SEDE PRINCIPAL &amp; SALÓN DE VENTAS
+                    </span>
+                    <h3 class="loc-title">Visita Nuestro Showroom Oficial</h3>
+                    <p class="loc-desc">
+                        Te invitamos a nuestras instalaciones en la Isla de Margarita para conocer personalmente nuestro inventario. También coordinamos traslados asegurados hacia Caracas, Valencia, Lechería, Maracaibo y cualquier ciudad del país.
                     </p>
-                    <div class="location-details-list">
-                        <div class="location-item">
-                            <i class="fas fa-location-dot"></i>
+                    <div class="loc-details-list">
+                        <div class="loc-detail-row">
+                            <i class="fas fa-map-pin"></i>
                             <span>Porlamar, Isla de Margarita, Estado Nueva Esparta, Venezuela</span>
                         </div>
-                        <div class="location-item">
+                        <div class="loc-detail-row">
                             <i class="fas fa-clock"></i>
                             <span>Lunes a Sábado: 9:00 AM – 7:00 PM</span>
                         </div>
-                        <div class="location-item">
-                            <i class="fas fa-truck-ramp-box"></i>
+                        <div class="loc-detail-row">
+                            <i class="fas fa-shield-halved"></i>
                             <span>Logística y transporte asegurado a nivel nacional</span>
                         </div>
                     </div>
                 </div>
-                <div class="location-actions">
-                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20coordinar%20una%20visita%20al%20Showroom%20o%20consultar%20el%20inventario" target="_blank" rel="noopener" class="btn-nosotros-primary">
-                        <i class="fab fa-whatsapp"></i> Agendar Cita VIP
+                <div class="loc-cta-stack">
+                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20coordinar%20una%20visita%20al%20Showroom%20o%20consultar%20el%20inventario" target="_blank" rel="noopener" class="btn-dealer-primary">
+                        <i class="fab fa-whatsapp"></i> Agendar Visita al Showroom
                     </a>
-                    <a href="catalogo" class="btn-nosotros-outline">
+                    <a href="catalogo" class="btn-dealer-outline">
                         <i class="fas fa-car"></i> Ver Catálogo Online
                     </a>
                 </div>
@@ -1115,21 +1317,21 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 7. CARRERA COMERCIAL (RECRUITMENT)         -->
+    <!-- 8. CARRERA COMERCIAL (RECRUITMENT)         -->
     <!-- ========================================== -->
-    <section class="nosotros-careers-section">
+    <section class="dealer-careers-section">
         <div class="container">
-            <div class="careers-container">
-                <div class="careers-badge">
+            <div class="careers-dealership-card">
+                <span class="careers-tag">
                     <i class="fas fa-briefcase"></i> OPORTUNIDAD PROFESIONAL
-                </div>
-                <h2 class="careers-title">
-                    ¿Apasionado por los Autos y las Ventas?
+                </span>
+                <h2 class="careers-heading">
+                    ¿Te Apasiona el Mundo Automotriz y las Ventas?
                 </h2>
-                <p class="careers-desc">
+                <p class="careers-subtext">
                     Buscamos talento comercial en la Isla de Margarita para comercializar nuestro catálogo de vehículos seminuevos e importados. Ofrecemos comisiones de alto valor, formación continua y el respaldo del ecosistema automotriz más prestigioso de la región.
                 </p>
-                <a href="postulacion" class="btn-nosotros-primary">
+                <a href="postulacion" class="btn-dealer-primary">
                     <i class="fas fa-file-signature"></i> Postularme como Asesor Comercial
                 </a>
             </div>

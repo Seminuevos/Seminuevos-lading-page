@@ -81,6 +81,42 @@
             ]
         },
         {
+            "source": "/nosotros",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/nosotros.html",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/servicios",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/servicios.html",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/calculadora",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/calculadora.html",
+            "headers": [
+                { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+            ]
+        },
+        {
             "source": "/SM-OP",
             "headers": [
                 { "key": "X-Robots-Tag",  "value": "noindex, nofollow, noarchive, nosnippet" },
