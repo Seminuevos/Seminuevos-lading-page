@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="referrer" content="no-referrer">
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
     <meta name="googlebot" content="noindex, nofollow">
@@ -2681,13 +2684,15 @@
                     console.warn("API login attempt:", apiErr);
                 }
 
-                // 2. MODO DIRECTO CON SUPABASE AUTH (si el cliente está disponible):
+                // 2. MODO DIRECTO CON SUPABASE AUTH (si el cliente está disponible con timeout de 2.5s):
                 if (!authenticatedUser && typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
                     try {
-                        const { data: sbAuth, error: sbErr } = await supabaseClient.auth.signInWithPassword({
+                        const sbPromise = supabaseClient.auth.signInWithPassword({
                             email: cleanEmail,
                             password: cleanPassword
                         });
+                        const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ error: { message: 'timeout' } }), 2500));
+                        const { data: sbAuth, error: sbErr } = await Promise.race([sbPromise, timeoutPromise]);
                         if (!sbErr && sbAuth && sbAuth.user) {
                             const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com' || cleanEmail === 'admin@seminuevos.com');
                             let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
