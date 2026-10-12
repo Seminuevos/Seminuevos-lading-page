@@ -837,155 +837,33 @@
             }
         }
 
-        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (EXECUTIVE LIGHT SHOWROOM) */
+        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (COMPACT & CENTERED) */
         .showcase-360-section {
-            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-            padding: 105px 20px 30px 20px;
-            border-bottom: 1px solid #E2E8F0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .showcase-360-inner {
-            max-width: 1180px;
-            margin: 0 auto;
-        }
-
-        .showcase-360-card {
-            background: #FFFFFF;
-            border: 1.5px solid #E2E8F0;
-            border-radius: 24px;
-            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
-            padding: 24px 28px 22px 28px;
+            padding: 85px 15px 0 15px;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
             position: relative;
         }
 
-        .showcase-360-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid #F1F5F9;
-        }
-
-        .showcase-360-title-col {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .showcase-badge-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .showcase-n-badge {
-            background: #0F172A;
-            color: #FFFFFF;
-            font-family: var(--font-display);
-            font-size: 0.72rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border-left: 3px solid #EF4444;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .showcase-360-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #2563EB;
-            background: rgba(37, 99, 235, 0.08);
-            border: 1px solid rgba(37, 99, 235, 0.25);
-            padding: 4px 12px;
-            border-radius: 50px;
-        }
-
-        .showcase-360-badge i {
-            animation: spin360 8s linear infinite;
-        }
-
-        @keyframes spin360 {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .showcase-model-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.25rem, 2.2vw, 1.65rem);
-            font-weight: 800;
-            color: #0F172A;
-            margin: 2px 0 0 0;
-            letter-spacing: -0.4px;
-        }
-
-        .showcase-model-title span {
-            color: #2563EB;
-            font-weight: 700;
-        }
-
-        .showcase-subtitle {
-            font-family: var(--font-body);
-            font-size: 0.86rem;
-            color: #64748B;
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .cta-consult-elantra {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #2563EB;
-            color: #FFFFFF !important;
-            font-family: var(--font-display);
-            font-size: 0.82rem;
-            font-weight: 700;
-            padding: 10px 22px;
-            border-radius: 50px;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
-            white-space: nowrap;
-        }
-
-        .cta-consult-elantra:hover {
-            background: #1D4ED8;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
-        }
-
-        .viewer-360-box {
+        .viewer-360-compact {
             position: relative;
             width: 100%;
-            height: clamp(280px, 46vh, 480px);
+            max-width: 440px;
+            height: 190px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: grab;
-            touch-action: none;
+            touch-action: pan-y;
             user-select: none;
             -webkit-user-select: none;
-            background: radial-gradient(ellipse at 50% 65%, #F8FAFC 0%, #FFFFFF 72%);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid #F1F5F9;
+            margin: 0 auto;
         }
 
-        .viewer-360-box:active {
+        .viewer-360-compact:active {
             cursor: grabbing;
         }
 
@@ -994,61 +872,43 @@
             bottom: 6%;
             left: 50%;
             transform: translateX(-50%);
-            width: 78%;
-            height: 18%;
-            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.22) 0%, rgba(15, 23, 42, 0.06) 45%, transparent 70%);
-            filter: blur(12px);
+            width: 75%;
+            height: 16%;
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.18) 0%, rgba(15, 23, 42, 0.04) 45%, transparent 70%);
+            filter: blur(10px);
             pointer-events: none;
             z-index: 1;
         }
 
         .car-360-img {
-            width: 100%;
-            height: 100%;
+            max-height: 175px;
+            width: auto;
+            max-width: 100%;
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
-            filter: drop-shadow(0 14px 22px rgba(15, 23, 42, 0.16));
+            filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.12));
             transition: filter 0.2s ease;
-        }
-
-        .degree-indicator-pill {
-            position: absolute;
-            top: 12px;
-            right: 14px;
-            background: #FFFFFF;
-            border: 1.5px solid #CBD5E1;
-            color: #2563EB;
-            font-family: var(--font-display);
-            font-size: 0.74rem;
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 50px;
-            z-index: 5;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-            letter-spacing: 0.3px;
         }
 
         .drag-hint-pill {
             position: absolute;
-            bottom: 12px;
+            bottom: 2px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.82);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 6px 18px;
-            border-radius: 50px;
-            font-size: 0.74rem;
-            color: #F8FAFC;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.72);
+            color: #FFFFFF;
+            font-size: 0.68rem;
             font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 50px;
             pointer-events: none;
             z-index: 5;
-            transition: opacity 0.4s ease;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+            transition: opacity 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
 
         .drag-hint-pill i {
@@ -1058,145 +918,38 @@
         .loading-360-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 20;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.3s ease;
         }
 
         .loading-spinner-circle {
-            width: 44px;
-            height: 44px;
-            border: 3px solid #E2E8F0;
+            width: 32px;
+            height: 32px;
+            border: 2.5px solid #E2E8F0;
             border-top-color: #2563EB;
             border-radius: 50%;
             animation: spinCircle 0.8s linear infinite;
-            margin-bottom: 14px;
         }
 
         @keyframes spinCircle {
             to { transform: rotate(360deg); }
         }
 
-        .loading-360-text {
-            font-family: var(--font-body);
-            font-size: 0.84rem;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 8px;
-        }
-
-        .loading-360-bar {
-            width: 180px;
-            height: 5px;
-            background: #E2E8F0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .loading-360-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #2563EB, #60A5FA);
-            transition: width 0.12s ease;
-        }
-
-        .controls-360-hud-wrap {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 16px;
-        }
-
-        .controls-360-hud {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #FFFFFF;
-            border: 1.5px solid #CBD5E1;
-            padding: 6px 14px;
-            border-radius: 50px;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
-            z-index: 10;
-        }
-
-        .btn-ctrl-360 {
-            background: #F8FAFC;
-            border: 1.5px solid #E2E8F0;
-            color: #0F172A;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
-            outline: none;
-            padding: 0;
-        }
-
-        .btn-ctrl-360:hover {
-            background: #2563EB;
-            border-color: #2563EB;
-            color: #FFFFFF;
-            transform: scale(1.08);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-ctrl-360.active {
-            background: #2563EB;
-            border-color: #2563EB;
-            color: #FFFFFF;
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.45);
-        }
-
-        .frame-counter-360 {
-            font-family: var(--font-display);
-            font-size: 0.8rem;
-            color: #64748B;
-            min-width: 68px;
-            text-align: center;
-            padding: 0 6px;
-            font-weight: 600;
-        }
-
-        .frame-counter-360 b {
-            color: #0F172A;
-            font-weight: 800;
-            font-size: 0.9rem;
-        }
-
         @media (max-width: 768px) {
             .showcase-360-section {
-                padding: 95px 12px 25px 12px;
+                padding: 78px 10px 0 10px;
             }
-            .showcase-360-card {
-                padding: 16px 16px 18px 16px;
-                border-radius: 18px;
+            .viewer-360-compact {
+                max-width: 360px;
+                height: 165px;
             }
-            .showcase-360-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .cta-consult-elantra {
-                width: 100%;
-                justify-content: center;
-            }
-            .controls-360-hud {
-                padding: 5px 10px;
-                gap: 6px;
-            }
-            .btn-ctrl-360 {
-                width: 34px;
-                height: 34px;
-                font-size: 0.78rem;
+            .car-360-img {
+                max-height: 150px;
             }
         }
     </style>
@@ -1249,64 +1002,16 @@
     <!-- 0. SHOWCASE VISOR 360° HYUNDAI ELANTRA N    -->
     <!-- ========================================== -->
     <section class="showcase-360-section" id="showcase360Elantra">
-        <div class="showcase-360-inner">
-            <div class="showcase-360-card">
-                <!-- Header inside showroom card -->
-                <div class="showcase-360-header">
-                    <div class="showcase-360-title-col">
-                        <div class="showcase-badge-row">
-                            <span class="showcase-n-badge"><i class="fas fa-flag-checkered"></i> HYUNDAI N</span>
-                            <span class="showcase-360-badge"><i class="fas fa-arrows-rotate"></i> 360° Interactivo</span>
-                        </div>
-                        <h2 class="showcase-model-title">Hyundai Elantra N <span>· Edición Deportiva</span></h2>
-                        <p class="showcase-subtitle">Gira el vehículo en 360° en tiempo real · Entrega Inmediata en Margarita</p>
-                    </div>
-                    <div class="showcase-cta-col">
-                        <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N" class="cta-consult-elantra" target="_blank" rel="noopener">
-                            <i class="fab fa-whatsapp"></i> <span>Cotizar Esta Unidad</span>
-                        </a>
-                    </div>
-                </div>
+        <div class="viewer-360-compact" id="viewer360Elantra">
+            <div class="stage-podium-glow"></div>
+            <img id="carImg360" class="car-360-img" src="images/elantra-360/1.png" alt="Hyundai Elantra N 360°" draggable="false">
 
-                <!-- Viewer Box -->
-                <div class="viewer-360-box" id="viewer360Elantra">
-                    <div class="stage-podium-glow"></div>
-                    <div class="degree-indicator-pill" id="degreePill360">0° Frontal</div>
-                    <img id="carImg360" class="car-360-img" src="images/elantra-360/1.png" alt="Hyundai Elantra N 360°" draggable="false">
+            <div class="drag-hint-pill" id="dragHint360">
+                <i class="fas fa-arrows-rotate"></i> Arrastra para girar 360°
+            </div>
 
-                    <div class="drag-hint-pill" id="dragHint360">
-                        <i class="fas fa-hand-pointer"></i> Haz clic y arrastra hacia los lados para girar
-                    </div>
-
-                    <div class="loading-360-overlay" id="loading360Overlay">
-                        <div class="loading-spinner-circle"></div>
-                        <div class="loading-360-text" id="loading360Text">Cargando 360° interactivo...</div>
-                        <div class="loading-360-bar">
-                            <div class="loading-360-fill" id="loading360Fill"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Controls HUD -->
-                <div class="controls-360-hud-wrap">
-                    <div class="controls-360-hud">
-                        <button type="button" class="btn-ctrl-360" id="btn360Prev" title="Girar a la izquierda" aria-label="Girar a la izquierda">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button type="button" class="btn-ctrl-360" id="btn360PlayPause" title="Giro automático" aria-label="Giro automático">
-                            <i class="fas fa-play" id="icon360Play"></i>
-                        </button>
-                        <button type="button" class="btn-ctrl-360" id="btn360Next" title="Girar a la derecha" aria-label="Girar a la derecha">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="frame-counter-360">
-                            <b id="currFrame360">1</b> / <span id="totalFrames360">20</span>
-                        </div>
-                        <button type="button" class="btn-ctrl-360" id="btn360Reset" title="Reiniciar vista frontal" aria-label="Reiniciar vista frontal">
-                            <i class="fas fa-rotate-left"></i>
-                        </button>
-                    </div>
-                </div>
+            <div class="loading-360-overlay" id="loading360Overlay">
+                <div class="loading-spinner-circle"></div>
             </div>
         </div>
     </section>
@@ -1670,17 +1375,9 @@
         const viewer = document.getElementById('viewer360Elantra');
         const carImg = document.getElementById('carImg360');
         const loadingOverlay = document.getElementById('loading360Overlay');
-        const loadingFill = document.getElementById('loading360Fill');
-        const loadingText = document.getElementById('loading360Text');
         const dragHint = document.getElementById('dragHint360');
-        const degreePill = document.getElementById('degreePill360');
-        const currFrameEl = document.getElementById('currFrame360');
-        const totalFramesEl = document.getElementById('totalFrames360');
-        const btnPlay = document.getElementById('btn360PlayPause');
-        const iconPlay = document.getElementById('icon360Play');
 
         if (!viewer || !carImg) return;
-        if (totalFramesEl) totalFramesEl.textContent = total;
 
         function preload() {
             frameSeq.forEach((src, idx) => {
@@ -1699,16 +1396,14 @@
         }
 
         function updateProgress() {
-            const pct = Math.round((loaded / total) * 100);
-            if (loadingFill) loadingFill.style.width = pct + '%';
-            if (loadingText) loadingText.textContent = `Cargando 360°... ${pct}%`;
             if (loaded >= total) {
                 setTimeout(() => {
                     if (loadingOverlay) {
                         loadingOverlay.style.opacity = '0';
-                        setTimeout(() => { loadingOverlay.style.display = 'none'; }, 350);
+                        setTimeout(() => { loadingOverlay.style.display = 'none'; }, 300);
                     }
-                }, 150);
+                    startAuto();
+                }, 100);
             }
         }
 
@@ -1719,20 +1414,39 @@
             } else {
                 carImg.src = frameSeq[curIdx];
             }
-            if (currFrameEl) currFrameEl.textContent = curIdx + 1;
-
-            const deg = Math.round((curIdx / total) * 360);
-            let orientation = 'Perspectiva';
-            if (deg >= 340 || deg <= 20) orientation = 'Frontal';
-            else if (deg >= 70 && deg <= 110) orientation = 'Lateral Der.';
-            else if (deg >= 160 && deg <= 200) orientation = 'Trasera';
-            else if (deg >= 250 && deg <= 290) orientation = 'Lateral Izq.';
-
-            if (degreePill) degreePill.textContent = `${deg}° ${orientation}`;
         }
 
         function next() { setFrame(curIdx + 1); }
         function prev() { setFrame(curIdx - 1); }
+
+        function startAuto() {
+            if (isAutoRotating) return;
+            isAutoRotating = true;
+            autoRotateTimer = setInterval(next, 100);
+        }
+
+        function stopAuto() {
+            if (!isAutoRotating) return;
+            isAutoRotating = false;
+            clearInterval(autoRotateTimer);
+        }
+
+        let resumeTimeout = null;
+        function planResume() {
+            clearTimeout(resumeTimeout);
+            resumeTimeout = setTimeout(() => {
+                if (!isDragging) startAuto();
+            }, 2500);
+        }
+
+        // Hover events
+        viewer.addEventListener('mouseenter', () => {
+            stopAuto();
+            clearTimeout(resumeTimeout);
+        });
+        viewer.addEventListener('mouseleave', () => {
+            if (!isDragging) planResume();
+        });
 
         // Mouse drag
         viewer.addEventListener('mousedown', (e) => {
@@ -1740,6 +1454,7 @@
             startX = e.clientX;
             curX = startX;
             stopAuto();
+            clearTimeout(resumeTimeout);
             if (dragHint) dragHint.style.opacity = '0';
         });
 
@@ -1753,7 +1468,12 @@
             }
         });
 
-        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                planResume();
+            }
+        });
 
         // Touch drag
         viewer.addEventListener('touchstart', (e) => {
@@ -1762,6 +1482,7 @@
             startX = e.touches[0].clientX;
             curX = startX;
             stopAuto();
+            clearTimeout(resumeTimeout);
             if (dragHint) dragHint.style.opacity = '0';
         }, { passive: true });
 
@@ -1776,33 +1497,11 @@
             }
         }, { passive: true });
 
-        viewer.addEventListener('touchend', () => { isDragging = false; });
-
-        // Buttons
-        document.getElementById('btn360Next')?.addEventListener('click', () => { stopAuto(); next(); });
-        document.getElementById('btn360Prev')?.addEventListener('click', () => { stopAuto(); prev(); });
-        document.getElementById('btn360Reset')?.addEventListener('click', () => { stopAuto(); setFrame(0); });
-
-        function startAuto() {
-            isAutoRotating = true;
-            btnPlay?.classList.add('active');
-            iconPlay?.classList.remove('fa-play');
-            iconPlay?.classList.add('fa-pause');
-            if (dragHint) dragHint.style.opacity = '0';
-            autoRotateTimer = setInterval(next, 90);
-        }
-
-        function stopAuto() {
-            if (!isAutoRotating) return;
-            isAutoRotating = false;
-            btnPlay?.classList.remove('active');
-            iconPlay?.classList.remove('fa-pause');
-            iconPlay?.classList.add('fa-play');
-            clearInterval(autoRotateTimer);
-        }
-
-        btnPlay?.addEventListener('click', () => {
-            if (isAutoRotating) stopAuto(); else startAuto();
+        viewer.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                planResume();
+            }
         });
 
         preload();
