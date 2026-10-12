@@ -582,11 +582,97 @@
             line-height: 1.5;
         }
 
-        /* 4. PRINCIPIOS Y VALORES */
-        .dealer-principles-section {
+        /* 4. PROCESO DE CERTIFICACIÓN */
+        .dealer-process-section {
             padding: 85px 0;
             background: #F8FAFC;
             border-top: 1px solid #E2E8F0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .process-steps-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-top: 45px;
+        }
+
+        .process-step-box {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 18px;
+            padding: 28px 22px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .process-step-box:hover {
+            border-color: #2563eb;
+            transform: translateY(-5px);
+            box-shadow: 0 16px 32px rgba(37, 99, 235, 0.1);
+        }
+
+        .step-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .step-icon-wrap {
+            width: 46px;
+            height: 46px;
+            background: rgba(37, 99, 235, 0.08);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .process-step-box:hover .step-icon-wrap {
+            background: #2563eb;
+            color: #FFFFFF;
+            transform: scale(1.05);
+        }
+
+        .step-num-badge {
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .step-heading {
+            font-family: var(--font-display, 'Outfit', sans-serif);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 10px;
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            color: #64748B;
+            line-height: 1.6;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        /* 5. PRINCIPIOS Y VALORES */
+        .dealer-principles-section {
+            padding: 85px 0;
+            background: #FFFFFF;
             border-bottom: 1px solid #E2E8F0;
         }
 
@@ -655,63 +741,6 @@
             font-size: 0.9rem;
             color: #64748B;
             line-height: 1.7;
-            margin: 0;
-        }
-
-        /* 5. PROCESO DE CERTIFICACIÓN */
-        .dealer-process-section {
-            padding: 85px 0;
-            background: #F8FAFC;
-            border-top: 1px solid #E2E8F0;
-        }
-
-        .process-steps-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 45px;
-        }
-
-        .process-step-box {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 28px 22px;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-            transition: all 0.3s ease;
-        }
-
-        .process-step-box:hover {
-            border-color: #2563eb;
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.08);
-        }
-
-        .step-num-badge {
-            font-family: var(--font-display, 'Outfit', sans-serif);
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: rgba(37, 99, 235, 0.25);
-            line-height: 1;
-            margin-bottom: 14px;
-        }
-
-        .process-step-box:hover .step-num-badge {
-            color: #2563eb;
-        }
-
-        .step-heading {
-            font-family: var(--font-display, 'Outfit', sans-serif);
-            font-size: 0.98rem;
-            font-weight: 700;
-            color: #0F172A;
-            margin-bottom: 10px;
-        }
-
-        .step-text {
-            font-size: 0.84rem;
-            color: #64748B;
-            line-height: 1.6;
             margin: 0;
         }
 
@@ -1112,7 +1141,72 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 4. PRINCIPIOS Y VALORES CORPORATIVOS       -->
+    <!-- 4. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
+    <!-- ========================================== -->
+    <section class="dealer-process-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag"><i class="fas fa-clipboard-check"></i> FILTROS DE CALIDAD</span>
+                <h2 class="section-title">Certificación en <span class="text-accent">4 Etapas</span></h2>
+                <p class="section-subtitle">
+                    Así garantizamos que cada unidad entregada cumpla con los más rigurosos estándares de seguridad y rendimiento.
+                </p>
+            </div>
+
+            <div class="process-steps-row">
+                <!-- 01 -->
+                <div class="process-step-box">
+                    <div class="step-header-row">
+                        <div class="step-icon-wrap"><i class="fas fa-filter-circle-check"></i></div>
+                        <span class="step-num-badge">Paso 01</span>
+                    </div>
+                    <h3 class="step-heading">Selección Rigurosa</h3>
+                    <p class="step-text">
+                        Filtro estricto de procedencia: descartamos vehículos con historial de choques estructurales graves, inundaciones o kilometrajes adulterados.
+                    </p>
+                </div>
+
+                <!-- 02 -->
+                <div class="process-step-box">
+                    <div class="step-header-row">
+                        <div class="step-icon-wrap"><i class="fas fa-microchip"></i></div>
+                        <span class="step-num-badge">Paso 02</span>
+                    </div>
+                    <h3 class="step-heading">Inspección 150 Puntos</h3>
+                    <p class="step-text">
+                        Revisión integral por técnicos MasterTech: compresión de motor, escaneo en vivo de módulos, caja de cambios, suspensión y frenos.
+                    </p>
+                </div>
+
+                <!-- 03 -->
+                <div class="process-step-box">
+                    <div class="step-header-row">
+                        <div class="step-icon-wrap"><i class="fas fa-scale-balanced"></i></div>
+                        <span class="step-num-badge">Paso 03</span>
+                    </div>
+                    <h3 class="step-heading">Auditoría Jurídica</h3>
+                    <p class="step-text">
+                        Verificación exhaustiva de seriales y legalidad ante las autoridades competentes. Documentación y títulos 100% listos para firmar.
+                    </p>
+                </div>
+
+                <!-- 04 -->
+                <div class="process-step-box">
+                    <div class="step-header-row">
+                        <div class="step-icon-wrap"><i class="fas fa-key"></i></div>
+                        <span class="step-num-badge">Paso 04</span>
+                    </div>
+                    <h3 class="step-heading">Entrega Llave en Mano</h3>
+                    <p class="step-text">
+                        Puesta a punto final, detallado estético y entrega personalizada con carpeta técnica oficial y respaldo de revisiones gratis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. PRINCIPIOS Y VALORES CORPORATIVOS       -->
     <!-- ========================================== -->
     <section class="dealer-principles-section">
         <div class="container">
@@ -1157,53 +1251,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 5. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
-    <!-- ========================================== -->
-    <section class="dealer-process-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-clipboard-check"></i> FILTROS DE CALIDAD</span>
-                <h2 class="section-title">Certificación en <span class="text-accent">4 Etapas</span></h2>
-                <p class="section-subtitle">
-                    Así garantizamos que cada unidad entregada cumpla con los más rigurosos estándares de seguridad y rendimiento.
-                </p>
-            </div>
-
-            <div class="process-steps-row">
-                <div class="process-step-box">
-                    <div class="step-num-badge">01</div>
-                    <h3 class="step-heading">Selección Rigurosa</h3>
-                    <p class="step-text">
-                        Filtro estricto de procedencia: descartamos vehículos con historial de choques estructurales graves, inundaciones o kilometrajes adulterados.
-                    </p>
-                </div>
-                <div class="process-step-box">
-                    <div class="step-num-badge">02</div>
-                    <h3 class="step-heading">Inspección 150 Puntos</h3>
-                    <p class="step-text">
-                        Revisión integral por técnicos MasterTech: compresión de motor, escaneo en vivo de módulos, caja de cambios, suspensión y frenos.
-                    </p>
-                </div>
-                <div class="process-step-box">
-                    <div class="step-num-badge">03</div>
-                    <h3 class="step-heading">Auditoría Jurídica</h3>
-                    <p class="step-text">
-                        Verificación exhaustiva de seriales y legalidad ante las autoridades competentes. Documentación y títulos 100% listos para firmar.
-                    </p>
-                </div>
-                <div class="process-step-box">
-                    <div class="step-num-badge">04</div>
-                    <h3 class="step-heading">Entrega Llave en Mano</h3>
-                    <p class="step-text">
-                        Puesta a punto final, detallado estético y entrega personalizada con carpeta técnica oficial y respaldo de revisiones gratis.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- 7. SHOWROOM & PRESENCIA FÍSICA             -->
+    <!-- 6. SHOWROOM & PRESENCIA FÍSICA             -->
     <!-- ========================================== -->
     <section class="dealer-location-section">
         <div class="container">
@@ -1244,7 +1292,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 8. CARRERA COMERCIAL (RECRUITMENT)         -->
+    <!-- 7. CARRERA COMERCIAL (RECRUITMENT)         -->
     <!-- ========================================== -->
     <section class="dealer-careers-section">
         <div class="container">
