@@ -202,28 +202,30 @@
         .vehicle-selected-box {
             display: flex;
             gap: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 10px 14px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 12px 16px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
         }
 
         .vehicle-selected-box:hover {
-            border-color: rgba(37, 99, 235, 0.4);
-            background: rgba(37, 99, 235, 0.04);
+            border-color: #2563EB;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
         }
 
         .vehicle-thumb-wrapper {
-            width: 85px;
-            height: 58px;
-            border-radius: 8px;
+            width: 90px;
+            height: 64px;
+            border-radius: 10px;
             overflow: hidden;
             flex-shrink: 0;
-            background: #111;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
             position: relative;
         }
 
@@ -254,31 +256,32 @@
         }
 
         .mini-badge {
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 6px;
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .mini-badge.blue {
-            background: rgba(37, 99, 235, 0.2);
-            color: #93c5fd;
-            border: 1px solid rgba(37, 99, 235, 0.4);
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563EB;
+            border: 1px solid rgba(37, 99, 235, 0.25);
         }
 
         .mini-badge.green {
-            background: rgba(16, 185, 129, 0.2);
-            color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.08);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
         .vehicle-name-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            color: #111827;
+            color: #0F172A;
             margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
@@ -287,7 +290,7 @@
 
         .vehicle-meta-tags {
             font-size: 0.74rem;
-            color: #4B5563;
+            color: #64748B;
             margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
@@ -296,8 +299,8 @@
 
         .vehicle-price-display {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1.15rem;
-            font-weight: 700;
+            font-size: 1.18rem;
+            font-weight: 800;
             color: var(--est-blue);
         }
 
@@ -306,33 +309,33 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 14px;
-            background: rgba(37, 99, 235, 0.08);
-            border: 1px solid rgba(37, 99, 235, 0.25);
-            border-radius: 10px;
-            margin-bottom: 14px;
+            padding: 10px 16px;
+            background: rgba(37, 99, 235, 0.06);
+            border: 1.5px solid rgba(37, 99, 235, 0.18);
+            border-radius: 12px;
+            margin-bottom: 16px;
         }
 
         .params-banner-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 700;
-            color: #93c5fd;
+            color: #1E40AF;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .params-banner-tag {
-            font-size: 0.68rem;
-            color: #6ee7b7;
-            font-weight: 600;
+            font-size: 0.7rem;
+            color: #065F46;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(16, 185, 129, 0.12);
-            padding: 2px 8px;
-            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 3px 10px;
+            border-radius: 6px;
         }
 
         /* Vehicle Selector Dropdown / Search */
@@ -345,11 +348,11 @@
 
         .est-select, .est-input {
             width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 12px;
             padding: 12px 16px;
-            color: #111827;
+            color: #0F172A;
             font-family: inherit;
             font-size: 0.92rem;
             outline: none;
@@ -358,18 +361,18 @@
 
         .est-select:focus, .est-input:focus {
             border-color: var(--est-blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #FFFFFF;
         }
 
         .est-btn-action {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #e2e8f0;
-            border-radius: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            color: #1E293B;
+            border-radius: 12px;
             padding: 0 16px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -378,16 +381,17 @@
         }
 
         .est-btn-action:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #111827;
+            background: #EFF6FF;
+            border-color: #2563EB;
+            color: #2563EB;
         }
 
         /* Custom Price Box */
         .custom-price-container {
             display: none;
-            background: rgba(37, 99, 235, 0.06);
-            border: 1px dashed rgba(37, 99, 235, 0.3);
-            border-radius: 12px;
+            background: rgba(37, 99, 235, 0.04);
+            border: 1.5px dashed rgba(37, 99, 235, 0.35);
+            border-radius: 14px;
             padding: 16px;
             margin-top: 14px;
         }
@@ -395,17 +399,18 @@
         /* Buying Power Mode Styles */
         .buying-power-box {
             text-align: center;
-            padding: 18px 16px;
-            background: linear-gradient(180deg, rgba(37, 99, 235, 0.12) 0%, rgba(15, 15, 20, 0.6) 100%);
-            border: 1px solid rgba(37, 99, 235, 0.25);
-            border-radius: 14px;
-            margin-bottom: 14px;
+            padding: 22px 20px;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 16px;
+            margin-bottom: 16px;
         }
 
         .bp-target-label {
-            font-size: 0.78rem;
-            color: #4B5563;
+            font-size: 0.8rem;
+            color: #64748B;
             text-transform: uppercase;
+            font-weight: 700;
             letter-spacing: 1px;
             margin-bottom: 6px;
         }
@@ -414,8 +419,7 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: clamp(2rem, 3.4vw, 2.6rem);
             font-weight: 800;
-            color: #111827;
-            text-shadow: 0 0 25px var(--est-blue-glow);
+            color: #0F172A;
             margin-bottom: 10px;
         }
 
@@ -427,27 +431,27 @@
         .bp-result-banner {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 7px 16px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            border-radius: 10px;
-            color: #6ee7b7;
-            font-size: 0.86rem;
+            gap: 12px;
+            padding: 10px 18px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1.5px solid rgba(16, 185, 129, 0.25);
+            border-radius: 12px;
+            color: #059669;
+            font-size: 0.88rem;
         }
 
         .bp-result-banner strong {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 1.1rem;
-            color: #111827;
+            font-size: 1.15rem;
+            color: #065F46;
         }
 
         /* Compatible Vehicles Grid */
         .compat-grid-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #cbd5e1;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0F172A;
             margin-bottom: 14px;
             display: flex;
             align-items: center;
@@ -467,25 +471,25 @@
             width: 5px;
         }
         .compat-cars-grid::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
+            background: #CBD5E1;
             border-radius: 10px;
         }
 
         .compat-car-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
             overflow: hidden;
             cursor: pointer;
             transition: all 0.25s ease;
             position: relative;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         }
 
         .compat-car-card:hover {
             border-color: var(--est-blue);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
         }
 
         .compat-car-card.selected-in-grid {
@@ -495,9 +499,9 @@
 
         .compat-car-img {
             width: 100%;
-            height: 125px;
+            height: 130px;
             object-fit: cover;
-            background: #111;
+            background: #F1F5F9;
         }
 
         .compat-car-body {
@@ -506,8 +510,9 @@
 
         .compat-car-title {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: 0.82rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0F172A;
             margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
@@ -515,18 +520,19 @@
         }
 
         .compat-car-price {
-            font-size: 0.85rem;
-            color: #4B5563;
+            font-size: 0.86rem;
+            color: #64748B;
+            font-weight: 600;
             margin-bottom: 8px;
         }
 
         .compat-car-payment-tag {
             display: inline-block;
-            background: rgba(37, 99, 235, 0.2);
-            color: #93c5fd;
-            border: 1px solid rgba(37, 99, 235, 0.35);
-            padding: 3px 8px;
-            border-radius: 6px;
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563EB;
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            padding: 4px 10px;
+            border-radius: 8px;
             font-size: 0.75rem;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-weight: 700;
@@ -535,23 +541,23 @@
         /* Payment Method Tabs (Finance vs Cash) */
         .finance-type-tabs {
             display: flex;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            padding: 3px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #F1F5F9;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 16px;
+            border: 1.5px solid #E2E8F0;
         }
 
         .ft-tab {
             flex: 1;
-            padding: 7px 12px;
+            padding: 9px 12px;
             border: none;
             background: transparent;
-            color: #4B5563;
+            color: #64748B;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.76rem;
-            font-weight: 600;
-            border-radius: 8px;
+            font-weight: 700;
+            border-radius: 9px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -560,15 +566,19 @@
             gap: 6px;
         }
 
+        .ft-tab:hover {
+            color: #0F172A;
+        }
+
         .ft-tab.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: #111827;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: #FFFFFF;
+            color: #2563EB;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
         }
 
         /* Financial Sliders & Inputs */
         .param-group {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .param-header {
@@ -580,8 +590,8 @@
 
         .param-label {
             font-size: 0.82rem;
-            font-weight: 600;
-            color: #e2e8f0;
+            font-weight: 700;
+            color: #1E293B;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -591,11 +601,11 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.84rem;
             font-weight: 700;
-            color: #111827;
-            background: rgba(37, 99, 235, 0.15);
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(37, 99, 235, 0.3);
+            color: #2563EB;
+            background: rgba(37, 99, 235, 0.08);
+            padding: 3px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(37, 99, 235, 0.25);
         }
 
         /* Sliders */
@@ -603,11 +613,11 @@
             -webkit-appearance: none;
             appearance: none;
             width: 100%;
-            height: 5px;
+            height: 6px;
             border-radius: 4px;
-            background: rgba(255, 255, 255, 0.15);
+            background: #E2E8F0;
             outline: none;
-            margin: 8px 0 6px 0;
+            margin: 10px 0 6px 0;
             cursor: pointer;
         }
 
@@ -619,7 +629,7 @@
             border-radius: 50%;
             background: var(--est-blue);
             border: 2.5px solid #ffffff;
-            box-shadow: 0 0 10px var(--est-blue-glow);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
             cursor: pointer;
             transition: transform 0.15s ease;
         }
@@ -637,36 +647,37 @@
         }
 
         .preset-pill {
-            padding: 5px 11px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            color: #cbd5e1;
+            padding: 6px 12px;
+            background: #F8FAFC;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 8px;
+            color: #475569;
             font-size: 0.74rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .preset-pill:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: #111827;
+            background: #EFF6FF;
+            border-color: #2563EB;
+            color: #2563EB;
         }
 
         .preset-pill.active {
             background: var(--est-blue);
-            color: #111827;
+            color: #FFFFFF;
             border-color: var(--est-blue);
-            box-shadow: 0 2px 12px var(--est-blue-glow);
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.3);
         }
 
         /* Trade-In Toggle Card */
         .tradein-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 14px;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
             transition: all 0.3s ease;
         }
 
@@ -712,7 +723,7 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: #CBD5E1;
             transition: .3s;
             border-radius: 34px;
         }
@@ -741,13 +752,13 @@
             display: none;
             padding-top: 16px;
             margin-top: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid #E2E8F0;
         }
 
         .tradein-field-label {
             font-size: 0.76rem;
-            font-weight: 600;
-            color: #4B5563;
+            font-weight: 700;
+            color: #334155;
             display: block;
             margin-bottom: 6px;
             display: flex;
@@ -774,8 +785,8 @@
 
         /* Trade-In Technical Condition Box */
         .tradein-condition-box {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(245, 158, 11, 0.25);
+            background: #FFFFFF;
+            border: 1.5px solid #FDE68A;
             border-radius: 12px;
             padding: 16px;
             margin-top: 14px;
@@ -784,7 +795,7 @@
         .tradein-condition-title {
             font-size: 0.82rem;
             font-weight: 700;
-            color: #f1f5f9;
+            color: #92400E;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
@@ -811,7 +822,7 @@
 
         .cond-select-label {
             font-size: 0.74rem;
-            color: #cbd5e1;
+            color: #475569;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -819,14 +830,14 @@
 
         .cond-select-label i {
             margin-right: 4px;
-            color: #38bdf8;
+            color: #0284C7;
         }
 
         .badge-cond {
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.72rem;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
+            background: rgba(16, 185, 129, 0.12);
+            color: #065F46;
             border: 1px solid rgba(16, 185, 129, 0.3);
             padding: 2px 6px;
             border-radius: 4px;
@@ -841,8 +852,8 @@
         /* Trade-In Calculated Output Card */
         .tradein-val-result {
             margin-top: 16px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(37, 99, 235, 0.08));
-            border: 1px solid rgba(245, 158, 11, 0.35);
+            background: #FFFBEB;
+            border: 1.5px solid #FDE68A;
             border-radius: 12px;
             padding: 14px 18px;
             display: flex;
@@ -856,34 +867,34 @@
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 1.5rem;
             font-weight: 800;
-            color: #fbbf24;
+            color: #B45309;
             margin: 4px 0 2px 0;
         }
 
         .tradein-factors-info {
             font-size: 0.73rem;
-            color: #4B5563;
+            color: #64748B;
         }
 
         .tradein-factors-info b {
-            color: #e2e8f0;
+            color: #0F172A;
         }
 
         /* Formalization & Protection Fees Card */
         .formalization-card {
-            background: rgba(56, 189, 248, 0.04);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 12px;
-            padding: 11px 14px;
-            margin-top: 12px;
-            margin-bottom: 12px;
+            background: #F8FAFC;
+            border: 1.5px solid #BAE6FD;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-top: 14px;
+            margin-bottom: 14px;
             transition: all 0.25s ease;
         }
 
         .formalization-card.fees-inactive {
             opacity: 0.65;
-            border-color: rgba(148, 163, 184, 0.2);
-            background: rgba(15, 23, 42, 0.3);
+            border-color: #CBD5E1;
+            background: #F1F5F9;
         }
 
         .formalization-header {
@@ -903,35 +914,35 @@
         }
 
         .formalization-title-area:hover .formalization-main-title {
-            color: #38bdf8;
+            color: #0284C7;
         }
 
         .formalization-main-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.86rem;
-            color: #111827;
+            color: #0F172A;
             transition: color 0.2s ease;
         }
 
         .btn-toggle-details {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            color: #38bdf8;
+            background: rgba(2, 132, 199, 0.08);
+            border: 1px solid rgba(2, 132, 199, 0.25);
+            color: #0284C7;
             font-size: 0.72rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 2px 8px;
+            padding: 3px 8px;
             border-radius: 6px;
             transition: all 0.2s ease;
         }
 
         .btn-toggle-details:hover {
-            background: rgba(56, 189, 248, 0.2);
-            color: #111827;
-            border-color: #38bdf8;
+            background: rgba(2, 132, 199, 0.15);
+            color: #0369A1;
+            border-color: #0284C7;
         }
 
         .formalization-breakdown {
@@ -943,12 +954,12 @@
         }
 
         .fee-badge {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
             border-radius: 6px;
             padding: 4px 8px;
             font-size: 0.72rem;
-            color: #cbd5e1;
+            color: #475569;
         }
 
         .fee-input-grid {
@@ -979,8 +990,8 @@
 
         .fee-input-label {
             font-size: 0.72rem;
-            color: #4B5563;
-            font-weight: 600;
+            color: #475569;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -990,32 +1001,32 @@
             padding: 8px 10px;
             font-size: 0.86rem;
             font-weight: 700;
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(56, 189, 248, 0.25);
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
             border-radius: 8px;
-            color: #111827;
+            color: #0F172A;
             transition: all 0.2s ease;
             width: 100%;
             outline: none;
         }
 
         .fee-number-input:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
-            background: rgba(0, 0, 0, 0.7);
+            border-color: #0284C7;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+            background: #FFFFFF;
         }
 
         .fee-subtotal-bar {
             margin-top: 12px;
-            padding: 9px 14px;
-            background: rgba(56, 189, 248, 0.08);
-            border-radius: 8px;
-            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 10px 14px;
+            background: #F0F9FF;
+            border-radius: 10px;
+            border: 1px solid #BAE6FD;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.82rem;
-            color: #e2e8f0;
+            color: #0369A1;
             width: 100%;
         }
 
@@ -1032,64 +1043,64 @@
         }
 
         .summary-card {
-            background: rgba(15, 15, 20, 0.92);
-            border: 1px solid rgba(37, 99, 235, 0.35);
-            border-radius: 18px;
-            padding: 20px 18px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(37, 99, 235, 0.15);
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
         }
 
         .summary-main-display {
             text-align: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 14px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #F1F5F9;
+            margin-bottom: 16px;
         }
 
         .sum-label {
-            font-size: 0.74rem;
-            color: #4B5563;
+            font-size: 0.72rem;
+            color: #64748B;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 6px;
+            font-weight: 700;
         }
 
         .sum-amount-huge {
             font-family: var(--font-display, 'Unbounded', sans-serif);
-            font-size: clamp(2.1rem, 3.4vw, 2.7rem);
+            font-size: clamp(2.2rem, 3.5vw, 2.8rem);
             font-weight: 800;
-            color: #111827;
+            color: #0F172A;
             line-height: 1.1;
             letter-spacing: -1px;
-            text-shadow: 0 0 30px var(--est-blue-glow);
         }
 
         .sum-period {
             font-size: 1rem;
             color: var(--est-blue);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .sum-subtext {
             font-size: 0.76rem;
-            color: #64748b;
-            margin-top: 4px;
+            color: #64748B;
+            margin-top: 6px;
         }
 
         /* Proportional Progress Bar */
         .prop-bar-container {
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .prop-bar {
-            height: 8px;
+            height: 10px;
             border-radius: 6px;
             overflow: hidden;
             display: flex;
-            background: rgba(255, 255, 255, 0.08);
-            margin-bottom: 6px;
+            background: #F1F5F9;
+            margin-bottom: 8px;
+            border: 1px solid #E2E8F0;
         }
 
         .prop-seg-down {
@@ -1111,7 +1122,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.72rem;
-            color: #4B5563;
+            color: #475569;
             flex-wrap: wrap;
             gap: 6px;
         }
@@ -1131,17 +1142,17 @@
         /* Financial Breakdown Table */
         .breakdown-table {
             width: 100%;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .b-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 0;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
-            font-size: 0.81rem;
-            color: #cbd5e1;
+            padding: 7px 0;
+            border-bottom: 1px dashed #E2E8F0;
+            font-size: 0.82rem;
+            color: #475569;
         }
 
         .b-row:last-child {
@@ -1149,22 +1160,23 @@
         }
 
         .b-row.highlight {
-            font-weight: 700;
-            color: #111827;
-            font-size: 0.88rem;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            font-weight: 800;
+            color: #0F172A;
+            font-size: 0.92rem;
+            padding-top: 12px;
+            border-top: 2px solid #E2E8F0;
             border-bottom: none;
         }
 
         .b-row .val {
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.84rem;
-            font-weight: 600;
+            font-weight: 700;
+            color: #0F172A;
         }
 
         .b-row.highlight .val {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--est-blue);
         }
 
@@ -1175,26 +1187,26 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 11px 16px;
+            padding: 13px 18px;
             background: #25D366;
-            color: #050505;
+            color: #FFFFFF;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.82rem;
             font-weight: 700;
             border-radius: 12px;
             text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
-            margin-bottom: 8px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+            margin-bottom: 10px;
             border: none;
             cursor: pointer;
         }
 
         .btn-whatsapp-quote:hover {
-            background: #22c35e;
+            background: #20ba59;
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(37, 211, 102, 0.45);
-            color: #000;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+            color: #FFFFFF;
         }
 
         .btn-print-quote {
@@ -1203,28 +1215,29 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 9px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #111827;
+            padding: 10px 14px;
+            background: #F8FAFC;
+            border: 1.5px solid #CBD5E1;
+            color: #1E293B;
             font-family: var(--font-display, 'Unbounded', sans-serif);
             font-size: 0.74rem;
-            font-weight: 600;
-            border-radius: 10px;
+            font-weight: 700;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-print-quote:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.25);
+            background: #EFF6FF;
+            border-color: #2563EB;
+            color: #2563EB;
         }
 
         .legal-notice {
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 0.68rem;
-            color: #64748b;
-            line-height: 1.35;
+            color: #64748B;
+            line-height: 1.4;
             text-align: center;
         }
 

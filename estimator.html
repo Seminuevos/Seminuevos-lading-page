@@ -19,7 +19,9 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&family=Mina:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Core Style -->
@@ -29,31 +31,33 @@
 </head>
 <body class="estimator-page">
 
-    <!-- ===== NAVBAR ===== -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="nav-logo">
-                <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
-            </a>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="/" class="nav-link">INICIO</a></li>
-                <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
-                <li><a href="calculadora" class="nav-link">CALCULADORA IMPORTACIÓN</a></li>
-                <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
-                <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="catalogo" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.75rem;">
-                    <i class="fas fa-car"></i> Ver Catálogo
+    <!-- ===== EXECUTIVE DEALERSHIP HEADER ===== -->
+    <header class="dealership-header-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-logo">
+                    <img src="images/logo-primary.png" alt="SemiNuevos Logo" class="main-logo">
                 </a>
-                <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="/" class="nav-link">INICIO</a></li>
+                    <li><a href="catalogo" class="nav-link">CATÁLOGO</a></li>
+                    <li><a href="calculadora" class="nav-link">CALCULADORA</a></li>
+                    <li><a href="servicios" class="nav-link">BENEFICIOS</a></li>
+                    <li><a href="nosotros" class="nav-link">NOSOTROS</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20consultar%20sobre%20el%20financiamiento" class="btn-nav-consult" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> <span>CONSULTAR ASESOR</span>
+                    </a>
+                    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- ===== FLOATING WHATSAPP ===== -->
     <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información%20sobre%20financiamiento"
@@ -127,18 +131,18 @@
                         <!-- Selected Vehicle Visual Card -->
                         <div class="vehicle-selected-box" id="vehiclePreviewBox">
                             <div class="vehicle-thumb-wrapper">
-                                <img id="selCarImg" src="images/logo-white.png" alt="Vehículo seleccionado">
+                                <img id="selCarImg" src="images/hero1.jpg" alt="Vehículo seleccionado" onerror="this.src='images/favicon.png'">
                             </div>
                             <div class="vehicle-info">
                                 <div class="vehicle-badges-row">
                                     <span class="mini-badge blue" id="selCarCondition">Seminuevo</span>
                                     <span class="mini-badge green" id="selCarOrigin">Puerto Libre</span>
                                 </div>
-                                <div class="vehicle-name-title" id="selCarTitle">Honda HR-V Sport 2025</div>
-                                <div class="vehicle-meta-tags" id="selCarMeta">2025 • 17,000 KM • Automático</div>
+                                <div class="vehicle-name-title" id="selCarTitle">Selecciona un Vehículo</div>
+                                <div class="vehicle-meta-tags" id="selCarMeta">Inventario disponible</div>
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
-                                    <div class="vehicle-price-display" id="selCarPrice">$36,000</div>
-                                    <a href="#" id="selCarViewDetails" target="_blank" class="mini-badge blue" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; font-size: 0.72rem;">
+                                    <div class="vehicle-price-display" id="selCarPrice">$0</div>
+                                    <a href="#" id="selCarViewDetails" target="_blank" class="mini-badge blue" style="text-decoration: none; display: none; align-items: center; gap: 5px; padding: 4px 10px; font-size: 0.72rem;">
                                         <i class="fas fa-external-link-alt"></i> Ver Ficha
                                     </a>
                                 </div>
@@ -726,24 +730,41 @@
                         <img src="images/logo-white.png" alt="Semi Nuevo Autos Logo" style="height: 70px; width: auto;">
                     </a>
                     <p class="footer-desc">Semi Nuevo Autos: Tu concesionario de confianza en Margarita y toda Venezuela. Planes transparentes y certificación garantizada.</p>
+                    <div class="footer-social">
+                        <a href="#" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/seminuevosagency/" target="_blank" rel="noopener" title="Instagram"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@seminuevosagency" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com" target="_blank" rel="noopener" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
                 <div class="footer-links">
-                    <h4>Navegación</h4>
+                    <h4>Links Rápidos</h4>
                     <a href="/">Inicio</a>
-                    <a href="catalogo">Catálogo Completo</a>
-                    <a href="calculadora">Calculadora Importación</a>
+                    <a href="catalogo">Catálogo</a>
+                    <a href="calculadora">Calculadora</a>
                     <a href="servicios">Beneficios</a>
                     <a href="nosotros">Nosotros</a>
                 </div>
+                <div class="footer-links">
+                    <h4>Ecosistema</h4>
+                    <a href="servicios#soporte-mastertech">Soporte MasterTech</a>
+                    <a href="https://www.tallermastertech.com/catalogo" target="_blank" rel="noopener">MT Part Store</a>
+                    <a href="servicios#garantia-electronica">2 Años de Revisiones</a>
+                    <a href="servicios#programa-retoma">Programa de Trade In</a>
+                    <a href="servicios#financiamiento">Financiamiento</a>
+                    <a href="postulacion">Postulación Vendedores</a>
+                </div>
                 <div class="footer-contact">
-                    <h4>Contacto Asesor</h4>
-                    <a href="https://wa.me/584248700438" target="_blank"><i class="fab fa-whatsapp"></i> +58 424-870-0438</a>
-                    <p><i class="fas fa-map-marker-alt"></i> Porlamar, Isla de Margarita</p>
-                    <p><i class="fas fa-clock"></i> Lunes a Sábado: 9AM - 7PM</p>
+                    <h4>Contacto</h4>
+                    <a href="https://maps.google.com/?q=Porlamar,+Isla+de+Margarita,+Venezuela" target="_blank" rel="noopener"><i class="fas fa-map-marker-alt"></i> Porlamar, Isla de Margarita, Venezuela</a>
+                    <a href="https://wa.me/584248700438?text=Hola,%20quiero%20información" target="_blank" rel="noopener"><i class="fas fa-phone"></i> +58 424-870-0438</a>
+                    <a href="mailto:info@seminuevoautos.com"><i class="fas fa-envelope"></i> info@seminuevoautos.com</a>
+                    <p><i class="fas fa-clock"></i> Lun - Sáb: 9AM - 7PM</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Semi Nuevo Autos. Estimador Financiero Toyota-Style.</p>
+                <p>&copy; 2026 Semi Nuevo Autos | Seminuevos Autos. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -791,6 +812,14 @@
         };
 
         function formatVehicleRecord(v) {
+            let imgs = [];
+            if (Array.isArray(v.images) && v.images.length > 0) {
+                imgs = v.images;
+            } else if (v.images && typeof v.images === 'string') {
+                imgs = [v.images];
+            } else if (v.image && typeof v.image === 'string') {
+                imgs = [v.image];
+            }
             return {
                 id: v.id,
                 title: v.title || 'Vehículo',
@@ -803,7 +832,7 @@
                 condition: v.condition || 'seminuevo',
                 origin: v.origin || 'nacional',
                 badge: v.badge || '',
-                images: Array.isArray(v.images) ? v.images : (v.images ? [v.images] : ['images/logo-white.png'])
+                images: imgs.length > 0 ? imgs : ['images/hero1.jpg']
             };
         }
 
@@ -824,7 +853,7 @@
         }
 
         // --- BOOTSTRAP & INVENTORY LOADING ---
-        function bootEstimator() {
+        async function bootEstimator() {
             const navToggle = document.getElementById('navToggle');
             const navMenu = document.getElementById('navMenu');
             navToggle?.addEventListener('click', () => {
@@ -832,7 +861,7 @@
                 navMenu?.classList.toggle('active');
             });
 
-            // 1. Inicialización instantánea síncrona (0ms de latencia)
+            // 1. Inicialización preliminar desde cache si existe
             estimatorInventory = getInitialVehicles();
             if (estimatorInventory.length > 0) {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -847,8 +876,8 @@
                 }
             }
 
-            // 2. Sincronización en segundo plano con Supabase
-            syncSupabaseInventory();
+            // 2. Sincronización en vivo directa con la API de inventario (/api/vehicles)
+            await syncSupabaseInventory();
         }
 
         if (document.readyState === 'loading') {
@@ -859,24 +888,56 @@
 
         async function syncSupabaseInventory() {
             try {
-                if (typeof supabaseClient === 'undefined' || !supabaseClient) return;
+                let freshList = [];
+                // 1. Intentar carga en vivo desde la API de vehículos
+                try {
+                    const res = await fetch(`/api/vehicles?_t=${Date.now()}`, { cache: 'no-store' });
+                    if (res.ok) {
+                        const json = await res.json();
+                        const list = Array.isArray(json?.data) ? json.data : (Array.isArray(json) ? json : []);
+                        if (list.length > 0) {
+                            freshList = list.map(formatVehicleRecord).filter(v => v.price > 0);
+                        }
+                    }
+                } catch (fetchErr) {
+                    console.warn('API /api/vehicles fetch error:', fetchErr);
+                }
 
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3500));
-                const fetchPromise = supabaseClient.from('vehicles').select('*').eq('status', 'active');
-                
-                const res = await Promise.race([fetchPromise, timeoutPromise]);
-                const data = res?.data;
-                if (data && data.length > 0) {
-                    const freshList = data.map(formatVehicleRecord).filter(v => v.price > 0);
-                    if (freshList.length > 0) {
-                        const currentId = selectedVehicle ? selectedVehicle.id : null;
-                        estimatorInventory = freshList;
-                        populateVehicleSelect(currentId);
-                        updateBudgetCompatibleCars();
+                // 2. Respaldo directo a Supabase si la API no respondió pero el cliente existe
+                if (freshList.length === 0 && typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    try {
+                        const { data } = await supabaseClient.from('vehicles').select('*').eq('status', 'active');
+                        if (data && data.length > 0) {
+                            freshList = data.map(formatVehicleRecord).filter(v => v.price > 0);
+                        }
+                    } catch (sbErr) {
+                        console.warn('Supabase direct fetch notice:', sbErr);
+                    }
+                }
+
+                if (freshList.length > 0) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const carIdParam = urlParams.get('id') || urlParams.get('carId');
+                    const modeParam = urlParams.get('mode');
+                    const currentId = carIdParam || (selectedVehicle ? selectedVehicle.id : null);
+
+                    estimatorInventory = freshList;
+                    populateVehicleSelect(currentId);
+                    updateBudgetCompatibleCars();
+
+                    if (modeParam === 'budget') {
+                        switchEstimatorMode('budget');
+                    } else {
+                        recalculate();
+                    }
+                } else if (estimatorInventory.length === 0) {
+                    const sel = document.getElementById('vehicleSelect');
+                    if (sel) {
+                        sel.innerHTML = '<option value="">No hay inventario disponible en este momento</option>';
                     }
                 }
             } catch (e) {
-                console.warn('Background Supabase sync notice:', e);
+                console.warn('Background inventory sync notice:', e);
             }
         }
 
@@ -930,8 +991,12 @@
             document.getElementById('selCarCondition').textContent = (car.condition === '0km') ? '0KM' : 'Seminuevo';
             document.getElementById('selCarOrigin').textContent = (car.origin === 'nacional') ? 'Nacional' : 'Puerto Libre';
             
-            const firstImg = (car.images && car.images.length > 0) ? car.images[0] : 'images/logo-white.png';
-            document.getElementById('selCarImg').src = firstImg;
+            const firstImg = (car.images && car.images.length > 0) ? car.images[0] : 'images/hero1.jpg';
+            const imgEl = document.getElementById('selCarImg');
+            if (imgEl) {
+                imgEl.src = firstImg;
+                imgEl.onerror = () => { imgEl.src = 'images/favicon.png'; };
+            }
 
             const viewDetailsLink = document.getElementById('selCarViewDetails');
             if (viewDetailsLink) {
