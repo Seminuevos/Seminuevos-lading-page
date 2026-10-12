@@ -1809,8 +1809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrolled = window.scrollY;
         const heroContent = document.querySelectorAll('.hero-content');
         heroContent.forEach(content => {
-            content.style.transform = `translateY(${scrolled * 0.15}px)`;
-            content.style.opacity = 1 - scrolled / 800;
+            content.style.opacity = Math.max(0, 1 - scrolled / 500);
         });
     });
 

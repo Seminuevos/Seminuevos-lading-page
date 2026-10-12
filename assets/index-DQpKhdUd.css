@@ -627,8 +627,8 @@ body::after {
     position: absolute;
     top: 48%;
     transform: translateY(-50%);
-    left: 7%;
-    max-width: 580px;
+    left: 6%;
+    max-width: 500px;
     width: 90%;
     z-index: 10;
     padding: 0 !important;
@@ -658,7 +658,7 @@ body::after {
 }
 
 .hero-content.align-left {
-    left: 7%;
+    left: 6%;
     right: auto;
     text-align: left;
 }
@@ -688,7 +688,7 @@ body::after {
 
 .hero-content.align-right {
     left: auto;
-    right: 7%;
+    right: 6%;
     text-align: right;
 }
 
@@ -712,14 +712,49 @@ body::after {
     animation: contentReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.hero-slide.active .hero-content.align-center {
+    animation: contentRevealCenter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes contentReveal {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(calc(-50% + 18px));
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(-50%);
+    }
+}
+
+@keyframes contentRevealCenter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 18px));
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-slide.active .hero-content,
+    .hero-slide.active .hero-content.align-center,
+    .hero-slide.active .hero-content.align-left,
+    .hero-slide.active .hero-content.align-right {
+        animation: contentRevealMobile 0.6s ease-out forwards;
+    }
+
+    @keyframes contentRevealMobile {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }
 
@@ -727,12 +762,12 @@ body::after {
 .hero-eyebrow,
 .hero-nissan-kicker {
     font-family: var(--font-body);
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: #38BDF8 !important;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -747,10 +782,10 @@ body::after {
 .hero-nissan-title {
     font-family: var(--font-display);
     font-weight: 800 !important;
-    font-size: clamp(2.1rem, 3.8vw, 3.3rem) !important;
+    font-size: clamp(2rem, 3.4vw, 3rem) !important;
     line-height: 1.08 !important;
     letter-spacing: -0.025em !important;
-    margin: 0 0 6px 0 !important;
+    margin: 0 0 4px 0 !important;
     text-transform: none !important;
     color: #FFFFFF !important;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7) !important;
@@ -768,14 +803,14 @@ body::after {
 .hero-tagline,
 .hero-nissan-tagline {
     font-family: var(--font-body);
-    font-size: clamp(0.92rem, 1.15vw, 1.08rem);
+    font-size: clamp(0.9rem, 1.1vw, 1.02rem);
     font-weight: 600;
     color: #F8FAFC;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     line-height: 1.35;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-    max-width: 560px;
+    max-width: 480px;
     word-break: normal;
     overflow-wrap: break-word;
 }
@@ -783,11 +818,11 @@ body::after {
 .hero-description,
 .hero-nissan-desc {
     font-family: var(--font-body);
-    font-size: clamp(0.82rem, 0.9vw, 0.88rem) !important;
-    line-height: 1.5 !important;
+    font-size: clamp(0.8rem, 0.88vw, 0.86rem) !important;
+    line-height: 1.45 !important;
     color: #CBD5E1 !important;
-    margin-bottom: 12px !important;
-    max-width: 560px !important;
+    margin-bottom: 10px !important;
+    max-width: 480px !important;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
     font-weight: 400 !important;
     word-break: normal !important;
@@ -798,7 +833,7 @@ body::after {
     .hero-description,
     .hero-nissan-desc {
         font-size: 0.8rem !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 8px !important;
         line-height: 1.35 !important;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -812,7 +847,7 @@ body::after {
 .hero-specs-row {
     display: flex;
     flex-direction: column;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     border: none !important;
     padding: 0 !important;
 }
@@ -820,8 +855,8 @@ body::after {
 .hero-nissan-stats-row {
     display: flex;
     align-items: baseline;
-    gap: 28px;
-    margin-bottom: 4px;
+    gap: 24px;
+    margin-bottom: 2px;
 }
 
 .hero-nissan-stat,
