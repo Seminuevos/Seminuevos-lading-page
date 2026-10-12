@@ -869,8 +869,8 @@
         .viewer-360-compact {
             position: relative;
             width: 100%;
-            max-width: 760px;
-            height: 290px;
+            max-width: 860px;
+            height: 390px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -887,11 +887,11 @@
 
         .stage-podium-glow {
             position: absolute;
-            bottom: 6%;
+            bottom: 8%;
             left: 50%;
             transform: translateX(-50%);
-            width: 82%;
-            height: 20%;
+            width: 86%;
+            height: 22%;
             background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.16) 0%, rgba(15, 23, 42, 0.03) 50%, transparent 74%);
             filter: blur(12px);
             pointer-events: none;
@@ -901,7 +901,7 @@
         .car-360-canvas {
             width: 100%;
             height: 100%;
-            max-height: 290px;
+            max-height: 390px;
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
@@ -1212,6 +1212,13 @@
                 flex-direction: column;
                 gap: 24px;
             }
+            .viewer-360-compact {
+                max-width: 100%;
+                height: 340px;
+            }
+            .car-360-canvas {
+                max-height: 340px;
+            }
             .showcase-config-col {
                 width: 100%;
                 max-width: 580px;
@@ -1224,10 +1231,10 @@
             }
             .viewer-360-compact {
                 max-width: 100%;
-                height: 210px;
+                height: 270px;
             }
             .car-360-canvas {
-                max-height: 210px;
+                max-height: 270px;
             }
         }
     </style>
@@ -1285,7 +1292,7 @@
             <div class="showcase-viewer-col">
                 <div class="viewer-360-compact" id="viewer360Elantra">
                     <div class="stage-podium-glow"></div>
-                    <canvas id="canvas360Elantra" class="car-360-canvas" width="1280" height="640"></canvas>
+                    <canvas id="canvas360Elantra" class="car-360-canvas" width="1440" height="720"></canvas>
 
                     <div class="drag-hint-pill" id="dragHint360">
                         <i class="fas fa-arrows-rotate"></i> Arrastra para girar 360°
@@ -1812,7 +1819,9 @@
 
             const iw = img.naturalWidth || img.width;
             const ih = img.naturalHeight || img.height;
-            const scale = Math.min(cw / iw, ch / ih);
+            // Factor 1.16x para aprovechar al máximo el área del visor eliminando el exceso de margen transparente sin recortar las esquinas
+            const baseScale = Math.min(cw / iw, ch / ih);
+            const scale = baseScale * 1.16;
             const dw = iw * scale;
             const dh = ih * scale;
             const dx = (cw - dw) / 2;
