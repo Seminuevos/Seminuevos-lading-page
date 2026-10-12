@@ -11,16 +11,16 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="manifest" href="assets/site.webmanifest">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Mina:wght@400;700&family=Unbounded:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="assets/sm-op.css">
+    <link rel="stylesheet" href="assets/sm-op.css?v=2">
 </head>
 
 <body>
@@ -29,7 +29,7 @@
     <div class="auth-screen" id="authScreen">
         <div class="auth-card">
             <div style="margin-bottom: 24px;">
-                <img src="images/logo-white.png" alt="SemiNuevos Logo" style="height: 120px; width: auto;">
+                <img src="images/logo-primary.png" alt="SemiNuevos Logo" style="height: 90px; width: auto;">
             </div>
             <h1>Terminal de Operaciones</h1>
             <p>SemiNuevos Margarita — Acceso Autorizado</p>
@@ -56,10 +56,10 @@
     </div>
 
     <!-- RESET PASSWORD MODAL -->
-    <div id="resetPasswordModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.85); backdrop-filter:blur(15px); align-items:center; justify-content:center;">
-        <div style="background:var(--bg2); border:1px solid var(--border-accent); border-radius:var(--radius-lg); padding:32px; width:100%; max-width:420px; text-align:center; box-shadow:var(--shadow);">
+    <div id="resetPasswordModal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center;">
+        <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:var(--radius); padding:32px; width:100%; max-width:420px; text-align:center; box-shadow:0 20px 50px rgba(15,23,42,0.15);">
             <i class="fas fa-key" style="font-size:2.5rem; color:var(--primary); margin-bottom:16px;"></i>
-            <h2 style="margin-bottom:8px; font-size:1.4rem;">Nueva Contraseña</h2>
+            <h2 style="margin-bottom:8px; font-size:1.4rem; color:var(--text);">Nueva Contraseña</h2>
             <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:20px;">Ingresa la nueva contraseña para tu cuenta de administrador</p>
             <div id="newPasswordError" style="display:none; color:#ff5252; margin-bottom:12px; font-size:0.85rem;"></div>
             <input type="password" id="newPasswordInput" class="auth-input" placeholder="Nueva Contraseña (mínimo 6 caracteres)">
@@ -73,7 +73,7 @@
     <div class="admin-layout" id="adminPanel" style="display:none">
         <aside class="sidebar">
             <div class="sidebar-logo">
-                <img src="images/logo-white.png" alt="SemiNuevos Logo" style="height: 64px; width: auto;">
+                <img src="images/logo-primary.png" alt="SemiNuevos Logo" style="height: 52px; width: auto;">
             </div>
             <nav class="sidebar-nav">
                 <button class="sidebar-link active" data-tab="vehicles"><i class="fas fa-car"></i> Vehículos</button>
@@ -115,13 +115,10 @@
 
                 <div class="admin-catalog-tabs"
                     style="display:flex; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:5px;">
-                    <button class="btn btn-primary admin-tab-btn active" data-cat="todos"><i class="fas fa-list"></i>
-                        Todos</button>
-                    <button class="btn btn-ghost admin-tab-btn" data-cat="seminuevos"><i class="fas fa-bolt"></i> Semi
-                        Nuevo: Stock Local</button>
-                    <button class="btn btn-ghost admin-tab-btn" data-cat="importados"><i class="fas fa-ship"></i> Semi
-                        Nuevo: Por Pedido</button>
-                    <button class="btn btn-ghost admin-tab-btn" data-cat="0km"><i class="fas fa-star"></i> 0KM</button>
+                    <button class="btn btn-primary admin-tab-btn active" data-cat="todos"><i class="fas fa-list"></i> Todos</button>
+                    <button class="btn btn-ghost admin-tab-btn" data-cat="seminuevos"><i class="fas fa-car-side"></i> Stock Local (Margarita)</button>
+                    <button class="btn btn-ghost admin-tab-btn" data-cat="importados"><i class="fas fa-ship"></i> Por Pedido USA</button>
+                    <button class="btn btn-ghost admin-tab-btn" data-cat="0km"><i class="fas fa-award"></i> 0KM Nuevos</button>
                 </div>
 
                 <div class="table-container">
@@ -3057,9 +3054,9 @@
                 currentAdminCatalogFilter = btn.dataset.cat;
                 const titles = {
                     'todos': '<i class="fas fa-list"></i> Inventario Completo',
-                    'seminuevos': '<i class="fas fa-bolt"></i> Semi Nuevo: Stock Local',
-                    'importados': '<i class="fas fa-ship"></i> Semi Nuevo: Por Pedido',
-                    '0km': '<i class="fas fa-star"></i> 0KM'
+                    'seminuevos': '<i class="fas fa-car-side"></i> Stock Local (Margarita)',
+                    'importados': '<i class="fas fa-ship"></i> Por Pedido USA',
+                    '0km': '<i class="fas fa-award"></i> 0KM Nuevos'
                 };
                 document.getElementById('adminTableTitle').innerHTML = titles[currentAdminCatalogFilter];
                 renderTable(document.getElementById('searchInput').value);
