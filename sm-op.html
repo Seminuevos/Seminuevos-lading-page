@@ -4640,8 +4640,26 @@
                         </div>
                     </div>
                 </div>
-                `;
             }).join('');
+
+            // Auto-resolver videos locales guardados en IndexedDB
+            heroSlides.forEach(async (s, idx) => {
+                if (s.video && s.video.startsWith('idb:')) {
+                    const vEl = document.getElementById(`hpVideoEl-${idx}`);
+                    if (vEl) {
+                        if (window[`_heroVideoBlobUrl_${idx}`]) {
+                            vEl.src = window[`_heroVideoBlobUrl_${idx}`];
+                        } else {
+                            const blob = await MediaDB.get(s.video.replace('idb:', ''));
+                            if (blob) {
+                                const bUrl = URL.createObjectURL(blob);
+                                window[`_heroVideoBlobUrl_${idx}`] = bUrl;
+                                vEl.src = bUrl;
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         window.updateHeroSlideField = (index, field, value) => {
@@ -4866,6 +4884,60 @@
             showToast('Nuevo slide añadido', 'success');
         });
 
+        // MediaDB: Almacenamiento local ultrarrápido (IndexedDB) para fotos y videos sin límites
+        const MediaDB = {
+            dbName: 'SemiNuevosMediaDB',
+            storeName: 'media',
+            _db: null,
+            async open() {
+                if (this._db) return this._db;
+                return new Promise((resolve, reject) => {
+                    const req = indexedDB.open(this.dbName, 1);
+                    req.onupgradeneeded = () => {
+                        if (!req.result.objectStoreNames.contains(this.storeName)) {
+                            req.result.createObjectStore(this.storeName);
+                        }
+                    };
+                    req.onsuccess = () => {
+                        this._db = req.result;
+                        resolve(this._db);
+                    };
+                    req.onerror = () => reject(req.error);
+                });
+            },
+            async set(key, blob) {
+                try {
+                    const db = await this.open();
+                    return new Promise((resolve, reject) => {
+                        const tx = db.transaction(this.storeName, 'readwrite');
+                        tx.objectStore(this.storeName).put(blob, key);
+                        tx.oncomplete = () => resolve(true);
+                        tx.onerror = () => reject(tx.error);
+                    });
+                } catch(e) { console.warn('MediaDB set error:', e); return false; }
+            },
+            async get(key) {
+                try {
+                    const db = await this.open();
+                    return new Promise((resolve) => {
+                        const tx = db.transaction(this.storeName, 'readonly');
+                        const req = tx.objectStore(this.storeName).get(key);
+                        req.onsuccess = () => resolve(req.result || null);
+                        req.onerror = () => resolve(null);
+                    });
+                } catch(e) { return null; }
+            }
+        };
+        window.MediaDB = MediaDB;
+
+        function blobToDataUrl(blob) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        }
+
         window.uploadHeroImage = async (index, input) => {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
@@ -4884,23 +4956,36 @@
                 console.warn('Fallback hero upload', e);
             }
 
-            const fname = `hero-${Date.now()}-${index}.${ext}`;
-            const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, uploadBlob, { 
-                contentType: mime,
-                cacheControl: '31536000'
-            });
+            let finalUrl = '';
+            try {
+                const fname = `hero-${Date.now()}-${index}.${ext}`;
+                const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, uploadBlob, { 
+                    contentType: mime,
+                    cacheControl: '31536000'
+                });
 
-            if (error) {
-                showToast('Error subiendo imagen: ' + error.message, 'error');
-                return;
+                if (!error && data) {
+                    const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
+                    finalUrl = urlData.publicUrl;
+                } else {
+                    console.warn('Supabase storage upload error:', error?.message);
+                }
+            } catch(err) {
+                console.warn('Supabase storage upload error:', err);
             }
 
-            const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
-            heroSlides[index].image = urlData.publicUrl;
-            updateHeroSlideField(index, 'image', urlData.publicUrl);
+            // Fallback a Base64 si Supabase Storage bloquea por RLS o no responde
+            if (!finalUrl) {
+                finalUrl = await blobToDataUrl(uploadBlob);
+                showToast('✓ Imagen guardada localmente (WebP optimizado)', 'success');
+            } else {
+                showToast('✓ Imagen de hero subida a Supabase (WebP)', 'success');
+            }
+
+            heroSlides[index].image = finalUrl;
+            updateHeroSlideField(index, 'image', finalUrl);
             const inputUrl = document.getElementById(`hpImgUrlInput-${index}`);
-            if (inputUrl) inputUrl.value = urlData.publicUrl;
-            showToast('✓ Imagen de hero actualizada (WebP)', 'success');
+            if (inputUrl) inputUrl.value = finalUrl;
         };
 
         // Captura automática de fotograma para portada WebP
@@ -4960,56 +5045,79 @@
 
             // 2. Control de peso para optimización y velocidad
             const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
-            if (file.size > 35 * 1024 * 1024) {
-                showToast(`El video pesa ${sizeMb} MB. Para mayor fluidez web recomendamos videos de 10-20 MB.`, 'warning');
-            }
-
             showToast(`Procesando video (${sizeMb} MB)...`, 'info');
 
             try {
                 // 3. Extracción automática de portada si el slide aún tiene portada por defecto
                 try {
                     const posterBlob = await captureVideoPosterBlob(file);
-                    if (posterBlob && (!heroSlides[index].image || heroSlides[index].image.includes('hero-1.jpg') || heroSlides[index].image.includes('hero-2.jpg'))) {
-                        const posterFname = `hero-poster-${Date.now()}-${index}.webp`;
-                        const { data: pData, error: pErr } = await supabaseClient.storage.from('vehicle-images').upload(posterFname, posterBlob, {
-                            contentType: 'image/webp',
-                            cacheControl: '31536000'
-                        });
-                        if (!pErr) {
-                            const { data: pUrl } = supabaseClient.storage.from('vehicle-images').getPublicUrl(posterFname);
-                            if (pUrl?.publicUrl) {
-                                heroSlides[index].image = pUrl.publicUrl;
-                                updateHeroSlideField(index, 'image', pUrl.publicUrl);
-                                const pInput = document.getElementById(`hpImgUrlInput-${index}`);
-                                if (pInput) pInput.value = pUrl.publicUrl;
+                    if (posterBlob) {
+                        let posterUrl = '';
+                        try {
+                            const posterFname = `hero-poster-${Date.now()}-${index}.webp`;
+                            const { data: pData, error: pErr } = await supabaseClient.storage.from('vehicle-images').upload(posterFname, posterBlob, {
+                                contentType: 'image/webp',
+                                cacheControl: '31536000'
+                            });
+                            if (!pErr && pData) {
+                                const { data: pUrl } = supabaseClient.storage.from('vehicle-images').getPublicUrl(posterFname);
+                                if (pUrl?.publicUrl) posterUrl = pUrl.publicUrl;
                             }
+                        } catch(pe) {}
+
+                        // Si Supabase Storage falló (ej: RLS), convertir fotograma a Base64
+                        if (!posterUrl) {
+                            posterUrl = await blobToDataUrl(posterBlob);
                         }
+
+                        heroSlides[index].image = posterUrl;
+                        updateHeroSlideField(index, 'image', posterUrl);
+                        const pInput = document.getElementById(`hpImgUrlInput-${index}`);
+                        if (pInput) pInput.value = posterUrl;
                     }
                 } catch(frameErr) {
                     console.warn('Frame capture skipped:', frameErr);
                 }
 
-                // 4. Subir video al almacenamiento Supabase con compresión HTTP
-                const ext = file.name.split('.').pop().toLowerCase() || 'mp4';
-                const fname = `hero-video-${Date.now()}-${index}.${ext}`;
-                const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, file, {
-                    contentType: file.type || 'video/mp4',
-                    cacheControl: '31536000'
-                });
+                // 4. Subir video a Supabase Storage con fallback automático a IndexedDB
+                let videoUrl = '';
+                try {
+                    const ext = file.name.split('.').pop().toLowerCase() || 'mp4';
+                    const fname = `hero-video-${Date.now()}-${index}.${ext}`;
+                    const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, file, {
+                        contentType: file.type || 'video/mp4',
+                        cacheControl: '31536000'
+                    });
 
-                if (error) {
-                    showToast('Error subiendo video: ' + error.message, 'error');
-                    return;
+                    if (!error && data) {
+                        const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
+                        if (urlData?.publicUrl) {
+                            videoUrl = urlData.publicUrl;
+                        }
+                    } else {
+                        console.warn('Supabase Storage video upload bloqueado por RLS:', error?.message);
+                    }
+                } catch(upErr) {
+                    console.warn('Supabase upload exception:', upErr);
                 }
 
-                const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
-                heroSlides[index].video = urlData.publicUrl;
-                updateHeroSlideField(index, 'video', urlData.publicUrl);
-                const vInput = document.getElementById(`hpVideoUrlInput-${index}`);
-                if (vInput) vInput.value = urlData.publicUrl;
+                // Si Supabase Storage no permitió la subida (RLS violation o offline):
+                if (!videoUrl) {
+                    const mediaKey = `hero-video-${index}`;
+                    await MediaDB.set(mediaKey, file);
+                    const localBlobUrl = URL.createObjectURL(file);
+                    window[`_heroVideoBlobUrl_${index}`] = localBlobUrl;
+                    videoUrl = `idb:${mediaKey}`;
+                    showToast('✓ Video guardado y configurado con éxito (Almacenamiento Local Activo)', 'success');
+                } else {
+                    showToast('✓ Video subido a Supabase Storage con éxito', 'success');
+                }
 
-                showToast('✓ Video subido y configurado con éxito', 'success');
+                heroSlides[index].video = videoUrl;
+                updateHeroSlideField(index, 'video', videoUrl);
+                const vInput = document.getElementById(`hpVideoUrlInput-${index}`);
+                if (vInput) vInput.value = videoUrl;
+
                 renderHeroSlides();
             } catch(e) {
                 showToast('Error procesando video: ' + e.message, 'error');

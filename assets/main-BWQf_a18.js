@@ -34,6 +34,40 @@ const COMPANY_INFO = {
     }
 };
 
+// MediaDB: Almacenamiento local ultrarrápido (IndexedDB) para fotos y videos sin límites
+window.MediaDB = window.MediaDB || {
+    dbName: 'SemiNuevosMediaDB',
+    storeName: 'media',
+    _db: null,
+    async open() {
+        if (this._db) return this._db;
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(this.dbName, 1);
+            req.onupgradeneeded = () => {
+                if (!req.result.objectStoreNames.contains(this.storeName)) {
+                    req.result.createObjectStore(this.storeName);
+                }
+            };
+            req.onsuccess = () => {
+                this._db = req.result;
+                resolve(this._db);
+            };
+            req.onerror = () => reject(req.error);
+        });
+    },
+    async get(key) {
+        try {
+            const db = await this.open();
+            return new Promise((resolve) => {
+                const tx = db.transaction(this.storeName, 'readonly');
+                const req = tx.objectStore(this.storeName).get(key);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => resolve(null);
+            });
+        } catch(e) { return null; }
+    }
+};
+
 /**
  *  LABELS PARA LOS FILTROS
  */
@@ -366,10 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => {
         // Navbar background
-        if (window.scrollY > 60) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
+        if (navbar) {
+            if (window.scrollY > 60) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         }
     });
 
@@ -945,6 +981,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const controls = slider.querySelector('.hero-controls');
         slider.innerHTML = html;
         if (controls) slider.appendChild(controls);
+
+        // Auto-resolver videos guardados en IndexedDB
+        heroSlides.forEach(async (s, idx) => {
+            if (s.video && s.video.startsWith('idb:') && window.MediaDB) {
+                const blob = await window.MediaDB.get(s.video.replace('idb:', ''));
+                if (blob) {
+                    const slides = document.querySelectorAll('.hero-slide');
+                    if (slides[idx]) {
+                        const v = slides[idx].querySelector('.hero-bg-video');
+                        if (v) {
+                            const bUrl = URL.createObjectURL(blob);
+                            v.src = bUrl;
+                            v.load();
+                        }
+                    }
+                }
+            }
+        });
 
         // Re-iniciar el objeto heroSlider para que use los nuevos slides
         setTimeout(() => {
