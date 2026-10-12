@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="assets/sm-op.css?v=3">
+    <link rel="stylesheet" href="assets/sm-op.css?v=4">
 </head>
 
 <body>
@@ -4189,6 +4189,7 @@
                         ctaSecondary: "Ver en catálogo",
                         ctaSecondaryLink: "catalogo",
                         image: "images/hero-slides/hero-1.jpg",
+                        video: "",
                         imgPositionY: "center",
                         imgPositionX: "center",
                         imgZoom: "100",
@@ -4210,6 +4211,7 @@
                         ctaSecondary: "Ver en catálogo",
                         ctaSecondaryLink: "catalogo",
                         image: "images/hero-slides/hero-2.jpg",
+                        video: "",
                         imgPositionY: "center",
                         imgPositionX: "center",
                         imgZoom: "100",
@@ -4231,6 +4233,7 @@
                         ctaSecondary: "Ver en catálogo",
                         ctaSecondaryLink: "catalogo",
                         image: "images/hero-slides/hero-3.jpg",
+                        video: "",
                         imgPositionY: "center",
                         imgPositionX: "center",
                         imgZoom: "100",
@@ -4320,10 +4323,42 @@
                     <div class="hero-editor-layout">
                         <!-- COLUMNA 1: CONTROLES DE EDICIÓN & AJUSTES -->
                         <div>
-                            <!-- FOTO & ENCUADRE -->
+                            <!-- VIDEO DE FONDO (OPCIONAL) -->
+                            <div class="hero-control-group" style="border: 1px solid rgba(56, 189, 248, 0.25); background: rgba(14, 165, 233, 0.05); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                                <div class="hero-control-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                    <span style="color:#38bdf8; font-weight:700;"><i class="fas fa-video"></i> Video de Fondo (Opcional)</span>
+                                    ${s.video ? '<span style="font-size:0.65rem; background:#0284c7; color:#fff; padding:2px 8px; border-radius:10px; font-weight:700;">VIDEO ACTIVO</span>' : '<span style="font-size:0.65rem; color:#94a3b8;">Sin video</span>'}
+                                </div>
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+                                    <div style="flex:1;">
+                                        <input type="text" class="form-input" id="hpVideoUrlInput-${i}" value="${s.video || ''}" placeholder="URL del video MP4/WebM o sube un archivo" oninput="updateHeroSlideField(${i}, 'video', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                    </div>
+                                    <label class="btn btn-primary btn-sm" style="cursor:pointer; display:flex; align-items:center; gap:6px; margin:0; padding:6px 12px; font-size:0.75rem; white-space:nowrap;" title="Sube video MP4 o WebM">
+                                        <i class="fas fa-cloud-arrow-up"></i> Subir Video
+                                        <input type="file" id="heroVideoFile-${i}" style="display:none" onchange="uploadHeroVideo(${i}, this)" accept="video/mp4,video/webm,video/quicktime,video/x-m4v">
+                                    </label>
+                                    ${s.video ? `
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="removeHeroVideo(${i})" title="Quitar video del slide" style="color:#ef4444; padding:6px 10px; font-size:0.75rem;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    ` : ''}
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                                    <small style="font-size:0.68rem; color:#94a3b8; display:block; line-height:1.35; flex:1;">
+                                        🎬 <em>Al terminar el video, se congelará suavemente en la <strong>Foto de Portada</strong> elegida abajo. No repite ni consume datos extra.</em>
+                                    </small>
+                                    ${s.video ? `
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="testHeroVideoEnd(${i})" style="font-size:0.68rem; padding:3px 8px; border:1px solid rgba(255,255,255,0.2);" title="Alterna entre reproducción y portada en la vista previa">
+                                        <i class="fas fa-eye"></i> Probar Portada
+                                    </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            <!-- FOTO DE PORTADA & ENCUADRE -->
                             <div class="hero-control-group">
                                 <div class="hero-control-header">
-                                    <span><i class="fas fa-camera"></i> Foto de Fondo & Encuadre</span>
+                                    <span><i class="fas fa-camera"></i> Foto de Portada (Poster / Cover) & Encuadre</span>
                                 </div>
                                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
                                     <div style="width:70px; height:50px; background:#000; border-radius:6px; overflow:hidden; position:relative; flex-shrink:0; border:1px solid rgba(255,255,255,0.2);">
@@ -4334,7 +4369,7 @@
                                         <input type="file" id="heroFile-${i}" style="display:none" onchange="uploadHeroImage(${i}, this)" accept="image/*">
                                     </div>
                                     <div style="flex:1;">
-                                        <input type="text" class="form-input" id="hpImgUrlInput-${i}" value="${img}" placeholder="URL de la imagen (o sube archivo WebP)" oninput="updateHeroSlideField(${i}, 'image', this.value)" style="font-size:0.75rem; padding:6px 10px;">
+                                        <input type="text" class="form-input" id="hpImgUrlInput-${i}" value="${img}" placeholder="URL de la imagen de portada (WebP)" oninput="updateHeroSlideField(${i}, 'image', this.value)" style="font-size:0.75rem; padding:6px 10px;">
                                     </div>
                                 </div>
 
@@ -4510,6 +4545,10 @@
 
                                 <!-- LIENZO HERO INTERACTIVO CON DISEÑO EJECUTIVO NISSAN/TOYOTA -->
                                 <div class="hero-preview-canvas" id="hpCanvas-${i}" data-align="${align}" style="background-image:url('${img}'); background-position:${bgPos}; background-size:${bgSize};">
+                                    ${s.video ? `
+                                    <div class="hero-video-wrap" id="hpVideoWrap-${i}" style="position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;">
+                                        <video class="hero-bg-video" id="hpVideoEl-${i}" src="${s.video}" autoplay muted loop playsinline poster="${img}" style="width:100%; height:100%; object-fit:cover; transition:opacity 0.8s ease;"></video>
+                                    </div>` : ''}
                                     <!-- CAPA DEGRADADO OSCURO -->
                                     <div class="hero-preview-overlay" id="hpOverlay-${i}" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%);"></div>
 
@@ -4612,6 +4651,27 @@
                 if (canvas) canvas.style.backgroundImage = `url('${value}')`;
                 const thumb = document.getElementById(`hpThumb-${index}`);
                 if (thumb) thumb.src = value;
+                const vEl = document.getElementById(`hpVideoEl-${index}`);
+                if (vEl) vEl.poster = value;
+            } else if (field === 'video') {
+                heroSlides[index].video = value;
+                const canvas = document.getElementById(`hpCanvas-${index}`);
+                if (canvas) {
+                    let vWrap = document.getElementById(`hpVideoWrap-${index}`);
+                    if (value) {
+                        const curImg = heroSlides[index].image || 'images/hero-slides/hero-1.jpg';
+                        if (!vWrap) {
+                            vWrap = document.createElement('div');
+                            vWrap.id = `hpVideoWrap-${index}`;
+                            vWrap.className = 'hero-video-wrap';
+                            vWrap.style.cssText = 'position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;';
+                            canvas.insertBefore(vWrap, canvas.firstChild);
+                        }
+                        vWrap.innerHTML = `<video class="hero-bg-video" id="hpVideoEl-${index}" src="${value}" autoplay muted loop playsinline poster="${curImg}" style="width:100%; height:100%; object-fit:cover; transition:opacity 0.8s ease;"></video>`;
+                    } else if (vWrap) {
+                        vWrap.remove();
+                    }
+                }
             } else if (field === 'overlayDarkness') {
                 const label = document.getElementById(`hpDarknessLabel-${index}`);
                 if (label) label.textContent = `${value}%`;
@@ -4761,6 +4821,7 @@
                 ctaSecondary: "Ver en catálogo",
                 ctaSecondaryLink: "catalogo",
                 image: "images/hero-slides/hero-1.jpg",
+                video: "",
                 imgPositionY: "center",
                 imgPositionX: "center",
                 imgZoom: "100",
@@ -4806,6 +4867,141 @@
             const inputUrl = document.getElementById(`hpImgUrlInput-${index}`);
             if (inputUrl) inputUrl.value = urlData.publicUrl;
             showToast('✓ Imagen de hero actualizada (WebP)', 'success');
+        };
+
+        // Captura automática de fotograma para portada WebP
+        function captureVideoPosterBlob(fileOrUrl, seekRatio = 0.9) {
+            return new Promise((resolve) => {
+                try {
+                    const v = document.createElement('video');
+                    v.muted = true;
+                    v.playsInline = true;
+                    v.crossOrigin = 'anonymous';
+                    const url = typeof fileOrUrl === 'string' ? fileOrUrl : URL.createObjectURL(fileOrUrl);
+                    v.src = url;
+                    v.onloadedmetadata = () => {
+                        const targetTime = v.duration > 1 ? Math.min(v.duration * seekRatio, v.duration - 0.2) : 0.5;
+                        v.currentTime = Math.max(0, targetTime);
+                    };
+                    v.onseeked = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            const w = Math.min(1920, v.videoWidth || 1280);
+                            const h = Math.round(w * ((v.videoHeight || 720) / (v.videoWidth || 1280)));
+                            canvas.width = w;
+                            canvas.height = h;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(v, 0, 0, w, h);
+                            canvas.toBlob((blob) => {
+                                if (typeof fileOrUrl !== 'string') URL.revokeObjectURL(url);
+                                resolve(blob);
+                            }, 'image/webp', 0.85);
+                        } catch(e) {
+                            if (typeof fileOrUrl !== 'string') URL.revokeObjectURL(url);
+                            resolve(null);
+                        }
+                    };
+                    v.onerror = () => {
+                        if (typeof fileOrUrl !== 'string') URL.revokeObjectURL(url);
+                        resolve(null);
+                    };
+                    setTimeout(() => resolve(null), 4500);
+                } catch(e) {
+                    resolve(null);
+                }
+            });
+        }
+
+        window.uploadHeroVideo = async (index, input) => {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+
+            // 1. Validar formato óptimo (MP4, WebM)
+            const validTypes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v'];
+            const isMatch = validTypes.includes(file.type) || file.name.match(/\.(mp4|webm|mov|m4v)$/i);
+            if (!isMatch) {
+                showToast('Formato no compatible. Por favor sube MP4 o WebM.', 'warning');
+                return;
+            }
+
+            // 2. Control de peso para optimización y velocidad
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+            if (file.size > 35 * 1024 * 1024) {
+                showToast(`El video pesa ${sizeMb} MB. Para mayor fluidez web recomendamos videos de 10-20 MB.`, 'warning');
+            }
+
+            showToast(`Procesando video (${sizeMb} MB)...`, 'info');
+
+            try {
+                // 3. Extracción automática de portada si el slide aún tiene portada por defecto
+                try {
+                    const posterBlob = await captureVideoPosterBlob(file);
+                    if (posterBlob && (!heroSlides[index].image || heroSlides[index].image.includes('hero-1.jpg') || heroSlides[index].image.includes('hero-2.jpg'))) {
+                        const posterFname = `hero-poster-${Date.now()}-${index}.webp`;
+                        const { data: pData, error: pErr } = await supabaseClient.storage.from('vehicle-images').upload(posterFname, posterBlob, {
+                            contentType: 'image/webp',
+                            cacheControl: '31536000'
+                        });
+                        if (!pErr) {
+                            const { data: pUrl } = supabaseClient.storage.from('vehicle-images').getPublicUrl(posterFname);
+                            if (pUrl?.publicUrl) {
+                                heroSlides[index].image = pUrl.publicUrl;
+                                updateHeroSlideField(index, 'image', pUrl.publicUrl);
+                                const pInput = document.getElementById(`hpImgUrlInput-${index}`);
+                                if (pInput) pInput.value = pUrl.publicUrl;
+                            }
+                        }
+                    }
+                } catch(frameErr) {
+                    console.warn('Frame capture skipped:', frameErr);
+                }
+
+                // 4. Subir video al almacenamiento Supabase con compresión HTTP
+                const ext = file.name.split('.').pop().toLowerCase() || 'mp4';
+                const fname = `hero-video-${Date.now()}-${index}.${ext}`;
+                const { data, error } = await supabaseClient.storage.from('vehicle-images').upload(fname, file, {
+                    contentType: file.type || 'video/mp4',
+                    cacheControl: '31536000'
+                });
+
+                if (error) {
+                    showToast('Error subiendo video: ' + error.message, 'error');
+                    return;
+                }
+
+                const { data: urlData } = supabaseClient.storage.from('vehicle-images').getPublicUrl(fname);
+                heroSlides[index].video = urlData.publicUrl;
+                updateHeroSlideField(index, 'video', urlData.publicUrl);
+                const vInput = document.getElementById(`hpVideoUrlInput-${index}`);
+                if (vInput) vInput.value = urlData.publicUrl;
+
+                showToast('✓ Video subido y configurado con éxito', 'success');
+                renderHeroSlides();
+            } catch(e) {
+                showToast('Error procesando video: ' + e.message, 'error');
+            }
+        };
+
+        window.removeHeroVideo = (index) => {
+            if (!heroSlides[index]) return;
+            heroSlides[index].video = '';
+            updateHeroSlideField(index, 'video', '');
+            renderHeroSlides();
+            showToast('Video removido del slide', 'info');
+        };
+
+        window.testHeroVideoEnd = (index) => {
+            const vEl = document.getElementById(`hpVideoEl-${index}`);
+            if (!vEl) return;
+            if (vEl.classList.contains('video-ended')) {
+                vEl.classList.remove('video-ended');
+                vEl.currentTime = 0;
+                vEl.play();
+                showToast('Reproduciendo video...', 'info');
+            } else {
+                vEl.classList.add('video-ended');
+                showToast('Visualizando imagen de portada (fin de video)', 'info');
+            }
         };
 
         window.updateShowroomPreview = function() {

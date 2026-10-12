@@ -237,13 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
         init() {
             if (!this.slides.length) return;
             this.createDots();
-            this.startAutoplay();
             this.prevBtn?.addEventListener('click', () => this.prev());
             this.nextBtn?.addEventListener('click', () => this.next());
+            if (this.slides[0]) {
+                this.playSlideMedia(this.slides[0]);
+            } else {
+                this.startAutoplay();
+            }
         },
 
         createDots() {
             if (!this.dotsContainer) return;
+            this.dotsContainer.innerHTML = '';
             this.slides.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.classList.add('hero-dot');
@@ -254,12 +259,56 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         goTo(index) {
-            this.slides[this.currentIndex].classList.remove('active');
-            this.dotsContainer.children[this.currentIndex]?.classList.remove('active');
+            const prevSlide = this.slides[this.currentIndex];
+            if (prevSlide) {
+                prevSlide.classList.remove('active');
+                const prevVideo = prevSlide.querySelector('.hero-bg-video');
+                if (prevVideo) {
+                    prevVideo.pause();
+                }
+            }
+            if (this.dotsContainer && this.dotsContainer.children[this.currentIndex]) {
+                this.dotsContainer.children[this.currentIndex].classList.remove('active');
+            }
+
             this.currentIndex = index;
-            this.slides[this.currentIndex].classList.add('active');
-            this.dotsContainer.children[this.currentIndex]?.classList.add('active');
-            this.resetAutoplay();
+            const curSlide = this.slides[this.currentIndex];
+            if (curSlide) {
+                curSlide.classList.add('active');
+                if (this.dotsContainer && this.dotsContainer.children[this.currentIndex]) {
+                    this.dotsContainer.children[this.currentIndex].classList.add('active');
+                }
+                this.playSlideMedia(curSlide);
+            }
+        },
+
+        playSlideMedia(slide) {
+            clearInterval(this.interval);
+            const video = slide.querySelector('.hero-bg-video');
+            if (video) {
+                video.classList.remove('video-ended');
+                video.currentTime = 0;
+                video.onended = () => {
+                    // Al finalizar el video, se oculta suavemente dejando la imagen de portada fija
+                    video.classList.add('video-ended');
+                    // Esperar 5s con la portada visible antes de cambiar automáticamente de slide
+                    clearInterval(this.interval);
+                    this.interval = setTimeout(() => {
+                        this.next();
+                    }, 5000);
+                };
+
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        // Si el navegador bloquea autoplay (p.ej. bajo consumo), mostrar la portada inmediatamente
+                        video.classList.add('video-ended');
+                        this.startAutoplay();
+                    });
+                }
+            } else {
+                this.startAutoplay();
+            }
         },
 
         next() {
@@ -273,12 +322,18 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         startAutoplay() {
+            clearInterval(this.interval);
             this.interval = setInterval(() => this.next(), this.delay);
         },
 
         resetAutoplay() {
             clearInterval(this.interval);
-            this.startAutoplay();
+            const curSlide = this.slides[this.currentIndex];
+            if (curSlide) {
+                this.playSlideMedia(curSlide);
+            } else {
+                this.startAutoplay();
+            }
         }
     };
 
@@ -850,8 +905,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const cleanKicker = (s.tag || s.kicker || 'SEMINUEVOS 2026').replace(/<[^>]*>/g, '').replace(/[|•].*$/, '').trim();
             const overlayStyle = s.overlayDarkness !== undefined ? `style="background: linear-gradient(90deg, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.75}) 35%, rgba(0,0,0,${darkVal * 0.25}) 65%, transparent 85%);"` : '';
 
+            const videoHtml = s.video ? `
+                <div class="hero-video-wrap">
+                    <video class="hero-bg-video" playsinline muted preload="metadata" poster="${heroBgImage}">
+                        <source src="${s.video}" type="video/mp4">
+                        <source src="${s.video}" type="video/webm">
+                    </video>
+                </div>
+            ` : '';
+
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
+                    ${videoHtml}
                     <div class="hero-overlay" ${overlayStyle}></div>
                     <div class="hero-content ${alignClass}">
                         <span class="hero-nissan-kicker">${cleanKicker}</span>
@@ -886,19 +951,14 @@ document.addEventListener('DOMContentLoaded', () => {
             heroSlider.slides = document.querySelectorAll('.hero-slide');
             heroSlider.currentIndex = 0;
             // Re-crear dots si es necesario
-            if (dotsContainer) {
-                dotsContainer.innerHTML = '';
-                heroSlider.slides.forEach((_, i) => {
-                    const dot = document.createElement('div');
-                    dot.classList.add('hero-dot');
-                    if (i === 0) dot.classList.add('active');
-                    dot.addEventListener('click', () => heroSlider.goTo(i));
-                    dotsContainer.appendChild(dot);
+            heroSlider.createDots();
+            // Asegurar que el primer slide sea visible e inicie su reproducción si tiene video
+            if (heroSlider.slides.length > 0) {
+                heroSlider.slides.forEach((sl, idx) => {
+                    if (idx === 0) sl.classList.add('active');
+                    else sl.classList.remove('active');
                 });
-            }
-            // Asegurar que el primer slide sea visible inmediatamente
-            if(heroSlider.slides.length > 0) {
-                heroSlider.slides[0].classList.add('active');
+                heroSlider.playSlideMedia(heroSlider.slides[0]);
             }
         }, 150);
     }

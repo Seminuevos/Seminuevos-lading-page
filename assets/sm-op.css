@@ -2573,6 +2573,26 @@
             display: flex;
             align-items: center;
         }
+        .hero-video-wrap {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .hero-bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .hero-bg-video.video-ended {
+            opacity: 0;
+        }
         .hero-preview-canvas.mobile {
             width: 320px;
             height: 480px;
