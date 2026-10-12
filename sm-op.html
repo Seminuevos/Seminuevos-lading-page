@@ -1056,6 +1056,70 @@
                             <!-- Slides con controles y Vista Previa en Vivo se cargarán aquí -->
                         </div>
                     </div>
+
+                    <!-- FOTO Y BADGE DEL SHOWROOM (PÁGINA NOSOTROS) -->
+                    <div class="settings-section" style="margin-top: 24px; padding: 24px; background: rgba(13, 20, 36, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
+                        <div style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px;">
+                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
+                                <i class="fas fa-warehouse" style="color: var(--accent);"></i> Showroom Oficial (Página Nosotros)
+                            </h3>
+                            <p style="font-size: 0.78rem; color: var(--text3); margin: 6px 0 0 0;">
+                                Modifica la fotografía principal del concesionario/showroom, la imagen de exhibición y el texto de la ubicación en la sección "Nosotros".
+                            </p>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 24px; align-items: start;">
+                            <!-- Controles -->
+                            <div>
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff;">Foto del Showroom (URL o Subir)</label>
+                                    <div style="display: flex; gap: 8px;">
+                                        <input type="text" class="form-input" id="sShowroomImg" placeholder="images/hero-slides/hero-1.jpg" style="flex: 1;">
+                                        <label class="btn btn-ghost" style="cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; padding: 0 14px; font-size: 0.8rem; margin: 0;">
+                                            <i class="fas fa-cloud-arrow-up"></i> Subir
+                                            <input type="file" id="showroomImgUpload" accept="image/*" style="display: none;" onchange="uploadShowroomImage(this)">
+                                        </label>
+                                    </div>
+                                    <small style="font-size: 0.7rem; color: var(--text3); margin-top: 6px; display: block;">
+                                        Puedes ingresar una URL directa o subir una foto desde tu equipo (se optimiza automáticamente a WebP).
+                                    </small>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff;">Texto del Badge Flotante (Ubicación)</label>
+                                    <input type="text" class="form-input" id="sShowroomBadge" placeholder="Showroom Porlamar, Isla de Margarita">
+                                    <small style="font-size: 0.7rem; color: var(--text3); margin-top: 6px; display: block;">
+                                        Texto que aparece en la píldora superior con el ícono de ubicación.
+                                    </small>
+                                </div>
+
+                                <div style="display: flex; gap: 10px; margin-top: 12px;">
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="resetShowroomDefaults()" style="font-size: 0.78rem;">
+                                        <i class="fas fa-rotate-left"></i> Restaurar Por Defecto
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Vista Previa en Vivo -->
+                            <div>
+                                <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: block;">
+                                    <i class="fas fa-eye" style="color: var(--accent);"></i> Vista Previa en Vivo (Página Nosotros)
+                                </label>
+                                <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); background: #080d1a; box-shadow: 0 12px 36px rgba(0,0,0,0.5); aspect-ratio: 16/10;">
+                                    <img id="showroomPreviewImg" src="images/hero-slides/hero-1.jpg" alt="Showroom Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='images/hero-slides/hero-1.jpg'">
+                                    <!-- Badge flotante de ubicación -->
+                                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(7, 12, 22, 0.88); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.14); padding: 6px 14px; border-radius: 999px; font-size: 0.72rem; color: #f8fafc; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                        <i class="fas fa-location-dot" style="color: #38bdf8;"></i> <span id="showroomPreviewBadgeText">Showroom Porlamar, Isla de Margarita</span>
+                                    </div>
+                                    <!-- Sello Mastertech -->
+                                    <div style="position: absolute; bottom: 12px; right: 12px; background: rgba(7, 12, 22, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(212, 160, 23, 0.35); padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; color: #d4a017; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                        <img src="images/logo-mastertech.png" alt="MasterTech" style="height: 18px;" onerror="this.style.display='none'">
+                                        <span>MASTERTECH<br>CERTIFIED</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button class="btn btn-primary" id="saveSettingsBtn" style="margin-top:20px;"><i
                             class="fas fa-save"></i> Guardar Configuración</button>
                 </div>
@@ -4097,6 +4161,16 @@
             document.getElementById('sDocVzla').value = map.calc_doc_vzla || 1000;
             document.getElementById('sServiceFeeSetting').value = map.calc_service_fee || 900;
 
+            if (document.getElementById('sShowroomImg')) {
+                document.getElementById('sShowroomImg').value = map.showroom_image || 'images/hero-slides/hero-1.jpg';
+            }
+            if (document.getElementById('sShowroomBadge')) {
+                document.getElementById('sShowroomBadge').value = map.showroom_badge_text || 'Showroom Porlamar, Isla de Margarita';
+            }
+            if (typeof updateShowroomPreview === 'function') {
+                updateShowroomPreview();
+            }
+
             if (map.hero_slides && Array.isArray(map.hero_slides) && map.hero_slides.length > 0) {
                 heroSlides = map.hero_slides;
                 renderHeroSlides();
@@ -4731,6 +4805,86 @@
             showToast('✓ Imagen de hero actualizada (WebP)', 'success');
         };
 
+        window.updateShowroomPreview = function() {
+            const imgEl = document.getElementById('showroomPreviewImg');
+            const badgeEl = document.getElementById('showroomPreviewBadgeText');
+            const val = document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg';
+            const badgeVal = document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita';
+            if (imgEl) imgEl.src = val;
+            if (badgeEl) badgeEl.textContent = badgeVal;
+        };
+
+        window.resetShowroomDefaults = function() {
+            const imgInput = document.getElementById('sShowroomImg');
+            const badgeInput = document.getElementById('sShowroomBadge');
+            if (imgInput) imgInput.value = 'images/hero-slides/hero-1.jpg';
+            if (badgeInput) badgeInput.value = 'Showroom Porlamar, Isla de Margarita';
+            updateShowroomPreview();
+            showToast('Valores de Showroom restaurados por defecto', 'info');
+        };
+
+        window.uploadShowroomImage = async function(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            showToast('Procesando y subiendo imagen de showroom...', 'info');
+
+            let uploadBlob = file;
+            let ext = 'webp';
+            let mime = 'image/webp';
+            let localUrl = null;
+
+            try {
+                const webpResult = await convertToWebP(file, 1920, 1080, 0.85);
+                uploadBlob = webpResult.blob;
+                ext = webpResult.extension || 'webp';
+                mime = webpResult.mimeType || 'image/webp';
+                localUrl = webpResult.dataUrl;
+            } catch (e) {
+                console.warn('Fallback webp convert showroom:', e);
+            }
+
+            const sbClient = window.supabaseClient || (typeof supabaseClient !== 'undefined' ? supabaseClient : null);
+            if (sbClient && sbClient.storage) {
+                const fname = `showroom-${Date.now()}.${ext}`;
+                const { data, error } = await sbClient.storage.from('vehicle-images').upload(fname, uploadBlob, {
+                    contentType: mime,
+                    cacheControl: '31536000'
+                });
+
+                if (!error) {
+                    const { data: urlData } = sbClient.storage.from('vehicle-images').getPublicUrl(fname);
+                    const publicUrl = urlData.publicUrl;
+                    const inputEl = document.getElementById('sShowroomImg');
+                    if (inputEl) inputEl.value = publicUrl;
+                    updateShowroomPreview();
+                    showToast('✓ Imagen de showroom subida exitosamente', 'success');
+                    return;
+                } else {
+                    console.warn('Supabase storage showroom upload error:', error.message);
+                }
+            }
+
+            // Fallback si no hay supabase storage o hubo error
+            if (localUrl) {
+                const inputEl = document.getElementById('sShowroomImg');
+                if (inputEl) inputEl.value = localUrl;
+                updateShowroomPreview();
+                showToast('✓ Imagen cargada localmente (WebP)', 'success');
+            } else {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const inputEl = document.getElementById('sShowroomImg');
+                    if (inputEl) inputEl.value = e.target.result;
+                    updateShowroomPreview();
+                    showToast('✓ Imagen cargada', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        document.getElementById('sShowroomImg')?.addEventListener('input', updateShowroomPreview);
+        document.getElementById('sShowroomBadge')?.addEventListener('input', updateShowroomPreview);
+
         document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
             const settings = {
                 whatsapp_number: document.getElementById('sWhatsapp').value,
@@ -4748,6 +4902,8 @@
                 calc_aduana: parseFloat(document.getElementById('sAduana').value),
                 calc_doc_vzla: parseFloat(document.getElementById('sDocVzla').value),
                 calc_service_fee: parseFloat(document.getElementById('sServiceFeeSetting').value),
+                showroom_image: document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg',
+                showroom_badge_text: document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita',
                 hero_slides: heroSlides
             };
             for (const [key, val] of Object.entries(settings)) {

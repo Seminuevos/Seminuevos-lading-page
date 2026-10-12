@@ -1087,9 +1087,9 @@
                 <!-- Columna Derecha: Escenario Fotográfico de Concesionario -->
                 <div class="dealer-showcase-frame">
                     <div class="dealer-showcase-img-wrap">
-                        <img src="images/hero-slides/hero-1.jpg" alt="Showroom Oficial SemiNuevo Autos" loading="eager">
-                        <div class="showcase-floating-badge">
-                            <i class="fas fa-location-dot" style="color: #38bdf8;"></i> Showroom Porlamar, Isla de Margarita
+                        <img id="showroomHeroImg" src="images/hero-slides/hero-1.jpg" alt="Showroom Oficial SemiNuevo Autos" loading="eager">
+                        <div class="showcase-floating-badge" id="showcaseBadge">
+                            <i class="fas fa-location-dot" style="color: #38bdf8;"></i> <span id="showcaseBadgeText">Showroom Porlamar, Isla de Margarita</span>
                         </div>
                         <div class="showcase-floating-seal">
                             <img src="images/logo-mastertech.png" alt="MasterTech Alliance" onerror="this.style.display='none'">
@@ -1100,6 +1100,30 @@
             </div>
         </div>
     </header>
+
+    <script>
+        (function() {
+            function applyShowroomData(settings) {
+                if (!settings) return;
+                if (settings.showroom_image) {
+                    const img = document.getElementById('showroomHeroImg');
+                    if (img) img.src = settings.showroom_image;
+                }
+                if (settings.showroom_badge_text) {
+                    const badge = document.getElementById('showcaseBadgeText');
+                    if (badge) badge.textContent = settings.showroom_badge_text;
+                }
+            }
+            try {
+                const cached = localStorage.getItem('sn_site_settings');
+                if (cached) applyShowroomData(JSON.parse(cached));
+            } catch(e) {}
+            fetch('/api/settings?_t=' + Date.now(), { cache: 'no-store' })
+                .then(r => r.json())
+                .then(res => { if (res && res.data) applyShowroomData(res.data); })
+                .catch(function(){});
+        })();
+    </script>
 
     <!-- ========================================== -->
     <!-- 2. RACK DE CIFRAS Y CREDENCIALES           -->

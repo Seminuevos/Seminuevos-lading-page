@@ -730,6 +730,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (map.hero_slides && map.hero_slides.length > 0) {
                 renderDynamicHero(map.hero_slides);
             }
+
+            if (map.showroom_image) {
+                const sImg = document.getElementById('showroomHeroImg') || document.querySelector('.dealer-showcase-img-wrap img');
+                if (sImg) sImg.src = map.showroom_image;
+            }
+            if (map.showroom_badge_text) {
+                const sBadgeText = document.getElementById('showcaseBadgeText');
+                if (sBadgeText) {
+                    sBadgeText.textContent = map.showroom_badge_text;
+                } else {
+                    const sBadge = document.getElementById('showcaseBadge') || document.querySelector('.showcase-floating-badge');
+                    if (sBadge) sBadge.innerHTML = `<i class="fas fa-location-dot" style="color: #38bdf8;"></i> ${map.showroom_badge_text}`;
+                }
+            }
         }
     }
 
