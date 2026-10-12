@@ -554,10 +554,10 @@ body::after {
 /* ===== HERO ===== */
 .hero {
     position: relative;
-    height: calc(100vh - 68px);
-    height: calc(100dvh - 68px);
-    min-height: 620px;
-    max-height: 880px;
+    height: calc(80vh - 68px);
+    height: calc(80dvh - 68px);
+    min-height: 520px;
+    max-height: 680px;
     margin-top: 68px;
     overflow: hidden;
 }
@@ -661,6 +661,51 @@ body::after {
     left: 7%;
     right: auto;
     text-align: left;
+}
+
+.hero-content.align-center {
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.hero-content.align-center .hero-nissan-finance {
+    align-items: center;
+}
+
+.hero-content.align-center .hero-nissan-stats-row {
+    justify-content: center;
+}
+
+.hero-content.align-center .hero-nissan-stat {
+    text-align: center;
+}
+
+.hero-content.align-center .hero-nissan-actions {
+    justify-content: center;
+}
+
+.hero-content.align-right {
+    left: auto;
+    right: 7%;
+    text-align: right;
+}
+
+.hero-content.align-right .hero-nissan-finance {
+    align-items: flex-end;
+}
+
+.hero-content.align-right .hero-nissan-stats-row {
+    justify-content: flex-end;
+}
+
+.hero-content.align-right .hero-nissan-stat {
+    text-align: right;
+}
+
+.hero-content.align-right .hero-nissan-actions {
+    justify-content: flex-end;
 }
 
 .hero-slide.active .hero-content {
@@ -6392,9 +6437,10 @@ img.mastertech-seal {
 @media (max-width: 992px) {
     .hero {
         margin-top: 68px;
-        height: calc(100vh - 68px);
-        height: calc(100dvh - 68px);
+        height: calc(80vh - 68px);
+        height: calc(80dvh - 68px);
         min-height: 480px;
+        max-height: 640px;
     }
 }
 
@@ -6411,14 +6457,15 @@ img.mastertech-seal {
     .hero {
         margin-top: 75px;
         height: auto;
-        min-height: 560px;
+        min-height: 540px;
     }
 }
 
 @media (max-height: 800px) and (min-width: 769px) {
     .hero {
-        min-height: 590px;
-        height: calc(100vh - 68px);
+        min-height: 520px;
+        height: calc(80vh - 68px);
+        max-height: 640px;
     }
     .hero-content {
         top: 46%;

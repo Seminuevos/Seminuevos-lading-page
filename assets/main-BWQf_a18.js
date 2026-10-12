@@ -811,20 +811,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             let specsHtml = '';
-            if (showPrice && (s.finalPrice || s.originalPrice)) {
+            const stat1Val = s.stat1Num || (s.finalPrice ? `$${fmt(s.finalPrice)}` : (s.originalPrice ? `$${fmt(s.originalPrice)}` : ''));
+            const stat1Lbl = s.stat1Label || 'Precio Especial';
+            const stat2Val = s.stat2Num || (s.km ? s.km : '');
+            const stat2Lbl = s.stat2Label || 'Recorrido';
+            const disclaimerText = s.disclaimer || 'Inspección de 150 puntos respaldada por Taller MasterTech.';
+
+            if (showPrice && (stat1Val || stat2Val)) {
                 specsHtml = `
                     <div class="hero-nissan-finance">
                         <div class="hero-nissan-stats-row">
+                            ${stat1Val ? `
                             <div class="hero-nissan-stat">
-                                <span class="hero-nissan-num">$${fmt(s.finalPrice || s.originalPrice)}</span>
-                                <span class="hero-nissan-label">Precio Especial</span>
-                            </div>
+                                <span class="hero-nissan-num">${stat1Val}</span>
+                                <span class="hero-nissan-label">${stat1Lbl}</span>
+                            </div>` : ''}
+                            ${stat2Val ? `
                             <div class="hero-nissan-stat">
-                                <span class="hero-nissan-num">${s.km || '0 KM'}</span>
-                                <span class="hero-nissan-label">Recorrido</span>
-                            </div>
+                                <span class="hero-nissan-num">${stat2Val}</span>
+                                <span class="hero-nissan-label">${stat2Lbl}</span>
+                            </div>` : ''}
                         </div>
-                        <div class="hero-nissan-disclaimer">Inspección de 150 puntos respaldada por Taller MasterTech.</div>
+                        <div class="hero-nissan-disclaimer"><i class="fas fa-shield-halved" style="color: #38bdf8; margin-right: 4px;"></i> ${disclaimerText}</div>
                     </div>
                 `;
             }
@@ -839,19 +847,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Re-crear el diseño premium oficial estilo Nissan
             const cleanTitle = (s.title || 'Vehículo Certificado').replace(/<[^>]*>/g, '').replace(/®/g, '').trim();
-            const cleanKicker = (s.tag || 'SEMINUEVOS 2026').replace(/<[^>]*>/g, '').replace(/[|•].*$/, '').trim();
+            const cleanKicker = (s.tag || s.kicker || 'SEMINUEVOS 2026').replace(/<[^>]*>/g, '').replace(/[|•].*$/, '').trim();
+            const overlayStyle = s.overlayDarkness !== undefined ? `style="background: linear-gradient(90deg, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.75}) 35%, rgba(0,0,0,${darkVal * 0.25}) 65%, transparent 85%);"` : '';
 
             html += `
                 <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
-                    <div class="hero-overlay"></div>
+                    <div class="hero-overlay" ${overlayStyle}></div>
                     <div class="hero-content ${alignClass}">
                         <span class="hero-nissan-kicker">${cleanKicker}</span>
                         <${isFirst ? 'h1' : 'p'} class="hero-nissan-title">
                             ${cleanTitle}<sup>®</sup>
                         </${isFirst ? 'h1' : 'p'}>
-                        <h2 class="hero-nissan-tagline">${s.subtitle || 'El crossover expresivo y vanguardista'}</h2>
+                        <h2 class="hero-nissan-tagline">${s.tagline || s.subtitle || 'El crossover expresivo y vanguardista'}</h2>
                         <p class="hero-nissan-desc">
-                            ${s.description || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.'}
+                            ${s.description || s.desc || 'Vehículo certificado con inspección pericial de 150 puntos MasterTech y entrega inmediata.'}
                         </p>
                         ${specsHtml}
                         <div class="hero-nissan-actions">

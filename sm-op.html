@@ -4512,12 +4512,12 @@
                                 </div>
 
                                 <!-- LIENZO HERO INTERACTIVO CON DISEÑO EJECUTIVO NISSAN/TOYOTA -->
-                                <div class="hero-preview-canvas" id="hpCanvas-${i}" style="background-image:url('${img}'); background-position:${bgPos}; background-size:${bgSize};">
+                                <div class="hero-preview-canvas" id="hpCanvas-${i}" data-align="${align}" style="background-image:url('${img}'); background-position:${bgPos}; background-size:${bgSize};">
                                     <!-- CAPA DEGRADADO OSCURO -->
                                     <div class="hero-preview-overlay" id="hpOverlay-${i}" style="background: linear-gradient(to top, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.4}) 50%, transparent 100%), linear-gradient(to right, rgba(0,0,0,${darkVal}) 0%, rgba(0,0,0,${darkVal * 0.3}) 60%, transparent 100%);"></div>
 
                                     <!-- CONTENIDO EDITORIAL DE LUJO -->
-                                    <div class="hero-preview-content" id="hpContent-${i}" style="text-align:${align};">
+                                    <div class="hero-preview-content align-${align}" id="hpContent-${i}" style="text-align:${align};">
                                         <!-- KICKER -->
                                         <span class="hero-nissan-kicker" id="hpKicker-${i}">
                                             <i class="fas fa-shield-halved"></i> <span>${kicker}</span>
@@ -4678,7 +4678,13 @@
             if (!heroSlides[index]) return;
             heroSlides[index].textAlign = align;
             const content = document.getElementById(`hpContent-${index}`);
-            if (content) content.style.textAlign = align;
+            if (content) {
+                content.style.textAlign = align;
+                content.className = `hero-preview-content align-${align}`;
+            }
+
+            const canvas = document.getElementById(`hpCanvas-${index}`);
+            if (canvas) canvas.setAttribute('data-align', align);
 
             const finance = document.getElementById(`hpFinance-${index}`);
             if (finance) finance.style.alignItems = align === 'center' ? 'center' : (align === 'right' ? 'flex-end' : 'flex-start');
