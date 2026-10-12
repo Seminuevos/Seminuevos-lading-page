@@ -556,8 +556,8 @@ body::after {
     position: relative;
     height: calc(100vh - 68px);
     height: calc(100dvh - 68px);
-    min-height: 580px;
-    max-height: 860px;
+    min-height: 620px;
+    max-height: 880px;
     margin-top: 68px;
     overflow: hidden;
 }
@@ -625,10 +625,10 @@ body::after {
 /* Hero Content — Official Automotive Showroom Style (Nissan / Pure Luxury) */
 .hero-content {
     position: absolute;
-    top: 50%;
+    top: 48%;
     transform: translateY(-50%);
     left: 7%;
-    max-width: 530px;
+    max-width: 580px;
     width: 90%;
     z-index: 10;
     padding: 0 !important;
@@ -730,6 +730,9 @@ body::after {
     line-height: 1.35;
     letter-spacing: -0.01em;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    max-width: 560px;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 .hero-description,
@@ -739,9 +742,11 @@ body::after {
     line-height: 1.5 !important;
     color: #CBD5E1 !important;
     margin-bottom: 12px !important;
-    max-width: 460px !important;
+    max-width: 560px !important;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
     font-weight: 400 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
 }
 
 @media (max-width: 768px) {
@@ -6410,12 +6415,53 @@ img.mastertech-seal {
     }
 }
 
-@media (max-height: 760px) and (min-width: 769px) {
+@media (max-height: 800px) and (min-width: 769px) {
     .hero {
-        min-height: 520px;
+        min-height: 590px;
+        height: calc(100vh - 68px);
     }
     .hero-content {
-        max-width: 500px;
+        top: 46%;
+        transform: translateY(-50%);
+        max-width: 560px;
+    }
+    .hero-title,
+    .hero-nissan-title {
+        font-size: clamp(1.9rem, 3.2vw, 2.7rem) !important;
+        margin-bottom: 4px !important;
+    }
+    .hero-tagline,
+    .hero-nissan-tagline {
+        font-size: 0.95rem !important;
+        margin-bottom: 4px !important;
+    }
+    .hero-description,
+    .hero-nissan-desc {
+        font-size: 0.82rem !important;
+        margin-bottom: 10px !important;
+        line-height: 1.42 !important;
+        max-width: 540px !important;
+    }
+    .hero-nissan-finance,
+    .hero-specs-row {
+        margin-bottom: 10px !important;
+    }
+    .hero-nissan-num {
+        font-size: 1.65rem !important;
+    }
+    .hero-nissan-disclaimer {
+        margin-top: 4px !important;
+        font-size: 0.7rem !important;
+    }
+    .hero-nissan-actions {
+        gap: 10px !important;
+    }
+    .btn-nissan-white,
+    .btn-hero-deal,
+    .btn-hero-primary,
+    .btn-nissan-link {
+        padding: 9px 18px !important;
+        font-size: 0.8rem !important;
     }
 }
 
