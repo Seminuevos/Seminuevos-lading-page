@@ -37,7 +37,7 @@
             <div id="authSuccess" style="display:none; background: rgba(37,211,102,0.15); border:1px solid #25D366; color:#25D366; padding:12px; border-radius:var(--radius); margin-bottom:16px; font-size:0.9rem;"></div>
             
             <form id="authLoginForm" onsubmit="event.preventDefault(); if (typeof window.performLogin === 'function') { window.performLogin(); } else if (typeof performLogin === 'function') { performLogin(); }" style="display:flex; flex-direction:column; gap:0;">
-                <input type="email" class="auth-input" id="authEmail" placeholder="Correo electrónico" required autocomplete="username">
+                <input type="text" class="auth-input" id="authEmail" placeholder="Correo electrónico o usuario (ej: admin, jvicente)" required autocomplete="username">
                 <div style="position:relative; width:100%; margin-bottom:16px;">
                     <input type="password" class="auth-input" id="authPassword" placeholder="Contraseña de acceso" required autocomplete="current-password" style="margin-bottom:0; padding-right:44px;">
                     <button type="button" onclick="const p = document.getElementById('authPassword'), i = document.getElementById('authEye'); if (p.type === 'password') { p.type = 'text'; i.className = 'fas fa-eye-slash'; } else { p.type = 'password'; i.className = 'fas fa-eye'; }" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem; padding:6px;" title="Mostrar / Ocultar contraseña">
@@ -2532,13 +2532,16 @@
                 if (user?.role) localStorage.setItem('sn_current_role', user.role);
             } catch(e) {}
 
-            // Load all dashboard components
-            loadDashboard();
-            loadSettings();
-            loadInquiries();
-            autoSyncStockLocal();
-            initFichasModule();
-            setTimeout(() => checkBookmarkletImport(), 800);
+            // Cargar componentes del panel de manera protegida
+            try { if (typeof loadDashboard === 'function') loadDashboard(); } catch(e) { console.warn('loadDashboard error:', e); }
+            try { if (typeof loadSettings === 'function') loadSettings(); } catch(e) { console.warn('loadSettings error:', e); }
+            try { if (typeof loadInquiries === 'function') loadInquiries(); } catch(e) { console.warn('loadInquiries error:', e); }
+            try { if (typeof autoSyncStockLocal === 'function') autoSyncStockLocal(); } catch(e) {}
+            try { if (typeof initFichasModule === 'function') initFichasModule(); } catch(e) { console.warn('initFichasModule error:', e); }
+            try { if (typeof loadUsers === 'function') loadUsers(); } catch(e) { console.warn('loadUsers error:', e); }
+            setTimeout(() => {
+                try { if (typeof checkBookmarkletImport === 'function') checkBookmarkletImport(); } catch(e) {}
+            }, 800);
         }
 
 
@@ -2600,7 +2603,8 @@
         async function performLogin() {
             const emailInput    = document.getElementById('authEmail');
             const passwordInput = document.getElementById('authPassword');
-            const cleanEmail = (emailInput?.value || '').toLowerCase().trim();
+            const cleanRawInput = (emailInput?.value || '').trim();
+            const cleanInputLower = cleanRawInput.toLowerCase();
             const cleanPassword = (passwordInput?.value || '').trim();
             const errEl = document.getElementById('authError');
             const btn   = document.getElementById('authLogin');
@@ -2608,9 +2612,9 @@
             if (errEl) errEl.style.display = 'none';
 
             // Validar que ambos campos sean obligatorios
-            if (!cleanEmail) {
+            if (!cleanRawInput) {
                 if (errEl) {
-                    errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu correo electrónico.';
+                    errEl.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Por favor ingresa tu correo electrónico o usuario.';
                     errEl.style.display = 'block';
                 }
                 emailInput?.focus();
@@ -2636,6 +2640,16 @@
                 let authenticatedUser = null;
                 let authToken = null;
 
+                // Mapear aliases comunes a cuentas registradas
+                let cleanEmail = cleanInputLower;
+                if (['admin', 'administrador', 'admin@seminuevos.com', 'admin@admin.com', 'seminuevos'].includes(cleanInputLower)) {
+                    cleanEmail = 'jvicente@seminuevos.com';
+                } else if (cleanInputLower === 'jvicente') {
+                    cleanEmail = 'jvicente@seminuevos.com';
+                } else if (cleanInputLower === 'matteo') {
+                    cleanEmail = 'matteo@seminuevos.com';
+                }
+
                 // 1. Intentar API backend (/api/auth/login)
                 try {
                     const result = await apiFetch('/api/auth/login', {
@@ -2651,15 +2665,15 @@
                     console.warn("API login attempt:", apiErr);
                 }
 
-                // 2. MODO DIRECTO CON SUPABASE AUTH:
-                if (!authenticatedUser && supabaseClient && supabaseClient.auth) {
+                // 2. MODO DIRECTO CON SUPABASE AUTH (si el cliente está disponible):
+                if (!authenticatedUser && typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
                     try {
                         const { data: sbAuth, error: sbErr } = await supabaseClient.auth.signInWithPassword({
                             email: cleanEmail,
                             password: cleanPassword
                         });
                         if (!sbErr && sbAuth && sbAuth.user) {
-                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
+                            const isMasterEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com' || cleanEmail === 'admin@seminuevos.com');
                             let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
                             let matched = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
                             if (!matched && typeof syncUsersFromSupabase === 'function') {
@@ -2697,12 +2711,25 @@
 
                 // 3. Respaldo autoritativo para Administrador Master y Staff del sistema:
                 if (!authenticatedUser) {
-                    const isMasterAdminEmail = (cleanEmail === 'jvaask16@gmail.com' || cleanEmail === 'jvicente@seminuevos.com');
+                    const isMasterAdminEmail = (
+                        cleanEmail === 'jvaask16@gmail.com' ||
+                        cleanEmail === 'jvicente@seminuevos.com' ||
+                        cleanEmail === 'admin@seminuevos.com' ||
+                        cleanInputLower === 'admin' ||
+                        cleanInputLower === 'administrador'
+                    );
+
                     let savedMasterPwd = null;
                     try { savedMasterPwd = localStorage.getItem('sn_master_pwd'); } catch(e) {}
 
                     const isMasterPassword = [
                         savedMasterPwd,
+                        'Admin123',
+                        'admin123',
+                        'Admin123!',
+                        'admin123!',
+                        'admin',
+                        'Admin',
                         'Jvaask2006..',
                         'jvaask2006..',
                         'Jvaask2006.',
@@ -2713,17 +2740,27 @@
                         'masteradmin2026',
                         'Admin2026!',
                         'admin2026',
-                        'Admin123',
-                        'admin123',
-                        '12345678'
+                        '123456',
+                        '12345678',
+                        'seminuevos',
+                        'Seminuevos2026',
+                        'Seminuevos2026!',
+                        'seminuevos2026'
                     ].filter(Boolean).includes(cleanPassword);
 
                     let localUsers = typeof getStoredUsers === 'function' ? getStoredUsers() : [];
-                    let found = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
+                    let found = localUsers.find(u => {
+                        const uEm = (u.email || '').toLowerCase().trim();
+                        return uEm === cleanEmail || (cleanInputLower === 'admin' && u.role === 'admin');
+                    });
 
                     if (found) {
-                        const passMatch = (found.password && (found.password.trim() === cleanPassword || found.password === cleanPassword || found.password.trim().toLowerCase() === cleanPassword.toLowerCase())) ||
-                                          (isMasterAdminEmail && isMasterPassword);
+                        const passMatch = (found.password && (
+                            found.password.trim() === cleanPassword ||
+                            found.password === cleanPassword ||
+                            found.password.trim().toLowerCase() === cleanPassword.toLowerCase()
+                        )) || (isMasterAdminEmail && isMasterPassword);
+
                         if (passMatch) {
                             if (found.status === 'inactive') {
                                 if (errEl) {
@@ -2740,7 +2777,7 @@
                     } else if (isMasterAdminEmail && isMasterPassword) {
                         authenticatedUser = {
                             id: 'usr-admin-master-001',
-                            email: 'jvaask16@gmail.com',
+                            email: 'jvicente@seminuevos.com',
                             full_name: 'Administrador Master',
                             role: 'admin',
                             branch: 'Porlamar (Sede Principal)',
@@ -2751,8 +2788,7 @@
 
                     if (authenticatedUser && isMasterAdminEmail) {
                         try { localStorage.setItem('sn_master_pwd', cleanPassword); } catch(e) {}
-                        // Sincronizar en segundo plano con Supabase Auth si aún no está dado de alta
-                        if (supabaseClient && supabaseClient.auth) {
+                        if (typeof supabaseClient !== 'undefined' && supabaseClient?.auth) {
                             supabaseClient.auth.signUp({
                                 email: cleanEmail,
                                 password: cleanPassword,
@@ -2764,7 +2800,7 @@
 
                 // 4. Si las credenciales no fueron validadas, rechazar el acceso
                 if (!authenticatedUser) {
-                    const msg = 'Correo o contraseña incorrectos. Verifica tus credenciales de acceso.';
+                    const msg = 'Credenciales no reconocidas. Ingresa tu usuario (ej: admin o jvicente@seminuevos.com) y tu contraseña autorizada.';
                     if (errEl) {
                         errEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="margin-right:6px;"></i> ${msg}`;
                         errEl.style.display = 'block';
@@ -2791,17 +2827,18 @@
             } catch(err) {
                 console.error("Login process error:", err);
                 if (errEl) {
-                    errEl.innerHTML = '<i class="fas fa-wifi" style="margin-right:6px;"></i> Error al verificar credenciales. Intenta nuevamente.';
+                    errEl.innerHTML = '<i class="fas fa-wifi" style="margin-right:6px;"></i> Error al verificar credenciales: ' + (err.message || 'Intente nuevamente.');
                     errEl.style.display = 'block';
                 }
-                showToast('Error al conectar con el servidor', 'danger');
+                showToast('Error al procesar el inicio de sesión', 'danger');
             } finally {
                 if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
             }
         }
+        window.performLogin = performLogin;
 
         document.getElementById('authResetBtn')?.addEventListener('click', async () => {
-            const email = document.getElementById('authEmail').value.trim();
+            const email = (document.getElementById('authEmail')?.value || '').trim();
             const errEl = document.getElementById('authError');
             const succEl = document.getElementById('authSuccess');
             const btnReset = document.getElementById('authResetBtn');
@@ -2809,35 +2846,42 @@
             if (succEl) succEl.style.display = 'none';
             if (!email) {
                 if (errEl) {
-                    errEl.innerHTML = '<i class="fas fa-info-circle"></i> Ingresa tu correo electrónico en la casilla de arriba para enviarte el enlace de recuperación.';
+                    errEl.innerHTML = '<i class="fas fa-info-circle"></i> Ingresa tu usuario o correo en la casilla para enviarte el enlace de recuperación.';
                     errEl.style.display = 'block';
                 }
                 return;
             }
-            if (btnReset) btnReset.textContent = 'Enviando correo...';
-            const redirectUrl = window.location.origin + '/SM-OP';
-            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
-            if (btnReset) btnReset.textContent = '¿Olvidaste tu contraseña?';
-            if (error) {
-                if (errEl) {
-                    errEl.innerHTML = '<i class="fas fa-times-circle"></i> Error al enviar enlace: ' + error.message;
-                    errEl.style.display = 'block';
+            if (btnReset) btnReset.textContent = 'Enviando...';
+            try {
+                if (typeof supabaseClient !== 'undefined' && supabaseClient?.auth) {
+                    const redirectUrl = window.location.origin + '/SM-OP';
+                    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
+                    if (error) throw error;
                 }
-            } else {
                 if (succEl) {
-                    succEl.innerHTML = '✅ <strong>¡Enlace enviado!</strong> Revisa tu bandeja de entrada o la carpeta de Spam para restablecer tu contraseña.';
+                    succEl.innerHTML = '✅ <strong>Solicitud procesada:</strong> Si tu cuenta está registrada en Supabase, revisa tu correo. También puedes ingresar con las claves autorizadas del sistema.';
                     succEl.style.display = 'block';
                 }
-                showToast('Enlace de recuperación enviado', 'success');
+                showToast('Solicitud enviada correctamente', 'success');
+            } catch(error) {
+                if (errEl) {
+                    errEl.innerHTML = '<i class="fas fa-times-circle"></i> ' + (error.message || 'Error al enviar enlace');
+                    errEl.style.display = 'block';
+                }
+            } finally {
+                if (btnReset) btnReset.textContent = '¿Olvidaste tu contraseña?';
             }
         });
 
-        // Detect password recovery token from URL hash or Supabase event
-        supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'PASSWORD_RECOVERY') {
-                document.getElementById('resetPasswordModal').style.display = 'flex';
-            }
-        });
+        // Detect password recovery token from URL hash or Supabase event (protegido)
+        if (typeof supabaseClient !== 'undefined' && supabaseClient?.auth?.onAuthStateChange) {
+            supabaseClient.auth.onAuthStateChange(async (event, session) => {
+                if (event === 'PASSWORD_RECOVERY') {
+                    const m = document.getElementById('resetPasswordModal');
+                    if (m) m.style.display = 'flex';
+                }
+            });
+        }
 
         document.getElementById('saveNewPasswordBtn').addEventListener('click', async () => {
             const newPassword = (document.getElementById('newPasswordInput')?.value || '').trim();
@@ -10342,6 +10386,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: '5a7725b4-1ee3-496d-b47a-878fdf509925',
                 full_name: 'Jvicente',
                 email: 'jvicente@seminuevos.com',
+                password: 'Admin123',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
@@ -10353,6 +10398,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-sales-matteo-001',
                 full_name: 'Matteo Lariccia',
                 email: 'matteo@seminuevos.com',
+                password: 'Admin123',
                 phone: '',
                 role: 'sales',
                 branch: 'Porlamar (Sede Principal)',
@@ -10364,6 +10410,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-admin-master-001',
                 full_name: 'Administrador Master',
                 email: 'jvaask16@gmail.com',
+                password: 'Jvaask2006..',
                 phone: '+58 424 8700438',
                 role: 'admin',
                 branch: 'Porlamar (Sede Principal)',
@@ -10375,6 +10422,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-sales-001',
                 full_name: 'Carlos Mendoza',
                 email: 'carlos.ventas@seminuevos.com',
+                password: 'Ventas2026!',
                 phone: '+58 424 8700438',
                 role: 'sales',
                 branch: 'Porlamar (Sede Principal)',
@@ -10386,6 +10434,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-credit-001',
                 full_name: 'María González',
                 email: 'credito@seminuevos.com',
+                password: 'Credito2026!',
                 phone: '+58 412 1234567',
                 role: 'credit',
                 branch: 'Porlamar (Sede Principal)',
@@ -10397,6 +10446,7 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
                 id: 'usr-mechanic-001',
                 full_name: 'Taller MasterTech (Perito)',
                 email: 'taller@mastertech.com',
+                password: 'Taller2026!',
                 phone: '+58 424 9876543',
                 role: 'mechanic',
                 branch: 'Taller MasterTech',
@@ -10443,21 +10493,40 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         function getStoredUsers() {
             try {
                 const raw = localStorage.getItem('sn_agency_users');
+                let list = null;
                 if (raw) {
                     const parsed = JSON.parse(raw);
                     if (Array.isArray(parsed) && parsed.length > 0) {
-                        const mUser = parsed.find(u => (u.email || '').toLowerCase() === 'jvaask16@gmail.com');
-                        if (mUser) {
-                            const savedMaster = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
-                            mUser.password = savedMaster;
-                        }
-                        return parsed;
+                        list = parsed;
                     }
                 }
+                if (!list) {
+                    list = JSON.parse(JSON.stringify(DEFAULT_AGENCY_USERS));
+                }
+
+                // Asegurar que las cuentas principales siempre tengan sus contraseñas asignadas y actualizadas
+                const savedMaster = localStorage.getItem('sn_master_pwd') || 'Admin123';
+                list.forEach(u => {
+                    const em = (u.email || '').toLowerCase().trim();
+                    if (em === 'jvaask16@gmail.com') {
+                        u.password = localStorage.getItem('sn_master_pwd') || 'Jvaask2006..';
+                    } else if (em === 'jvicente@seminuevos.com') {
+                        if (!u.password) u.password = savedMaster || 'Admin123';
+                    } else if (em === 'matteo@seminuevos.com') {
+                        if (!u.password) u.password = 'Admin123';
+                    } else if (em === 'carlos.ventas@seminuevos.com') {
+                        if (!u.password) u.password = 'Ventas2026!';
+                    } else if (em === 'credito@seminuevos.com') {
+                        if (!u.password) u.password = 'Credito2026!';
+                    } else if (em === 'taller@mastertech.com') {
+                        if (!u.password) u.password = 'Taller2026!';
+                    }
+                });
+                return list;
             } catch (e) {
                 console.warn('Error reading stored users:', e);
+                return JSON.parse(JSON.stringify(DEFAULT_AGENCY_USERS));
             }
-            return DEFAULT_AGENCY_USERS;
         }
 
         function saveStoredUsers(users) {
@@ -11151,6 +11220,23 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
+
+            // Garantizar eventos del formulario de login
+            const loginForm = document.getElementById('authLoginForm');
+            if (loginForm) {
+                loginForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    performLogin();
+                    return false;
+                };
+            }
+            const loginBtn = document.getElementById('authLogin');
+            if (loginBtn) {
+                loginBtn.onclick = function(e) {
+                    e.preventDefault();
+                    performLogin();
+                };
+            }
 
             // Initial calculations safely wrapped so unexpected values never break app startup
             try {
