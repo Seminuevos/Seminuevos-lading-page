@@ -2690,7 +2690,7 @@ body::after {
     gap: 8px !important;
     padding: 10px 14px !important;
     border-radius: 999px !important;
-    background: #090d16;
+    background: #F8FAFC !important;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
@@ -2722,72 +2722,78 @@ body::after {
 
 /* Option 1: Cyan Outline Pill (Grado 1) */
 .repair-pill-item.pill-cyan {
-    border: 1.5px solid #38bdf8 !important;
+    border: 1.5px solid #0284C7 !important;
+    background: #F0F9FF !important;
 }
 
 .repair-pill-item.pill-cyan .pill-icon-box {
-    background: rgba(56, 189, 248, 0.15) !important;
+    background: rgba(2, 132, 199, 0.15) !important;
 }
 
 .repair-pill-item.pill-cyan .pill-icon {
-    color: #38bdf8 !important;
-    font-size: 0.72rem;
+    color: #0284C7 !important;
+    font-size: 0.76rem;
 }
 
 .repair-pill-item.pill-cyan .pill-title {
-    color: #f8fafc !important;
+    color: #0369A1 !important;
+    font-weight: 700 !important;
 }
 
 .repair-pill-item.pill-cyan:hover {
-    background: rgba(56, 189, 248, 0.18) !important;
-    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+    background: #E0F2FE !important;
+    border-color: #0284C7 !important;
+    box-shadow: 0 2px 10px rgba(2, 132, 199, 0.2) !important;
 }
 
 /* Checked State for Cyan Pill */
 .repair-pill-item.pill-cyan:has(.repair-checkbox-hidden:checked),
 .repair-pill-item.pill-cyan.checked {
-    background: #38bdf8 !important;
-    border-color: #38bdf8 !important;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important;
+    background: #0284C7 !important;
+    border-color: #0284C7 !important;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
 }
 
 .repair-pill-item.pill-cyan:has(.repair-checkbox-hidden:checked) .pill-title,
 .repair-pill-item.pill-cyan.checked .pill-title {
-    color: #070a12 !important;
+    color: #FFFFFF !important;
     font-weight: 800 !important;
 }
 
 .repair-pill-item.pill-cyan:has(.repair-checkbox-hidden:checked) .pill-icon-box,
 .repair-pill-item.pill-cyan.checked .pill-icon-box {
-    background: rgba(7, 10, 18, 0.25) !important;
+    background: rgba(255, 255, 255, 0.25) !important;
 }
 
 .repair-pill-item.pill-cyan:has(.repair-checkbox-hidden:checked) .pill-icon,
 .repair-pill-item.pill-cyan.checked .pill-icon {
-    color: #070a12 !important;
+    color: #FFFFFF !important;
 }
 
 /* Option 2: Royal Blue Outline Pill (Grado 2) */
 .repair-pill-item.pill-blue {
     border: 1.5px solid #2563EB !important;
+    background: #EFF6FF !important;
 }
 
 .repair-pill-item.pill-blue .pill-icon-box {
-    background: rgba(37, 99, 235, 0.18) !important;
+    background: rgba(37, 99, 235, 0.15) !important;
 }
 
 .repair-pill-item.pill-blue .pill-icon {
     color: #2563EB !important;
-    font-size: 0.72rem;
+    font-size: 0.76rem;
 }
 
 .repair-pill-item.pill-blue .pill-title {
-    color: #f8fafc !important;
+    color: #1D4ED8 !important;
+    font-weight: 700 !important;
 }
 
 .repair-pill-item.pill-blue:hover {
-    background: rgba(37, 99, 235, 0.2) !important;
-    box-shadow: 0 0 14px rgba(37, 99, 235, 0.4) !important;
+    background: #DBEAFE !important;
+    border-color: #2563EB !important;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2) !important;
 }
 
 /* Checked State for Blue Pill */
@@ -2795,12 +2801,12 @@ body::after {
 .repair-pill-item.pill-blue.checked {
     background: #2563EB !important;
     border-color: #2563EB !important;
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.6) !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
 }
 
 .repair-pill-item.pill-blue:has(.repair-checkbox-hidden:checked) .pill-title,
 .repair-pill-item.pill-blue.checked .pill-title {
-    color: #ffffff !important;
+    color: #FFFFFF !important;
     font-weight: 800 !important;
 }
 
@@ -2811,14 +2817,14 @@ body::after {
 
 .repair-pill-item.pill-blue:has(.repair-checkbox-hidden:checked) .pill-icon,
 .repair-pill-item.pill-blue.checked .pill-icon {
-    color: #ffffff !important;
+    color: #FFFFFF !important;
 }
 
 .pill-title {
     font-family: var(--font-body);
-    font-size: 0.74rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #f8fafc;
+    color: #0F172A;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -4271,18 +4277,20 @@ body::after {
 
 .calculator-legal-notice {
     margin-top: var(--space-6);
-    padding: var(--space-4) var(--space-5);
-    background: rgba(255, 180, 171, 0.06);
-    border: 1px solid rgba(255, 180, 171, 0.15);
+    padding: 14px 20px;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
     border-radius: var(--radius-md);
-    color: var(--error);
-    font-size: 0.82rem;
-    line-height: 1.7;
+    color: #92400E;
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.6;
     text-align: center;
 }
 
 .calculator-legal-notice i {
     margin-right: var(--space-2);
+    color: #D97706;
 }
 
 /* ===== ABOUT INTRO (after hero) ===== */
