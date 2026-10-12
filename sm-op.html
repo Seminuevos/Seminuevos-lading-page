@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="assets/sm-op.css?v=4">
+    <link rel="stylesheet" href="assets/sm-op.css?v=5">
 </head>
 
 <body>
@@ -1035,10 +1035,10 @@
                     </div>
 
                     <!-- GESTIÓN DE HERO CON EDITOR Y VISTA PREVIA EN VIVO -->
-                    <div class="settings-section" style="margin-top: 24px; padding: 24px; background: rgba(13, 20, 36, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; flex-wrap: wrap; gap: 12px;">
+                    <div class="settings-section" style="margin-top: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px; flex-wrap: wrap; gap: 12px;">
                             <div>
-                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
+                                <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
                                     <i class="fas fa-images" style="color: var(--accent);"></i> Gestión de Hero (Slider Principal)
                                 </h3>
                                 <p style="font-size: 0.78rem; color: var(--text3); margin: 6px 0 0 0;">
@@ -1055,9 +1055,9 @@
                     </div>
 
                     <!-- FOTO Y BADGE DEL SHOWROOM (PÁGINA NOSOTROS) -->
-                    <div class="settings-section" style="margin-top: 24px; padding: 24px; background: rgba(13, 20, 36, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px;">
-                        <div style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px;">
-                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
+                    <div class="settings-section" style="margin-top: 24px;">
+                        <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
+                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
                                 <i class="fas fa-warehouse" style="color: var(--accent);"></i> Showroom Oficial (Página Nosotros)
                             </h3>
                             <p style="font-size: 0.78rem; color: var(--text3); margin: 6px 0 0 0;">
@@ -1069,7 +1069,7 @@
                             <!-- Controles -->
                             <div>
                                 <div class="form-group" style="margin-bottom: 16px;">
-                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff;">Foto del Showroom (URL o Subir)</label>
+                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text);">Foto del Showroom (URL o Subir)</label>
                                     <div style="display: flex; gap: 8px;">
                                         <input type="text" class="form-input" id="sShowroomImg" placeholder="images/hero-slides/hero-1.jpg" style="flex: 1;">
                                         <label class="btn btn-ghost" style="cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; padding: 0 14px; font-size: 0.8rem; margin: 0;">
@@ -1083,7 +1083,7 @@
                                 </div>
 
                                 <div class="form-group" style="margin-bottom: 16px;">
-                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff;">Texto del Badge Flotante (Ubicación)</label>
+                                    <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text);">Texto del Badge Flotante (Ubicación)</label>
                                     <input type="text" class="form-input" id="sShowroomBadge" placeholder="Showroom Porlamar, Isla de Margarita">
                                     <small style="font-size: 0.7rem; color: var(--text3); margin-top: 6px; display: block;">
                                         Texto que aparece en la píldora superior con el ícono de ubicación.
@@ -1099,10 +1099,10 @@
 
                             <!-- Vista Previa en Vivo -->
                             <div>
-                                <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: block;">
+                                <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 10px; display: block;">
                                     <i class="fas fa-eye" style="color: var(--accent);"></i> Vista Previa en Vivo (Página Nosotros)
                                 </label>
-                                <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); background: #080d1a; box-shadow: 0 12px 36px rgba(0,0,0,0.5); aspect-ratio: 16/10;">
+                                <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1.5px solid var(--border); background: #080d1a; box-shadow: 0 12px 36px rgba(0,0,0,0.15); aspect-ratio: 16/10;">
                                     <img id="showroomPreviewImg" src="images/hero-slides/hero-1.jpg" alt="Showroom Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='images/hero-slides/hero-1.jpg'">
                                     <!-- Badge flotante de ubicación -->
                                     <div style="position: absolute; top: 12px; left: 12px; background: rgba(7, 12, 22, 0.88); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.14); padding: 6px 14px; border-radius: 999px; font-size: 0.72rem; color: #f8fafc; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
@@ -4295,12 +4295,12 @@
                 return `
                 <div class="hero-slide-editor-card" id="heroSlideCard-${i}">
                     <!-- HEADER BAR -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--border); padding-bottom:14px; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <span style="background:var(--accent); color:#000; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:6px; font-family:'Unbounded',sans-serif;">
+                            <span style="background:var(--accent); color:#ffffff; font-size:0.75rem; font-weight:800; padding:5px 12px; border-radius:6px; font-family:'Unbounded',sans-serif; letter-spacing:0.5px;">
                                 SLIDE #${i + 1}
                             </span>
-                            <span style="font-weight:700; color:#fff; font-size:0.95rem;" id="hpHeaderTitle-${i}">
+                            <span style="font-weight:800; color:var(--text); font-size:1.05rem;" id="hpHeaderTitle-${i}">
                                 ${title}
                             </span>
                         </div>
@@ -4324,10 +4324,10 @@
                         <!-- COLUMNA 1: CONTROLES DE EDICIÓN & AJUSTES -->
                         <div>
                             <!-- VIDEO DE FONDO (OPCIONAL) -->
-                            <div class="hero-control-group" style="border: 1px solid rgba(56, 189, 248, 0.25); background: rgba(14, 165, 233, 0.05); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div class="hero-control-group" style="border: 1.5px solid #BAE6FD; background: #F0F9FF; border-radius: 12px; padding: 14px; margin-bottom: 12px;">
                                 <div class="hero-control-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                                    <span style="color:#38bdf8; font-weight:700;"><i class="fas fa-video"></i> Video de Fondo (Opcional)</span>
-                                    ${s.video ? '<span style="font-size:0.65rem; background:#0284c7; color:#fff; padding:2px 8px; border-radius:10px; font-weight:700;">VIDEO ACTIVO</span>' : '<span style="font-size:0.65rem; color:#94a3b8;">Sin video</span>'}
+                                    <span style="color:#0284c7; font-weight:800;"><i class="fas fa-video"></i> Video de Fondo (Opcional)</span>
+                                    ${s.video ? '<span style="font-size:0.65rem; background:#0284c7; color:#fff; padding:3px 9px; border-radius:10px; font-weight:700;">VIDEO ACTIVO</span>' : '<span style="font-size:0.65rem; color:#64748b;">Sin video</span>'}
                                 </div>
                                 <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
                                     <div style="flex:1;">
@@ -4344,11 +4344,11 @@
                                     ` : ''}
                                 </div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                                    <small style="font-size:0.68rem; color:#94a3b8; display:block; line-height:1.35; flex:1;">
+                                    <small style="font-size:0.68rem; color:#64748b; display:block; line-height:1.35; flex:1;">
                                         🎬 <em>Al terminar el video, se congelará suavemente en la <strong>Foto de Portada</strong> elegida abajo. No repite ni consume datos extra.</em>
                                     </small>
                                     ${s.video ? `
-                                    <button type="button" class="btn btn-ghost btn-sm" onclick="testHeroVideoEnd(${i})" style="font-size:0.68rem; padding:3px 8px; border:1px solid rgba(255,255,255,0.2);" title="Alterna entre reproducción y portada en la vista previa">
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="testHeroVideoEnd(${i})" style="font-size:0.68rem; padding:3px 8px; border:1px solid #CBD5E1; color:#0F172A;" title="Alterna entre reproducción y portada en la vista previa">
                                         <i class="fas fa-eye"></i> Probar Portada
                                     </button>
                                     ` : ''}
@@ -4361,9 +4361,9 @@
                                     <span><i class="fas fa-camera"></i> Foto de Portada (Poster / Cover) & Encuadre</span>
                                 </div>
                                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                                    <div style="width:70px; height:50px; background:#000; border-radius:6px; overflow:hidden; position:relative; flex-shrink:0; border:1px solid rgba(255,255,255,0.2);">
+                                    <div style="width:70px; height:50px; background:#0F172A; border-radius:8px; overflow:hidden; position:relative; flex-shrink:0; border:1.5px solid var(--border);">
                                         <img id="hpThumb-${i}" src="${img}" style="width:100%; height:100%; object-fit:cover;">
-                                        <button type="button" onclick="document.getElementById('heroFile-${i}').click()" style="position:absolute; inset:0; background:rgba(0,0,0,0.55); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem;" title="Subir archivo WebP">
+                                        <button type="button" onclick="document.getElementById('heroFile-${i}').click()" style="position:absolute; inset:0; background:rgba(15,23,42,0.6); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem;" title="Subir archivo WebP">
                                             <i class="fas fa-upload"></i>
                                         </button>
                                         <input type="file" id="heroFile-${i}" style="display:none" onchange="uploadHeroImage(${i}, this)" accept="image/*">
@@ -4375,7 +4375,7 @@
 
                                 <!-- Posición Vertical -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Vertical:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:4px;">Posición Vertical:</label>
                                     <div class="hero-seg-btn-group">
                                         <button type="button" class="hero-seg-btn ${posY==='top'?'active':''}" onclick="setHeroImgPosition(${i}, 'top', null)">⬆️ Arriba</button>
                                         <button type="button" class="hero-seg-btn ${posY==='center'?'active':''}" onclick="setHeroImgPosition(${i}, 'center', null)">⏺️ Centro</button>
@@ -4385,7 +4385,7 @@
 
                                 <!-- Posición Horizontal -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Posición Horizontal:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:4px;">Posición Horizontal:</label>
                                     <div class="hero-seg-btn-group">
                                         <button type="button" class="hero-seg-btn ${posX==='left'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'left')">⬅️ Izquierda</button>
                                         <button type="button" class="hero-seg-btn ${posX==='center'?'active':''}" onclick="setHeroImgPosition(${i}, null, 'center')">⏺️ Centro</button>
@@ -4395,7 +4395,7 @@
 
                                 <!-- Zoom / Escala -->
                                 <div style="margin-bottom:8px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Escala / Zoom:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:4px;">Escala / Zoom:</label>
                                     <div class="hero-seg-btn-group">
                                         <button type="button" class="hero-seg-btn ${zoom==='100'?'active':''}" onclick="setHeroImgZoom(${i}, '100')">100% Ajuste</button>
                                         <button type="button" class="hero-seg-btn ${zoom==='115'?'active':''}" onclick="setHeroImgZoom(${i}, '115')">115% Zoom</button>
@@ -4406,7 +4406,7 @@
                                 <!-- Oscurecimiento de Fondo (Overlay) -->
                                 <div>
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                        <label style="font-size:0.68rem; color:#94a3b8;">Oscurecimiento de Fondo (Contraste):</label>
+                                        <label style="font-size:0.68rem; color:var(--text2); font-weight:600;">Oscurecimiento de Fondo (Contraste):</label>
                                         <span id="hpDarknessLabel-${i}" style="font-size:0.72rem; color:var(--accent); font-weight:700;">${darkness}%</span>
                                     </div>
                                     <input type="range" min="30" max="95" value="${darkness}" style="width:100%; accent-color:var(--accent); cursor:pointer;" oninput="updateHeroSlideField(${i}, 'overlayDarkness', this.value)">
@@ -4421,7 +4421,7 @@
 
                                 <!-- Kicker / Subetiqueta superior -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#38bdf8; font-weight:700; display:block; margin-bottom:3px;">
+                                    <label style="font-size:0.68rem; color:#0284c7; font-weight:700; display:block; margin-bottom:3px;">
                                         <i class="fas fa-shield-halved"></i> Kicker / Sub-etiqueta Superior:
                                     </label>
                                     <input type="text" class="form-input" value="${kicker}" placeholder="Ej: HONDA · 2025" oninput="updateHeroSlideField(${i}, 'kicker', this.value)" style="font-size:0.8rem; padding:6px 10px; font-weight:600;">
@@ -4429,25 +4429,25 @@
 
                                 <!-- Título Principal del Modelo (Sin ®) -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Título del Modelo (Sin ®):</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:3px;">Título del Modelo (Sin ®):</label>
                                     <input type="text" class="form-input" value="${title}" placeholder="Ej: HR-V Sport" oninput="updateHeroSlideField(${i}, 'title', this.value)" style="font-size:0.9rem; font-weight:800; padding:8px 10px;">
                                 </div>
 
                                 <!-- Subtítulo / Tagline -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Subtítulo / Tagline:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:3px;">Subtítulo / Tagline:</label>
                                     <input type="text" class="form-input" value="${tagline}" placeholder="Ej: Dinámica inteligente, espacio versátil y tracción 4x4" oninput="updateHeroSlideField(${i}, 'tagline', this.value)" style="font-size:0.8rem; padding:7px 10px;">
                                 </div>
 
                                 <!-- Descripción Técnica -->
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:3px;">Descripción Técnica / Respaldo:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:3px;">Descripción Técnica / Respaldo:</label>
                                     <textarea class="form-input" rows="2" placeholder="SUV compacta con tracción integral AWD inteligente..." oninput="updateHeroSlideField(${i}, 'description', this.value)" style="font-size:0.75rem; padding:7px 10px; resize:vertical;">${desc}</textarea>
                                 </div>
 
                                 <!-- Alineación del Contenido -->
                                 <div>
-                                    <label style="font-size:0.68rem; color:#94a3b8; display:block; margin-bottom:4px;">Alineación en Pantalla:</label>
+                                    <label style="font-size:0.68rem; color:var(--text2); font-weight:600; display:block; margin-bottom:4px;">Alineación en Pantalla:</label>
                                     <div class="hero-seg-btn-group">
                                         <button type="button" class="hero-seg-btn ${align==='left'?'active':''}" onclick="setTextAlign(${i}, 'left')">⬅️ Izquierda</button>
                                         <button type="button" class="hero-seg-btn ${align==='center'?'active':''}" onclick="setTextAlign(${i}, 'center')">⏺️ Centrado</button>
@@ -4465,11 +4465,11 @@
                                 <!-- Stat 1: Valor y Etiqueta -->
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#38bdf8; display:block; margin-bottom:2px;">Métrica 1 (Valor):</label>
+                                        <label style="font-size:0.65rem; color:#0284c7; font-weight:700; display:block; margin-bottom:2px;">Métrica 1 (Valor):</label>
                                         <input type="text" class="form-input" value="${stat1Val}" placeholder="$36,000" oninput="updateHeroSlideField(${i}, 'stat1Num', this.value)" style="font-size:0.8rem; font-weight:700; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Métrica 1 (Etiqueta):</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Métrica 1 (Etiqueta):</label>
                                         <input type="text" class="form-input" value="${stat1Lbl}" placeholder="Precio Especial" oninput="updateHeroSlideField(${i}, 'stat1Label', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
@@ -4477,18 +4477,18 @@
                                 <!-- Stat 2: Valor y Etiqueta -->
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#38bdf8; display:block; margin-bottom:2px;">Métrica 2 (Valor):</label>
+                                        <label style="font-size:0.65rem; color:#0284c7; font-weight:700; display:block; margin-bottom:2px;">Métrica 2 (Valor):</label>
                                         <input type="text" class="form-input" value="${stat2Val}" placeholder="17,000 KM" oninput="updateHeroSlideField(${i}, 'stat2Num', this.value)" style="font-size:0.8rem; font-weight:700; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Métrica 2 (Etiqueta):</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Métrica 2 (Etiqueta):</label>
                                         <input type="text" class="form-input" value="${stat2Lbl}" placeholder="Kilometraje Real" oninput="updateHeroSlideField(${i}, 'stat2Label', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
 
                                 <!-- Disclaimer / Garantía MasterTech -->
                                 <div>
-                                    <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Texto de Respaldo / Garantía MasterTech:</label>
+                                    <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Texto de Respaldo / Garantía MasterTech:</label>
                                     <input type="text" class="form-input" value="${disclaimer}" placeholder="2 años de revisiones mecánicas gratuitas..." oninput="updateHeroSlideField(${i}, 'disclaimer', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                 </div>
                             </div>
@@ -4500,23 +4500,23 @@
                                 </div>
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 1 (Blanco Destacado):</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 1 (Blanco Destacado):</label>
                                         <input type="text" class="form-input" value="${cta1}" placeholder="Asegurar esta oferta" oninput="updateHeroSlideField(${i}, 'ctaPrimary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Botón 2 (Secundario/Link):</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 2 (Secundario/Link):</label>
                                         <input type="text" class="form-input" value="${cta2}" placeholder="Ver en catálogo" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
                                 <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:8px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#25D366; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                                        <label style="font-size:0.65rem; color:#16a34a; font-weight:700; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
                                             <i class="fab fa-whatsapp"></i> Mensaje Predeterminado WhatsApp:
                                         </label>
                                         <input type="text" class="form-input" value="${wa}" placeholder="Hola, me interesa este vehículo..." oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:#94a3b8; display:block; margin-bottom:2px;">Destino Botón 2:</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Destino Botón 2:</label>
                                         <input type="text" class="form-input" value="${cta2Link}" placeholder="catalogo" oninput="updateHeroSlideField(${i}, 'ctaSecondaryLink', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>

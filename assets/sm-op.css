@@ -449,6 +449,8 @@
             font-size: .82rem;
             color: var(--text3);
             font-weight: 600;
+        }
+
         /* CATALOG TABS */
         .admin-catalog-tabs {
             display: flex;
