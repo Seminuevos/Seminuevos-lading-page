@@ -796,23 +796,64 @@
 
         .form-input,
         .form-select,
-        .form-textarea {
-            padding: 12px 14px;
-            background: #FFFFFF;
-            border: 1.5px solid #CBD5E1;
+        .form-textarea,
+        .ficha-sidebar-card input,
+        .ficha-sidebar-card select,
+        .ficha-sidebar-card textarea,
+        .modal input,
+        .modal select,
+        .modal textarea,
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="email"],
+        input[type="url"],
+        input[type="tel"],
+        input[type="search"],
+        select,
+        textarea {
+            padding: 10px 14px;
+            background: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            border: 1.5px solid #CBD5E1 !important;
             border-radius: var(--radius);
-            color: var(--text);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: .9rem;
+            color: #0F172A !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: .88rem;
             outline: none;
             transition: all .2s;
+            box-sizing: border-box;
         }
 
         .form-input:focus,
         .form-select:focus,
-        .form-textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        .form-textarea:focus,
+        .ficha-sidebar-card input:focus,
+        .ficha-sidebar-card select:focus,
+        .ficha-sidebar-card textarea:focus,
+        .modal input:focus,
+        .modal select:focus,
+        .modal textarea:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            background: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            color: #0F172A !important;
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder,
+        .ficha-sidebar-card input::placeholder,
+        .ficha-sidebar-card textarea::placeholder,
+        .modal input::placeholder,
+        .modal textarea::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: #94A3B8 !important;
+            opacity: 1 !important;
         }
 
         .form-textarea {
