@@ -859,6 +859,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 sData = sJson?.data || {};
             }
 
+            // Respaldo directo desde Supabase Cloud si la ruta /api/ no responde
+            if (!sData.hero_slides || !vData || vData.length === 0) {
+                try {
+                    const sbHeaders = {
+                        'apikey': 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z',
+                        'Authorization': 'Bearer sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z'
+                    };
+                    const [sbSettingsRes, sbVehRes] = await Promise.allSettled([
+                        fetch('https://hknprlgyuwzolgnkwsmx.supabase.co/rest/v1/site_settings?select=*', { headers: sbHeaders }),
+                        fetch('https://hknprlgyuwzolgnkwsmx.supabase.co/rest/v1/vehicles?select=*&order=created_at.desc', { headers: sbHeaders })
+                    ]);
+
+                    if (sbSettingsRes.status === 'fulfilled' && sbSettingsRes.value.ok) {
+                        const sbRows = await sbSettingsRes.value.json();
+                        if (Array.isArray(sbRows)) {
+                            sbRows.forEach(r => {
+                                try { sData[r.key] = typeof r.value === 'string' ? JSON.parse(r.value) : r.value; } catch(e) { sData[r.key] = r.value; }
+                            });
+                        }
+                    }
+
+                    if ((!vData || vData.length === 0) && sbVehRes.status === 'fulfilled' && sbVehRes.value.ok) {
+                        const vRows = await sbVehRes.value.json();
+                        if (Array.isArray(vRows)) vData = vRows;
+                    }
+                } catch(e) {}
+            }
+
+            // Respaldo local si no hay conexión
+            if (!sData.hero_slides) {
+                try {
+                    const localRaw = localStorage.getItem('sn_site_settings');
+                    if (localRaw) {
+                        const parsed = JSON.parse(localRaw);
+                        if (parsed && typeof parsed === 'object') sData = { ...parsed, ...sData };
+                    }
+                } catch(e) {}
+            }
+
             applyDataToPanels(vData, sData);
         } catch(e) {
             console.warn('Error al cargar datos en vivo:', e);

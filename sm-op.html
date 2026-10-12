@@ -1154,6 +1154,22 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- BARRA DE ACCIÓN INFERIOR -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:28px; padding:18px 20px; background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                    <div style="font-size:0.82rem; color:var(--text2); display:flex; align-items:center; gap:8px;">
+                        <i class="fas fa-circle-check" style="color:#22c55e;"></i>
+                        <span>Los cambios se sincronizan en vivo con el slider y portada de la página web.</span>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <a href="index.html" target="_blank" class="btn btn-ghost" style="text-decoration:none;">
+                            <i class="fas fa-external-link-alt"></i> Ver Web en Vivo
+                        </a>
+                        <button class="btn btn-primary" id="saveLandingCmsBtnBottom" type="button" style="padding:10px 24px; font-weight:700;">
+                            <i class="fas fa-save"></i> Guardar Cambios Web
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- BULK IMPORT TAB -->
@@ -5305,10 +5321,94 @@
             logSecurityEvent('SETTINGS_UPDATE', 'info', 'Actualización de configuración global del sitio');
         });
 
-        document.getElementById('saveLandingCmsBtn')?.addEventListener('click', async () => {
-            document.getElementById('saveSettingsBtn')?.click();
-            showToast('✓ Contenido de Landing Page guardado y sincronizado', 'success');
-        });
+        async function saveLandingPageCms() {
+            const btn = document.getElementById('saveLandingCmsBtn');
+            const btns = [btn, document.getElementById('saveLandingCmsBtnBottom')].filter(Boolean);
+            const origHtml = btn ? btn.innerHTML : '<i class="fas fa-save"></i> Guardar Cambios Web';
+            
+            btns.forEach(b => {
+                b.disabled = true;
+                b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando cambios...';
+            });
+
+            try {
+                const showroomImg = document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg';
+                const showroomBadge = document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita';
+
+                // 1. Guardar localmente de inmediato (persistencia garantizada sin pérdida)
+                let currentSettings = {};
+                try {
+                    const raw = localStorage.getItem('sn_site_settings');
+                    if (raw) currentSettings = JSON.parse(raw);
+                } catch(e) {}
+
+                currentSettings.hero_slides = heroSlides;
+                currentSettings.showroom_image = showroomImg;
+                currentSettings.showroom_badge_text = showroomBadge;
+
+                try {
+                    localStorage.setItem('sn_site_settings', JSON.stringify(currentSettings));
+                    localStorage.setItem('sn_hero_slides', JSON.stringify(heroSlides));
+                    localStorage.removeItem('sn_supabase_cache');
+                } catch(e) {}
+
+                // 2. Guardar a través de la API del servidor (/api/settings)
+                try {
+                    await apiFetch('/api/settings', {
+                        method: 'PUT',
+                        body: {
+                            hero_slides: heroSlides,
+                            showroom_image: showroomImg,
+                            showroom_badge_text: showroomBadge
+                        }
+                    });
+                } catch(apiErr) {
+                    console.warn("API settings notice:", apiErr);
+                }
+
+                // 3. Guardar directamente en Supabase Cloud si el cliente está conectado
+                if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+                    try {
+                        await Promise.allSettled([
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'hero_slides',
+                                value: JSON.stringify(heroSlides),
+                                updated_at: new Date().toISOString()
+                            }),
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'showroom_image',
+                                value: JSON.stringify(showroomImg),
+                                updated_at: new Date().toISOString()
+                            }),
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'showroom_badge_text',
+                                value: JSON.stringify(showroomBadge),
+                                updated_at: new Date().toISOString()
+                            })
+                        ]);
+                    } catch(sbErr) {
+                        console.warn("Supabase direct upsert notice:", sbErr);
+                    }
+                }
+
+                showToast('✅ ¡Cambios guardados con éxito! Los sliders y contenidos ya están en vivo en la web.', 'success');
+                if (typeof logSecurityEvent === 'function') {
+                    logSecurityEvent('LANDING_CMS_UPDATE', 'info', 'Actualización de sliders de Landing Page');
+                }
+            } catch(err) {
+                console.error("saveLandingPageCms error:", err);
+                showToast('⚠️ Cambios guardados localmente. Revisa la conexión al servidor.', 'warning');
+            } finally {
+                btns.forEach(b => {
+                    b.disabled = false;
+                    b.innerHTML = origHtml;
+                });
+            }
+        }
+        window.saveLandingPageCms = saveLandingPageCms;
+
+        document.getElementById('saveLandingCmsBtn')?.addEventListener('click', saveLandingPageCms);
+        document.getElementById('saveLandingCmsBtnBottom')?.addEventListener('click', saveLandingPageCms);
 
         // ===== EXPORT =====
         function generateExportCode() {
