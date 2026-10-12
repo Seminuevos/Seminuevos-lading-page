@@ -837,9 +837,9 @@
             }
         }
 
-        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (COMPACT & CENTERED) */
+        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (PREMIUM DEALERSHIP SHOWROOM) */
         .showcase-360-section {
-            padding: 85px 15px 0 15px;
+            padding: 85px 20px 5px 20px;
             background: transparent;
             display: flex;
             justify-content: center;
@@ -851,8 +851,8 @@
         .viewer-360-compact {
             position: relative;
             width: 100%;
-            max-width: 440px;
-            height: 190px;
+            max-width: 760px;
+            height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -872,43 +872,44 @@
             bottom: 6%;
             left: 50%;
             transform: translateX(-50%);
-            width: 75%;
-            height: 16%;
-            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.18) 0%, rgba(15, 23, 42, 0.04) 45%, transparent 70%);
-            filter: blur(10px);
+            width: 82%;
+            height: 20%;
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.16) 0%, rgba(15, 23, 42, 0.03) 50%, transparent 74%);
+            filter: blur(12px);
             pointer-events: none;
             z-index: 1;
         }
 
-        .car-360-img {
-            max-height: 175px;
-            width: auto;
-            max-width: 100%;
+        .car-360-canvas {
+            width: 100%;
+            height: 100%;
+            max-height: 280px;
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
-            filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.12));
-            transition: filter 0.2s ease;
+            filter: drop-shadow(0 14px 26px rgba(15, 23, 42, 0.10));
+            display: block;
         }
 
         .drag-hint-pill {
             position: absolute;
-            bottom: 2px;
+            bottom: 4px;
             left: 50%;
             transform: translateX(-50%);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(15, 23, 42, 0.72);
+            gap: 7px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
             color: #FFFFFF;
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 50px;
             pointer-events: none;
             z-index: 5;
-            transition: opacity 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            transition: opacity 0.4s ease;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
         }
 
         .drag-hint-pill i {
@@ -928,8 +929,8 @@
         }
 
         .loading-spinner-circle {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border: 2.5px solid #E2E8F0;
             border-top-color: #2563EB;
             border-radius: 50%;
@@ -942,14 +943,14 @@
 
         @media (max-width: 768px) {
             .showcase-360-section {
-                padding: 78px 10px 0 10px;
+                padding: 78px 12px 0 12px;
             }
             .viewer-360-compact {
-                max-width: 360px;
-                height: 165px;
+                max-width: 100%;
+                height: 200px;
             }
-            .car-360-img {
-                max-height: 150px;
+            .car-360-canvas {
+                max-height: 200px;
             }
         }
     </style>
@@ -1004,7 +1005,7 @@
     <section class="showcase-360-section" id="showcase360Elantra">
         <div class="viewer-360-compact" id="viewer360Elantra">
             <div class="stage-podium-glow"></div>
-            <img id="carImg360" class="car-360-img" src="images/elantra-360/1.png" alt="Hyundai Elantra N 360°" draggable="false">
+            <canvas id="canvas360Elantra" class="car-360-canvas" width="1280" height="640"></canvas>
 
             <div class="drag-hint-pill" id="dragHint360">
                 <i class="fas fa-arrows-rotate"></i> Arrastra para girar 360°
@@ -1362,149 +1363,147 @@
         ];
 
         const total = frameSeq.length;
-        const preloaded = [];
-        let curIdx = 0;
+        const preloaded = new Array(total);
+        let loadedCount = 0;
+        let currentPos = 0; // Floating point position for buttery sub-pixel smoothness
+        let velocity = 0;
         let isDragging = false;
-        let startX = 0;
-        let curX = 0;
-        let isAutoRotating = false;
-        let autoRotateTimer = null;
-        let loaded = 0;
-        const SENSITIVITY = 14;
+        let lastClientX = 0;
+        let activeDrawnIndex = -1;
 
         const viewer = document.getElementById('viewer360Elantra');
-        const carImg = document.getElementById('carImg360');
+        const canvas = document.getElementById('canvas360Elantra');
         const loadingOverlay = document.getElementById('loading360Overlay');
         const dragHint = document.getElementById('dragHint360');
 
-        if (!viewer || !carImg) return;
+        if (!viewer || !canvas) return;
+        const ctx = canvas.getContext('2d', { alpha: true });
 
-        function preload() {
-            frameSeq.forEach((src, idx) => {
-                const img = new Image();
-                img.onload = () => {
-                    loaded++;
-                    updateProgress();
-                };
-                img.onerror = () => {
-                    loaded++;
-                    updateProgress();
-                };
-                img.src = src;
-                preloaded[idx] = img;
-            });
+        function drawFrame(idx) {
+            const img = preloaded[idx];
+            if (!img || !img.complete) return;
+            const cw = canvas.width;
+            const ch = canvas.height;
+            ctx.clearRect(0, 0, cw, ch);
+
+            const iw = img.naturalWidth || img.width;
+            const ih = img.naturalHeight || img.height;
+            const scale = Math.min(cw / iw, ch / ih);
+            const dw = iw * scale;
+            const dh = ih * scale;
+            const dx = (cw - dw) / 2;
+            const dy = (ch - dh) / 2;
+
+            ctx.drawImage(img, dx, dy, dw, dh);
         }
 
-        function updateProgress() {
-            if (loaded >= total) {
+        function checkLoaded() {
+            if (loadedCount >= total) {
                 setTimeout(() => {
                     if (loadingOverlay) {
                         loadingOverlay.style.opacity = '0';
                         setTimeout(() => { loadingOverlay.style.display = 'none'; }, 300);
                     }
-                    startAuto();
                 }, 100);
             }
         }
 
-        function setFrame(newIdx) {
-            curIdx = (newIdx % total + total) % total;
-            if (preloaded[curIdx] && preloaded[curIdx].src) {
-                carImg.src = preloaded[curIdx].src;
-            } else {
-                carImg.src = frameSeq[curIdx];
-            }
+        function preload() {
+            frameSeq.forEach((src, idx) => {
+                const img = new Image();
+                img.onload = () => {
+                    preloaded[idx] = img;
+                    loadedCount++;
+                    if (typeof img.decode === 'function') {
+                        img.decode().catch(() => {}).finally(() => {
+                            if (activeDrawnIndex === -1 && idx === 0) {
+                                drawFrame(0);
+                                activeDrawnIndex = 0;
+                            }
+                            checkLoaded();
+                        });
+                    } else {
+                        if (activeDrawnIndex === -1 && idx === 0) {
+                            drawFrame(0);
+                            activeDrawnIndex = 0;
+                        }
+                        checkLoaded();
+                    }
+                };
+                img.onerror = () => {
+                    const alt = src.endsWith('.webp') ? src.replace('.webp', '.png') : src.replace('.png', '.webp');
+                    const fb = new Image();
+                    fb.onload = () => {
+                        preloaded[idx] = fb;
+                        loadedCount++;
+                        if (activeDrawnIndex === -1 && idx === 0) {
+                            drawFrame(0);
+                            activeDrawnIndex = 0;
+                        }
+                        checkLoaded();
+                    };
+                    fb.onerror = () => {
+                        loadedCount++;
+                        checkLoaded();
+                    };
+                    fb.src = alt;
+                };
+                img.src = src;
+            });
         }
 
-        function next() { setFrame(curIdx + 1); }
-        function prev() { setFrame(curIdx - 1); }
-
-        function startAuto() {
-            if (isAutoRotating) return;
-            isAutoRotating = true;
-            autoRotateTimer = setInterval(next, 100);
-        }
-
-        function stopAuto() {
-            if (!isAutoRotating) return;
-            isAutoRotating = false;
-            clearInterval(autoRotateTimer);
-        }
-
-        let resumeTimeout = null;
-        function planResume() {
-            clearTimeout(resumeTimeout);
-            resumeTimeout = setTimeout(() => {
-                if (!isDragging) startAuto();
-            }, 2500);
-        }
-
-        // Hover events
-        viewer.addEventListener('mouseenter', () => {
-            stopAuto();
-            clearTimeout(resumeTimeout);
-        });
-        viewer.addEventListener('mouseleave', () => {
-            if (!isDragging) planResume();
-        });
-
-        // Mouse drag
-        viewer.addEventListener('mousedown', (e) => {
+        // Pointer event handlers for ultra-smooth unified input (mouse + touch)
+        viewer.addEventListener('pointerdown', (e) => {
             isDragging = true;
-            startX = e.clientX;
-            curX = startX;
-            stopAuto();
-            clearTimeout(resumeTimeout);
+            try { viewer.setPointerCapture(e.pointerId); } catch(_) {}
+            lastClientX = e.clientX;
+            velocity = 0;
             if (dragHint) dragHint.style.opacity = '0';
         });
 
-        window.addEventListener('mousemove', (e) => {
+        viewer.addEventListener('pointermove', (e) => {
             if (!isDragging) return;
-            const delta = e.clientX - curX;
-            if (Math.abs(delta) >= SENSITIVITY) {
-                const step = Math.floor(delta / SENSITIVITY);
-                setFrame(curIdx - step);
-                curX = e.clientX;
-            }
+            const deltaX = e.clientX - lastClientX;
+            lastClientX = e.clientX;
+
+            // 15px of drag moves exactly 1 frame; continuous float eliminates bumps ("baches")
+            const deltaFrame = deltaX / 15;
+            currentPos -= deltaFrame;
+            currentPos = ((currentPos % total) + total) % total;
+
+            // Track momentum for smooth inertia glide on release
+            velocity = -deltaFrame * 0.65;
         });
 
-        window.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                planResume();
-            }
-        });
+        function handlePointerUp(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            try { viewer.releasePointerCapture(e.pointerId); } catch(_) {}
+        }
 
-        // Touch drag
-        viewer.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return;
-            isDragging = true;
-            startX = e.touches[0].clientX;
-            curX = startX;
-            stopAuto();
-            clearTimeout(resumeTimeout);
-            if (dragHint) dragHint.style.opacity = '0';
-        }, { passive: true });
+        viewer.addEventListener('pointerup', handlePointerUp);
+        viewer.addEventListener('pointercancel', handlePointerUp);
 
-        viewer.addEventListener('touchmove', (e) => {
-            if (!isDragging || e.touches.length !== 1) return;
-            const clientX = e.touches[0].clientX;
-            const delta = clientX - curX;
-            if (Math.abs(delta) >= SENSITIVITY) {
-                const step = Math.floor(delta / SENSITIVITY);
-                setFrame(curIdx - step);
-                curX = clientX;
+        // Hardware-accelerated 60/120fps render loop
+        function renderLoop() {
+            if (!isDragging && Math.abs(velocity) > 0.002) {
+                currentPos += velocity;
+                currentPos = ((currentPos % total) + total) % total;
+                velocity *= 0.88; // Buttery smooth deceleration
+                if (Math.abs(velocity) < 0.002) velocity = 0;
             }
-        }, { passive: true });
 
-        viewer.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                planResume();
+            const frameIndex = ((Math.round(currentPos) % total) + total) % total;
+            if (frameIndex !== activeDrawnIndex && preloaded[frameIndex]) {
+                drawFrame(frameIndex);
+                activeDrawnIndex = frameIndex;
             }
-        });
+
+            requestAnimationFrame(renderLoop);
+        }
 
         preload();
+        requestAnimationFrame(renderLoop);
     })();
     </script>
 </body>
