@@ -837,9 +837,9 @@
             }
         }
 
-        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (PREMIUM DEALERSHIP SHOWROOM) */
+        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N CON CONFIGURADOR */
         .showcase-360-section {
-            padding: 85px 20px 5px 20px;
+            padding: 85px 20px 20px 20px;
             background: transparent;
             display: flex;
             justify-content: center;
@@ -848,11 +848,29 @@
             position: relative;
         }
 
+        .showcase-360-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 36px;
+            margin: 0 auto;
+        }
+
+        .showcase-viewer-col {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .viewer-360-compact {
             position: relative;
             width: 100%;
             max-width: 760px;
-            height: 280px;
+            height: 290px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -883,7 +901,7 @@
         .car-360-canvas {
             width: 100%;
             height: 100%;
-            max-height: 280px;
+            max-height: 290px;
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
@@ -941,16 +959,275 @@
             to { transform: rotate(360deg); }
         }
 
+        /* SHOWCASE CONFIGURATOR PANEL (RIGHT COLUMN) */
+        .showcase-config-col {
+            width: 380px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        .config-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+        }
+
+        .config-card:hover {
+            border-color: #CBD5E1;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .config-card-header {
+            margin-bottom: 12px;
+        }
+
+        .config-card-header.flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .config-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        .color-price-delta {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0F172A;
+        }
+
+        /* Versión Card */
+        .version-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .version-radio-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .radio-custom {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #0284C7;
+            position: relative;
+            display: inline-block;
+        }
+
+        .radio-custom.checked::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #0284C7;
+        }
+
+        .version-badge-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #0F172A;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .version-pricing-wrap {
+            text-align: right;
+        }
+
+        .msrp-label {
+            display: block;
+            font-size: 0.65rem;
+            color: #64748B;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .msrp-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0F172A;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .version-features-list {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .version-features-list li {
+            font-size: 0.76rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.35;
+        }
+
+        .version-features-list li i.fa-check {
+            color: #10B981;
+            font-size: 0.68rem;
+        }
+
+        .view-specs-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #0284C7;
+            text-decoration: none;
+            margin-top: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .view-specs-link:hover {
+            color: #0369A1;
+            text-decoration: underline;
+        }
+
+        /* Color Swatches Grid */
+        .color-swatches-grid {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 4px 0 10px 0;
+        }
+
+        .swatch-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            gap: 6px;
+            user-select: none;
+            background: none;
+            border: none;
+            padding: 0;
+            outline: none;
+        }
+
+        .swatch-ring-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .swatch-item:hover .swatch-ring-wrap {
+            transform: scale(1.05);
+        }
+
+        .swatch-item.active .swatch-ring-wrap {
+            border-color: #0F172A;
+            box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #0F172A;
+        }
+
+        .swatch-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Metallic paint reflection highlight matching OEM screenshot */
+        .swatch-circle::after {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(0, 0, 0, 0.35) 55%, rgba(255, 255, 255, 0.2) 100%);
+            pointer-events: none;
+        }
+
+        .swatch-label {
+            font-size: 0.72rem;
+            color: #475569;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.2s ease;
+            max-width: 76px;
+            line-height: 1.2;
+        }
+
+        .swatch-item.active .swatch-label {
+            color: #0F172A;
+            font-weight: 700;
+        }
+
+        .color-active-meta {
+            margin-top: 6px;
+            padding-top: 10px;
+            border-top: 1px solid #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.74rem;
+        }
+
+        .color-meta-label {
+            color: #64748B;
+        }
+
+        .color-meta-name {
+            color: #0F172A;
+            font-weight: 700;
+        }
+
+        @media (max-width: 992px) {
+            .showcase-360-container {
+                flex-direction: column;
+                gap: 24px;
+            }
+            .showcase-config-col {
+                width: 100%;
+                max-width: 580px;
+            }
+        }
+
         @media (max-width: 768px) {
             .showcase-360-section {
-                padding: 78px 12px 0 12px;
+                padding: 78px 12px 10px 12px;
             }
             .viewer-360-compact {
                 max-width: 100%;
-                height: 200px;
+                height: 210px;
             }
             .car-360-canvas {
-                max-height: 200px;
+                max-height: 210px;
             }
         }
     </style>
@@ -1000,19 +1277,67 @@
     </a>
 
     <!-- ========================================== -->
-    <!-- 0. SHOWCASE VISOR 360° HYUNDAI ELANTRA N    -->
+    <!-- 0. SHOWCASE VISOR 360° HYUNDAI ELANTRA N CON CONFIGURADOR -->
     <!-- ========================================== -->
     <section class="showcase-360-section" id="showcase360Elantra">
-        <div class="viewer-360-compact" id="viewer360Elantra">
-            <div class="stage-podium-glow"></div>
-            <canvas id="canvas360Elantra" class="car-360-canvas" width="1280" height="640"></canvas>
+        <div class="showcase-360-container">
+            <!-- COLUMNA IZQUIERDA: VISOR INTERACTIVO 360 -->
+            <div class="showcase-viewer-col">
+                <div class="viewer-360-compact" id="viewer360Elantra">
+                    <div class="stage-podium-glow"></div>
+                    <canvas id="canvas360Elantra" class="car-360-canvas" width="1280" height="640"></canvas>
 
-            <div class="drag-hint-pill" id="dragHint360">
-                <i class="fas fa-arrows-rotate"></i> Arrastra para girar 360°
+                    <div class="drag-hint-pill" id="dragHint360">
+                        <i class="fas fa-arrows-rotate"></i> Arrastra para girar 360°
+                    </div>
+
+                    <div class="loading-360-overlay" id="loading360Overlay">
+                        <div class="loading-spinner-circle"></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="loading-360-overlay" id="loading360Overlay">
-                <div class="loading-spinner-circle"></div>
+            <!-- COLUMNA DERECHA: CONFIGURADOR OFICIAL (VERSIÓN & COLORES) -->
+            <div class="showcase-config-col">
+                <!-- TARJETA 1: SELECCIONE UNA VERSIÓN -->
+                <div class="config-card version-card">
+                    <div class="config-card-header">
+                        <span class="config-title">Seleccione una versión</span>
+                    </div>
+                    <div class="version-option-row">
+                        <div class="version-radio-wrap">
+                            <span class="radio-custom checked"></span>
+                            <span class="version-badge-name">N</span>
+                        </div>
+                        <div class="version-pricing-wrap">
+                            <span class="msrp-label">Starting MSRP <i class="fas fa-circle-info" title="Precio base sugerido por el fabricante"></i></span>
+                            <span class="msrp-price">$35,300</span>
+                        </div>
+                    </div>
+                    <ul class="version-features-list">
+                        <li><i class="fas fa-check"></i> N Light Sport bucket seats</li>
+                        <li><i class="fas fa-check"></i> Electronically Controlled Suspension (ECS)</li>
+                        <li><i class="fas fa-check"></i> N Corner Carving Differential (eLSD) <i class="fas fa-circle-info" style="font-size:0.65rem; color:#94A3B8;"></i></li>
+                    </ul>
+                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025" class="view-specs-link" target="_blank" rel="noopener">
+                        <span>Consultar Ficha y Disponibilidad</span> <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- TARJETA 2: SELECCIONE UN COLOR EXTERIOR -->
+                <div class="config-card color-card">
+                    <div class="config-card-header flex-between">
+                        <span class="config-title">Select an Exterior color</span>
+                        <span class="color-price-delta" id="colorPriceDelta">+ $500</span>
+                    </div>
+                    <div class="color-swatches-grid" id="colorSwatchesGrid">
+                        <!-- Swatches interactivos inyectados por JavaScript -->
+                    </div>
+                    <div class="color-active-meta">
+                        <span class="color-meta-label">Color seleccionado:</span>
+                        <strong class="color-meta-name" id="selectedColorName">Ultimate Red</strong>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1350,22 +1675,54 @@
     <script src="assets/main-BWQf_a18.js"></script>
 
     <!-- ===== SCRIPT INTERACTIVO MOTOR 360° HYUNDAI ELANTRA N ===== -->
+    <!-- ===== SCRIPT INTERACTIVO MOTOR 360° HYUNDAI ELANTRA N CON PALETA DE COLORES ===== -->
     <script>
     (function initElantra360() {
-        const frameSeq = [
-            'images/elantra-360/1.png', 'images/elantra-360/2.png', 'images/elantra-360/3.webp',
-            'images/elantra-360/4.png', 'images/elantra-360/5.png', 'images/elantra-360/6.png',
-            'images/elantra-360/7.png', 'images/elantra-360/8.png', 'images/elantra-360/9.png',
-            'images/elantra-360/10.png', 'images/elantra-360/11.png', 'images/elantra-360/12.png',
-            'images/elantra-360/13.png', 'images/elantra-360/14.png', 'images/elantra-360/15.png',
-            'images/elantra-360/16.png', 'images/elantra-360/17.png', 'images/elantra-360/18.png',
-            'images/elantra-360/19.png', 'images/elantra-360/20.png'
+        const colorPaletteData = [
+            {
+                id: 'abyss-black',
+                name: 'Abyss Black',
+                price: '+ $0',
+                gradient: 'radial-gradient(circle at 35% 35%, #383838 0%, #1a1a1a 55%, #050505 100%)',
+                frames: null // Listo para recibir la carpeta del usuario
+            },
+            {
+                id: 'ultimate-red',
+                name: 'Ultimate Red',
+                price: '+ $500',
+                gradient: 'radial-gradient(circle at 35% 35%, #D32F2F 0%, #8B0000 60%, #4A0000 100%)',
+                frames: [
+                    'images/elantra-360/1.png', 'images/elantra-360/2.png', 'images/elantra-360/3.webp',
+                    'images/elantra-360/4.png', 'images/elantra-360/5.png', 'images/elantra-360/6.png',
+                    'images/elantra-360/7.png', 'images/elantra-360/8.png', 'images/elantra-360/9.png',
+                    'images/elantra-360/10.png', 'images/elantra-360/11.png', 'images/elantra-360/12.png',
+                    'images/elantra-360/13.png', 'images/elantra-360/14.png', 'images/elantra-360/15.png',
+                    'images/elantra-360/16.png', 'images/elantra-360/17.png', 'images/elantra-360/18.png',
+                    'images/elantra-360/19.png', 'images/elantra-360/20.png'
+                ]
+            },
+            {
+                id: 'cyber-gray',
+                name: 'Cyber Gray',
+                price: '+ $0',
+                gradient: 'radial-gradient(circle at 35% 35%, #E2E8F0 0%, #94A3B8 55%, #475569 100%)',
+                frames: null // Listo para recibir la carpeta del usuario
+            },
+            {
+                id: 'performance-blue',
+                name: 'Performance Blue',
+                price: '+ $500',
+                gradient: 'radial-gradient(circle at 35% 35%, #7DD3FC 0%, #38BDF8 50%, #0369A1 100%)',
+                frames: null // Listo para recibir la carpeta del usuario
+            }
         ];
 
-        const total = frameSeq.length;
-        const preloaded = new Array(total);
+        let selectedColor = colorPaletteData.find(c => c.id === 'ultimate-red') || colorPaletteData[0];
+        let currentFrameSeq = selectedColor.frames || [];
+        let total = currentFrameSeq.length || 20;
+        let preloaded = new Array(total);
         let loadedCount = 0;
-        let currentPos = 0; // Floating point position for buttery sub-pixel smoothness
+        let currentPos = 0;
         let velocity = 0;
         let isDragging = false;
         let lastClientX = 0;
@@ -1375,9 +1732,76 @@
         const canvas = document.getElementById('canvas360Elantra');
         const loadingOverlay = document.getElementById('loading360Overlay');
         const dragHint = document.getElementById('dragHint360');
+        const swatchesContainer = document.getElementById('colorSwatchesGrid');
+        const selectedColorNameEl = document.getElementById('selectedColorName');
+        const colorPriceDeltaEl = document.getElementById('colorPriceDelta');
 
         if (!viewer || !canvas) return;
         const ctx = canvas.getContext('2d', { alpha: true });
+
+        // Renderizar swatches interactivos
+        if (swatchesContainer) {
+            swatchesContainer.innerHTML = colorPaletteData.map(c => `
+                <button type="button" class="swatch-item ${c.id === selectedColor.id ? 'active' : ''}" data-color="${c.id}" title="${c.name}">
+                    <div class="swatch-ring-wrap">
+                        <div class="swatch-circle" style="background: ${c.gradient};"></div>
+                    </div>
+                    <span class="swatch-label">${c.name}</span>
+                </button>
+            `).join('');
+
+            swatchesContainer.querySelectorAll('.swatch-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const colorId = btn.dataset.color;
+                    selectColor(colorId);
+                });
+            });
+        }
+
+        function selectColor(colorId) {
+            const found = colorPaletteData.find(c => c.id === colorId);
+            if (!found) return;
+            selectedColor = found;
+
+            // Actualización de estado visual
+            if (swatchesContainer) {
+                swatchesContainer.querySelectorAll('.swatch-item').forEach(b => {
+                    if (b.dataset.color === colorId) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            }
+            if (selectedColorNameEl) selectedColorNameEl.textContent = found.name;
+            if (colorPriceDeltaEl) colorPriceDeltaEl.textContent = found.price;
+
+            // Si el color ya tiene su secuencia de frames configurada, recargar el 360
+            if (found.frames && found.frames.length > 0) {
+                currentFrameSeq = found.frames;
+                total = currentFrameSeq.length;
+                preloaded = new Array(total);
+                loadedCount = 0;
+                activeDrawnIndex = -1;
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                    loadingOverlay.style.opacity = '1';
+                }
+                preload();
+            } else {
+                if (typeof showToast === 'function') {
+                    showToast(`Color ${found.name} seleccionado. (Imágenes preparadas para vincular con su carpeta)`, 'info');
+                }
+            }
+        }
+
+        // Función global accesible para registrar nuevas carpetas de colores
+        window.registerElantraColorFrames = function(colorId, frames) {
+            const target = colorPaletteData.find(c => c.id === colorId);
+            if (target && Array.isArray(frames)) {
+                target.frames = frames;
+                if (selectedColor.id === colorId) {
+                    selectColor(colorId);
+                }
+            }
+        };
 
         function drawFrame(idx) {
             const img = preloaded[idx];
@@ -1409,7 +1833,8 @@
         }
 
         function preload() {
-            frameSeq.forEach((src, idx) => {
+            if (!currentFrameSeq || currentFrameSeq.length === 0) return;
+            currentFrameSeq.forEach((src, idx) => {
                 const img = new Image();
                 img.onload = () => {
                     preloaded[idx] = img;
@@ -1452,7 +1877,7 @@
             });
         }
 
-        // Pointer event handlers for ultra-smooth unified input (mouse + touch)
+        // Controles táctiles y de ratón unificados con alta sensibilidad
         viewer.addEventListener('pointerdown', (e) => {
             isDragging = true;
             try { viewer.setPointerCapture(e.pointerId); } catch(_) {}
@@ -1466,12 +1891,11 @@
             const deltaX = e.clientX - lastClientX;
             lastClientX = e.clientX;
 
-            // 15px of drag moves exactly 1 frame; continuous float eliminates bumps ("baches")
+            // 15px de arrastre equivale exactamente a 1 cuadro; elimina baches o sacudidas
             const deltaFrame = deltaX / 15;
             currentPos -= deltaFrame;
             currentPos = ((currentPos % total) + total) % total;
 
-            // Track momentum for smooth inertia glide on release
             velocity = -deltaFrame * 0.65;
         });
 
@@ -1484,12 +1908,12 @@
         viewer.addEventListener('pointerup', handlePointerUp);
         viewer.addEventListener('pointercancel', handlePointerUp);
 
-        // Hardware-accelerated 60/120fps render loop
+        // Bucle de renderizado a 60/120fps acelerado por hardware
         function renderLoop() {
             if (!isDragging && Math.abs(velocity) > 0.002) {
                 currentPos += velocity;
                 currentPos = ((currentPos % total) + total) % total;
-                velocity *= 0.88; // Buttery smooth deceleration
+                velocity *= 0.88;
                 if (Math.abs(velocity) < 0.002) velocity = 0;
             }
 
