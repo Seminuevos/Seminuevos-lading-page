@@ -76,18 +76,18 @@
                 <img src="images/logo-primary.png" alt="SemiNuevos Logo" style="height: 52px; width: auto;">
             </div>
             <nav class="sidebar-nav">
-                <button class="sidebar-link active" data-tab="vehicles"><i class="fas fa-car"></i> Vehículos</button>
-                <button class="sidebar-link" data-tab="promotions"><i class="fas fa-tags"></i> Promociones</button>
-                <button class="sidebar-link" data-tab="fichas"><i class="fas fa-file-invoice"></i> Fichas Técnicas</button>
-                <button class="sidebar-link" data-tab="financing"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
-                <button class="sidebar-link" data-tab="credit-plans"><i class="fas fa-file-invoice-dollar"></i> Planes de Financiamiento</button>
-                <button class="sidebar-link" data-tab="cronograma"><i class="fas fa-calendar-alt"></i> Cronograma de Pagos</button>
-                <button class="sidebar-link" data-tab="avaluo"><i class="fas fa-scale-balanced"></i> Avalúo & Trade-In</button>
-                <button class="sidebar-link" data-tab="bulk"><i class="fas fa-layer-group"></i> Importar en Lote</button>
-                <button class="sidebar-link" data-tab="analytics"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
-                <button class="sidebar-link" data-tab="inquiries"><i class="fas fa-envelope"></i> Consultas</button>
-                <button class="sidebar-link" data-tab="users"><i class="fas fa-users-cog"></i> Usuarios & Personal</button>
-                <button class="sidebar-link" data-tab="settings"><i class="fas fa-cog"></i> Configuración</button>
+                <button class="sidebar-link active" data-tab="vehicles" onclick="switchAdminTab('vehicles')"><i class="fas fa-car"></i> Vehículos</button>
+                <button class="sidebar-link" data-tab="promotions" onclick="switchAdminTab('promotions')"><i class="fas fa-tags"></i> Promociones</button>
+                <button class="sidebar-link" data-tab="fichas" onclick="switchAdminTab('fichas')"><i class="fas fa-file-invoice"></i> Fichas Técnicas</button>
+                <button class="sidebar-link" data-tab="financing" onclick="switchAdminTab('financing')"><i class="fas fa-calculator"></i> Financiamiento (Interno)</button>
+                <button class="sidebar-link" data-tab="credit-plans" onclick="switchAdminTab('credit-plans')"><i class="fas fa-file-invoice-dollar"></i> Planes de Financiamiento</button>
+                <button class="sidebar-link" data-tab="cronograma" onclick="switchAdminTab('cronograma')"><i class="fas fa-calendar-alt"></i> Cronograma de Pagos</button>
+                <button class="sidebar-link" data-tab="avaluo" onclick="switchAdminTab('avaluo')"><i class="fas fa-scale-balanced"></i> Avalúo & Trade-In</button>
+                <button class="sidebar-link" data-tab="bulk" onclick="switchAdminTab('bulk')"><i class="fas fa-layer-group"></i> Importar en Lote</button>
+                <button class="sidebar-link" data-tab="analytics" onclick="switchAdminTab('analytics')"><i class="fas fa-chart-line"></i> CRM & Métricas</button>
+                <button class="sidebar-link" data-tab="inquiries" onclick="switchAdminTab('inquiries')"><i class="fas fa-envelope"></i> Consultas</button>
+                <button class="sidebar-link" data-tab="users" onclick="switchAdminTab('users')"><i class="fas fa-users-cog"></i> Usuarios & Personal</button>
+                <button class="sidebar-link" data-tab="settings" onclick="switchAdminTab('settings')"><i class="fas fa-cog"></i> Configuración</button>
             </nav>
             <div class="sidebar-divider"></div>
             <div class="sidebar-user">
@@ -4934,17 +4934,73 @@
             navigator.clipboard.writeText(document.getElementById('codeOutput').textContent).then(() => showToast('Código copiado', 'success'));
         });
 
-        // ===== TABS =====
+        // ===== TABS (GLOBAL ROUTER) =====
+        function switchAdminTab(tabName) {
+            if (!tabName) return;
+
+            // 1. Highlight sidebar link
+            document.querySelectorAll('.sidebar-link').forEach(b => {
+                if (b.dataset && b.dataset.tab === tabName) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+
+            // 2. Switch tab-content panels
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // 3. Trigger corresponding data loader safely
+            try {
+                if (tabName === 'vehicles') {
+                    if (typeof renderTable === 'function') renderTable();
+                } else if (tabName === 'promotions') {
+                    if (typeof loadAdminPromos === 'function') loadAdminPromos();
+                } else if (tabName === 'fichas') {
+                    if (typeof initFichasModule === 'function') initFichasModule();
+                } else if (tabName === 'financing') {
+                    if (typeof populateFinancingVehicles === 'function') populateFinancingVehicles();
+                    if (typeof calculateFinancingPlans === 'function') calculateFinancingPlans();
+                } else if (tabName === 'credit-plans') {
+                    if (typeof populateCreditPlansVehicles === 'function') populateCreditPlansVehicles();
+                    if (typeof calcularCreditoPlan === 'function') calcularCreditoPlan();
+                    if (typeof actualizarProgresoSlider === 'function') {
+                        const curVal = parseFloat(document.getElementById('cp_rangeInicial')?.value) || 30;
+                        actualizarProgresoSlider(curVal);
+                    }
+                } else if (tabName === 'cronograma') {
+                    if (typeof populateCronogramaVehicles === 'function') populateCronogramaVehicles();
+                    if (typeof calcularCronograma === 'function') calcularCronograma();
+                } else if (tabName === 'avaluo') {
+                    if (typeof populateTradeInVehicles === 'function') populateTradeInVehicles();
+                    if (typeof calculateTradeIn === 'function') calculateTradeIn();
+                } else if (tabName === 'analytics') {
+                    if (typeof loadAnalyticsData === 'function') loadAnalyticsData();
+                    if (typeof loadLeads === 'function') loadLeads();
+                } else if (tabName === 'inquiries') {
+                    if (typeof loadInquiries === 'function') loadInquiries();
+                } else if (tabName === 'users') {
+                    if (typeof loadUsers === 'function') loadUsers();
+                } else if (tabName === 'settings') {
+                    if (typeof loadSettings === 'function') loadSettings();
+                }
+            } catch (err) {
+                console.error('[switchAdminTab] Error loading tab data for:', tabName, err);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+        window.switchAdminTab = switchAdminTab;
+
+        // Progressive enhancement: add click listener to all sidebar links
         document.querySelectorAll('.sidebar-link[data-tab]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                document.getElementById(`tab-${btn.dataset.tab}`)?.classList.add('active');
-                if (btn.dataset.tab === 'inquiries') loadInquiries();
-                if (btn.dataset.tab === 'settings') loadSettings();
-                if (btn.dataset.tab === 'analytics') { loadAnalyticsData(); loadLeads(); }
-                if (btn.dataset.tab === 'users') loadUsers();
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchAdminTab(btn.dataset.tab);
             });
         });
 
@@ -10748,48 +10804,19 @@ ${featuresList || '  ✓ Paquete de confort y conectividad completa'}
         // Init when DOM loads or immediately if already loaded
         function initApp() {
             checkAuth();
-            document.querySelectorAll('.sidebar-link[data-tab="fichas"]').forEach(btn => {
-                btn.addEventListener('click', () => initFichasModule());
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="financing"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    populateFinancingVehicles();
-                    calculateFinancingPlans();
-                });
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="credit-plans"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    populateCreditPlansVehicles();
-                    calcularCreditoPlan();
-                    const curVal = parseFloat(document.getElementById('cp_rangeInicial')?.value) || 30;
-                    actualizarProgresoSlider(curVal);
-                });
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="cronograma"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    populateCronogramaVehicles();
-                    calcularCronograma();
-                });
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="avaluo"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    populateTradeInVehicles();
-                    calculateTradeIn();
-                });
-            });
-            document.querySelectorAll('.sidebar-link[data-tab="users"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    loadUsers();
-                });
-            });
-            // Initial calculations
-            calculateFinancingPlans();
-            calcularCreditoPlan();
-            actualizarProgresoSlider(30);
-            calcularCronograma();
-            populateTradeInVehicles();
-            calculateTradeIn();
-            loadUsers();
+
+            // Initial calculations safely wrapped so unexpected values never break app startup
+            try {
+                if (typeof calculateFinancingPlans === 'function') calculateFinancingPlans();
+                if (typeof calcularCreditoPlan === 'function') calcularCreditoPlan();
+                if (typeof actualizarProgresoSlider === 'function') actualizarProgresoSlider(30);
+                if (typeof calcularCronograma === 'function') calcularCronograma();
+                if (typeof populateTradeInVehicles === 'function') populateTradeInVehicles();
+                if (typeof calculateTradeIn === 'function') calculateTradeIn();
+                if (typeof loadUsers === 'function') loadUsers();
+            } catch(e) {
+                console.warn('[initApp] Non-fatal initialization warning:', e);
+            }
         }
 
         if (document.readyState === 'loading') {
