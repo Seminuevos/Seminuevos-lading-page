@@ -104,7 +104,7 @@
         .catalog-hero-header {
             position: relative;
             background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-            padding: 120px 0 25px 0;
+            padding: 30px 0 25px 0;
             border-bottom: 1px solid #E2E8F0;
             text-align: center;
         }
@@ -835,59 +835,68 @@
                 flex-direction: column;
                 align-items: stretch;
             }
-        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N */
+        }
+
+        /* 13. SHOWCASE 360° HYUNDAI ELANTRA N (EXECUTIVE LIGHT SHOWROOM) */
         .showcase-360-section {
-            background: radial-gradient(circle at 50% 30%, #172554 0%, #0B1120 70%, #030712 100%);
-            padding: 40px 20px 45px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #F8FAFC;
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+            padding: 105px 20px 30px 20px;
+            border-bottom: 1px solid #E2E8F0;
             position: relative;
             overflow: hidden;
         }
 
         .showcase-360-inner {
-            max-width: 1100px;
+            max-width: 1180px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        }
+
+        .showcase-360-card {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 24px;
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.05);
+            padding: 24px 28px 22px 28px;
+            position: relative;
         }
 
         .showcase-360-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            margin-bottom: 15px;
+            gap: 16px;
             flex-wrap: wrap;
-            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #F1F5F9;
         }
 
-        .showcase-360-brand {
+        .showcase-360-title-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .showcase-badge-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .showcase-n-badge {
-            background: linear-gradient(135deg, #0077C8, #004b87);
+            background: #0F172A;
             color: #FFFFFF;
             font-family: var(--font-display);
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             font-weight: 800;
             padding: 4px 10px;
             border-radius: 6px;
-            border-left: 3px solid #E63312;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px rgba(0, 119, 200, 0.35);
-        }
-
-        .showcase-model-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
-            font-weight: 800;
-            color: #FFFFFF;
-            letter-spacing: -0.3px;
+            border-left: 3px solid #EF4444;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .showcase-360-badge {
@@ -897,16 +906,16 @@
             font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #38BDF8;
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            padding: 5px 14px;
-            border-radius: 999px;
+            letter-spacing: 0.5px;
+            color: #2563EB;
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            padding: 4px 12px;
+            border-radius: 50px;
         }
 
         .showcase-360-badge i {
-            animation: spin360 7s linear infinite;
+            animation: spin360 8s linear infinite;
         }
 
         @keyframes spin360 {
@@ -914,10 +923,55 @@
             to { transform: rotate(360deg); }
         }
 
+        .showcase-model-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+            font-weight: 800;
+            color: #0F172A;
+            margin: 2px 0 0 0;
+            letter-spacing: -0.4px;
+        }
+
+        .showcase-model-title span {
+            color: #2563EB;
+            font-weight: 700;
+        }
+
+        .showcase-subtitle {
+            font-family: var(--font-body);
+            font-size: 0.86rem;
+            color: #64748B;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .cta-consult-elantra {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #2563EB;
+            color: #FFFFFF !important;
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+            white-space: nowrap;
+        }
+
+        .cta-consult-elantra:hover {
+            background: #1D4ED8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
+        }
+
         .viewer-360-box {
             position: relative;
             width: 100%;
-            height: clamp(300px, 48vh, 500px);
+            height: clamp(280px, 46vh, 480px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -925,6 +979,10 @@
             touch-action: none;
             user-select: none;
             -webkit-user-select: none;
+            background: radial-gradient(ellipse at 50% 65%, #F8FAFC 0%, #FFFFFF 72%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #F1F5F9;
         }
 
         .viewer-360-box:active {
@@ -933,13 +991,13 @@
 
         .stage-podium-glow {
             position: absolute;
-            bottom: 4%;
+            bottom: 6%;
             left: 50%;
             transform: translateX(-50%);
-            width: 82%;
+            width: 78%;
             height: 18%;
-            background: radial-gradient(ellipse at center, rgba(0, 119, 200, 0.35) 0%, rgba(0, 119, 200, 0.08) 50%, transparent 75%);
-            filter: blur(14px);
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.22) 0%, rgba(15, 23, 42, 0.06) 45%, transparent 70%);
+            filter: blur(12px);
             pointer-events: none;
             z-index: 1;
         }
@@ -950,23 +1008,25 @@
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
-            filter: drop-shadow(0 20px 32px rgba(0, 0, 0, 0.8));
+            filter: drop-shadow(0 14px 22px rgba(15, 23, 42, 0.16));
+            transition: filter 0.2s ease;
         }
 
         .degree-indicator-pill {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            padding: 6px 14px;
-            border-radius: 8px;
+            top: 12px;
+            right: 14px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            color: #2563EB;
             font-family: var(--font-display);
             font-size: 0.74rem;
             font-weight: 700;
-            color: #38BDF8;
+            padding: 5px 14px;
+            border-radius: 50px;
             z-index: 5;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            letter-spacing: 0.3px;
         }
 
         .drag-hint-pill {
@@ -977,28 +1037,28 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 6px 16px;
+            padding: 6px 18px;
             border-radius: 50px;
             font-size: 0.74rem;
-            color: #94A3B8;
+            color: #F8FAFC;
             font-weight: 600;
             pointer-events: none;
             z-index: 5;
             transition: opacity 0.4s ease;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
         }
 
         .drag-hint-pill i {
-            color: #0077C8;
+            color: #38BDF8;
         }
 
         .loading-360-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(11, 17, 32, 0.95);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
@@ -1011,8 +1071,8 @@
         .loading-spinner-circle {
             width: 44px;
             height: 44px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #0077C8;
+            border: 3px solid #E2E8F0;
+            border-top-color: #2563EB;
             border-radius: 50%;
             animation: spinCircle 0.8s linear infinite;
             margin-bottom: 14px;
@@ -1023,16 +1083,17 @@
         }
 
         .loading-360-text {
+            font-family: var(--font-body);
             font-size: 0.84rem;
             font-weight: 600;
-            color: #94A3B8;
+            color: #334155;
             margin-bottom: 8px;
         }
 
         .loading-360-bar {
             width: 180px;
             height: 5px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #E2E8F0;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -1040,98 +1101,102 @@
         .loading-360-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #0077C8, #38BDF8);
+            background: linear-gradient(90deg, #2563EB, #60A5FA);
             transition: width 0.12s ease;
         }
 
-        .controls-360-hud {
-            margin-top: 15px;
+        .controls-360-hud-wrap {
             display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px;
+        }
+
+        .controls-360-hud {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(14px);
-            padding: 8px 18px;
+            background: #FFFFFF;
+            border: 1.5px solid #CBD5E1;
+            padding: 6px 14px;
             border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
             z-index: 10;
         }
 
         .btn-ctrl-360 {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #F8FAFC;
-            width: 36px;
-            height: 36px;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            color: #0F172A;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
+            outline: none;
+            padding: 0;
         }
 
         .btn-ctrl-360:hover {
-            background: #0077C8;
-            border-color: #0077C8;
+            background: #2563EB;
+            border-color: #2563EB;
             color: #FFFFFF;
             transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .btn-ctrl-360.active {
-            background: #0077C8;
+            background: #2563EB;
+            border-color: #2563EB;
             color: #FFFFFF;
-            box-shadow: 0 0 12px rgba(0, 119, 200, 0.6);
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.45);
         }
 
         .frame-counter-360 {
             font-family: var(--font-display);
-            font-size: 0.74rem;
-            color: #94A3B8;
-            min-width: 65px;
+            font-size: 0.8rem;
+            color: #64748B;
+            min-width: 68px;
             text-align: center;
-            padding: 0 4px;
+            padding: 0 6px;
+            font-weight: 600;
         }
 
         .frame-counter-360 b {
-            color: #FFFFFF;
-        }
-
-        .cta-consult-elantra {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #2563EB;
-            color: #FFFFFF !important;
-            font-family: var(--font-display);
-            font-size: 0.76rem;
-            font-weight: 700;
-            padding: 8px 18px;
-            border-radius: 50px;
-            text-decoration: none;
-            margin-left: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .cta-consult-elantra:hover {
-            background: #1D4ED8;
-            transform: translateY(-1px);
+            color: #0F172A;
+            font-weight: 800;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
-            .showcase-360-header {
-                justify-content: center;
-                text-align: center;
+            .showcase-360-section {
+                padding: 95px 12px 25px 12px;
             }
-            .controls-360-hud {
-                padding: 6px 12px;
-                gap: 6px;
+            .showcase-360-card {
+                padding: 16px 16px 18px 16px;
+                border-radius: 18px;
+            }
+            .showcase-360-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
             }
             .cta-consult-elantra {
-                margin-left: 0;
-                margin-top: 8px;
+                width: 100%;
+                justify-content: center;
+            }
+            .controls-360-hud {
+                padding: 5px 10px;
+                gap: 6px;
+            }
+            .btn-ctrl-360 {
+                width: 34px;
+                height: 34px;
+                font-size: 0.78rem;
             }
         }
     </style>
@@ -1185,55 +1250,63 @@
     <!-- ========================================== -->
     <section class="showcase-360-section" id="showcase360Elantra">
         <div class="showcase-360-inner">
-            <div class="showcase-360-header">
-                <div class="showcase-360-brand">
-                    <span class="showcase-n-badge">N POWER</span>
-                    <div class="showcase-model-title">HYUNDAI ELANTRA N</div>
-                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N" class="cta-consult-elantra" target="_blank" rel="noopener">
-                        <i class="fab fa-whatsapp"></i> Cotizar Unidad
-                    </a>
-                </div>
-                <div class="showcase-360-badge">
-                    <i class="fas fa-arrows-rotate"></i> 360° Interactivo
-                </div>
-            </div>
-
-            <!-- Viewer Box -->
-            <div class="viewer-360-box" id="viewer360Elantra">
-                <div class="stage-podium-glow"></div>
-                <div class="degree-indicator-pill" id="degreePill360">0° Frontal</div>
-                <img id="carImg360" class="car-360-img" src="images/elantra-360/1.png" alt="Hyundai Elantra N 360°" draggable="false">
-
-                <div class="drag-hint-pill" id="dragHint360">
-                    <i class="fas fa-hand-pointer"></i> Haz clic y arrastra hacia los lados para girar
-                </div>
-
-                <div class="loading-360-overlay" id="loading360Overlay">
-                    <div class="loading-spinner-circle"></div>
-                    <div class="loading-360-text" id="loading360Text">Cargando 360° interactivo...</div>
-                    <div class="loading-360-bar">
-                        <div class="loading-360-fill" id="loading360Fill"></div>
+            <div class="showcase-360-card">
+                <!-- Header inside showroom card -->
+                <div class="showcase-360-header">
+                    <div class="showcase-360-title-col">
+                        <div class="showcase-badge-row">
+                            <span class="showcase-n-badge"><i class="fas fa-flag-checkered"></i> HYUNDAI N</span>
+                            <span class="showcase-360-badge"><i class="fas fa-arrows-rotate"></i> 360° Interactivo</span>
+                        </div>
+                        <h2 class="showcase-model-title">Hyundai Elantra N <span>· Edición Deportiva</span></h2>
+                        <p class="showcase-subtitle">Gira el vehículo en 360° en tiempo real · Entrega Inmediata en Margarita</p>
+                    </div>
+                    <div class="showcase-cta-col">
+                        <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N" class="cta-consult-elantra" target="_blank" rel="noopener">
+                            <i class="fab fa-whatsapp"></i> <span>Cotizar Esta Unidad</span>
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <!-- Controls HUD -->
-            <div class="controls-360-hud">
-                <button class="btn-ctrl-360" id="btn360Prev" title="Girar a la izquierda">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="btn-ctrl-360" id="btn360PlayPause" title="Giro automático">
-                    <i class="fas fa-play" id="icon360Play"></i>
-                </button>
-                <button class="btn-ctrl-360" id="btn360Next" title="Girar a la derecha">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <div class="frame-counter-360">
-                    <b id="currFrame360">1</b> / <span id="totalFrames360">20</span>
+                <!-- Viewer Box -->
+                <div class="viewer-360-box" id="viewer360Elantra">
+                    <div class="stage-podium-glow"></div>
+                    <div class="degree-indicator-pill" id="degreePill360">0° Frontal</div>
+                    <img id="carImg360" class="car-360-img" src="images/elantra-360/1.png" alt="Hyundai Elantra N 360°" draggable="false">
+
+                    <div class="drag-hint-pill" id="dragHint360">
+                        <i class="fas fa-hand-pointer"></i> Haz clic y arrastra hacia los lados para girar
+                    </div>
+
+                    <div class="loading-360-overlay" id="loading360Overlay">
+                        <div class="loading-spinner-circle"></div>
+                        <div class="loading-360-text" id="loading360Text">Cargando 360° interactivo...</div>
+                        <div class="loading-360-bar">
+                            <div class="loading-360-fill" id="loading360Fill"></div>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn-ctrl-360" id="btn360Reset" title="Reiniciar vista frontal">
-                    <i class="fas fa-rotate-left"></i>
-                </button>
+
+                <!-- Controls HUD -->
+                <div class="controls-360-hud-wrap">
+                    <div class="controls-360-hud">
+                        <button type="button" class="btn-ctrl-360" id="btn360Prev" title="Girar a la izquierda" aria-label="Girar a la izquierda">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button type="button" class="btn-ctrl-360" id="btn360PlayPause" title="Giro automático" aria-label="Giro automático">
+                            <i class="fas fa-play" id="icon360Play"></i>
+                        </button>
+                        <button type="button" class="btn-ctrl-360" id="btn360Next" title="Girar a la derecha" aria-label="Girar a la derecha">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="frame-counter-360">
+                            <b id="currFrame360">1</b> / <span id="totalFrames360">20</span>
+                        </div>
+                        <button type="button" class="btn-ctrl-360" id="btn360Reset" title="Reiniciar vista frontal" aria-label="Reiniciar vista frontal">
+                            <i class="fas fa-rotate-left"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
