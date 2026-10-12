@@ -658,98 +658,7 @@
             margin: 0;
         }
 
-        /* 5. ECOSISTEMA MT GROUP */
-        .dealer-ecosystem-section {
-            padding: 85px 0;
-            background: #FFFFFF;
-        }
-
-        .eco-dealership-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 22px;
-            margin-top: 45px;
-        }
-
-        .eco-dealer-card {
-            background: #FFFFFF;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            padding: 28px 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-            transition: all 0.3s ease;
-        }
-
-        .eco-dealer-card:hover {
-            transform: translateY(-5px);
-            border-color: #2563eb;
-            box-shadow: 0 14px 28px rgba(37, 99, 235, 0.1);
-        }
-
-        .eco-dealer-badge {
-            display: inline-block;
-            background: #2563eb;
-            color: #FFFFFF;
-            font-family: var(--font-display, 'Outfit', sans-serif);
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-        }
-
-        .eco-dealer-icon {
-            width: 52px;
-            height: 52px;
-            background: rgba(37, 99, 235, 0.08);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2563eb;
-            font-size: 1.35rem;
-            margin-bottom: 18px;
-        }
-
-        .eco-dealer-title {
-            font-family: var(--font-display, 'Outfit', sans-serif);
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #0F172A;
-            margin-bottom: 10px;
-        }
-
-        .eco-dealer-desc {
-            font-size: 0.86rem;
-            color: #64748B;
-            line-height: 1.6;
-            margin-bottom: 22px;
-            flex-grow: 1;
-        }
-
-        .eco-dealer-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #2563eb;
-            font-family: var(--font-display, 'Outfit', sans-serif);
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: gap 0.2s ease;
-        }
-
-        .eco-dealer-link:hover {
-            gap: 12px;
-            color: #1D4ED8;
-        }
-
-        /* 6. PROCESO DE CERTIFICACIÓN */
+        /* 5. PROCESO DE CERTIFICACIÓN */
         .dealer-process-section {
             padding: 85px 0;
             background: #F8FAFC;
@@ -939,9 +848,6 @@
             .principles-grid {
                 grid-template-columns: 1fr;
             }
-            .eco-dealership-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
             .process-steps-row {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -968,9 +874,6 @@
             }
             .d-stat-item:last-child {
                 border-bottom: none;
-            }
-            .eco-dealership-grid {
-                grid-template-columns: 1fr;
             }
             .process-steps-row {
                 grid-template-columns: 1fr;
@@ -1254,76 +1157,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 5. ECOSISTEMA MT GROUP                    -->
-    <!-- ========================================== -->
-    <section class="dealer-ecosystem-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag"><i class="fas fa-network-wired"></i> ALIANZA ESTRATÉGICA</span>
-                <h2 class="section-title">El Ecosistema <span class="text-accent">MT GROUP</span></h2>
-                <p class="section-subtitle">
-                    A diferencia de una agencia tradicional, SemiNuevo Autos está respaldado por una red técnica y logística que atiende cada necesidad de tu vehículo.
-                </p>
-            </div>
-
-            <div class="eco-dealership-grid">
-                <!-- 1. SEMINUEVO AUTOS -->
-                <div class="eco-dealer-card">
-                    <div>
-                        <div class="eco-dealer-badge">CONCESIONARIO</div>
-                        <div class="eco-dealer-icon"><i class="fas fa-car"></i></div>
-                        <h3 class="eco-dealer-title">SemiNuevo Autos</h3>
-                        <p class="eco-dealer-desc">
-                            Venta de vehículos seleccionados, Trade-In (programa de retoma), financiamiento flexible e importación directa llave en mano desde subastas en USA.
-                        </p>
-                    </div>
-                    <a href="catalogo" class="eco-dealer-link">Ver Inventario <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 2. TALLER MASTERTECH -->
-                <div class="eco-dealer-card">
-                    <div>
-                        <div class="eco-dealer-badge">TALLER & PERITAJE</div>
-                        <div class="eco-dealer-icon"><i class="fas fa-wrench"></i></div>
-                        <h3 class="eco-dealer-title">Taller MasterTech</h3>
-                        <p class="eco-dealer-desc">
-                            Centro de servicio automotriz especializado con tecnología OBD-II de vanguardia, mecánicos certificados y 2 años de revisiones gratis para nuestros clientes.
-                        </p>
-                    </div>
-                    <a href="servicios#soporte-mastertech" class="eco-dealer-link">Conocer Taller <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 3. MT PART STORE -->
-                <div class="eco-dealer-card">
-                    <div>
-                        <div class="eco-dealer-badge">REPUESTOS</div>
-                        <div class="eco-dealer-icon"><i class="fas fa-boxes-stacked"></i></div>
-                        <h3 class="eco-dealer-title">MT Part Store</h3>
-                        <p class="eco-dealer-desc">
-                            Acceso directo a repuestos 100% originales, fluidos certificados y consumibles para vehículos importados y nacionales, con envíos a todo el territorio nacional.
-                        </p>
-                    </div>
-                    <a href="https://www.tallermastertech.com/catalogo" target="_blank" rel="noopener" class="eco-dealer-link">Ver Repuestos <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 4. MT WASH & DETAILING -->
-                <div class="eco-dealer-card">
-                    <div>
-                        <div class="eco-dealer-badge">ESTÉTICA & DETAILING</div>
-                        <div class="eco-dealer-icon"><i class="fas fa-spray-can-sparkles"></i></div>
-                        <h3 class="eco-dealer-title">MT Detailing</h3>
-                        <p class="eco-dealer-desc">
-                            Estética automotriz de alta gama, descontaminado, corrección de pintura, protección cerámica y detallado interior para conservar el valor de tu auto.
-                        </p>
-                    </div>
-                    <a href="servicios" class="eco-dealer-link">Ver Servicios <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- 6. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
+    <!-- 5. PROCESO DE CERTIFICACIÓN DE 150 PUNTOS   -->
     <!-- ========================================== -->
     <section class="dealer-process-section">
         <div class="container">
