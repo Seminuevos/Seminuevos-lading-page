@@ -1900,12 +1900,12 @@
             const deltaX = e.clientX - lastClientX;
             lastClientX = e.clientX;
 
-            // 15px de arrastre equivale exactamente a 1 cuadro; elimina baches o sacudidas
+            // Arrastre natural y directo: mover a la derecha gira el auto a la derecha
             const deltaFrame = deltaX / 15;
-            currentPos -= deltaFrame;
+            currentPos += deltaFrame;
             currentPos = ((currentPos % total) + total) % total;
 
-            velocity = -deltaFrame * 0.65;
+            velocity = deltaFrame * 0.65;
         });
 
         function handlePointerUp(e) {
