@@ -839,13 +839,19 @@
         }
 
         /* 13. SHOWCASE 360° HYUNDAI ELANTRA N CON CONFIGURADOR */
+        /* El showcase ocupa exactamente 1 pantalla: visor arriba + barra de acceso al catálogo SIEMPRE visible abajo */
         .showcase-360-section {
-            padding: 70px 20px 8px 20px;
+            height: 100vh;
+            height: 100svh;
+            min-height: 600px;
+            max-height: 980px;
+            box-sizing: border-box;
+            padding: 72px 20px 14px 20px;
             background: transparent;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            gap: 12px;
             width: 100%;
             position: relative;
         }
@@ -853,6 +859,8 @@
         .showcase-360-container {
             width: 100%;
             max-width: 1200px;
+            flex: 1;
+            min-height: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -863,6 +871,7 @@
         .showcase-viewer-col {
             flex: 1;
             min-width: 0;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -872,7 +881,8 @@
             position: relative;
             width: 100%;
             max-width: 860px;
-            height: 350px;
+            height: 100%;
+            max-height: 430px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -903,7 +913,7 @@
         .car-360-canvas {
             width: 100%;
             height: 100%;
-            max-height: 350px;
+            max-height: 100%;
             object-fit: contain;
             pointer-events: none;
             z-index: 2;
@@ -985,65 +995,158 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
 
-        /* Indicador / Botón flotante para invitar a bajar al catálogo */
-        .showcase-scroll-invitation {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .showcase-config-col {
+            max-height: 100%;
+        }
+
+        /* BARRA DE ACCESO AL CATÁLOGO — siempre visible al pie de la primera pantalla */
+        .catalog-quickbar {
             width: 100%;
-            z-index: 5;
-        }
-
-        .scroll-down-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 22px;
-            background: #FFFFFF;
-            border: 1.5px solid #E2E8F0;
-            border-radius: 50px;
-            color: #0F172A;
-            font-size: 0.84rem;
-            font-weight: 700;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            text-decoration: none;
-            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.07);
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-
-        .scroll-down-btn:hover {
+            max-width: 1200px;
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: 1.15fr repeat(3, 1fr);
+            align-items: stretch;
             background: #0F172A;
-            color: #FFFFFF;
-            border-color: #0F172A;
-            transform: translateY(2px);
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
+            border-radius: 16px;
+            padding: 6px;
+            gap: 6px;
+            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
         }
 
-        .scroll-down-btn .icon-bubble {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: rgba(37, 99, 235, 0.1);
-            color: #2563EB;
+        .quickbar-lead {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8px 14px;
+            color: #FFFFFF;
+        }
+
+        .quickbar-eyebrow {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #38BDF8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quickbar-eyebrow i {
+            animation: bounceDown 1.6s infinite ease-in-out;
+        }
+
+        .quickbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.02rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-top: 2px;
+        }
+
+        .quickbar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 11px;
+            color: #FFFFFF;
+            text-decoration: none;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: left;
+            transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .quickbar-item:hover {
+            background: #2563EB;
+            border-color: #2563EB;
+            transform: translateY(-2px);
+        }
+
+        .quickbar-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(56, 189, 248, 0.14);
+            color: #38BDF8;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            transition: all 0.25s ease;
-            animation: bounceDown 1.8s infinite ease-in-out;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
 
-        .scroll-down-btn:hover .icon-bubble {
-            background: #2563EB;
+        .quickbar-item:hover .quickbar-icon {
+            background: rgba(255, 255, 255, 0.18);
             color: #FFFFFF;
+        }
+
+        .quickbar-text {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quickbar-text b {
+            font-size: 0.88rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .quickbar-text small {
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.62);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .quickbar-item:hover .quickbar-text small {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .quickbar-arrow {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .quickbar-item:hover .quickbar-arrow {
+            color: #FFFFFF;
+            transform: translateY(2px);
         }
 
         @keyframes bounceDown {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(3px); }
+        }
+
+        /* Pantallas bajas: se compacta el configurador para que la barra nunca quede fuera de vista */
+        @media (max-height: 720px) and (min-width: 993px) {
+            .version-features-list,
+            .color-active-meta { display: none; }
+            .model-thumb { height: 48px; }
+            .config-card { padding: 11px 16px; }
+            .showcase-config-col { gap: 9px; }
+        }
+
+        @media (max-width: 992px) {
+            .showcase-360-section {
+                height: auto;
+                max-height: none;
+                min-height: 0;
+            }
+            .catalog-quickbar {
+                grid-template-columns: 1fr;
+                order: -1;
+            }
+            .quickbar-lead { padding: 6px 10px; }
         }
 
         /* Selector de Vehículo 360 — Tiles de showroom */
@@ -1583,13 +1686,37 @@
             </div>
         </div>
 
-        <!-- INDICADOR / INVITACIÓN VISUAL PARA EXPLORAR EL CATÁLOGO -->
-        <div class="showcase-scroll-invitation">
-            <a href="#catalogo" class="scroll-down-btn" id="btnScrollToCatalog">
-                <span>Explorar Catálogo Completo</span>
-                <span class="icon-bubble"><i class="fas fa-chevron-down"></i></span>
+        <!-- BARRA EJECUTIVA DE ACCESO DIRECTO AL CATÁLOGO (SIEMPRE VISIBLE EN PANTALLA) -->
+        <nav class="catalog-quickbar" aria-label="Acceso rápido al catálogo">
+            <div class="quickbar-lead">
+                <span class="quickbar-eyebrow"><i class="fas fa-arrow-down"></i> Explora el Inventario</span>
+                <span class="quickbar-title">Catálogo Completo</span>
+            </div>
+            <a href="#seminuevos-panel" class="quickbar-item" data-target-tab="seminuevos">
+                <div class="quickbar-icon"><i class="fas fa-car-side"></i></div>
+                <div class="quickbar-text">
+                    <b>Stock Local</b>
+                    <small>Entrega inmediata en Margarita</small>
+                </div>
+                <i class="fas fa-chevron-down quickbar-arrow"></i>
             </a>
-        </div>
+            <a href="#porpedido-panel" class="quickbar-item" data-target-tab="porpedido">
+                <div class="quickbar-icon"><i class="fas fa-ship"></i></div>
+                <div class="quickbar-text">
+                    <b>Por Pedido USA</b>
+                    <small>Importación directa llave en mano</small>
+                </div>
+                <i class="fas fa-chevron-down quickbar-arrow"></i>
+            </a>
+            <a href="#zerokm-panel" class="quickbar-item" data-target-tab="0km">
+                <div class="quickbar-icon"><i class="fas fa-award"></i></div>
+                <div class="quickbar-text">
+                    <b>0KM Nuevos</b>
+                    <small>Unidades a estrenar con garantía</small>
+                </div>
+                <i class="fas fa-chevron-down quickbar-arrow"></i>
+            </a>
+        </nav>
     </section>
 
     <!-- ========================================== -->
@@ -2277,6 +2404,20 @@
         if (colorPriceDeltaEl) colorPriceDeltaEl.textContent = selectedColor.price;
         loadFrameSequence(selectedColor.frames);
         requestAnimationFrame(renderLoop);
+
+        // Quickbar: Al hacer clic en una categoría, activar su pestaña correspondiente y hacer scroll suave
+        document.querySelectorAll('.catalog-quickbar .quickbar-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetTab = btn.getAttribute('data-target-tab');
+                if (targetTab) {
+                    const tabBtn = document.querySelector(`.catalog-main-tab[data-section="${targetTab}"]`);
+                    if (tabBtn) {
+                        e.preventDefault();
+                        tabBtn.click();
+                    }
+                }
+            });
+        });
     })();
     </script>
 </body>
