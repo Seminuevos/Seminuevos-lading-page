@@ -317,7 +317,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 prevSlide.classList.remove('active');
                 const prevVideo = prevSlide.querySelector('.hero-bg-video');
                 if (prevVideo) {
-                    try { prevVideo.pause(); } catch(e) {}
+                    try { 
+                        prevVideo.pause(); 
+                        prevVideo.classList.remove('is-playing');
+                        prevVideo.currentTime = 0;
+                    } catch(e) {}
                 }
             }
             if (!this.dotsContainer) this.dotsContainer = document.getElementById('heroDots');
@@ -334,6 +338,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 this.playSlideMedia(curSlide);
             }
+
+            // Pre-cargar de forma pasiva el video del SIGUIENTE slide (sin reproducirlo) para transición instantánea
+            this.preloadNextSlideMedia();
+        },
+
+        preloadNextSlideMedia() {
+            if (!this.slides.length) return;
+            const nextIdx = (this.currentIndex + 1) % this.slides.length;
+            const nextSlide = this.slides[nextIdx];
+            if (!nextSlide) return;
+            const nextVideo = nextSlide.querySelector('.hero-bg-video');
+            if (nextVideo && nextVideo.dataset.src && !nextVideo.src) {
+                nextVideo.src = nextVideo.dataset.src;
+                nextVideo.preload = 'metadata';
+            }
         },
 
         playSlideMedia(slide) {
@@ -345,6 +364,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 video.defaultMuted = true;
                 video.playsInline = true;
                 video.classList.remove('video-ended');
+
+                // Si aún no tenía src asignado (carga bajo demanda para ahorro de ancho de banda)
+                if (video.dataset.src && !video.src) {
+                    video.src = video.dataset.src;
+                    video.load();
+                }
+
+                // Si ya está listo o renderizando, mostrar de inmediato
+                if (video.readyState >= 3) {
+                    video.classList.add('is-playing');
+                }
+
+                // Evento playing: se activa exactamente cuando los fotogramas se decodifican fluidamente
+                const onPlaying = () => {
+                    video.classList.add('is-playing');
+                    video.classList.remove('video-ended');
+                };
+                video.removeEventListener('playing', onPlaying);
+                video.addEventListener('playing', onPlaying);
 
                 try {
                     video.currentTime = 0;
@@ -372,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 video.onended = () => {
                     // Al finalizar el video, se oculta suavemente dejando la imagen de portada fija
+                    video.classList.remove('is-playing');
                     video.classList.add('video-ended');
                     // Esperar 5s con la portada visible antes de cambiar automáticamente de slide
                     clearInterval(this.interval);
@@ -1040,15 +1079,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const videoHtml = s.video ? `
                 <div class="hero-video-wrap">
-                    <video class="hero-bg-video" src="${s.video}" autoplay muted loop playsinline preload="auto" poster="${heroBgImage}">
-                        <source src="${s.video}" type="video/mp4">
-                        <source src="${s.video}" type="video/webm">
+                    <video class="hero-bg-video" ${isFirst ? `src="${s.video}" autoplay` : `data-src="${s.video}"`} muted loop playsinline ${isFirst ? 'preload="auto"' : 'preload="none"'} poster="${heroBgImage}">
+                        ${isFirst ? `<source src="${s.video}" type="video/mp4"><source src="${s.video}" type="video/webm">` : ''}
                     </video>
                 </div>
             ` : '';
 
             html += `
-                <div class="hero-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
+                <div class="hero-slide ${i === 0 ? 'active' : ''} ${s.video ? 'has-video' : ''}" style="background-image: url('${heroBgImage}'); background-position: ${bgPos}; background-size: ${bgSize};">
                     ${videoHtml}
                     <div class="hero-overlay" ${overlayStyle}></div>
                     <div class="hero-content ${alignClass}">

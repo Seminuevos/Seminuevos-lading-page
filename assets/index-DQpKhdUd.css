@@ -589,6 +589,13 @@ body::after {
     animation: heroZoom 10s ease-out forwards;
 }
 
+/* Desactivar re-escalado vectorial en slides con video para garantizar 60 FPS sin tirones */
+.hero-slide.has-video.active,
+.hero-slide:has(.hero-video-wrap).active {
+    animation: none !important;
+    transform: none !important;
+}
+
 @keyframes heroZoom {
     from {
         transform: scale(1.05);
@@ -599,7 +606,7 @@ body::after {
     }
 }
 
-/* Hero Background Video & Cover Transition */
+/* Hero Background Video & Cover Transition — Ultra Optimizado GPU */
 .hero-video-wrap {
     position: absolute;
     inset: 0;
@@ -608,6 +615,9 @@ body::after {
     overflow: hidden;
     z-index: 0;
     pointer-events: none;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: paint layout;
 }
 
 .hero-bg-video {
@@ -615,8 +625,15 @@ body::after {
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate3d(0, 0, 0);
+    will-change: opacity;
+    backface-visibility: hidden;
+}
+
+.hero-bg-video.is-playing {
     opacity: 1;
-    transition: opacity 0.8s ease-in-out;
 }
 
 .hero-bg-video.video-ended {
