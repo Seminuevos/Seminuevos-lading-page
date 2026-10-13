@@ -267,6 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
         nextBtn: document.getElementById('heroNext'),
         currentIndex: 0,
         interval: null,
+        slideTimeout: null,
+        fallbackTimeout: null,
         delay: 5000,
 
         init() {
@@ -309,7 +311,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         },
 
+        clearTimers() {
+            if (this.interval) {
+                clearInterval(this.interval);
+                this.interval = null;
+            }
+            if (this.slideTimeout) {
+                clearTimeout(this.slideTimeout);
+                this.slideTimeout = null;
+            }
+            if (this.fallbackTimeout) {
+                clearTimeout(this.fallbackTimeout);
+                this.fallbackTimeout = null;
+            }
+        },
+
         goTo(index) {
+            this.clearTimers();
             this.slides = document.querySelectorAll('.hero-slide');
             if (!this.slides.length) return;
             const prevSlide = this.slides[this.currentIndex];
@@ -356,13 +374,14 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         playSlideMedia(slide) {
-            clearInterval(this.interval);
+            this.clearTimers();
             if (!slide) return;
             const video = slide.querySelector('.hero-bg-video');
             if (video) {
                 video.muted = true;
                 video.defaultMuted = true;
                 video.playsInline = true;
+                video.loop = false;
                 video.classList.remove('video-ended');
 
                 // Si aún no tenía src asignado (carga bajo demanda para ahorro de ancho de banda)
@@ -409,21 +428,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 video.onended = () => {
-                    // Al finalizar el video, se oculta suavemente dejando la imagen de portada fija
+                    // Al finalizar el video completamente, ocultarlo suavemente para mostrar la portada fija
                     video.classList.remove('is-playing');
                     video.classList.add('video-ended');
-                    // Esperar 5s con la portada visible antes de cambiar automáticamente de slide
-                    clearInterval(this.interval);
-                    this.interval = setTimeout(() => {
+                    // Breve pausa de 2.5s con la portada visible antes de avanzar al siguiente slide
+                    this.clearTimers();
+                    this.slideTimeout = setTimeout(() => {
+                        this.next();
+                    }, 2500);
+                };
+
+                // Si por alguna razón el video falla o no arranca tras 6 segundos, respaldo para no bloquear el slider
+                const onVideoError = () => {
+                    this.clearTimers();
+                    this.fallbackTimeout = setTimeout(() => {
                         this.next();
                     }, 5000);
                 };
-
-                // Si el video está loopeando o tarda, avanzar slide a los 8 segundos
-                clearInterval(this.interval);
-                this.interval = setTimeout(() => {
-                    this.next();
-                }, 8000);
+                video.addEventListener('error', onVideoError, { once: true });
 
                 tryPlay();
             } else {
@@ -446,12 +468,12 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         startAutoplay() {
-            clearInterval(this.interval);
+            this.clearTimers();
             this.interval = setInterval(() => this.next(), this.delay);
         },
 
         resetAutoplay() {
-            clearInterval(this.interval);
+            this.clearTimers();
             this.slides = document.querySelectorAll('.hero-slide');
             const curSlide = this.slides[this.currentIndex];
             if (curSlide) {
@@ -1079,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const videoHtml = s.video ? `
                 <div class="hero-video-wrap">
-                    <video class="hero-bg-video" ${isFirst ? `src="${s.video}" autoplay` : `data-src="${s.video}"`} muted loop playsinline ${isFirst ? 'preload="auto"' : 'preload="none"'} poster="${heroBgImage}">
+                    <video class="hero-bg-video" ${isFirst ? `src="${s.video}" autoplay` : `data-src="${s.video}"`} muted playsinline ${isFirst ? 'preload="auto"' : 'preload="none"'} poster="${heroBgImage}">
                         ${isFirst ? `<source src="${s.video}" type="video/mp4"><source src="${s.video}" type="video/webm">` : ''}
                     </video>
                 </div>
