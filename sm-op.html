@@ -1130,6 +1130,19 @@
                                 </small>
                             </div>
 
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label class="form-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text); display: flex; align-items: center; justify-content: space-between;">
+                                    <span>Texto del Sello de Certificación</span>
+                                    <label style="font-size: 0.74rem; font-weight: 600; cursor: pointer; color: var(--accent); display: inline-flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" id="sShowroomSealEnabled" checked style="accent-color: var(--accent);"> Mostrar sello
+                                    </label>
+                                </label>
+                                <input type="text" class="form-input" id="sShowroomSealText" placeholder="MASTERTECH CERTIFIED">
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 6px; display: block;">
+                                    Texto del sello flotante en la esquina inferior del showroom (ej. MASTERTECH CERTIFIED, CERTIFICADO 150 PUNTOS, etc.).
+                                </small>
+                            </div>
+
                             <div style="display: flex; gap: 10px; margin-top: 12px;">
                                 <button type="button" class="btn btn-ghost btn-sm" onclick="resetShowroomDefaults()" style="font-size: 0.78rem;">
                                     <i class="fas fa-rotate-left"></i> Restaurar Por Defecto
@@ -1149,9 +1162,9 @@
                                     <i class="fas fa-location-dot" style="color: #38bdf8;"></i> <span id="showroomPreviewBadgeText">Showroom Porlamar, Isla de Margarita</span>
                                 </div>
                                 <!-- Sello Mastertech -->
-                                <div style="position: absolute; bottom: 12px; right: 12px; background: rgba(7, 12, 22, 0.9); backdrop-filter: blur(8px); border: 1px solid rgba(212, 160, 23, 0.35); padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; color: #d4a017; font-weight: 800; display: flex; align-items: center; gap: 6px; letter-spacing: 0.05em; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-                                    <img src="images/logo-mastertech.png" alt="MasterTech" style="height: 18px;" onerror="this.style.display='none'">
-                                    <span>MASTERTECH<br>CERTIFIED</span>
+                                <div id="showroomPreviewSealContainer" style="position: absolute; bottom: 12px; right: 12px; background: rgba(7, 12, 22, 0.92); backdrop-filter: blur(8px); border: 1px solid rgba(212, 160, 23, 0.35); padding: 6px 12px; border-radius: 8px; font-size: 0.65rem; color: #d4a017; font-weight: 800; display: flex; align-items: center; gap: 7px; letter-spacing: 0.05em; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                                    <img src="images/certificado-mastertech.svg" alt="MasterTech" style="height: 22px; width: auto;" onerror="this.src='CERTIFICADO---MASTERTECH.png'">
+                                    <span id="showroomPreviewSealText">MASTERTECH<br>CERTIFIED</span>
                                 </div>
                             </div>
                         </div>
@@ -4263,6 +4276,12 @@
             if (document.getElementById('sShowroomBadge')) {
                 document.getElementById('sShowroomBadge').value = map.showroom_badge_text || 'Showroom Porlamar, Isla de Margarita';
             }
+            if (document.getElementById('sShowroomSealText')) {
+                document.getElementById('sShowroomSealText').value = map.showroom_seal_text || 'MASTERTECH CERTIFIED';
+            }
+            if (document.getElementById('sShowroomSealEnabled')) {
+                document.getElementById('sShowroomSealEnabled').checked = map.showroom_seal_enabled !== false;
+            }
             if (typeof updateShowroomPreview === 'function') {
                 updateShowroomPreview();
             }
@@ -5215,17 +5234,35 @@
         window.updateShowroomPreview = function() {
             const imgEl = document.getElementById('showroomPreviewImg');
             const badgeEl = document.getElementById('showroomPreviewBadgeText');
+            const sealTextEl = document.getElementById('showroomPreviewSealText');
+            const sealContainer = document.getElementById('showroomPreviewSealContainer');
+
             const val = document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg';
             const badgeVal = document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita';
+            const sealVal = document.getElementById('sShowroomSealText')?.value?.trim() || 'MASTERTECH CERTIFIED';
+            const sealEnabled = document.getElementById('sShowroomSealEnabled')?.checked !== false;
+
             if (imgEl) imgEl.src = val;
             if (badgeEl) badgeEl.textContent = badgeVal;
+            if (sealTextEl) {
+                sealTextEl.innerHTML = sealVal.replace(/\s+/g, ' ').replace(' ', '<br>');
+            }
+            if (sealContainer) {
+                sealContainer.style.display = sealEnabled ? 'flex' : 'none';
+            }
         };
 
         window.resetShowroomDefaults = function() {
             const imgInput = document.getElementById('sShowroomImg');
             const badgeInput = document.getElementById('sShowroomBadge');
+            const sealInput = document.getElementById('sShowroomSealText');
+            const sealEnabledInput = document.getElementById('sShowroomSealEnabled');
+
             if (imgInput) imgInput.value = 'images/hero-slides/hero-1.jpg';
             if (badgeInput) badgeInput.value = 'Showroom Porlamar, Isla de Margarita';
+            if (sealInput) sealInput.value = 'MASTERTECH CERTIFIED';
+            if (sealEnabledInput) sealEnabledInput.checked = true;
+
             updateShowroomPreview();
             showToast('Valores de Showroom restaurados por defecto', 'info');
         };
@@ -5291,6 +5328,8 @@
 
         document.getElementById('sShowroomImg')?.addEventListener('input', updateShowroomPreview);
         document.getElementById('sShowroomBadge')?.addEventListener('input', updateShowroomPreview);
+        document.getElementById('sShowroomSealText')?.addEventListener('input', updateShowroomPreview);
+        document.getElementById('sShowroomSealEnabled')?.addEventListener('change', updateShowroomPreview);
 
         document.getElementById('saveSettingsBtn')?.addEventListener('click', async () => {
             const settings = {
@@ -5311,6 +5350,8 @@
                 calc_service_fee: parseFloat(document.getElementById('sServiceFeeSetting').value),
                 showroom_image: document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg',
                 showroom_badge_text: document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita',
+                showroom_seal_text: document.getElementById('sShowroomSealText')?.value?.trim() || 'MASTERTECH CERTIFIED',
+                showroom_seal_enabled: document.getElementById('sShowroomSealEnabled')?.checked !== false,
                 hero_slides: heroSlides
             };
             for (const [key, val] of Object.entries(settings)) {
@@ -5339,6 +5380,8 @@
             try {
                 const showroomImg = document.getElementById('sShowroomImg')?.value?.trim() || 'images/hero-slides/hero-1.jpg';
                 const showroomBadge = document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita';
+                const showroomSealText = document.getElementById('sShowroomSealText')?.value?.trim() || 'MASTERTECH CERTIFIED';
+                const showroomSealEnabled = document.getElementById('sShowroomSealEnabled')?.checked !== false;
 
                 // 1. Guardar localmente de inmediato (persistencia garantizada sin pérdida)
                 let currentSettings = {};
@@ -5350,6 +5393,8 @@
                 currentSettings.hero_slides = heroSlides;
                 currentSettings.showroom_image = showroomImg;
                 currentSettings.showroom_badge_text = showroomBadge;
+                currentSettings.showroom_seal_text = showroomSealText;
+                currentSettings.showroom_seal_enabled = showroomSealEnabled;
 
                 try {
                     localStorage.setItem('sn_site_settings', JSON.stringify(currentSettings));
@@ -5364,7 +5409,9 @@
                         body: {
                             hero_slides: heroSlides,
                             showroom_image: showroomImg,
-                            showroom_badge_text: showroomBadge
+                            showroom_badge_text: showroomBadge,
+                            showroom_seal_text: showroomSealText,
+                            showroom_seal_enabled: showroomSealEnabled
                         }
                     });
                 } catch(apiErr) {
@@ -5388,6 +5435,16 @@
                             supabaseClient.from('site_settings').upsert({
                                 key: 'showroom_badge_text',
                                 value: JSON.stringify(showroomBadge),
+                                updated_at: new Date().toISOString()
+                            }),
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'showroom_seal_text',
+                                value: JSON.stringify(showroomSealText),
+                                updated_at: new Date().toISOString()
+                            }),
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'showroom_seal_enabled',
+                                value: JSON.stringify(showroomSealEnabled),
                                 updated_at: new Date().toISOString()
                             })
                         ]);

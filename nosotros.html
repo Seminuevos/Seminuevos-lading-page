@@ -1023,9 +1023,9 @@
                         <div class="showcase-floating-badge" id="showcaseBadge">
                             <i class="fas fa-location-dot" style="color: #38bdf8;"></i> <span id="showcaseBadgeText">Showroom Porlamar, Isla de Margarita</span>
                         </div>
-                        <div class="showcase-floating-seal">
-                            <img src="images/logo-mastertech.png" alt="MasterTech Alliance" onerror="this.style.display='none'">
-                            <span>MASTERTECH<br>CERTIFIED</span>
+                        <div class="showcase-floating-seal" id="showcaseSeal">
+                            <img src="images/certificado-mastertech.svg" alt="MasterTech Alliance" onerror="this.src='CERTIFICADO---MASTERTECH.png'">
+                            <span id="showcaseSealText">MASTERTECH<br>CERTIFIED</span>
                         </div>
                     </div>
                 </div>
@@ -1044,6 +1044,14 @@
                 if (settings.showroom_badge_text) {
                     const badge = document.getElementById('showcaseBadgeText');
                     if (badge) badge.textContent = settings.showroom_badge_text;
+                }
+                const sealEl = document.getElementById('showcaseSeal');
+                const sealTextEl = document.getElementById('showcaseSealText');
+                if (sealEl && settings.showroom_seal_enabled !== undefined) {
+                    sealEl.style.display = settings.showroom_seal_enabled === false ? 'none' : 'flex';
+                }
+                if (sealTextEl && settings.showroom_seal_text) {
+                    sealTextEl.innerHTML = settings.showroom_seal_text.replace(/\s+/g, ' ').replace(' ', '<br>');
                 }
             }
             try {
