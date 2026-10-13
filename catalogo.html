@@ -104,7 +104,8 @@
         .catalog-hero-header {
             position: relative;
             background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-            padding: 30px 0 25px 0;
+            padding: 40px 0 30px 0;
+            border-top: 1px solid #E2E8F0;
             border-bottom: 1px solid #E2E8F0;
             text-align: center;
             scroll-margin-top: 70px;
@@ -839,19 +840,15 @@
         }
 
         /* 13. SHOWCASE 360° HYUNDAI ELANTRA N CON CONFIGURADOR */
-        /* El showcase ocupa exactamente 1 pantalla: visor arriba + barra de acceso al catálogo SIEMPRE visible abajo */
         .showcase-360-section {
-            height: 100vh;
-            height: 100svh;
-            min-height: 600px;
-            max-height: 980px;
+            min-height: auto;
             box-sizing: border-box;
-            padding: 72px 20px 14px 20px;
-            background: transparent;
+            padding: 90px 20px 32px 20px;
+            background: #FFFFFF;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 28px;
             width: 100%;
             position: relative;
         }
@@ -999,39 +996,40 @@
             max-height: 100%;
         }
 
-        /* BARRA EJECUTIVA DE ACCESO Y SELECTOR DEL CATÁLOGO (ESTILO DEALERSHIP PREMIUM) */
+        /* BARRA DE ACCESO Y SELECTOR DEL CATÁLOGO (ESTILO OFICIAL SHOWROOM BLANCO Y AZUL) */
         .catalog-quickbar {
             width: 100%;
             max-width: 1200px;
             flex-shrink: 0;
             display: grid;
-            grid-template-columns: 1.1fr repeat(3, 1fr);
+            grid-template-columns: 1.15fr repeat(3, 1fr);
             align-items: stretch;
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
             border-radius: 18px;
-            padding: 8px;
-            gap: 8px;
-            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.04);
             position: relative;
             z-index: 10;
+            margin-top: 6px;
         }
 
         .quickbar-lead {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 8px 16px;
-            color: #FFFFFF;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 18px;
+            color: #0F172A;
+            border-right: 1px solid #E2E8F0;
         }
 
         .quickbar-eyebrow {
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            letter-spacing: 0.16em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            color: #38BDF8;
+            color: #2563EB;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -1041,99 +1039,100 @@
             font-family: 'Outfit', sans-serif;
             font-size: 1.05rem;
             font-weight: 800;
-            line-height: 1.15;
+            line-height: 1.2;
             margin-top: 2px;
             letter-spacing: -0.01em;
-            color: #FFFFFF;
+            color: #0F172A;
         }
 
         .quickbar-sub {
-            font-size: 0.66rem;
-            color: #94A3B8;
+            font-size: 0.7rem;
+            color: #64748B;
             margin-top: 3px;
             display: flex;
             align-items: center;
             gap: 5px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .quickbar-sub i {
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             animation: bounceDown 1.6s infinite ease-in-out;
-            color: #38BDF8;
+            color: #2563EB;
         }
 
         .quickbar-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 13px;
-            color: #FFFFFF;
+            padding: 12px 16px;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            color: #0F172A;
             cursor: pointer;
             font-family: 'Plus Jakarta Sans', sans-serif;
             text-align: left;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             outline: none;
         }
 
         .quickbar-item:hover {
-            background: rgba(255, 255, 255, 0.09);
-            border-color: rgba(56, 189, 248, 0.4);
+            background: #FFFFFF;
+            border-color: #93C5FD;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
         }
 
-        /* Estado Activo: resalta con el azul distintivo de la marca SemiNuevos */
+        /* Estado Activo: resalta con el azul distintivo y fondo suave de la marca SemiNuevos */
         .quickbar-item.active {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.35) 0%, rgba(29, 78, 216, 0.2) 100%);
+            background: #EFF6FF;
             border-color: #2563EB;
-            box-shadow: 0 0 0 1px #2563EB, 0 8px 24px rgba(37, 99, 235, 0.28);
+            box-shadow: 0 0 0 1px #2563EB, 0 8px 24px rgba(37, 99, 235, 0.14);
         }
 
         .quickbar-item.active::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 24px;
+            width: 28px;
             height: 3px;
-            background: #38BDF8;
+            background: #2563EB;
             border-radius: 3px 3px 0 0;
-            box-shadow: 0 0 8px #38BDF8;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
         }
 
         .quickbar-icon {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.06);
-            color: #94A3B8;
+            background: #FFFFFF;
+            color: #64748B;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 1.05rem;
             flex-shrink: 0;
-            transition: all 0.25s ease;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.22s ease;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
         }
 
         .quickbar-item:hover .quickbar-icon {
-            color: #38BDF8;
-            background: rgba(56, 189, 248, 0.15);
-            border-color: rgba(56, 189, 248, 0.3);
+            color: #2563EB;
+            border-color: #BFDBFE;
+            background: #FFFFFF;
             transform: scale(1.05);
         }
 
         .quickbar-item.active .quickbar-icon {
             background: #2563EB;
             color: #FFFFFF;
-            border-color: #3B82F6;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+            border-color: #2563EB;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
         }
 
         .quickbar-text {
@@ -1151,43 +1150,43 @@
         }
 
         .quickbar-text b {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             font-weight: 700;
-            color: #FFFFFF;
+            color: #0F172A;
             white-space: nowrap;
             letter-spacing: -0.01em;
         }
 
         .quickbar-tag {
-            font-size: 0.6rem;
+            font-size: 0.62rem;
             font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 2px 7px;
+            border-radius: 5px;
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
 
         .quickbar-tag.local {
-            background: rgba(34, 197, 94, 0.18);
-            color: #4ADE80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            background: #ECFDF5;
+            color: #047857;
+            border: 1px solid #A7F3D0;
         }
 
         .quickbar-tag.import {
-            background: rgba(56, 189, 248, 0.18);
-            color: #38BDF8;
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
         }
 
         .quickbar-tag.zerokm {
-            background: rgba(245, 158, 11, 0.18);
-            color: #FBBF24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: #FEF3C7;
+            color: #B45309;
+            border: 1px solid #FDE68A;
         }
 
         .quickbar-text small {
-            font-size: 0.68rem;
-            color: #94A3B8;
+            font-size: 0.72rem;
+            color: #64748B;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1195,26 +1194,26 @@
         }
 
         .quickbar-item:hover .quickbar-text small {
-            color: #CBD5E1;
+            color: #334155;
         }
 
         .quickbar-item.active .quickbar-text small {
-            color: #BAE6FD;
+            color: #1E40AF;
         }
 
         .quickbar-arrow {
-            font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.3);
-            transition: all 0.25s ease;
+            font-size: 0.75rem;
+            color: #94A3B8;
+            transition: all 0.22s ease;
         }
 
         .quickbar-item:hover .quickbar-arrow {
-            color: #38BDF8;
+            color: #2563EB;
             transform: translateY(2px);
         }
 
         .quickbar-item.active .quickbar-arrow {
-            color: #38BDF8;
+            color: #2563EB;
             transform: translateY(3px);
         }
 
@@ -1223,7 +1222,7 @@
             50% { transform: translateY(3px); }
         }
 
-        /* Pantallas bajas: se compacta el configurador para que la barra nunca quede fuera de vista */
+        /* Pantallas bajas: se compacta el configurador para mantener comodidad */
         @media (max-height: 720px) and (min-width: 993px) {
             .version-features-list,
             .color-active-meta { display: none; }
@@ -1234,18 +1233,15 @@
 
         @media (max-width: 992px) {
             .showcase-360-section {
-                height: auto;
-                max-height: none;
-                min-height: 0;
+                padding: 80px 14px 24px 14px;
             }
             .catalog-quickbar {
                 grid-template-columns: 1fr;
-                order: -1;
             }
             .quickbar-lead { 
-                padding: 10px 14px;
+                padding: 12px 14px;
                 border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                border-bottom: 1px solid #E2E8F0;
             }
         }
 
