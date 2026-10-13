@@ -1171,6 +1171,107 @@
                     </div>
                 </div>
 
+                <!-- CONFIGURADOR 360° - VERSIONES Y PRECIOS (CATÁLOGO) -->
+                <div class="settings-section" style="margin-top: 24px;">
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; font-family: 'Unbounded', sans-serif;">
+                                <i class="fas fa-arrows-spin" style="color: var(--accent);"></i> Visor 360° Interactivo (Versiones, Precios y Ficha)
+                            </h3>
+                            <p style="font-size: 0.78rem; color: var(--text3); margin: 6px 0 0 0;">
+                                Personaliza la versión, precio de lista MSRP, lista de características clave y enlace WhatsApp para los vehículos del visor 360° de la página del catálogo.
+                            </p>
+                        </div>
+                        <button type="button" class="btn btn-ghost btn-sm" onclick="reset360Defaults()" style="font-size: 0.78rem;">
+                            <i class="fas fa-rotate-left"></i> Restaurar Valores 360°
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                        <!-- Modelo 1: Hyundai Elantra N -->
+                        <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37,99,235,0.12); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                    <i class="fas fa-car-side"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text);">Hyundai Elantra N</h4>
+                                    <span style="font-size: 0.72rem; color: var(--text3);">Sedán Deportivo · 360°</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Nombre de Versión / Insignia</label>
+                                <input type="text" class="form-input" id="sElantraVersion" placeholder="Ej: N">
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Aparece junto al selector radial (ej. N, N-Line, Turbo).</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Precio Starting MSRP</label>
+                                <input type="text" class="form-input" id="sElantraMsrp" placeholder="Ej: $35,300">
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Monto formal o precio sugerido visible en el visor.</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Características (1 por línea con viñeta ✓)</label>
+                                <textarea class="form-input" id="sElantraFeatures" rows="3" style="resize: vertical; font-size: 0.8rem; line-height: 1.4;" placeholder="N Light Sport bucket seats&#10;Electronically Controlled Suspension (ECS)&#10;N Corner Carving Differential (eLSD)"></textarea>
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Escribe cada característica en una línea nueva.</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;"><i class="fab fa-whatsapp" style="color:#22c55e;"></i> Enlace WhatsApp de Consulta</label>
+                                <input type="text" class="form-input" id="sElantraWa" placeholder="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Texto del Botón CTA WhatsApp</label>
+                                <input type="text" class="form-input" id="sElantraWaText" placeholder="Consultar Ficha y Disponibilidad">
+                            </div>
+                        </div>
+
+                        <!-- Modelo 2: Toyota 4Runner Limited -->
+                        <div style="background: var(--bg2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37,99,235,0.12); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                                    <i class="fas fa-truck-monster"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text);">Toyota 4Runner Limited</h4>
+                                    <span style="font-size: 0.72rem; color: var(--text3);">SUV Todo Terreno · 360°</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Nombre de Versión / Insignia</label>
+                                <input type="text" class="form-input" id="sRunnerVersion" placeholder="Ej: LIMITED 4x2">
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Aparece junto al selector radial (ej. LIMITED 4x2, TRD PRO, 4x4).</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Precio Starting MSRP</label>
+                                <input type="text" class="form-input" id="sRunnerMsrp" placeholder="Ej: $52,500">
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Monto formal o precio sugerido visible en el visor.</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Características (1 por línea con viñeta ✓)</label>
+                                <textarea class="form-input" id="sRunnerFeatures" rows="3" style="resize: vertical; font-size: 0.8rem; line-height: 1.4;" placeholder="Tracción 4x2 Trasera RWD de alta eficiencia y suave rodaje&#10;Asientos tapizados en cuero perforado calefaccionados y ventilados&#10;Sistema de Audio Premium JBL® con 15 altavoces y subwoofer"></textarea>
+                                <small style="font-size: 0.7rem; color: var(--text3); margin-top: 4px; display: block;">Escribe cada característica en una línea nueva.</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 12px;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;"><i class="fab fa-whatsapp" style="color:#22c55e;"></i> Enlace WhatsApp de Consulta</label>
+                                <input type="text" class="form-input" id="sRunnerWa" placeholder="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x2">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Texto del Botón CTA WhatsApp</label>
+                                <input type="text" class="form-input" id="sRunnerWaText" placeholder="Consultar Ficha y Disponibilidad">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- BARRA DE ACCIÓN INFERIOR -->
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:28px; padding:18px 20px; background:#FFFFFF; border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 4px 14px rgba(0,0,0,0.03);">
                     <div style="font-size:0.82rem; color:var(--text2); display:flex; align-items:center; gap:8px;">
@@ -4286,6 +4387,53 @@
                 updateShowroomPreview();
             }
 
+            // Población de configuración del Visor 360° (Versiones y Precios)
+            const sc360 = map.showcase_360_models || {};
+            const elantraData = sc360.elantra || {};
+            const runnerData = sc360.runner || {};
+
+            if (document.getElementById('sElantraVersion')) {
+                document.getElementById('sElantraVersion').value = elantraData.versionBadge || 'N';
+            }
+            if (document.getElementById('sElantraMsrp')) {
+                document.getElementById('sElantraMsrp').value = elantraData.msrpPrice || '$35,300';
+            }
+            if (document.getElementById('sElantraFeatures')) {
+                const defElantraFeats = [
+                    'N Light Sport bucket seats',
+                    'Electronically Controlled Suspension (ECS)',
+                    'N Corner Carving Differential (eLSD)'
+                ];
+                document.getElementById('sElantraFeatures').value = Array.isArray(elantraData.features) ? elantraData.features.join('\n') : (elantraData.features || defElantraFeats.join('\n'));
+            }
+            if (document.getElementById('sElantraWa')) {
+                document.getElementById('sElantraWa').value = elantraData.whatsappUrl || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025';
+            }
+            if (document.getElementById('sElantraWaText')) {
+                document.getElementById('sElantraWaText').value = elantraData.whatsappText || 'Consultar Ficha y Disponibilidad';
+            }
+
+            if (document.getElementById('sRunnerVersion')) {
+                document.getElementById('sRunnerVersion').value = runnerData.versionBadge || 'LIMITED 4x2';
+            }
+            if (document.getElementById('sRunnerMsrp')) {
+                document.getElementById('sRunnerMsrp').value = runnerData.msrpPrice || '$52,500';
+            }
+            if (document.getElementById('sRunnerFeatures')) {
+                const defRunnerFeats = [
+                    'Tracción 4x2 Trasera RWD de alta eficiencia y suave rodaje',
+                    'Asientos tapizados en cuero perforado calefaccionados y ventilados',
+                    'Sistema de Audio Premium JBL® con 15 altavoces y subwoofer'
+                ];
+                document.getElementById('sRunnerFeatures').value = Array.isArray(runnerData.features) ? runnerData.features.join('\n') : (runnerData.features || defRunnerFeats.join('\n'));
+            }
+            if (document.getElementById('sRunnerWa')) {
+                document.getElementById('sRunnerWa').value = runnerData.whatsappUrl || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x2';
+            }
+            if (document.getElementById('sRunnerWaText')) {
+                document.getElementById('sRunnerWaText').value = runnerData.whatsappText || 'Consultar Ficha y Disponibilidad';
+            }
+
             if (map.hero_slides && Array.isArray(map.hero_slides) && map.hero_slides.length > 0) {
                 heroSlides = map.hero_slides;
                 renderHeroSlides();
@@ -5267,6 +5415,42 @@
             showToast('Valores de Showroom restaurados por defecto', 'info');
         };
 
+        window.reset360Defaults = function() {
+            if (document.getElementById('sElantraVersion')) document.getElementById('sElantraVersion').value = 'N';
+            if (document.getElementById('sElantraMsrp')) document.getElementById('sElantraMsrp').value = '$35,300';
+            if (document.getElementById('sElantraFeatures')) {
+                document.getElementById('sElantraFeatures').value = [
+                    'N Light Sport bucket seats',
+                    'Electronically Controlled Suspension (ECS)',
+                    'N Corner Carving Differential (eLSD)'
+                ].join('\n');
+            }
+            if (document.getElementById('sElantraWa')) {
+                document.getElementById('sElantraWa').value = 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025';
+            }
+            if (document.getElementById('sElantraWaText')) {
+                document.getElementById('sElantraWaText').value = 'Consultar Ficha y Disponibilidad';
+            }
+
+            if (document.getElementById('sRunnerVersion')) document.getElementById('sRunnerVersion').value = 'LIMITED 4x2';
+            if (document.getElementById('sRunnerMsrp')) document.getElementById('sRunnerMsrp').value = '$52,500';
+            if (document.getElementById('sRunnerFeatures')) {
+                document.getElementById('sRunnerFeatures').value = [
+                    'Tracción 4x2 Trasera RWD de alta eficiencia y suave rodaje',
+                    'Asientos tapizados en cuero perforado calefaccionados y ventilados',
+                    'Sistema de Audio Premium JBL® con 15 altavoces y subwoofer'
+                ].join('\n');
+            }
+            if (document.getElementById('sRunnerWa')) {
+                document.getElementById('sRunnerWa').value = 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x2';
+            }
+            if (document.getElementById('sRunnerWaText')) {
+                document.getElementById('sRunnerWaText').value = 'Consultar Ficha y Disponibilidad';
+            }
+
+            showToast('Valores de Versiones 360° restaurados por defecto', 'info');
+        };
+
         window.uploadShowroomImage = async function(input) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
@@ -5352,6 +5536,28 @@
                 showroom_badge_text: document.getElementById('sShowroomBadge')?.value?.trim() || 'Showroom Porlamar, Isla de Margarita',
                 showroom_seal_text: document.getElementById('sShowroomSealText')?.value?.trim() || 'MASTERTECH CERTIFIED',
                 showroom_seal_enabled: document.getElementById('sShowroomSealEnabled')?.checked !== false,
+                showcase_360_models: {
+                    elantra: {
+                        versionBadge: document.getElementById('sElantraVersion')?.value?.trim() || 'N',
+                        msrpPrice: document.getElementById('sElantraMsrp')?.value?.trim() || '$35,300',
+                        features: (document.getElementById('sElantraFeatures')?.value || '')
+                            .split('\n')
+                            .map(f => f.trim())
+                            .filter(Boolean),
+                        whatsappUrl: document.getElementById('sElantraWa')?.value?.trim() || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025',
+                        whatsappText: document.getElementById('sElantraWaText')?.value?.trim() || 'Consultar Ficha y Disponibilidad'
+                    },
+                    runner: {
+                        versionBadge: document.getElementById('sRunnerVersion')?.value?.trim() || 'LIMITED 4x2',
+                        msrpPrice: document.getElementById('sRunnerMsrp')?.value?.trim() || '$52,500',
+                        features: (document.getElementById('sRunnerFeatures')?.value || '')
+                            .split('\n')
+                            .map(f => f.trim())
+                            .filter(Boolean),
+                        whatsappUrl: document.getElementById('sRunnerWa')?.value?.trim() || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x2',
+                        whatsappText: document.getElementById('sRunnerWaText')?.value?.trim() || 'Consultar Ficha y Disponibilidad'
+                    }
+                },
                 hero_slides: heroSlides
             };
             for (const [key, val] of Object.entries(settings)) {
@@ -5383,6 +5589,29 @@
                 const showroomSealText = document.getElementById('sShowroomSealText')?.value?.trim() || 'MASTERTECH CERTIFIED';
                 const showroomSealEnabled = document.getElementById('sShowroomSealEnabled')?.checked !== false;
 
+                const showcase360Models = {
+                    elantra: {
+                        versionBadge: document.getElementById('sElantraVersion')?.value?.trim() || 'N',
+                        msrpPrice: document.getElementById('sElantraMsrp')?.value?.trim() || '$35,300',
+                        features: (document.getElementById('sElantraFeatures')?.value || '')
+                            .split('\n')
+                            .map(f => f.trim())
+                            .filter(Boolean),
+                        whatsappUrl: document.getElementById('sElantraWa')?.value?.trim() || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025',
+                        whatsappText: document.getElementById('sElantraWaText')?.value?.trim() || 'Consultar Ficha y Disponibilidad'
+                    },
+                    runner: {
+                        versionBadge: document.getElementById('sRunnerVersion')?.value?.trim() || 'LIMITED 4x2',
+                        msrpPrice: document.getElementById('sRunnerMsrp')?.value?.trim() || '$52,500',
+                        features: (document.getElementById('sRunnerFeatures')?.value || '')
+                            .split('\n')
+                            .map(f => f.trim())
+                            .filter(Boolean),
+                        whatsappUrl: document.getElementById('sRunnerWa')?.value?.trim() || 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x2',
+                        whatsappText: document.getElementById('sRunnerWaText')?.value?.trim() || 'Consultar Ficha y Disponibilidad'
+                    }
+                };
+
                 // 1. Guardar localmente de inmediato (persistencia garantizada sin pérdida)
                 let currentSettings = {};
                 try {
@@ -5395,6 +5624,7 @@
                 currentSettings.showroom_badge_text = showroomBadge;
                 currentSettings.showroom_seal_text = showroomSealText;
                 currentSettings.showroom_seal_enabled = showroomSealEnabled;
+                currentSettings.showcase_360_models = showcase360Models;
 
                 try {
                     localStorage.setItem('sn_site_settings', JSON.stringify(currentSettings));
@@ -5411,7 +5641,8 @@
                             showroom_image: showroomImg,
                             showroom_badge_text: showroomBadge,
                             showroom_seal_text: showroomSealText,
-                            showroom_seal_enabled: showroomSealEnabled
+                            showroom_seal_enabled: showroomSealEnabled,
+                            showcase_360_models: showcase360Models
                         }
                     });
                 } catch(apiErr) {
@@ -5445,6 +5676,11 @@
                             supabaseClient.from('site_settings').upsert({
                                 key: 'showroom_seal_enabled',
                                 value: JSON.stringify(showroomSealEnabled),
+                                updated_at: new Date().toISOString()
+                            }),
+                            supabaseClient.from('site_settings').upsert({
+                                key: 'showcase_360_models',
+                                value: JSON.stringify(showcase360Models),
                                 updated_at: new Date().toISOString()
                             })
                         ]);

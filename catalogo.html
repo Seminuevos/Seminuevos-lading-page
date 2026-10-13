@@ -2205,6 +2205,71 @@
         const msrpPriceEl = document.getElementById('configMsrpPrice');
         const featuresListEl = document.getElementById('configFeaturesList');
         const whatsappLinkEl = document.getElementById('configWhatsappLink');
+        const whatsappTextEl = document.getElementById('configWhatsappText');
+
+        // Sincronización dinámica de Versiones y Precios desde CMS (localStorage / API / Supabase)
+        function applyCustom360Settings(customSettings) {
+            if (!customSettings) return;
+            const modelsConfig = customSettings.showcase_360_models || customSettings;
+            if (!modelsConfig) return;
+
+            ['elantra', 'runner'].forEach(key => {
+                if (modelsConfig[key] && modelsData[key]) {
+                    const c = modelsConfig[key];
+                    if (c.versionBadge) modelsData[key].versionBadge = c.versionBadge;
+                    if (c.msrpPrice) modelsData[key].msrpPrice = c.msrpPrice;
+                    if (c.features && Array.isArray(c.features) && c.features.length > 0) {
+                        modelsData[key].features = c.features;
+                    }
+                    if (c.whatsappUrl) modelsData[key].whatsappUrl = c.whatsappUrl;
+                    if (c.whatsappText) modelsData[key].whatsappText = c.whatsappText;
+                }
+            });
+
+            // Re-sincronizar referencia del modelo actual y re-renderizar
+            currentModel = modelsData[currentModelKey];
+            renderModelDetails();
+        }
+
+        // 1. Carga inmediata desde caché local para evitar parpadeos
+        try {
+            const cached = localStorage.getItem('sn_site_settings');
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                applyCustom360Settings(parsed);
+            }
+        } catch(e) {}
+
+        // 2. Sincronización asíncrona desde API de ajustes / Supabase
+        (async function syncRemote360Settings() {
+            try {
+                // Si Supabase Client está disponible en la ventana
+                if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                    const { data, error } = await window.supabaseClient
+                        .from('site_settings')
+                        .select('value')
+                        .eq('key', 'showcase_360_models')
+                        .maybeSingle();
+                    if (!error && data && data.value) {
+                        let parsedVal = data.value;
+                        try { parsedVal = JSON.parse(data.value); } catch(ex) {}
+                        applyCustom360Settings({ showcase_360_models: parsedVal });
+                        return;
+                    }
+                }
+
+                // Fallback a endpoint /api/settings
+                const resp = await fetch('/api/settings');
+                if (resp.ok) {
+                    const remoteSettings = await resp.json();
+                    if (remoteSettings && (remoteSettings.showcase_360_models || remoteSettings.data?.showcase_360_models)) {
+                        applyCustom360Settings(remoteSettings.showcase_360_models || remoteSettings.data?.showcase_360_models);
+                    }
+                }
+            } catch(syncErr) {
+                // Silencioso: usa valores predeterminados
+            }
+        })();
 
         if (!viewer || !canvas) return;
         const ctx = canvas.getContext('2d', { alpha: true });
@@ -2217,6 +2282,9 @@
             }
             if (whatsappLinkEl) {
                 whatsappLinkEl.href = currentModel.whatsappUrl;
+            }
+            if (whatsappTextEl && currentModel.whatsappText) {
+                whatsappTextEl.textContent = currentModel.whatsappText;
             }
             if (btnModelElantra && btnModelRunner) {
                 if (currentModelKey === 'elantra') {
