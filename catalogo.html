@@ -983,6 +983,63 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
         }
 
+        /* Selector de Vehículo 360 */
+        .model-selector-card {
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            padding: 16px 20px;
+        }
+
+        .model-badge-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #0284C7;
+            background: rgba(2, 132, 199, 0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        .model-toggle-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: #E2E8F0;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .model-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-size: 0.88rem;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+        }
+
+        .model-toggle-btn:hover {
+            color: #0F172A;
+        }
+
+        .model-toggle-btn.active {
+            background: #0F172A;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+
+        .model-toggle-btn i {
+            font-size: 0.95rem;
+        }
+
         .config-card-header {
             margin-bottom: 12px;
         }
@@ -1304,8 +1361,25 @@
                 </div>
             </div>
 
-            <!-- COLUMNA DERECHA: CONFIGURADOR OFICIAL (VERSIÓN & COLORES) -->
+            <!-- COLUMNA DERECHA: CONFIGURADOR OFICIAL (MODELO, VERSIÓN & COLORES) -->
             <div class="showcase-config-col">
+                <!-- TARJETA 0: SELECCIÓN DE MODELO (ELANTRA N vs 4RUNNER LIMITED) -->
+                <div class="config-card model-selector-card">
+                    <div class="config-card-header">
+                        <span class="config-title"><i class="fas fa-layer-group" style="color:var(--accent-red); margin-right:6px;"></i> Modelo en Exhibición</span>
+                    </div>
+                    <div class="model-toggle-group">
+                        <button type="button" class="model-toggle-btn active" id="btnModelElantra" data-model="elantra">
+                            <span class="model-btn-title">Elantra N</span>
+                            <span class="model-badge-tag">Sedán Deportivo</span>
+                        </button>
+                        <button type="button" class="model-toggle-btn" id="btnModelRunner" data-model="runner">
+                            <span class="model-btn-title">4Runner Limited</span>
+                            <span class="model-badge-tag">SUV 4x4 Luxury</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- TARJETA 1: SELECCIONE UNA VERSIÓN -->
                 <div class="config-card version-card">
                     <div class="config-card-header">
@@ -1314,20 +1388,20 @@
                     <div class="version-option-row">
                         <div class="version-radio-wrap">
                             <span class="radio-custom checked"></span>
-                            <span class="version-badge-name">N</span>
+                            <span class="version-badge-name" id="configVersionBadge">N</span>
                         </div>
                         <div class="version-pricing-wrap">
                             <span class="msrp-label">Starting MSRP <i class="fas fa-circle-info" title="Precio base sugerido por el fabricante"></i></span>
-                            <span class="msrp-price">$35,300</span>
+                            <span class="msrp-price" id="configMsrpPrice">$35,300</span>
                         </div>
                     </div>
-                    <ul class="version-features-list">
+                    <ul class="version-features-list" id="configFeaturesList">
                         <li><i class="fas fa-check"></i> N Light Sport bucket seats</li>
                         <li><i class="fas fa-check"></i> Electronically Controlled Suspension (ECS)</li>
                         <li><i class="fas fa-check"></i> N Corner Carving Differential (eLSD) <i class="fas fa-circle-info" style="font-size:0.65rem; color:#94A3B8;"></i></li>
                     </ul>
-                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025" class="view-specs-link" target="_blank" rel="noopener">
-                        <span>Consultar Ficha y Disponibilidad</span> <i class="fas fa-arrow-right"></i>
+                    <a href="https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025" id="configWhatsappLink" class="view-specs-link" target="_blank" rel="noopener">
+                        <span id="configWhatsappText">Consultar Ficha y Disponibilidad</span> <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
 
@@ -1681,50 +1755,116 @@
 
     <script src="assets/main-BWQf_a18.js"></script>
 
-    <!-- ===== SCRIPT INTERACTIVO MOTOR 360° HYUNDAI ELANTRA N ===== -->
-    <!-- ===== SCRIPT INTERACTIVO MOTOR 360° HYUNDAI ELANTRA N CON PALETA DE COLORES ===== -->
+    <!-- ===== SCRIPT INTERACTIVO MOTOR 360° MULTI-MODELO (ELANTRA N & 4RUNNER LIMITED) ===== -->
     <script>
-    (function initElantra360() {
-        const colorPaletteData = [
-            {
-                id: 'abyss-black',
-                name: 'Abyss Black',
-                price: '+ $0',
-                gradient: 'radial-gradient(circle at 35% 35%, #383838 0%, #1a1a1a 55%, #050505 100%)',
-                frames: null // Listo para recibir la carpeta del usuario
+    (function initShowcase360() {
+        const modelsData = {
+            elantra: {
+                name: 'Hyundai Elantra N',
+                versionBadge: 'N',
+                msrpPrice: '$35,300',
+                features: [
+                    'N Light Sport bucket seats',
+                    'Electronically Controlled Suspension (ECS)',
+                    'N Corner Carving Differential (eLSD)'
+                ],
+                whatsappUrl: 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20el%20Hyundai%20Elantra%20N%202025',
+                scaleFactor: 1.16,
+                colors: [
+                    {
+                        id: 'abyss-black',
+                        name: 'Abyss Black',
+                        price: '+ $0',
+                        gradient: 'radial-gradient(circle at 35% 35%, #383838 0%, #1a1a1a 55%, #050505 100%)',
+                        frames: null
+                    },
+                    {
+                        id: 'ultimate-red',
+                        name: 'Ultimate Red',
+                        price: '+ $500',
+                        gradient: 'radial-gradient(circle at 35% 35%, #D32F2F 0%, #8B0000 60%, #4A0000 100%)',
+                        frames: [
+                            'images/elantra-360/1.png', 'images/elantra-360/2.png', 'images/elantra-360/3.webp',
+                            'images/elantra-360/4.png', 'images/elantra-360/5.png', 'images/elantra-360/6.png',
+                            'images/elantra-360/7.png', 'images/elantra-360/8.png', 'images/elantra-360/9.png',
+                            'images/elantra-360/10.png', 'images/elantra-360/11.png', 'images/elantra-360/12.png',
+                            'images/elantra-360/13.png', 'images/elantra-360/14.png', 'images/elantra-360/15.png',
+                            'images/elantra-360/16.png', 'images/elantra-360/17.png', 'images/elantra-360/18.png',
+                            'images/elantra-360/19.png', 'images/elantra-360/20.png'
+                        ]
+                    },
+                    {
+                        id: 'cyber-gray',
+                        name: 'Cyber Gray',
+                        price: '+ $0',
+                        gradient: 'radial-gradient(circle at 35% 35%, #E2E8F0 0%, #94A3B8 55%, #475569 100%)',
+                        frames: null
+                    },
+                    {
+                        id: 'performance-blue',
+                        name: 'Performance Blue',
+                        price: '+ $500',
+                        gradient: 'radial-gradient(circle at 35% 35%, #7DD3FC 0%, #38BDF8 50%, #0369A1 100%)',
+                        frames: null
+                    }
+                ],
+                defaultColorId: 'ultimate-red'
             },
-            {
-                id: 'ultimate-red',
-                name: 'Ultimate Red',
-                price: '+ $500',
-                gradient: 'radial-gradient(circle at 35% 35%, #D32F2F 0%, #8B0000 60%, #4A0000 100%)',
-                frames: [
-                    'images/elantra-360/1.png', 'images/elantra-360/2.png', 'images/elantra-360/3.webp',
-                    'images/elantra-360/4.png', 'images/elantra-360/5.png', 'images/elantra-360/6.png',
-                    'images/elantra-360/7.png', 'images/elantra-360/8.png', 'images/elantra-360/9.png',
-                    'images/elantra-360/10.png', 'images/elantra-360/11.png', 'images/elantra-360/12.png',
-                    'images/elantra-360/13.png', 'images/elantra-360/14.png', 'images/elantra-360/15.png',
-                    'images/elantra-360/16.png', 'images/elantra-360/17.png', 'images/elantra-360/18.png',
-                    'images/elantra-360/19.png', 'images/elantra-360/20.png'
-                ]
-            },
-            {
-                id: 'cyber-gray',
-                name: 'Cyber Gray',
-                price: '+ $0',
-                gradient: 'radial-gradient(circle at 35% 35%, #E2E8F0 0%, #94A3B8 55%, #475569 100%)',
-                frames: null // Listo para recibir la carpeta del usuario
-            },
-            {
-                id: 'performance-blue',
-                name: 'Performance Blue',
-                price: '+ $500',
-                gradient: 'radial-gradient(circle at 35% 35%, #7DD3FC 0%, #38BDF8 50%, #0369A1 100%)',
-                frames: null // Listo para recibir la carpeta del usuario
+            runner: {
+                name: 'Toyota 4Runner Limited',
+                versionBadge: 'LIMITED 4x4',
+                msrpPrice: '$55,400',
+                features: [
+                    'Tracción 4WD Full-Time con diferencial Torsen®',
+                    'Asientos tapizados en cuero perforado calefaccionados y ventilados',
+                    'Sistema de Audio Premium JBL® con 15 altavoces y subwoofer'
+                ],
+                whatsappUrl: 'https://wa.me/584248700438?text=Hola,%20deseo%20cotizar%20la%20Toyota%204Runner%20Limited%204x4',
+                scaleFactor: 1.15,
+                colors: [
+                    {
+                        id: 'wind-chill-pearl',
+                        name: 'Wind Chill Pearl',
+                        price: '+ $425',
+                        gradient: 'radial-gradient(circle at 35% 35%, #FFFFFF 0%, #E2E8F0 55%, #CBD5E1 100%)',
+                        frames: [
+                            'images/runner-360/1.webp', 'images/runner-360/2.webp', 'images/runner-360/3.webp',
+                            'images/runner-360/4.webp', 'images/runner-360/5.webp', 'images/runner-360/6.webp',
+                            'images/runner-360/7.webp', 'images/runner-360/8.webp', 'images/runner-360/9.webp',
+                            'images/runner-360/10.webp', 'images/runner-360/11.webp', 'images/runner-360/12.webp',
+                            'images/runner-360/13.webp', 'images/runner-360/14.webp', 'images/runner-360/15.webp',
+                            'images/runner-360/16.webp', 'images/runner-360/17.webp', 'images/runner-360/18.webp'
+                        ]
+                    },
+                    {
+                        id: 'midnight-black',
+                        name: 'Midnight Black Metallic',
+                        price: '+ $0',
+                        gradient: 'radial-gradient(circle at 35% 35%, #2B2D42 0%, #15161E 60%, #050608 100%)',
+                        frames: null
+                    },
+                    {
+                        id: 'magnetic-gray',
+                        name: 'Magnetic Gray Metallic',
+                        price: '+ $0',
+                        gradient: 'radial-gradient(circle at 35% 35%, #64748B 0%, #475569 55%, #334155 100%)',
+                        frames: null
+                    },
+                    {
+                        id: 'nautical-blue',
+                        name: 'Nautical Blue Metallic',
+                        price: '+ $0',
+                        gradient: 'radial-gradient(circle at 35% 35%, #1E3A8A 0%, #0F172A 65%, #020617 100%)',
+                        frames: null
+                    }
+                ],
+                defaultColorId: 'wind-chill-pearl'
             }
-        ];
+        };
 
-        let selectedColor = colorPaletteData.find(c => c.id === 'ultimate-red') || colorPaletteData[0];
+        let currentModelKey = 'elantra';
+        let currentModel = modelsData[currentModelKey];
+        let selectedColor = currentModel.colors.find(c => c.id === currentModel.defaultColorId) || currentModel.colors[0];
         let currentFrameSeq = selectedColor.frames || [];
         let total = currentFrameSeq.length || 20;
         let preloaded = new Array(total);
@@ -1743,12 +1883,39 @@
         const selectedColorNameEl = document.getElementById('selectedColorName');
         const colorPriceDeltaEl = document.getElementById('colorPriceDelta');
 
+        const btnModelElantra = document.getElementById('btnModelElantra');
+        const btnModelRunner = document.getElementById('btnModelRunner');
+        const versionBadgeEl = document.getElementById('configVersionBadge');
+        const msrpPriceEl = document.getElementById('configMsrpPrice');
+        const featuresListEl = document.getElementById('configFeaturesList');
+        const whatsappLinkEl = document.getElementById('configWhatsappLink');
+
         if (!viewer || !canvas) return;
         const ctx = canvas.getContext('2d', { alpha: true });
 
-        // Renderizar swatches interactivos
-        if (swatchesContainer) {
-            swatchesContainer.innerHTML = colorPaletteData.map(c => `
+        function renderModelDetails() {
+            if (versionBadgeEl) versionBadgeEl.textContent = currentModel.versionBadge;
+            if (msrpPriceEl) msrpPriceEl.textContent = currentModel.msrpPrice;
+            if (featuresListEl) {
+                featuresListEl.innerHTML = currentModel.features.map(f => `<li><i class="fas fa-check"></i> ${f}</li>`).join('');
+            }
+            if (whatsappLinkEl) {
+                whatsappLinkEl.href = currentModel.whatsappUrl;
+            }
+            if (btnModelElantra && btnModelRunner) {
+                if (currentModelKey === 'elantra') {
+                    btnModelElantra.classList.add('active');
+                    btnModelRunner.classList.remove('active');
+                } else {
+                    btnModelRunner.classList.add('active');
+                    btnModelElantra.classList.remove('active');
+                }
+            }
+        }
+
+        function renderSwatches() {
+            if (!swatchesContainer) return;
+            swatchesContainer.innerHTML = currentModel.colors.map(c => `
                 <button type="button" class="swatch-item ${c.id === selectedColor.id ? 'active' : ''}" data-color="${c.id}" title="${c.name}">
                     <div class="swatch-ring-wrap">
                         <div class="swatch-circle" style="background: ${c.gradient};"></div>
@@ -1766,11 +1933,10 @@
         }
 
         function selectColor(colorId) {
-            const found = colorPaletteData.find(c => c.id === colorId);
+            const found = currentModel.colors.find(c => c.id === colorId);
             if (!found) return;
             selectedColor = found;
 
-            // Actualización de estado visual
             if (swatchesContainer) {
                 swatchesContainer.querySelectorAll('.swatch-item').forEach(b => {
                     if (b.dataset.color === colorId) b.classList.add('active');
@@ -1780,35 +1946,54 @@
             if (selectedColorNameEl) selectedColorNameEl.textContent = found.name;
             if (colorPriceDeltaEl) colorPriceDeltaEl.textContent = found.price;
 
-            // Si el color ya tiene su secuencia de frames configurada, recargar el 360
             if (found.frames && found.frames.length > 0) {
-                currentFrameSeq = found.frames;
-                total = currentFrameSeq.length;
-                preloaded = new Array(total);
-                loadedCount = 0;
-                activeDrawnIndex = -1;
-                if (loadingOverlay) {
-                    loadingOverlay.style.display = 'flex';
-                    loadingOverlay.style.opacity = '1';
-                }
-                preload();
+                loadFrameSequence(found.frames);
             } else {
                 if (typeof showToast === 'function') {
-                    showToast(`Color ${found.name} seleccionado. (Imágenes preparadas para vincular con su carpeta)`, 'info');
+                    showToast(`Color ${found.name} seleccionado. (Imágenes preparadas para vincular)`, 'info');
                 }
             }
         }
 
-        // Función global accesible para registrar nuevas carpetas de colores
-        window.registerElantraColorFrames = function(colorId, frames) {
-            const target = colorPaletteData.find(c => c.id === colorId);
-            if (target && Array.isArray(frames)) {
-                target.frames = frames;
-                if (selectedColor.id === colorId) {
-                    selectColor(colorId);
-                }
+        function loadFrameSequence(frames) {
+            currentFrameSeq = frames;
+            total = currentFrameSeq.length;
+            preloaded = new Array(total);
+            loadedCount = 0;
+            activeDrawnIndex = -1;
+            currentPos = 0;
+            velocity = 0;
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.opacity = '1';
             }
-        };
+            preload();
+        }
+
+        function switchModel(modelKey) {
+            if (!modelsData[modelKey] || currentModelKey === modelKey) return;
+            currentModelKey = modelKey;
+            currentModel = modelsData[modelKey];
+            selectedColor = currentModel.colors.find(c => c.id === currentModel.defaultColorId) || currentModel.colors[0];
+
+            renderModelDetails();
+            renderSwatches();
+            if (selectedColorNameEl) selectedColorNameEl.textContent = selectedColor.name;
+            if (colorPriceDeltaEl) colorPriceDeltaEl.textContent = selectedColor.price;
+
+            if (selectedColor.frames && selectedColor.frames.length > 0) {
+                loadFrameSequence(selectedColor.frames);
+            }
+        }
+
+        window.switch360Model = switchModel;
+
+        if (btnModelElantra) {
+            btnModelElantra.addEventListener('click', () => switchModel('elantra'));
+        }
+        if (btnModelRunner) {
+            btnModelRunner.addEventListener('click', () => switchModel('runner'));
+        }
 
         function drawFrame(idx) {
             const img = preloaded[idx];
@@ -1819,9 +2004,8 @@
 
             const iw = img.naturalWidth || img.width;
             const ih = img.naturalHeight || img.height;
-            // Factor 1.16x para aprovechar al máximo el área del visor eliminando el exceso de margen transparente sin recortar las esquinas
             const baseScale = Math.min(cw / iw, ch / ih);
-            const scale = baseScale * 1.16;
+            const scale = baseScale * (currentModel.scaleFactor || 1.15);
             const dw = iw * scale;
             const dh = ih * scale;
             const dx = (cw - dw) / 2;
@@ -1935,7 +2119,12 @@
             requestAnimationFrame(renderLoop);
         }
 
-        preload();
+        // Inicialización
+        renderModelDetails();
+        renderSwatches();
+        if (selectedColorNameEl) selectedColorNameEl.textContent = selectedColor.name;
+        if (colorPriceDeltaEl) colorPriceDeltaEl.textContent = selectedColor.price;
+        loadFrameSequence(selectedColor.frames);
         requestAnimationFrame(renderLoop);
     })();
     </script>
