@@ -999,27 +999,31 @@
             max-height: 100%;
         }
 
-        /* BARRA DE ACCESO AL CATÁLOGO — siempre visible al pie de la primera pantalla */
+        /* BARRA EJECUTIVA DE ACCESO Y SELECTOR DEL CATÁLOGO (ESTILO DEALERSHIP PREMIUM) */
         .catalog-quickbar {
             width: 100%;
             max-width: 1200px;
             flex-shrink: 0;
             display: grid;
-            grid-template-columns: 1.15fr repeat(3, 1fr);
+            grid-template-columns: 1.1fr repeat(3, 1fr);
             align-items: stretch;
-            background: #0F172A;
-            border-radius: 16px;
-            padding: 6px;
-            gap: 6px;
-            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 18px;
+            padding: 8px;
+            gap: 8px;
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 10;
         }
 
         .quickbar-lead {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 8px 14px;
+            padding: 8px 16px;
             color: #FFFFFF;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .quickbar-eyebrow {
@@ -1033,16 +1037,30 @@
             gap: 6px;
         }
 
-        .quickbar-eyebrow i {
-            animation: bounceDown 1.6s infinite ease-in-out;
-        }
-
         .quickbar-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.02rem;
-            font-weight: 700;
-            line-height: 1.2;
+            font-size: 1.05rem;
+            font-weight: 800;
+            line-height: 1.15;
             margin-top: 2px;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+        }
+
+        .quickbar-sub {
+            font-size: 0.66rem;
+            color: #94A3B8;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .quickbar-sub i {
+            font-size: 0.6rem;
+            animation: bounceDown 1.6s infinite ease-in-out;
+            color: #38BDF8;
         }
 
         .quickbar-item {
@@ -1050,40 +1068,72 @@
             align-items: center;
             gap: 12px;
             padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 13px;
             color: #FFFFFF;
-            text-decoration: none;
             cursor: pointer;
             font-family: 'Plus Jakarta Sans', sans-serif;
             text-align: left;
-            transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            outline: none;
         }
 
         .quickbar-item:hover {
-            background: #2563EB;
-            border-color: #2563EB;
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(56, 189, 248, 0.4);
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Estado Activo: resalta con el azul distintivo de la marca SemiNuevos */
+        .quickbar-item.active {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.35) 0%, rgba(29, 78, 216, 0.2) 100%);
+            border-color: #2563EB;
+            box-shadow: 0 0 0 1px #2563EB, 0 8px 24px rgba(37, 99, 235, 0.28);
+        }
+
+        .quickbar-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: #38BDF8;
+            border-radius: 3px 3px 0 0;
+            box-shadow: 0 0 8px #38BDF8;
         }
 
         .quickbar-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            background: rgba(56, 189, 248, 0.14);
-            color: #38BDF8;
+            background: rgba(255, 255, 255, 0.06);
+            color: #94A3B8;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.95rem;
+            font-size: 1rem;
             flex-shrink: 0;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .quickbar-item:hover .quickbar-icon {
-            background: rgba(255, 255, 255, 0.18);
+            color: #38BDF8;
+            background: rgba(56, 189, 248, 0.15);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: scale(1.05);
+        }
+
+        .quickbar-item.active .quickbar-icon {
+            background: #2563EB;
             color: #FFFFFF;
+            border-color: #3B82F6;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
 
         .quickbar-text {
@@ -1091,35 +1141,81 @@
             flex-direction: column;
             flex: 1;
             min-width: 0;
+            gap: 2px;
+        }
+
+        .quickbar-text-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .quickbar-text b {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 700;
+            color: #FFFFFF;
             white-space: nowrap;
+            letter-spacing: -0.01em;
+        }
+
+        .quickbar-tag {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .quickbar-tag.local {
+            background: rgba(34, 197, 94, 0.18);
+            color: #4ADE80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .quickbar-tag.import {
+            background: rgba(56, 189, 248, 0.18);
+            color: #38BDF8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .quickbar-tag.zerokm {
+            background: rgba(245, 158, 11, 0.18);
+            color: #FBBF24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
         .quickbar-text small {
             font-size: 0.68rem;
-            color: rgba(255, 255, 255, 0.62);
+            color: #94A3B8;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-weight: 500;
         }
 
         .quickbar-item:hover .quickbar-text small {
-            color: rgba(255, 255, 255, 0.9);
+            color: #CBD5E1;
+        }
+
+        .quickbar-item.active .quickbar-text small {
+            color: #BAE6FD;
         }
 
         .quickbar-arrow {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-            transition: transform 0.2s ease, color 0.2s ease;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.25s ease;
         }
 
         .quickbar-item:hover .quickbar-arrow {
-            color: #FFFFFF;
+            color: #38BDF8;
             transform: translateY(2px);
+        }
+
+        .quickbar-item.active .quickbar-arrow {
+            color: #38BDF8;
+            transform: translateY(3px);
         }
 
         @keyframes bounceDown {
@@ -1146,7 +1242,11 @@
                 grid-template-columns: 1fr;
                 order: -1;
             }
-            .quickbar-lead { padding: 6px 10px; }
+            .quickbar-lead { 
+                padding: 10px 14px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
         }
 
         /* Selector de Vehículo 360 — Tiles de showroom */
@@ -1686,36 +1786,46 @@
             </div>
         </div>
 
-        <!-- BARRA EJECUTIVA DE ACCESO DIRECTO AL CATÁLOGO (SIEMPRE VISIBLE EN PANTALLA) -->
-        <nav class="catalog-quickbar" aria-label="Acceso rápido al catálogo">
+        <!-- SELECTOR DE INVENTARIO Y ACCESO DIRECTO AL CATÁLOGO -->
+        <nav class="catalog-quickbar" id="catalogQuickbar" aria-label="Selector de inventario del catálogo">
             <div class="quickbar-lead">
-                <span class="quickbar-eyebrow"><i class="fas fa-arrow-down"></i> Explora el Inventario</span>
+                <span class="quickbar-eyebrow"><i class="fas fa-layer-group"></i> Inventario Oficial</span>
                 <span class="quickbar-title">Catálogo Completo</span>
+                <span class="quickbar-sub"><i class="fas fa-arrow-down"></i> Selecciona categoría</span>
             </div>
-            <a href="#seminuevos-panel" class="quickbar-item" data-target-tab="seminuevos">
+            <button type="button" class="quickbar-item active" data-target-tab="seminuevos" role="tab" aria-selected="true">
                 <div class="quickbar-icon"><i class="fas fa-car-side"></i></div>
                 <div class="quickbar-text">
-                    <b>Stock Local</b>
+                    <div class="quickbar-text-row">
+                        <b>Stock Local</b>
+                        <span class="quickbar-tag local">Inmediato</span>
+                    </div>
                     <small>Entrega inmediata en Margarita</small>
                 </div>
-                <i class="fas fa-chevron-down quickbar-arrow"></i>
-            </a>
-            <a href="#porpedido-panel" class="quickbar-item" data-target-tab="porpedido">
+                <i class="fas fa-arrow-down quickbar-arrow"></i>
+            </button>
+            <button type="button" class="quickbar-item" data-target-tab="porpedido" role="tab" aria-selected="false">
                 <div class="quickbar-icon"><i class="fas fa-ship"></i></div>
                 <div class="quickbar-text">
-                    <b>Por Pedido USA</b>
+                    <div class="quickbar-text-row">
+                        <b>Por Pedido USA</b>
+                        <span class="quickbar-tag import">Importación</span>
+                    </div>
                     <small>Importación directa llave en mano</small>
                 </div>
-                <i class="fas fa-chevron-down quickbar-arrow"></i>
-            </a>
-            <a href="#zerokm-panel" class="quickbar-item" data-target-tab="0km">
+                <i class="fas fa-arrow-down quickbar-arrow"></i>
+            </button>
+            <button type="button" class="quickbar-item" data-target-tab="0km" role="tab" aria-selected="false">
                 <div class="quickbar-icon"><i class="fas fa-award"></i></div>
                 <div class="quickbar-text">
-                    <b>0KM Nuevos</b>
-                    <small>Unidades a estrenar con garantía</small>
+                    <div class="quickbar-text-row">
+                        <b>0KM Nuevos</b>
+                        <span class="quickbar-tag zerokm">A estrenar</span>
+                    </div>
+                    <small>Garantía de concesionario</small>
                 </div>
-                <i class="fas fa-chevron-down quickbar-arrow"></i>
-            </a>
+                <i class="fas fa-arrow-down quickbar-arrow"></i>
+            </button>
         </nav>
     </section>
 
@@ -1733,31 +1843,6 @@
             <p class="catalog-hero-sub">
                 Inventario verificado con peritaje pericial MasterTech de 150 puntos, documentación legal al día y entrega llave en mano.
             </p>
-
-            <!-- 2. SELECTOR DE CATEGORÍA PRINCIPAL (3 TABS) -->
-            <div class="catalog-main-tabs" id="catalogMainTabs">
-                <button class="catalog-main-tab active" data-section="seminuevos">
-                    <div class="tab-icon-wrap"><i class="fas fa-car-side"></i></div>
-                    <div class="tab-text-wrap">
-                        <span>Stock Local</span>
-                        <small>Entrega Inmediata · Margarita</small>
-                    </div>
-                </button>
-                <button class="catalog-main-tab" data-section="porpedido">
-                    <div class="tab-icon-wrap"><i class="fas fa-ship"></i></div>
-                    <div class="tab-text-wrap">
-                        <span>Por Pedido USA</span>
-                        <small>Importación Directa Llave en Mano</small>
-                    </div>
-                </button>
-                <button class="catalog-main-tab" data-section="0km">
-                    <div class="tab-icon-wrap"><i class="fas fa-award"></i></div>
-                    <div class="tab-text-wrap">
-                        <span>0KM Nuevos</span>
-                        <small>Unidades 0KM a Estrenar</small>
-                    </div>
-                </button>
-            </div>
 
             <!-- 3. BARRA DE BÚSQUEDA Y ORDENAMIENTO -->
             <div class="catalog-sort-bar">
@@ -2405,16 +2490,40 @@
         loadFrameSequence(selectedColor.frames);
         requestAnimationFrame(renderLoop);
 
-        // Quickbar: Al hacer clic en una categoría, activar su pestaña correspondiente y hacer scroll suave
+        // Quickbar: Al hacer clic en una categoría, activar su panel de catálogo correspondiente y hacer scroll suave
         document.querySelectorAll('.catalog-quickbar .quickbar-item').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.preventDefault();
                 const targetTab = btn.getAttribute('data-target-tab');
-                if (targetTab) {
-                    const tabBtn = document.querySelector(`.catalog-main-tab[data-section="${targetTab}"]`);
-                    if (tabBtn) {
-                        e.preventDefault();
-                        tabBtn.click();
-                    }
+                if (!targetTab) return;
+
+                // 1. Actualizar estado visual de los botones de la barra
+                document.querySelectorAll('.catalog-quickbar .quickbar-item').forEach(b => {
+                    const isActive = b.getAttribute('data-target-tab') === targetTab;
+                    b.classList.toggle('active', isActive);
+                    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+
+                // 2. Activar el panel correspondiente del catálogo
+                const seminuevosPanel = document.getElementById('seminuevos-panel');
+                const porpedidoPanel = document.getElementById('porpedido-panel');
+                const zerokmPanel = document.getElementById('zerokm-panel');
+                const allPanels = [seminuevosPanel, porpedidoPanel, zerokmPanel];
+                allPanels.forEach(p => p && p.classList.remove('active'));
+
+                const targetPanelId = targetTab === '0km' ? 'zerokm-panel' : `${targetTab}-panel`;
+                const targetPanel = document.getElementById(targetPanelId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+
+                // 3. Scroll suave al panel deseado
+                const navbar = document.getElementById('navbar');
+                const navHeight = navbar ? navbar.offsetHeight : 70;
+                const scrollTarget = document.getElementById('catalogo') || targetPanel;
+                if (scrollTarget) {
+                    const targetPos = scrollTarget.offsetTop - navHeight - 10;
+                    window.scrollTo({ top: Math.max(0, targetPos), behavior: 'smooth' });
                 }
             });
         });
