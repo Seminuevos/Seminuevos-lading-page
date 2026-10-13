@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Filtros de sombra y profundidad -->
+    <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0F172A" flood-opacity="0.22"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#2563EB" flood-opacity="0.14"/>
+    </filter>
+    <filter id="badgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#1D4ED8" flood-opacity="0.28"/>
+    </filter>
+    <filter id="textShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.2" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+
+    <!-- Gradientes de Marca SemiNuevos -->
+    <linearGradient id="gearGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="35%" stop-color="#2563EB"/>
+      <stop offset="70%" stop-color="#1E40AF"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <!-- Oro Champagne Luxury -->
+    <linearGradient id="goldAccent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D97706"/>
+      <stop offset="25%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#FEF08A"/>
+      <stop offset="75%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+
+    <!-- Fondo del Núcleo Central: Blanco Showroom -->
+    <radialGradient id="innerBg" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#EFF6FF"/>
+    </radialGradient>
+
+    <!-- Gradiente de Checkmark -->
+    <linearGradient id="checkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+
+    <!-- Gradiente del Pistón Técnico -->
+    <linearGradient id="pistonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+
+    <!-- Gradiente de Placa CERTIFICADO -->
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E40AF"/>
+      <stop offset="35%" stop-color="#2563EB"/>
+      <stop offset="70%" stop-color="#1D4ED8"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <!-- Trayectoria para el texto superior: SEMINUEVOAUTOS.COM -->
+    <path id="topTextArc" d="M 82,300 A 218,218 0 1,1 518,300" fill="none"/>
+    
+    <!-- Trayectoria para sub-arco superior: GARANTÍA DE CONFIANZA -->
+    <path id="subTopArc" d="M 130,300 A 170,170 0 1,1 470,300" fill="none"/>
+
+    <!-- Trayectoria para texto inferior: AUDITADO POR MASTERTECH -->
+    <path id="bottomTextArc" d="M 82,300 A 218,218 0 0,0 518,300" fill="none"/>
+
+    <!-- Diente de engranaje (24 dientes con rotate de 15 grados) -->
+    <path id="gearTooth" d="M -16,-282 L 16,-282 L 20,-252 L -20,-252 Z" />
+  </defs>
+
+  <g filter="url(#sealShadow)">
+    <!-- 1. CORONA EXTERIOR DE ENGRANAJE (24 DIENTES) -->
+    <g fill="url(#gearGradient)" stroke="url(#goldAccent)" stroke-width="2">
+      <circle cx="300" cy="300" r="268" />
+      <use href="#gearTooth" transform="translate(300,300) rotate(0)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(15)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(30)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(45)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(60)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(75)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(90)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(105)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(120)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(135)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(150)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(165)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(180)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(195)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(210)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(225)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(240)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(255)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(270)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(285)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(300)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(315)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(330)"/>
+      <use href="#gearTooth" transform="translate(300,300) rotate(345)"/>
+    </g>
+
+    <circle cx="300" cy="300" r="260" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.8" stroke-dasharray="3 5"/>
+
+    <!-- 2. BISEL DE ORO -->
+    <circle cx="300" cy="300" r="250" fill="none" stroke="url(#goldAccent)" stroke-width="6"/>
+    <circle cx="300" cy="300" r="243" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+
+    <!-- 3. ANILLO CIRCULAR INSTITUCIONAL (AZUL OSCURO) -->
+    <circle cx="300" cy="300" r="236" fill="#0A1128" stroke="url(#goldAccent)" stroke-width="2.5"/>
+
+    <!-- ESTRELLAS DORADAS EN LOS FLANCOS -->
+    <g transform="translate(98, 300) scale(1.1)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+    <g transform="translate(114, 270) scale(0.8)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+    <g transform="translate(114, 330) scale(0.8)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+
+    <g transform="translate(502, 300) scale(1.1)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+    <g transform="translate(486, 270) scale(0.8)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+    <g transform="translate(486, 330) scale(0.8)" fill="url(#goldAccent)">
+      <polygon points="0,-10 3,-3 10,-3 4,2 6,9 0,5 -6,9 -4,2 -10,-3 -3,-3"/>
+    </g>
+
+    <!-- TEXTO ARQUEADO SUPERIOR: SEMINUEVOAUTOS.COM -->
+    <text font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="21" fill="#FFFFFF" letter-spacing="4.5" filter="url(#textShadow)">
+      <textPath href="#topTextArc" startOffset="50%" text-anchor="middle">
+        ★ SEMINUEVOAUTOS.COM ★
+      </textPath>
+    </text>
+
+    <!-- TEXTO ARQUEADO INFERIOR: AUDITADO POR MASTERTECH -->
+    <text font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="16" fill="url(#goldAccent)" letter-spacing="3.5" filter="url(#textShadow)">
+      <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
+        • AUDITADO POR MASTERTECH •
+      </textPath>
+    </text>
+
+    <!-- 4. NÚCLEO CENTRAL BLANCO -->
+    <circle cx="300" cy="300" r="186" fill="url(#innerBg)" stroke="url(#goldAccent)" stroke-width="4.5"/>
+    <circle cx="300" cy="300" r="177" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-dasharray="4 4" opacity="0.7"/>
+
+    <!-- SUB-TEXTO CURVO SUPERIOR: GARANTÍA DE CONFIANZA -->
+    <text font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="12" fill="#2563EB" letter-spacing="3.2">
+      <textPath href="#subTopArc" startOffset="50%" text-anchor="middle">
+        GARANTÍA DE CONFIANZA
+      </textPath>
+    </text>
+
+    <!-- 5. ICONOGRAFÍA CENTRAL: CHECKMARK PROFESIONAL + PISTÓN MECÁNICO TÉCNICO -->
+    <g transform="translate(295, 218)" filter="url(#badgeGlow)">
+      <!-- Checkmark elegante con contorno blanco nítido -->
+      <path d="
+        M -74,-6
+        L -36,34
+        L 58,-64
+        C 64,-70 74,-68 78,-60
+        C 82,-52 80,-42 72,-36
+        L -28,64
+        C -34,70 -44,70 -50,64
+        L -90,24
+        C -96,18 -94,8 -86,2
+        C -82,-2 -78,-3 -74,-6 Z"
+        fill="url(#checkGradient)"
+        stroke="#FFFFFF"
+        stroke-width="2"
+      />
+
+      <!-- Pistón mecánico detallado acoplado al checkmark (Inspiración original fiel pero moderna) -->
+      <g transform="translate(44, -30) rotate(32)" stroke="#FFFFFF" stroke-width="1.8">
+        <!-- Corona del pistón cilíndrico -->
+        <path d="M -18,-24 L 18,-24 C 20,-24 22,-22 22,-19 L 22,-2 L -22,-2 L -22,-19 C -22,-22 -20,-24 -18,-24 Z" fill="url(#pistonGradient)"/>
+        
+        <!-- Anillos de compresión -->
+        <line x1="-21" y1="-18" x2="21" y2="-18" stroke="#FFFFFF" stroke-width="1.4"/>
+        <line x1="-21" y1="-12" x2="21" y2="-12" stroke="#FFFFFF" stroke-width="1.4"/>
+        <line x1="-21" y1="-6"  x2="21" y2="-6"  stroke="#FFFFFF" stroke-width="1.4"/>
+
+        <!-- Falda del pistón -->
+        <path d="M -20,-2 L 20,-2 L 18,17 L 11,15 L 8,7 L -8,7 L -11,15 L -18,17 Z" fill="url(#pistonGradient)"/>
+
+        <!-- Bulón de biela central -->
+        <circle cx="0" cy="5" r="5" fill="#FFFFFF"/>
+        <circle cx="0" cy="5" r="2.8" fill="#1E40AF"/>
+
+        <!-- Biela conectora dorada -->
+        <path d="M -4,10 L -6,34 C -6,38 -3,41 0,41 C 3,41 6,38 6,34 L 4,10 Z" fill="url(#goldAccent)"/>
+        <circle cx="0" cy="36" r="3.8" fill="#0A1128"/>
+      </g>
+    </g>
+
+    <!-- 6. PLACA INSIGNIA CENTRAL: CERTIFICADO -->
+    <g transform="translate(300, 318)">
+      <!-- Sombra de placa -->
+      <rect x="-142" y="-21" width="284" height="42" rx="9" fill="rgba(15, 23, 42, 0.18)" transform="translate(0, 3)"/>
+      
+      <!-- Fondo azul dealership con bisel dorado -->
+      <rect x="-140" y="-21" width="280" height="42" rx="8" fill="url(#ribbonGrad)" stroke="url(#goldAccent)" stroke-width="2.5"/>
+
+      <!-- Adornos en bordes -->
+      <line x1="-131" y1="-13" x2="-131" y2="13" stroke="rgba(255,255,255,0.4)" stroke-width="1.6"/>
+      <line x1="131" y1="-13" x2="131" y2="13" stroke="rgba(255,255,255,0.4)" stroke-width="1.6"/>
+
+      <!-- TEXTO: CERTIFICADO -->
+      <text x="0" y="8" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="25" fill="#FFFFFF" text-anchor="middle" letter-spacing="4.5" filter="url(#textShadow)">
+        CERTIFICADO
+      </text>
+    </g>
+
+    <!-- 7. SUBTÍTULO: VERIFIED BY MASTERTECH -->
+    <g transform="translate(300, 366)">
+      <text x="0" y="0" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="13" fill="#0F172A" text-anchor="middle" letter-spacing="3.2">
+        VERIFIED BY MASTERTECH
+      </text>
+      <!-- Líneas doradas de apoyo elegante -->
+      <line x1="-130" y1="-4" x2="-95" y2="-4" stroke="url(#goldAccent)" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="95" y1="-4" x2="130" y2="-4" stroke="url(#goldAccent)" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+
+    <!-- 8. LAURELES DE PRESTIGIO Y BADGE EST. 2026 (Diseño estilizado y legible) -->
+    <g transform="translate(300, 412)">
+      <!-- Laurel Izquierdo -->
+      <g fill="url(#goldAccent)">
+        <path d="M -22,-14 C -26,-20 -34,-22 -40,-19 C -38,-13 -32,-9 -24,-10 Z"/>
+        <path d="M -30,-7 C -36,-11 -44,-11 -49,-7 C -46,-2 -39,0 -32,-3 Z"/>
+        <path d="M -36,2 C -43,0 -50,2 -54,8 C -49,12 -42,12 -37,7 Z"/>
+        <path d="M -38,13 C -46,13 -52,17 -54,24 C -48,27 -41,25 -38,19 Z"/>
+        <path d="M -34,24 C -41,27 -45,33 -45,41 C -39,42 -34,38 -33,31 Z"/>
+      </g>
+
+      <!-- Laurel Derecho (Espejo) -->
+      <g fill="url(#goldAccent)">
+        <path d="M 22,-14 C 26,-20 34,-22 40,-19 C 38,-13 32,-9 24,-10 Z"/>
+        <path d="M 30,-7 C 36,-11 44,-11 49,-7 C 46,-2 39,0 32,-3 Z"/>
+        <path d="M 36,2 C 43,0 50,2 54,8 C 49,12 42,12 37,7 Z"/>
+        <path d="M 38,13 C 46,13 52,17 54,24 C 48,27 41,25 38,19 Z"/>
+        <path d="M 34,24 C 41,27 45,33 45,41 C 39,42 34,38 33,31 Z"/>
+      </g>
+
+      <!-- Badge central EST. 2026 -->
+      <rect x="-62" y="-12" width="124" height="26" rx="13" fill="#0A1128" stroke="url(#goldAccent)" stroke-width="1.8"/>
+      <text x="0" y="5" font-family="'Outfit', sans-serif" font-weight="800" font-size="11.5" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">
+        EST. 2026
+      </text>
+    </g>
+
+  </g>
+</svg>
