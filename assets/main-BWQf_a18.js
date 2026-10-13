@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logAnalyticsEvent('page_view', { referrer: document.referrer });
 
     // ===== HERO SLIDER =====
+    // ===== HERO SLIDER =====
     const heroSlider = {
         slides: document.querySelectorAll('.hero-slide'),
         dotsContainer: document.getElementById('heroDots'),
@@ -269,43 +270,62 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 5000,
 
         init() {
-            if (!this.slides.length) return;
-            this.createDots();
-            this.prevBtn?.addEventListener('click', () => this.prev());
-            this.nextBtn?.addEventListener('click', () => this.next());
-            if (this.slides[0]) {
+            this.updateSlides();
+            this.prevBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.prev();
+            });
+            this.nextBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.next();
+            });
+            if (this.slides.length > 0) {
                 this.playSlideMedia(this.slides[0]);
             } else {
                 this.startAutoplay();
             }
         },
 
+        updateSlides() {
+            this.slides = document.querySelectorAll('.hero-slide');
+            this.dotsContainer = document.getElementById('heroDots');
+            this.createDots();
+        },
+
         createDots() {
+            if (!this.dotsContainer) this.dotsContainer = document.getElementById('heroDots');
             if (!this.dotsContainer) return;
+            this.slides = document.querySelectorAll('.hero-slide');
             this.dotsContainer.innerHTML = '';
             this.slides.forEach((_, i) => {
                 const dot = document.createElement('div');
                 dot.classList.add('hero-dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => this.goTo(i));
+                if (i === this.currentIndex) dot.classList.add('active');
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.goTo(i);
+                });
                 this.dotsContainer.appendChild(dot);
             });
         },
 
         goTo(index) {
+            this.slides = document.querySelectorAll('.hero-slide');
+            if (!this.slides.length) return;
             const prevSlide = this.slides[this.currentIndex];
             if (prevSlide) {
                 prevSlide.classList.remove('active');
                 const prevVideo = prevSlide.querySelector('.hero-bg-video');
                 if (prevVideo) {
-                    prevVideo.pause();
+                    try { prevVideo.pause(); } catch(e) {}
                 }
             }
+            if (!this.dotsContainer) this.dotsContainer = document.getElementById('heroDots');
             if (this.dotsContainer && this.dotsContainer.children[this.currentIndex]) {
                 this.dotsContainer.children[this.currentIndex].classList.remove('active');
             }
 
-            this.currentIndex = index;
+            this.currentIndex = (index + this.slides.length) % this.slides.length;
             const curSlide = this.slides[this.currentIndex];
             if (curSlide) {
                 curSlide.classList.add('active');
@@ -318,10 +338,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
         playSlideMedia(slide) {
             clearInterval(this.interval);
+            if (!slide) return;
             const video = slide.querySelector('.hero-bg-video');
             if (video) {
+                video.muted = true;
+                video.defaultMuted = true;
+                video.playsInline = true;
                 video.classList.remove('video-ended');
-                video.currentTime = 0;
+
+                try {
+                    video.currentTime = 0;
+                } catch(e) {}
+
+                const tryPlay = () => {
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            video.classList.remove('video-ended');
+                        }).catch((err) => {
+                            console.warn('Autoplay esperando interacción del usuario:', err);
+                            const unlockAutoplay = () => {
+                                video.play().catch(() => {});
+                                ['click', 'touchstart', 'scroll'].forEach(ev => {
+                                    window.removeEventListener(ev, unlockAutoplay, { capture: true });
+                                });
+                            };
+                            ['click', 'touchstart', 'scroll'].forEach(ev => {
+                                window.addEventListener(ev, unlockAutoplay, { capture: true, once: true });
+                            });
+                        });
+                    }
+                };
+
                 video.onended = () => {
                     // Al finalizar el video, se oculta suavemente dejando la imagen de portada fija
                     video.classList.add('video-ended');
@@ -332,25 +380,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 5000);
                 };
 
-                const playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {
-                        // Si el navegador bloquea autoplay (p.ej. bajo consumo), mostrar la portada inmediatamente
-                        video.classList.add('video-ended');
-                        this.startAutoplay();
-                    });
-                }
+                // Si el video está loopeando o tarda, avanzar slide a los 8 segundos
+                clearInterval(this.interval);
+                this.interval = setTimeout(() => {
+                    this.next();
+                }, 8000);
+
+                tryPlay();
             } else {
                 this.startAutoplay();
             }
         },
 
         next() {
+            this.slides = document.querySelectorAll('.hero-slide');
+            if (!this.slides.length) return;
             const nextIndex = (this.currentIndex + 1) % this.slides.length;
             this.goTo(nextIndex);
         },
 
         prev() {
+            this.slides = document.querySelectorAll('.hero-slide');
+            if (!this.slides.length) return;
             const prevIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
             this.goTo(prevIndex);
         },
@@ -362,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resetAutoplay() {
             clearInterval(this.interval);
+            this.slides = document.querySelectorAll('.hero-slide');
             const curSlide = this.slides[this.currentIndex];
             if (curSlide) {
                 this.playSlideMedia(curSlide);
@@ -818,8 +870,14 @@ document.addEventListener('DOMContentLoaded', () => {
             window.CALC_DOC_VZLA = map.calc_doc_vzla || 1000;
             window.CALC_SERVICE_FEE = map.calc_service_fee || 900;
 
-            if (map.hero_slides && map.hero_slides.length > 0) {
-                renderDynamicHero(map.hero_slides);
+            if (map.hero_slides) {
+                let hSlides = map.hero_slides;
+                if (typeof hSlides === 'string') {
+                    try { hSlides = JSON.parse(hSlides); } catch(e) {}
+                }
+                if (Array.isArray(hSlides) && hSlides.length > 0) {
+                    renderDynamicHero(hSlides);
+                }
             }
 
             if (map.showroom_image) {
@@ -982,7 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const videoHtml = s.video ? `
                 <div class="hero-video-wrap">
-                    <video class="hero-bg-video" playsinline muted preload="metadata" poster="${heroBgImage}">
+                    <video class="hero-bg-video" src="${s.video}" autoplay muted loop playsinline preload="auto" poster="${heroBgImage}">
                         <source src="${s.video}" type="video/mp4">
                         <source src="${s.video}" type="video/webm">
                     </video>
@@ -1016,44 +1074,46 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Mantener las flechas de control
+        // Mantener las flechas de control si estuvieran dentro del contenedor
         const controls = slider.querySelector('.hero-controls');
         slider.innerHTML = html;
         if (controls) slider.appendChild(controls);
 
         // Auto-resolver videos guardados en IndexedDB
-        heroSlides.forEach(async (s, idx) => {
-            if (s.video && s.video.startsWith('idb:') && window.MediaDB) {
-                const blob = await window.MediaDB.get(s.video.replace('idb:', ''));
-                if (blob) {
-                    const slides = document.querySelectorAll('.hero-slide');
-                    if (slides[idx]) {
-                        const v = slides[idx].querySelector('.hero-bg-video');
-                        if (v) {
-                            const bUrl = URL.createObjectURL(blob);
-                            v.src = bUrl;
-                            v.load();
+        if (Array.isArray(slidesData)) {
+            slidesData.forEach(async (s, idx) => {
+                if (s.video && s.video.startsWith('idb:') && window.MediaDB) {
+                    try {
+                        const blob = await window.MediaDB.get(s.video.replace('idb:', ''));
+                        if (blob) {
+                            const slides = document.querySelectorAll('.hero-slide');
+                            if (slides[idx]) {
+                                const v = slides[idx].querySelector('.hero-bg-video');
+                                if (v) {
+                                    const bUrl = URL.createObjectURL(blob);
+                                    v.src = bUrl;
+                                    v.load();
+                                    if (idx === heroSlider.currentIndex) {
+                                        v.play().catch(() => {});
+                                    }
+                                }
+                            }
                         }
-                    }
+                    } catch(e) {}
                 }
-            }
-        });
+            });
+        }
 
-        // Re-iniciar el objeto heroSlider para que use los nuevos slides
-        setTimeout(() => {
-            heroSlider.slides = document.querySelectorAll('.hero-slide');
-            heroSlider.currentIndex = 0;
-            // Re-crear dots si es necesario
-            heroSlider.createDots();
-            // Asegurar que el primer slide sea visible e inicie su reproducción si tiene video
-            if (heroSlider.slides.length > 0) {
-                heroSlider.slides.forEach((sl, idx) => {
-                    if (idx === 0) sl.classList.add('active');
-                    else sl.classList.remove('active');
-                });
-                heroSlider.playSlideMedia(heroSlider.slides[0]);
-            }
-        }, 150);
+        // Re-sincronizar el objeto heroSlider de inmediato con los nuevos slides
+        heroSlider.currentIndex = 0;
+        heroSlider.updateSlides();
+        if (heroSlider.slides.length > 0) {
+            heroSlider.slides.forEach((sl, idx) => {
+                if (idx === 0) sl.classList.add('active');
+                else sl.classList.remove('active');
+            });
+            heroSlider.playSlideMedia(heroSlider.slides[0]);
+        }
     }
 
     const defaultPromotions = [
