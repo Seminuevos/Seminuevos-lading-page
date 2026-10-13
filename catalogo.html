@@ -1143,45 +1143,12 @@
             gap: 2px;
         }
 
-        .quickbar-text-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .quickbar-text b {
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #0F172A;
             white-space: nowrap;
             letter-spacing: -0.01em;
-        }
-
-        .quickbar-tag {
-            font-size: 0.62rem;
-            font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        .quickbar-tag.local {
-            background: #ECFDF5;
-            color: #047857;
-            border: 1px solid #A7F3D0;
-        }
-
-        .quickbar-tag.import {
-            background: #EFF6FF;
-            color: #1D4ED8;
-            border: 1px solid #BFDBFE;
-        }
-
-        .quickbar-tag.zerokm {
-            background: #FEF3C7;
-            color: #B45309;
-            border: 1px solid #FDE68A;
         }
 
         .quickbar-text small {
@@ -1792,10 +1759,7 @@
             <button type="button" class="quickbar-item active" data-target-tab="seminuevos" role="tab" aria-selected="true">
                 <div class="quickbar-icon"><i class="fas fa-car-side"></i></div>
                 <div class="quickbar-text">
-                    <div class="quickbar-text-row">
-                        <b>Stock Local</b>
-                        <span class="quickbar-tag local">Inmediato</span>
-                    </div>
+                    <b>Stock Local</b>
                     <small>Entrega inmediata en Margarita</small>
                 </div>
                 <i class="fas fa-arrow-down quickbar-arrow"></i>
@@ -1803,10 +1767,7 @@
             <button type="button" class="quickbar-item" data-target-tab="porpedido" role="tab" aria-selected="false">
                 <div class="quickbar-icon"><i class="fas fa-ship"></i></div>
                 <div class="quickbar-text">
-                    <div class="quickbar-text-row">
-                        <b>Por Pedido USA</b>
-                        <span class="quickbar-tag import">Importación</span>
-                    </div>
+                    <b>Por Pedido USA</b>
                     <small>Importación directa llave en mano</small>
                 </div>
                 <i class="fas fa-arrow-down quickbar-arrow"></i>
@@ -1814,10 +1775,7 @@
             <button type="button" class="quickbar-item" data-target-tab="0km" role="tab" aria-selected="false">
                 <div class="quickbar-icon"><i class="fas fa-award"></i></div>
                 <div class="quickbar-text">
-                    <div class="quickbar-text-row">
-                        <b>0KM Nuevos</b>
-                        <span class="quickbar-tag zerokm">A estrenar</span>
-                    </div>
+                    <b>0KM Nuevos</b>
                     <small>Garantía de concesionario</small>
                 </div>
                 <i class="fas fa-arrow-down quickbar-arrow"></i>
