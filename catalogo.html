@@ -843,12 +843,11 @@
         .showcase-360-section {
             min-height: auto;
             box-sizing: border-box;
-            padding: 90px 20px 32px 20px;
+            padding: 85px 20px 45px 20px;
             background: #FFFFFF;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 28px;
             width: 100%;
             position: relative;
         }
@@ -999,8 +998,8 @@
         /* BARRA DE ACCESO Y SELECTOR DEL CATÁLOGO (ESTILO OFICIAL SHOWROOM BLANCO Y AZUL) */
         .catalog-quickbar {
             width: 100%;
-            max-width: 1200px;
-            flex-shrink: 0;
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
             display: grid;
             grid-template-columns: 1.15fr repeat(3, 1fr);
             align-items: stretch;
@@ -1012,7 +1011,6 @@
             box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.04);
             position: relative;
             z-index: 10;
-            margin-top: 6px;
         }
 
         .quickbar-lead {
@@ -1749,38 +1747,6 @@
             </div>
         </div>
 
-        <!-- SELECTOR DE INVENTARIO Y ACCESO DIRECTO AL CATÁLOGO -->
-        <nav class="catalog-quickbar" id="catalogQuickbar" aria-label="Selector de inventario del catálogo">
-            <div class="quickbar-lead">
-                <span class="quickbar-eyebrow"><i class="fas fa-layer-group"></i> Inventario Oficial</span>
-                <span class="quickbar-title">Catálogo Completo</span>
-                <span class="quickbar-sub"><i class="fas fa-arrow-down"></i> Selecciona categoría</span>
-            </div>
-            <button type="button" class="quickbar-item active" data-target-tab="seminuevos" role="tab" aria-selected="true">
-                <div class="quickbar-icon"><i class="fas fa-car-side"></i></div>
-                <div class="quickbar-text">
-                    <b>Stock Local</b>
-                    <small>Entrega inmediata en Margarita</small>
-                </div>
-                <i class="fas fa-arrow-down quickbar-arrow"></i>
-            </button>
-            <button type="button" class="quickbar-item" data-target-tab="porpedido" role="tab" aria-selected="false">
-                <div class="quickbar-icon"><i class="fas fa-ship"></i></div>
-                <div class="quickbar-text">
-                    <b>Por Pedido USA</b>
-                    <small>Importación directa llave en mano</small>
-                </div>
-                <i class="fas fa-arrow-down quickbar-arrow"></i>
-            </button>
-            <button type="button" class="quickbar-item" data-target-tab="0km" role="tab" aria-selected="false">
-                <div class="quickbar-icon"><i class="fas fa-award"></i></div>
-                <div class="quickbar-text">
-                    <b>0KM Nuevos</b>
-                    <small>Garantía de concesionario</small>
-                </div>
-                <i class="fas fa-arrow-down quickbar-arrow"></i>
-            </button>
-        </nav>
     </section>
 
     <!-- ========================================== -->
@@ -1797,6 +1763,39 @@
             <p class="catalog-hero-sub">
                 Inventario verificado con peritaje pericial MasterTech de 150 puntos, documentación legal al día y entrega llave en mano.
             </p>
+
+            <!-- SELECTOR DE INVENTARIO Y PESTAÑAS DEL CATÁLOGO -->
+            <nav class="catalog-quickbar" id="catalogQuickbar" aria-label="Selector de inventario del catálogo">
+                <div class="quickbar-lead">
+                    <span class="quickbar-eyebrow"><i class="fas fa-layer-group"></i> Inventario Oficial</span>
+                    <span class="quickbar-title">Catálogo Completo</span>
+                    <span class="quickbar-sub"><i class="fas fa-arrow-down"></i> Selecciona categoría</span>
+                </div>
+                <button type="button" class="quickbar-item active" data-target-tab="seminuevos" role="tab" aria-selected="true">
+                    <div class="quickbar-icon"><i class="fas fa-car-side"></i></div>
+                    <div class="quickbar-text">
+                        <b>Stock Local</b>
+                        <small>Entrega inmediata en Margarita</small>
+                    </div>
+                    <i class="fas fa-arrow-down quickbar-arrow"></i>
+                </button>
+                <button type="button" class="quickbar-item" data-target-tab="porpedido" role="tab" aria-selected="false">
+                    <div class="quickbar-icon"><i class="fas fa-ship"></i></div>
+                    <div class="quickbar-text">
+                        <b>Por Pedido USA</b>
+                        <small>Importación directa llave en mano</small>
+                    </div>
+                    <i class="fas fa-arrow-down quickbar-arrow"></i>
+                </button>
+                <button type="button" class="quickbar-item" data-target-tab="0km" role="tab" aria-selected="false">
+                    <div class="quickbar-icon"><i class="fas fa-award"></i></div>
+                    <div class="quickbar-text">
+                        <b>0KM Nuevos</b>
+                        <small>Garantía de concesionario</small>
+                    </div>
+                    <i class="fas fa-arrow-down quickbar-arrow"></i>
+                </button>
+            </nav>
 
             <!-- 3. BARRA DE BÚSQUEDA Y ORDENAMIENTO -->
             <div class="catalog-sort-bar">
