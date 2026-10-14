@@ -1708,7 +1708,7 @@
                 <!-- TARJETA 1: SELECCIONE UNA VERSIÓN -->
                 <div class="config-card version-card">
                     <div class="config-card-header">
-                        <span class="config-title">Seleccione una versión</span>
+                        <span class="config-title" id="configCardTitle">Seleccione una versión</span>
                     </div>
                     <div class="version-option-row">
                         <div class="version-radio-wrap">
@@ -1716,7 +1716,7 @@
                             <span class="version-badge-name" id="configVersionBadge">N</span>
                         </div>
                         <div class="version-pricing-wrap">
-                            <span class="msrp-label">Starting MSRP <i class="fas fa-circle-info" title="Precio base sugerido por el fabricante"></i></span>
+                            <span class="msrp-label" id="configMsrpLabel">Starting MSRP <i class="fas fa-circle-info" title="Precio base sugerido por el fabricante"></i></span>
                             <span class="msrp-price" id="configMsrpPrice">$35,300</span>
                         </div>
                     </div>
@@ -2206,6 +2206,8 @@
         const featuresListEl = document.getElementById('configFeaturesList');
         const whatsappLinkEl = document.getElementById('configWhatsappLink');
         const whatsappTextEl = document.getElementById('configWhatsappText');
+        const cardTitleEl = document.getElementById('configCardTitle');
+        const msrpLabelEl = document.getElementById('configMsrpLabel');
 
         // Sincronización dinámica de Versiones y Precios desde CMS (localStorage / API / Supabase)
         function applyCustom360Settings(customSettings) {
@@ -2216,7 +2218,9 @@
             ['elantra', 'runner'].forEach(key => {
                 if (modelsConfig[key] && modelsData[key]) {
                     const c = modelsConfig[key];
+                    if (c.cardTitle) modelsData[key].cardTitle = c.cardTitle;
                     if (c.versionBadge) modelsData[key].versionBadge = c.versionBadge;
+                    if (c.msrpLabel) modelsData[key].msrpLabel = c.msrpLabel;
                     if (c.msrpPrice) modelsData[key].msrpPrice = c.msrpPrice;
                     if (c.features && Array.isArray(c.features) && c.features.length > 0) {
                         modelsData[key].features = c.features;
@@ -2275,7 +2279,17 @@
         const ctx = canvas.getContext('2d', { alpha: true });
 
         function renderModelDetails() {
+            if (cardTitleEl && currentModel.cardTitle) {
+                cardTitleEl.textContent = currentModel.cardTitle;
+            } else if (cardTitleEl) {
+                cardTitleEl.textContent = 'Seleccione una versión';
+            }
             if (versionBadgeEl) versionBadgeEl.textContent = currentModel.versionBadge;
+            if (msrpLabelEl && currentModel.msrpLabel) {
+                msrpLabelEl.innerHTML = `${currentModel.msrpLabel} <i class="fas fa-circle-info" title="Precio base o sugerido"></i>`;
+            } else if (msrpLabelEl) {
+                msrpLabelEl.innerHTML = `Starting MSRP <i class="fas fa-circle-info" title="Precio base sugerido por el fabricante"></i>`;
+            }
             if (msrpPriceEl) msrpPriceEl.textContent = currentModel.msrpPrice;
             if (featuresListEl) {
                 featuresListEl.innerHTML = currentModel.features.map(f => `<li><i class="fas fa-check"></i> ${f}</li>`).join('');

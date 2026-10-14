@@ -626,7 +626,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         filtered = sortVehicles(filtered);
         gridElement.innerHTML = '';
-        if (filtered.length === 0) {
+
+        // Si es la rejilla de Por Pedido USA / Subasta, inyectar portada interactiva destacada a COPART.seminuevoautos.com
+        if (gridElement.id === 'porpedidoGrid') {
+            const copartCard = document.createElement('div');
+            copartCard.className = 'vehicle-card copart-portal-card';
+            copartCard.style.cursor = 'pointer';
+            copartCard.innerHTML = `
+                <div class="vehicle-card-image copart-card-media">
+                    <img src="images/hero-slides/hero-3.jpg" alt="Copart Auction Subastas Seminuevos" loading="eager" fetchpriority="high" decoding="async">
+                    <div class="copart-card-overlay">
+                        <span class="copart-live-pulse"><i class="fas fa-circle"></i> EN VIVO</span>
+                        <span class="copart-logo-tag"><i class="fas fa-gavel"></i> COPART & IAAI USA</span>
+                    </div>
+                </div>
+                <div class="vehicle-card-body copart-card-body">
+                    <div class="vehicle-card-tags">
+                        <span class="origin-badge copart-badge"><i class="fas fa-bolt"></i> Oportunidades de Subasta</span>
+                        <span class="origin-badge importado"><i class="fas fa-globe-americas"></i> Compra Directa USA</span>
+                    </div>
+                    <h3 class="vehicle-card-title copart-title">COPART.seminuevoautos.com</h3>
+                    <p class="copart-desc">
+                        Explora las mejores oportunidades y lotes de subasta en vivo de Copart e IAAI con tarifas oficiales, inspección y flete marítimo hasta Venezuela.
+                    </p>
+                    <div class="copart-stats-bar">
+                        <span><i class="fas fa-car-burst"></i> Lotes Diarios</span>
+                        <span><i class="fas fa-dollar-sign"></i> Precios Dealer</span>
+                        <span><i class="fas fa-ship"></i> Puerta a Puerta</span>
+                    </div>
+                    <div class="vehicle-card-cta copart-cta">
+                        <span>ACCEDER AL PORTAL COPART <i class="fas fa-arrow-up-right-from-square"></i></span>
+                    </div>
+                </div>
+            `;
+            copartCard.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer');
+            });
+            gridElement.appendChild(copartCard);
+        }
+
+        if (filtered.length === 0 && gridElement.id !== 'porpedidoGrid') {
             gridElement.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;"><i class="fas fa-car" style="font-size: 3rem; color: var(--outline); margin-bottom: 20px; display: block;"></i><p style="font-size: 1.2rem; color: var(--on-surface-variant);">No hay vehículos en esta categoría aún.</p><p style="color: var(--outline); margin-top: 8px;">Escríbenos por WhatsApp para consultar disponibilidad.</p></div>`;
             return;
         }
@@ -1122,12 +1163,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         </p>
                         ${specsHtml}
                         <div class="hero-nissan-actions">
-                            <a href="https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText || 'Hola, quiero aprovechar la oferta del sitio web.')}" class="btn-nissan-white" target="_blank" rel="noopener">
-                               <span>${s.ctaPrimary || 'Asegurar esta oferta'}</span> <i class="fas fa-arrow-right"></i>
-                            </a>
-                            <a href="catalogo" class="btn-nissan-link">
-                               <span>${s.ctaSecondary || 'Detalles de oferta'}</span> <i class="fas fa-arrow-right"></i>
-                            </a>
+                            ${(() => {
+                                const cta1Href = s.ctaPrimaryLink || (s.waText ? `https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(s.waText)}` : 'catalogo');
+                                const isCta1Ext = cta1Href.startsWith('http://') || cta1Href.startsWith('https://');
+                                return `<a href="${cta1Href}" class="btn-nissan-white" ${isCta1Ext ? 'target="_blank" rel="noopener"' : ''}>
+                                    <span>${s.ctaPrimary || 'Asegurar esta oferta'}</span> <i class="fas fa-arrow-right"></i>
+                                </a>`;
+                            })()}
+                            ${(() => {
+                                const cta2Href = s.ctaSecondaryLink || 'catalogo';
+                                const isCta2Ext = cta2Href.startsWith('http://') || cta2Href.startsWith('https://');
+                                return `<a href="${cta2Href}" class="btn-nissan-link" ${isCta2Ext ? 'target="_blank" rel="noopener"' : ''}>
+                                    <span>${s.ctaSecondary || 'Detalles de oferta'}</span> <i class="fas fa-arrow-right"></i>
+                                </a>`;
+                            })()}
                         </div>
                     </div>
                 </div>

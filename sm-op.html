@@ -4485,25 +4485,26 @@
                         textAlign: "left"
                     },
                     {
-                        kicker: "TOYOTA · 2021",
-                        title: "4Runner SR5",
-                        tagline: "Auténtico todoterreno japonés 4x4 de leyenda",
-                        description: "Chasis sobre largueros de máxima resistencia, legendario motor V6 4.0L y entrega garantizada llave en mano.",
-                        stat1Num: "Consultar",
-                        stat1Label: "Precio & Stock",
-                        stat2Num: "4.0L V6",
-                        stat2Label: "Motorización",
-                        disclaimer: "Estatus legal nacional con libre tránsito por toda Venezuela.",
-                        ctaPrimary: "Solicitar cotización",
-                        waText: "Hola, me interesa el Toyota 4Runner SR5 4x4.",
-                        ctaSecondary: "Ver en catálogo",
-                        ctaSecondaryLink: "catalogo",
+                        kicker: "SUBASTAS USA · COPART & IAAI",
+                        title: "Copart Deals",
+                        tagline: "Las mejores oportunidades de subastas en USA a precio mayorista",
+                        description: "Acceso directo a lotes verificados de Copart e IAAI. Gestionamos inspección técnica, puja en vivo, seguro marítimo y nacionalización llave en mano con entrega en Venezuela.",
+                        stat1Num: "-40% OFF",
+                        stat1Label: "Ahorro Promedio Dealer",
+                        stat2Num: "100% Legal",
+                        stat2Label: "Importación Llave en Mano",
+                        disclaimer: "Diagnóstico mecánico pericial MasterTech antes de exportar.",
+                        ctaPrimary: "Ver Portal Copart Subastas",
+                        ctaPrimaryLink: "https://COPART.seminuevoautos.com",
+                        waText: "Hola, deseo asesoría para comprar un vehículo en las subastas de Copart USA.",
+                        ctaSecondary: "Asesor de Subasta",
+                        ctaSecondaryLink: "https://wa.me/584248700438?text=Hola,%20deseo%20asesoría%20para%20comprar%20un%20vehículo%20en%20las%20subastas%20de%20Copart%20USA.",
                         image: "images/hero-slides/hero-3.jpg",
                         video: "",
                         imgPositionY: "center",
                         imgPositionX: "center",
                         imgZoom: "100",
-                        overlayDarkness: "70",
+                        overlayDarkness: "75",
                         textAlign: "left"
                     }
                 ];
@@ -4766,25 +4767,29 @@
                                 </div>
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 1 (Blanco Destacado):</label>
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 1 (Texto Principal):</label>
                                         <input type="text" class="form-input" value="${cta1}" placeholder="Asegurar esta oferta" oninput="updateHeroSlideField(${i}, 'ctaPrimary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                     <div>
-                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 2 (Secundario/Link):</label>
-                                        <input type="text" class="form-input" value="${cta2}" placeholder="Ver en catálogo" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Destino Botón 1 (Link o vacío para WhatsApp):</label>
+                                        <input type="text" class="form-input" value="${s.ctaPrimaryLink || ''}" placeholder="Ej: https://COPART.seminuevoautos.com" oninput="updateHeroSlideField(${i}, 'ctaPrimaryLink', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                 </div>
-                                <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:8px;">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
                                     <div>
-                                        <label style="font-size:0.65rem; color:#16a34a; font-weight:700; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
-                                            <i class="fab fa-whatsapp"></i> Mensaje Predeterminado WhatsApp:
-                                        </label>
-                                        <input type="text" class="form-input" value="${wa}" placeholder="Hola, me interesa este vehículo..." oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 8px;">
+                                        <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Botón 2 (Texto Secundario):</label>
+                                        <input type="text" class="form-input" value="${cta2}" placeholder="Ver en catálogo" oninput="updateHeroSlideField(${i}, 'ctaSecondary', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
                                     <div>
                                         <label style="font-size:0.65rem; color:var(--text2); font-weight:600; display:block; margin-bottom:2px;">Destino Botón 2:</label>
                                         <input type="text" class="form-input" value="${cta2Link}" placeholder="catalogo" oninput="updateHeroSlideField(${i}, 'ctaSecondaryLink', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                     </div>
+                                </div>
+                                <div>
+                                    <label style="font-size:0.65rem; color:#16a34a; font-weight:700; display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                                        <i class="fab fa-whatsapp"></i> Mensaje Predeterminado WhatsApp:
+                                    </label>
+                                    <input type="text" class="form-input" value="${wa}" placeholder="Hola, me interesa este vehículo..." oninput="updateHeroSlideField(${i}, 'waText', this.value)" style="font-size:0.75rem; padding:6px 8px;">
                                 </div>
                             </div>
                         </div>
