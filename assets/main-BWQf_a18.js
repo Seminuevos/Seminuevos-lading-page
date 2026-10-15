@@ -1457,28 +1457,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (isCopart) {
                 return `
-                <article class="promo-card copart-portal-promo" style="--promo-color:#2563EB; cursor:pointer;" role="article" ${cardClickAttr}>
-                    <div class="promo-card-accent"></div>
-                    <div class="promo-curated-cover">
-                        <div class="promo-curated-split">
-                            <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Camioneta de subasta" loading="eager">
+                <article class="promo-card promo-mini-banner copart-portal-promo" role="article" ${cardClickAttr}>
+                    <div class="banner-inner">
+                        <div class="banner-top-row">
+                            <span class="banner-pill-expert"><i class="fas fa-user-check"></i> SELECCIÓN DE ASESORES</span>
+                            <span class="banner-pill-discount">HASTA -40%</span>
                         </div>
-                        <div class="promo-curated-split">
-                            <img src="images/2025-kia-k5-gt-line.jpg" alt="Sedán de subasta" loading="eager">
+
+                        <div class="banner-content">
+                            <div class="banner-kicker"><i class="fas fa-layer-group"></i> PORTAL ESPECIALIZADO</div>
+                            <h3 class="banner-title">Oportunidades de Subasta</h3>
+                            <p class="banner-desc">Portal exclusivo donde nuestros asesores profesionales evalúan y seleccionan a diario las mejores oportunidades de compra en subasta de USA, verificando condición mecánica, historial limpio y máximo margen de ahorro.</p>
                         </div>
-                        <div class="promo-badge" style="background:#2563EB;">SELECCIÓN DE ASESORES</div>
-                        <div class="promo-discount">HASTA -40%</div>
-                        <div class="promo-curated-footer">
-                            <span><i class="fas fa-layer-group"></i> CATÁLOGO DE OPORTUNIDADES</span>
-                            <span class="domain-hint">copart.seminuevoautos.com ↗</span>
+
+                        <div class="banner-route-box">
+                            <div class="route-box-info">
+                                <span class="route-badge-live"><span class="route-pulse"></span> SUBDOMINIO DIRECTO</span>
+                                <span class="route-link-text">COPART.seminuevoautos.com</span>
+                            </div>
+                            <span class="route-icon-arrow"><i class="fas fa-arrow-up-right-from-square"></i></span>
                         </div>
-                    </div>
-                    <div class="promo-card-body">
-                        <div class="promo-card-subtitle" style="color:#2563EB;">SUBDOMINIO · SELECCIÓN ESPECIAL</div>
-                        <h3 class="promo-card-title">Oportunidades de Subasta</h3>
-                        <p class="promo-card-desc">Vehículos en USA evaluados y seleccionados por nuestros asesores por su excelente condición mecánica, historial limpio y máximo margen de ahorro.</p>
-                        <a href="https://COPART.seminuevoautos.com" class="promo-card-cta" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Explorar Oportunidades
+
+                        <div class="banner-highlights">
+                            <div class="highlight-item"><i class="fas fa-shield-halved"></i> Peritaje Previo</div>
+                            <div class="highlight-item"><i class="fas fa-calculator"></i> Ahorro Real</div>
+                            <div class="highlight-item"><i class="fas fa-truck-fast"></i> Entrega en Venezuela</div>
+                        </div>
+
+                        <a href="https://COPART.seminuevoautos.com" class="banner-action-btn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                            <span>Explorar Oportunidades</span>
+                            <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </article>`;

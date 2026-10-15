@@ -7382,82 +7382,245 @@ img.mastertech-seal {
     box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55);
 }
 
-/* ===== CURATED AUCTION OPPORTUNITIES PORTAL CARD ===== */
+/* ===== CURATED AUCTION OPPORTUNITIES MINI BANNER ===== */
+.promo-card.promo-mini-banner,
 .promo-card.copart-portal-promo {
-    background: #FFFFFF !important;
-    border: 1px solid var(--outline-variant, #E5E7EB) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    background: radial-gradient(circle at 85% 15%, rgba(37, 99, 235, 0.25) 0%, transparent 60%),
+                linear-gradient(155deg, #071326 0%, #0c2340 50%, #06101e 100%) !important;
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    box-shadow: 0 10px 30px rgba(7, 19, 38, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    transition: var(--transition-slow);
-}
-
-.promo-card.copart-portal-promo:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15), 0 0 0 1px #2563EB !important;
-}
-
-/* Dual-vehicle curated cover (Shows a real truck + real sedan side by side to represent a catalog) */
-.promo-curated-cover {
-    height: 240px;
+    height: 100%;
+    min-height: 480px;
     position: relative;
     overflow: hidden;
-    display: flex;
-    background: #0F172A;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    border-radius: var(--radius-xl, 16px);
 }
 
-.promo-curated-split {
-    flex: 1;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-.promo-curated-split:first-child {
-    border-right: 2px solid #FFFFFF;
-}
-
-.promo-curated-split img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center center;
-    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.promo-card.copart-portal-promo:hover .promo-curated-split img {
-    transform: scale(1.08);
-}
-
-.promo-curated-footer {
+.promo-card.promo-mini-banner::before,
+.promo-card.copart-portal-promo::before {
+    content: '';
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
-    z-index: 3;
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.6) 70%, transparent 100%);
-    padding: 14px 16px 8px 16px;
-    color: #FFFFFF;
-    font-size: 0.70rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    height: 4px;
+    background: linear-gradient(90deg, #2563EB, #60A5FA, #2563EB);
+    z-index: 2;
+}
+
+.promo-card.promo-mini-banner:hover,
+.promo-card.copart-portal-promo:hover {
+    transform: translateY(-8px);
+    border-color: #3B82F6 !important;
+    box-shadow: 0 20px 45px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(96, 165, 250, 0.4) !important;
+}
+
+.banner-inner {
+    padding: 26px 24px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    flex: 1;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+.banner-top-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.promo-curated-footer span {
+.banner-pill-expert {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: rgba(37, 99, 235, 0.25);
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    border-radius: var(--radius-full, 9999px);
+    color: #93C5FD;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.banner-pill-discount {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    border-radius: var(--radius-full, 9999px);
+    color: #6EE7B7;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.banner-kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #60A5FA;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.banner-title {
+    font-family: var(--font-display, inherit);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.banner-desc {
+    font-size: 0.86rem;
+    color: #CBD5E1;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.banner-route-box {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    border-radius: 12px;
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.promo-card.promo-mini-banner:hover .banner-route-box,
+.promo-card.copart-portal-promo:hover .banner-route-box {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: rgba(96, 165, 250, 0.7);
+}
+
+.route-box-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.route-badge-live {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.route-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+    display: inline-block;
+    animation: blinkDot 1.4s infinite;
+}
+
+.route-link-text {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #60A5FA;
+    font-family: monospace, sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.route-icon-arrow {
+    color: #93C5FD;
+    font-size: 0.95rem;
+    transition: transform 0.3s;
+}
+
+.promo-card.promo-mini-banner:hover .route-icon-arrow,
+.promo-card.copart-portal-promo:hover .route-icon-arrow {
+    transform: translate(2px, -2px);
+    color: #FFFFFF;
+}
+
+.banner-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.highlight-item {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #E2E8F0;
     display: inline-flex;
     align-items: center;
     gap: 6px;
 }
 
-.promo-curated-footer .domain-hint {
-    font-size: 0.65rem;
-    color: #93C5FD;
-    font-weight: 600;
-    text-transform: lowercase;
+.highlight-item i {
+    color: #38BDF8;
+    font-size: 0.78rem;
+}
+
+.banner-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 20px;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full, 9999px);
+    color: #FFFFFF;
+    font-family: var(--font-display, inherit);
+    font-size: 0.84rem;
+    font-weight: 700;
     letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+    transition: all 0.3s ease;
+    margin-top: 4px;
+}
+
+.banner-action-btn:hover {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.55);
+    color: #FFFFFF;
+}
+
+.banner-action-btn i {
+    transition: transform 0.3s ease;
+}
+
+.banner-action-btn:hover i {
+    transform: translateX(4px);
 }
