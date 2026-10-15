@@ -1298,6 +1298,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const defaultPromotions = [
         {
+            id: 'copart-vip-portal',
+            title: 'COPART.seminuevoautos.com',
+            subtitle: 'PORTAL OFICIAL DE SUBASTAS USA',
+            description: 'Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.',
+            badge_text: 'SUBASTAS EN VIVO',
+            discount_text: '-40% OFF',
+            cta_text: 'Acceder al Portal Copart',
+            cta_url: 'https://COPART.seminuevoautos.com',
+            image_url: 'images/copart-auction-cover.jpg',
+            bg_color: '#d4a017',
+            is_featured: false,
+            is_copart: true,
+            status: 'active'
+        },
+        {
             id: 'default-1',
             title: 'Toyota 4Runner 2021 SR5',
             subtitle: '2021 · $38,990 · Motor 4.0L V6',
@@ -1309,21 +1324,6 @@ document.addEventListener('DOMContentLoaded', () => {
             image_url: 'images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2',
             bg_color: '#275CEA',
             is_featured: false,
-            status: 'active'
-        },
-        {
-            id: 'copart-vip-portal',
-            title: 'COPART.seminuevoautos.com',
-            subtitle: 'Subastas USA en Vivo · Mayorista',
-            description: 'Explora oportunidades diarias y lotes verificados de subasta en vivo con hasta -40% de ahorro. Puja en vivo, inspección técnica y flete marítimo llave en mano.',
-            badge_text: 'SUBASTAS EN VIVO',
-            discount_text: '-40% OFF',
-            cta_text: 'Acceder a Copart Deals',
-            cta_url: 'https://COPART.seminuevoautos.com',
-            image_url: 'images/hero-slides/hero-3.jpg',
-            bg_color: '#d4a017',
-            is_featured: false,
-            is_copart: true,
             status: 'active'
         },
         {
@@ -1415,30 +1415,27 @@ document.addEventListener('DOMContentLoaded', () => {
             promos = promos.filter(p => !p || (!p.title?.toLowerCase().includes('revisión') && !p.title?.toLowerCase().includes('revision')));
         }
 
-        // Asegurar que la portada interactiva a COPART.seminuevoautos.com esté siempre presente en la regilla de promociones
-        const hasCopartPromo = Array.isArray(promos) && promos.some(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
-        if (!hasCopartPromo && Array.isArray(promos)) {
-            const copartPromoCard = {
-                id: 'copart-vip-portal',
-                title: 'COPART.seminuevoautos.com',
-                subtitle: 'Subastas USA en Vivo · Mayorista',
-                description: 'Explora oportunidades diarias y lotes verificados de subasta en vivo con hasta -40% de ahorro. Puja en vivo, inspección técnica y flete marítimo llave en mano.',
-                badge_text: 'SUBASTAS EN VIVO',
-                discount_text: '-40% OFF',
-                cta_text: 'Acceder a Copart Deals',
-                cta_url: 'https://COPART.seminuevoautos.com',
-                image_url: 'images/hero-slides/hero-3.jpg',
-                bg_color: '#d4a017',
-                is_featured: false,
-                is_copart: true,
-                status: 'active'
-            };
-            if (promos.length >= 2) {
-                promos.splice(1, 0, copartPromoCard);
-            } else {
-                promos.push(copartPromoCard);
-            }
+        // Asegurar que la portada interactiva a COPART.seminuevoautos.com esté SIEMPRE posicionada de PRIMERA
+        const copartIndex = promos.findIndex(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
+        const copartPromoCard = {
+            id: 'copart-vip-portal',
+            title: 'COPART.seminuevoautos.com',
+            subtitle: 'PORTAL OFICIAL DE SUBASTAS USA',
+            description: 'Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.',
+            badge_text: 'SUBASTAS EN VIVO',
+            discount_text: '-40% OFF',
+            cta_text: 'Acceder al Portal Copart',
+            cta_url: 'https://COPART.seminuevoautos.com',
+            image_url: 'images/copart-auction-cover.jpg',
+            bg_color: '#d4a017',
+            is_featured: false,
+            is_copart: true,
+            status: 'active'
+        };
+        if (copartIndex !== -1) {
+            promos.splice(copartIndex, 1);
         }
+        promos.unshift(copartPromoCard);
 
         // Dejar exactamente 3 tarjetas para un diseño perfectamente equilibrado y simétrico de 3 columnas
         if (Array.isArray(promos) && promos.length > 3) {
@@ -1458,6 +1455,35 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetAttr = (isWhatsApp || isExternal) ? 'target="_blank" rel="noopener"' : '';
             const cardClickAttr = isCopart ? `onclick="window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer')"` : '';
 
+            // Renderizado exclusivo de alta gama para la portada de Copart
+            if (isCopart) {
+                return `
+                <article class="promo-card copart-portal-promo" style="--promo-color:#d4a017; cursor:pointer;" role="article" ${cardClickAttr}>
+                    <div class="promo-card-accent"></div>
+                    <div class="promo-card-image">
+                        <img src="images/copart-auction-cover.jpg" alt="Copart Auction Subastas USA" loading="eager">
+                        <div class="copart-promo-badges-top">
+                            <span class="copart-live-pulse"><i class="fas fa-circle"></i> EN VIVO</span>
+                            <span class="copart-tag-gold"><i class="fas fa-gavel"></i> COPART & IAAI</span>
+                        </div>
+                        <div class="promo-discount copart-discount-badge"><i class="fas fa-arrow-trend-down"></i> HASTA -40% OFF</div>
+                    </div>
+                    <div class="promo-card-body">
+                        <div class="promo-card-subtitle copart-subtitle"><i class="fas fa-bolt"></i> PORTAL OFICIAL DE SUBASTAS USA</div>
+                        <h3 class="promo-card-title copart-title">COPART<span class="copart-domain-dot">.</span><span class="copart-domain-accent">seminuevoautos.com</span></h3>
+                        <div class="copart-card-perks">
+                            <span><i class="fas fa-check-circle"></i> Puja en Vivo</span>
+                            <span><i class="fas fa-check-circle"></i> Peritaje MasterTech</span>
+                            <span><i class="fas fa-check-circle"></i> Puerta a Puerta</span>
+                        </div>
+                        <p class="promo-card-desc copart-desc">Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.</p>
+                        <a href="${ctaLink}" class="promo-card-cta copart-btn" ${targetAttr} onclick="event.stopPropagation()">
+                            <span>ACCEDER AL PORTAL COPART</span> <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                </article>`;
+            }
+
             // Expiry badge
             let expiresBadge = '';
             if (p.expires_at) {
@@ -1471,7 +1497,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageHtml = p.image_url
                 ? `<div class="promo-card-image">
                         <img src="${p.image_url}" alt="${p.title}" loading="lazy">
-                        ${p.badge_text ? `<div class="promo-badge" style="background:${color};">${isCopart ? '<span class="copart-live-pulse" style="padding:2px 6px;margin-right:4px;"><i class="fas fa-circle"></i> EN VIVO</span> ' : ''}${p.badge_text}</div>` : ''}
+                        ${p.badge_text ? `<div class="promo-badge" style="background:${color};">${p.badge_text}</div>` : ''}
                         ${p.discount_text ? `<div class="promo-discount">${p.discount_text}</div>` : ''}
                         ${expiresBadge}
                    </div>`
@@ -1483,14 +1509,14 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>`;
 
             return `
-            <article class="promo-card${isCopart ? ' copart-portal-promo' : ''}" style="--promo-color:${color}; ${isCopart ? 'cursor:pointer;' : ''}" role="article" ${cardClickAttr}>
+            <article class="promo-card" style="--promo-color:${color};" role="article">
                 <div class="promo-card-accent"></div>
                 ${imageHtml}
                 <div class="promo-card-body">
                     ${p.subtitle ? `<div class="promo-card-subtitle">${p.subtitle}</div>` : ''}
                     <h3 class="promo-card-title">${p.title}</h3>
                     ${p.description ? `<p class="promo-card-desc">${p.description}</p>` : ''}
-                    <a href="${ctaLink}" class="promo-card-cta" ${targetAttr} ${isCopart ? 'onclick="event.stopPropagation()"' : ''}>
+                    <a href="${ctaLink}" class="promo-card-cta" ${targetAttr}>
                         ${isWhatsApp ? '<i class="fab fa-whatsapp"></i>' : (isExternal ? '<i class="fas fa-arrow-up-right-from-square"></i>' : '<i class="fas fa-arrow-right"></i>')}
                         ${p.cta_text || 'Ver Oferta'}
                     </a>
