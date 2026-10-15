@@ -1298,18 +1298,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const defaultPromotions = [
         {
-            id: 'copart-vip-portal',
-            title: 'Las Mejores Oportunidades de Subasta',
-            subtitle: 'CURADURÍA POR ASESORES PROFESIONALES',
-            description: 'Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.',
-            badge_text: 'SELECCIÓN DE ASESORES',
-            discount_text: 'FILTRO EXPERTO',
-            cta_text: 'Ver Oportunidades Seleccionadas',
-            cta_url: 'https://COPART.seminuevoautos.com',
+            id: 'default-0',
+            title: 'Chevrolet Silverado 1500 Custom',
+            subtitle: '2025 · $44,500 · 4WD Trail Boss',
+            description: 'Camioneta doble cabina equipada con paquete todoterreno, suspensión elevada y entrega inmediata.',
+            badge_text: 'OFERTA ESPECIAL',
+            discount_text: '$3,000 OFF',
+            cta_text: 'Ver Oferta',
+            cta_url: '/catalogo',
             image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
-            bg_color: '#0054A6',
+            bg_color: '#2563EB',
             is_featured: false,
-            is_copart: true,
             status: 'active'
         },
         {
@@ -1410,32 +1409,10 @@ document.addEventListener('DOMContentLoaded', () => {
             promos = getActivePromotionsFromStorageOrFallback();
         }
 
-        // Eliminar tarjetas viejas o erróneas de "Revisión Técnica"
+        // Eliminar tarjetas viejas o erróneas de "Revisión Técnica" o items de Copart (Copart tiene su propio banner horizontal a lo largo)
         if (Array.isArray(promos)) {
-            promos = promos.filter(p => !p || (!p.title?.toLowerCase().includes('revisión') && !p.title?.toLowerCase().includes('revision')));
+            promos = promos.filter(p => !p || (!p.title?.toLowerCase().includes('revisión') && !p.title?.toLowerCase().includes('revision') && !p.title?.toLowerCase().includes('copart') && !p.cta_url?.toLowerCase().includes('copart')));
         }
-
-        // Asegurar que la portada interactiva a COPART.seminuevoautos.com esté SIEMPRE posicionada de PRIMERA
-        const copartIndex = promos.findIndex(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
-        const copartPromoCard = {
-            id: 'copart-vip-portal',
-            title: 'Las Mejores Oportunidades de Subasta',
-            subtitle: 'CURADURÍA POR ASESORES PROFESIONALES',
-            description: 'Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.',
-            badge_text: 'SELECCIÓN DE ASESORES',
-            discount_text: 'FILTRO EXPERTO',
-            cta_text: 'Ver Oportunidades Seleccionadas',
-            cta_url: 'https://COPART.seminuevoautos.com',
-            image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
-            bg_color: '#0054A6',
-            is_featured: false,
-            is_copart: true,
-            status: 'active'
-        };
-        if (copartIndex !== -1) {
-            promos.splice(copartIndex, 1);
-        }
-        promos.unshift(copartPromoCard);
 
         // Dejar exactamente 3 tarjetas para un diseño perfectamente equilibrado y simétrico de 3 columnas
         if (Array.isArray(promos) && promos.length > 3) {
@@ -1444,53 +1421,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         grid.innerHTML = promos.map((p, idx) => {
             const color = p.bg_color || '#275CEA';
-            const isFeatured = false; // Todas las tarjetas con formato vertical uniforme
             const ctaHref = p.cta_url || '#contacto';
             const isWhatsApp = ctaHref.startsWith('wa.me') || ctaHref.includes('whatsapp');
             const isExternal = ctaHref.startsWith('http://') || ctaHref.startsWith('https://');
-            const isCopart = p.is_copart || (p.cta_url && p.cta_url.toLowerCase().includes('copart')) || (p.title && p.title.toLowerCase().includes('copart'));
             const ctaLink = isWhatsApp
                 ? `https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(p.cta_url || 'Hola, quiero información sobre esta promoción.')}`
                 : ctaHref;
             const targetAttr = (isWhatsApp || isExternal) ? 'target="_blank" rel="noopener"' : '';
-            const cardClickAttr = isCopart ? `onclick="window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer')"` : '';
-
-            if (isCopart) {
-                return `
-                <article class="promo-card promo-mini-banner copart-portal-promo" role="article" ${cardClickAttr}>
-                    <div class="banner-inner">
-                        <div class="banner-top-row">
-                            <span class="banner-pill-expert"><i class="fas fa-user-check"></i> SELECCIÓN DE ASESORES</span>
-                            <span class="banner-pill-discount">HASTA -40%</span>
-                        </div>
-
-                        <div class="banner-content">
-                            <div class="banner-kicker"><i class="fas fa-layer-group"></i> PORTAL ESPECIALIZADO</div>
-                            <h3 class="banner-title">Oportunidades de Subasta</h3>
-                            <p class="banner-desc">Portal exclusivo donde nuestros asesores profesionales evalúan y seleccionan a diario las mejores oportunidades de compra en subasta de USA, verificando condición mecánica, historial limpio y máximo margen de ahorro.</p>
-                        </div>
-
-                        <div class="banner-route-box">
-                            <div class="route-box-info">
-                                <span class="route-badge-live"><span class="route-pulse"></span> SUBDOMINIO DIRECTO</span>
-                                <span class="route-link-text">COPART.seminuevoautos.com</span>
-                            </div>
-                            <span class="route-icon-arrow"><i class="fas fa-arrow-up-right-from-square"></i></span>
-                        </div>
-
-                        <div class="banner-highlights">
-                            <div class="highlight-item"><i class="fas fa-shield-halved"></i> Peritaje Previo</div>
-                            <div class="highlight-item"><i class="fas fa-calculator"></i> Ahorro Real</div>
-                            <div class="highlight-item"><i class="fas fa-truck-fast"></i> Entrega en Venezuela</div>
-                        </div>
-
-                        <a href="https://COPART.seminuevoautos.com" class="banner-action-btn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-                            <span>Explorar Oportunidades</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>`;
-            }
 
             // Expiry badge
             let expiresBadge = '';
@@ -1517,7 +1454,7 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>`;
 
             return `
-            <article class="promo-card ${isCopart ? 'copart-portal-promo' : ''}" style="--promo-color:${color}; cursor:pointer;" role="article" ${cardClickAttr}>
+            <article class="promo-card" style="--promo-color:${color}; cursor:pointer;" role="article">
                 <div class="promo-card-accent"></div>
                 ${imageHtml}
                 <div class="promo-card-body">
