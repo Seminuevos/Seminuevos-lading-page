@@ -1299,12 +1299,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const defaultPromotions = [
         {
             id: 'copart-vip-portal',
-            title: 'COPART.seminuevoautos.com',
-            subtitle: 'SUBASTAS USA EN VIVO · LOTES COPART & IAAI',
-            description: 'Acceso directo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Peritaje técnico MasterTech, flete marítimo y entrega llave en mano en Venezuela.',
-            badge_text: 'SUBASTAS COPART',
-            discount_text: '-40% AHORRO',
-            cta_text: 'Acceder a Copart Deals',
+            title: 'Las Mejores Oportunidades de Subasta',
+            subtitle: 'CURADURÍA POR ASESORES PROFESIONALES',
+            description: 'Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.',
+            badge_text: 'SELECCIÓN DE ASESORES',
+            discount_text: 'FILTRO EXPERTO',
+            cta_text: 'Ver Oportunidades Seleccionadas',
             cta_url: 'https://COPART.seminuevoautos.com',
             image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
             bg_color: '#0054A6',
@@ -1419,12 +1419,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const copartIndex = promos.findIndex(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
         const copartPromoCard = {
             id: 'copart-vip-portal',
-            title: 'COPART.seminuevoautos.com',
-            subtitle: 'SUBASTAS USA EN VIVO · LOTES COPART & IAAI',
-            description: 'Acceso directo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Peritaje técnico MasterTech, flete marítimo y entrega llave en mano en Venezuela.',
-            badge_text: 'SUBASTAS COPART',
-            discount_text: '-40% AHORRO',
-            cta_text: 'Acceder a Copart Deals',
+            title: 'Las Mejores Oportunidades de Subasta',
+            subtitle: 'CURADURÍA POR ASESORES PROFESIONALES',
+            description: 'Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.',
+            badge_text: 'SELECCIÓN DE ASESORES',
+            discount_text: 'FILTRO EXPERTO',
+            cta_text: 'Ver Oportunidades Seleccionadas',
             cta_url: 'https://COPART.seminuevoautos.com',
             image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
             bg_color: '#0054A6',
@@ -1460,37 +1460,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 <article class="promo-card copart-portal-promo" style="--promo-color:#0054A6; cursor:pointer;" role="article" ${cardClickAttr}>
                     <div class="promo-card-accent"></div>
                     <div class="copart-portal-cover">
-                        <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Copart Auction Lots" class="copart-portal-cover-bg">
+                        <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Selección de Subastas" class="copart-portal-cover-bg">
                         <div class="copart-portal-cover-top">
-                            <span class="copart-badge-pill"><span class="pulse-dot"></span> SUBASTAS EN VIVO</span>
-                            <span class="copart-stat-pill"><i class="fas fa-warehouse"></i> +150,000 LOTES</span>
+                            <span class="copart-badge-pill"><span class="pulse-dot"></span> SELECCIÓN DE ASESORES</span>
+                            <span class="copart-stat-pill"><i class="fas fa-certificate"></i> FILTRO EXPERTO</span>
                         </div>
                         <div class="copart-portal-cover-center">
                             <div class="copart-brand-header">
-                                <div class="copart-brand-name"><i class="fas fa-gavel"></i> COPART<span>USA</span></div>
-                                <div class="copart-brand-sub">PORTAL OFICIAL DE SUBASTAS</div>
+                                <div class="copart-brand-name"><i class="fas fa-shield-halved"></i> OPORTUNIDADES<span>VIP</span></div>
+                                <div class="copart-brand-sub">SELECCIÓN ESPECIAL DE SUBASTAS</div>
                             </div>
                         </div>
                         <div class="copart-portal-cover-bottom">
-                            <span><i class="fas fa-arrow-trend-down"></i> HASTA -40% DE AHORRO</span>
-                            <span><i class="fas fa-shield-halved"></i> PERITAJE MT</span>
+                            <span><i class="fas fa-search-dollar"></i> PRECIO / VALOR REAL</span>
+                            <span><i class="fas fa-wrench"></i> REVISIÓN PREVIA</span>
                         </div>
                     </div>
                     <div class="promo-card-body">
-                        <div class="portal-kicker"><i class="fas fa-network-wired"></i> ACCESO A SUBDOMINIO</div>
+                        <div class="portal-kicker"><i class="fas fa-user-tie"></i> CURADURÍA POR ASESORES PROFESIONALES</div>
                         <div class="portal-domain-display">
                             <span class="p-domain-group"><i class="fas fa-globe"></i> <span class="p-sub">COPART</span>.seminuevoautos.com</span>
                             <i class="fas fa-arrow-up-right-from-square p-ext"></i>
                         </div>
-                        <h3 class="promo-card-title">Explora Lotes y Subastas en Vivo</h3>
-                        <p class="promo-card-desc">Acceso directo para buscar, cotizar y pujar en lotes de subasta en USA con tarifas de dealer mayorista e importación llave en mano a Venezuela.</p>
+                        <h3 class="promo-card-title">Las Mejores Oportunidades de Subasta</h3>
+                        <p class="promo-card-desc">Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.</p>
                         <div class="portal-perks-row">
-                            <span class="portal-perk"><i class="fas fa-gavel"></i> Puja en Vivo</span>
-                            <span class="portal-perk"><i class="fas fa-percentage"></i> Precios Dealer</span>
-                            <span class="portal-perk"><i class="fas fa-truck-ramp-box"></i> Puerta a Puerta</span>
+                            <span class="portal-perk"><i class="fas fa-check-circle"></i> Filtro Anti-Riesgo</span>
+                            <span class="portal-perk"><i class="fas fa-tags"></i> Alto Margen de Ahorro</span>
+                            <span class="portal-perk"><i class="fas fa-handshake"></i> Asesoría Personalizada</span>
                         </div>
                         <a href="https://COPART.seminuevoautos.com" class="portal-cta-btn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-                            <span>INGRESAR AL PORTAL COPART</span> <i class="fas fa-arrow-up-right-from-square"></i>
+                            <span>VER OPORTUNIDADES SELECCIONADAS</span> <i class="fas fa-arrow-up-right-from-square"></i>
                         </a>
                     </div>
                 </article>`;
