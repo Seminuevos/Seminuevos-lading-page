@@ -7384,36 +7384,262 @@ img.mastertech-seal {
 
 /* ===== COPART PORTAL CARD IN PROMOTIONS GRID ===== */
 .promo-card.copart-portal-promo {
-    background: var(--surface, #FFFFFF) !important;
-    border: 1px solid var(--outline-variant, #E5E7EB) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    background: #FFFFFF !important;
+    border: 1.5px solid #CBD5E1 !important;
+    border-top: 3.5px solid #0054A6 !important;
+    box-shadow: 0 4px 20px rgba(0, 84, 166, 0.08) !important;
     cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .promo-card.copart-portal-promo:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 84, 166, 0.14), 0 0 0 1px #0054A6 !important;
+    border-color: #0054A6 !important;
+    box-shadow: 0 20px 40px rgba(0, 84, 166, 0.18) !important;
 }
 
-.promo-card.copart-portal-promo .promo-card-title {
-    color: var(--on-surface, #111827) !important;
+/* Cover / Header as a true Portal Gateway Banner */
+.copart-portal-cover {
+    height: 240px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #001F4D 0%, #004085 50%, #0054A6 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px 18px;
+    color: #FFFFFF;
 }
 
-.promo-card.copart-portal-promo .promo-card-subtitle {
-    color: #0054A6 !important;
+.copart-portal-cover-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.22;
+    mix-blend-mode: luminosity;
+    filter: contrast(1.1);
+    pointer-events: none;
+}
+
+.copart-portal-cover-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.copart-badge-pill {
+    background: #0054A6;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #FFFFFF;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.copart-badge-pill .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px #22C55E;
+    animation: blinkDot 1.2s ease-in-out infinite;
+}
+
+.copart-stat-pill {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #F8FAFC;
+    font-size: 0.68rem;
     font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.promo-card.copart-portal-promo .promo-card-desc {
-    color: var(--on-surface-variant, #4B5563) !important;
+.copart-portal-cover-center {
+    position: relative;
+    z-index: 2;
+    margin: auto 0;
+    text-align: center;
 }
 
-.promo-card.copart-portal-promo .promo-card-cta {
-    background: linear-gradient(135deg, #0054A6 0%, #003366 100%) !important;
-    box-shadow: 0 4px 15px rgba(0, 84, 166, 0.25) !important;
+.copart-brand-header {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 14px;
+    margin-bottom: 6px;
 }
 
-.promo-card.copart-portal-promo .promo-card-cta:hover {
-    filter: brightness(1.15);
-    box-shadow: 0 8px 25px rgba(0, 84, 166, 0.4) !important;
+.copart-brand-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+.copart-brand-name i {
+    color: #38BDF8;
+    font-size: 1.15rem;
+}
+
+.copart-brand-sub {
+    font-size: 0.66rem;
+    font-weight: 750;
+    letter-spacing: 1.5px;
+    color: #CBD5E1;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.copart-portal-cover-bottom {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.70rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.copart-portal-cover-bottom span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Domain Display Route Bar */
+.portal-kicker {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #0054A6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.portal-domain-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #EFF6FF;
+    border: 1.5px dashed #93C5FD;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin: 4px 0 8px 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 750;
+    color: #1E40AF;
+    transition: all 0.25s ease;
+}
+
+.promo-card.copart-portal-promo:hover .portal-domain-display {
+    background: #DBEAFE;
+    border-color: #3B82F6;
+    border-style: solid;
+}
+
+.portal-domain-display .p-domain-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.portal-domain-display .p-sub {
+    color: #0054A6;
+    font-weight: 800;
+}
+
+.portal-domain-display .p-ext {
+    font-size: 0.78rem;
+    color: #2563EB;
+}
+
+/* Perks inside card */
+.portal-perks-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 14px 0;
+}
+
+.portal-perk {
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    color: #334155;
+    font-size: 0.70rem;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.portal-perk i {
+    color: #0054A6;
+    font-size: 0.68rem;
+}
+
+.promo-card.copart-portal-promo .portal-cta-btn {
+    background: linear-gradient(135deg, #0054A6 0%, #003875 100%) !important;
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-weight: 800 !important;
+    font-size: 0.82rem !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 16px rgba(0, 84, 166, 0.3) !important;
+    border: none !important;
+    margin-top: auto !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.promo-card.copart-portal-promo:hover .portal-cta-btn {
+    background: linear-gradient(135deg, #0066CC 0%, #004085 100%) !important;
+    box-shadow: 0 8px 24px rgba(0, 84, 166, 0.45) !important;
+    transform: translateY(-2px) !important;
 }

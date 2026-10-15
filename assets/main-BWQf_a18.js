@@ -1455,6 +1455,47 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetAttr = (isWhatsApp || isExternal) ? 'target="_blank" rel="noopener"' : '';
             const cardClickAttr = isCopart ? `onclick="window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer')"` : '';
 
+            if (isCopart) {
+                return `
+                <article class="promo-card copart-portal-promo" style="--promo-color:#0054A6; cursor:pointer;" role="article" ${cardClickAttr}>
+                    <div class="promo-card-accent"></div>
+                    <div class="copart-portal-cover">
+                        <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Copart Auction Lots" class="copart-portal-cover-bg">
+                        <div class="copart-portal-cover-top">
+                            <span class="copart-badge-pill"><span class="pulse-dot"></span> SUBASTAS EN VIVO</span>
+                            <span class="copart-stat-pill"><i class="fas fa-warehouse"></i> +150,000 LOTES</span>
+                        </div>
+                        <div class="copart-portal-cover-center">
+                            <div class="copart-brand-header">
+                                <div class="copart-brand-name"><i class="fas fa-gavel"></i> COPART<span>USA</span></div>
+                                <div class="copart-brand-sub">PORTAL OFICIAL DE SUBASTAS</div>
+                            </div>
+                        </div>
+                        <div class="copart-portal-cover-bottom">
+                            <span><i class="fas fa-arrow-trend-down"></i> HASTA -40% DE AHORRO</span>
+                            <span><i class="fas fa-shield-halved"></i> PERITAJE MT</span>
+                        </div>
+                    </div>
+                    <div class="promo-card-body">
+                        <div class="portal-kicker"><i class="fas fa-network-wired"></i> ACCESO A SUBDOMINIO</div>
+                        <div class="portal-domain-display">
+                            <span class="p-domain-group"><i class="fas fa-globe"></i> <span class="p-sub">COPART</span>.seminuevoautos.com</span>
+                            <i class="fas fa-arrow-up-right-from-square p-ext"></i>
+                        </div>
+                        <h3 class="promo-card-title">Explora Lotes y Subastas en Vivo</h3>
+                        <p class="promo-card-desc">Acceso directo para buscar, cotizar y pujar en lotes de subasta en USA con tarifas de dealer mayorista e importación llave en mano a Venezuela.</p>
+                        <div class="portal-perks-row">
+                            <span class="portal-perk"><i class="fas fa-gavel"></i> Puja en Vivo</span>
+                            <span class="portal-perk"><i class="fas fa-percentage"></i> Precios Dealer</span>
+                            <span class="portal-perk"><i class="fas fa-truck-ramp-box"></i> Puerta a Puerta</span>
+                        </div>
+                        <a href="https://COPART.seminuevoautos.com" class="portal-cta-btn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                            <span>INGRESAR AL PORTAL COPART</span> <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                </article>`;
+            }
+
             // Expiry badge
             let expiresBadge = '';
             if (p.expires_at) {
