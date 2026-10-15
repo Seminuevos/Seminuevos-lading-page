@@ -978,6 +978,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     try { hSlides = JSON.parse(hSlides); } catch(e) {}
                 }
                 if (Array.isArray(hSlides) && hSlides.length > 0) {
+                    const copartSlideTpl = {
+                        kicker: "SUBASTAS USA EN VIVO · COPART & IAAI",
+                        title: "Copart Deals",
+                        tagline: "Las mejores oportunidades de subastas en USA a precio mayorista",
+                        description: "Acceso directo a lotes verificados de Copart e IAAI. Gestionamos inspección técnica, puja en vivo, seguro marítimo y nacionalización llave en mano con entrega en Venezuela.",
+                        stat1Num: "-40% OFF",
+                        stat1Label: "Ahorro Promedio Dealer",
+                        stat2Num: "100% Legal",
+                        stat2Label: "Importación Llave en Mano",
+                        disclaimer: "Gestión directa de compra, flete marítimo consolidado y nacionalización en puerto venezolano.",
+                        ctaPrimary: "Acceder a Copart Deals",
+                        ctaPrimaryLink: "https://COPART.seminuevoautos.com",
+                        waText: "Hola, deseo información sobre las oportunidades de subastas Copart e importación directa.",
+                        ctaSecondary: "Asesoría Copart",
+                        ctaSecondaryLink: "https://wa.me/584248700438?text=Hola%2C%20deseo%20asesor%C3%ADa%20para%20comprar%20un%20veh%C3%ADculo%20en%20Copart",
+                        image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1920&q=80",
+                        imgPositionY: "center",
+                        imgPositionX: "center",
+                        imgZoom: "100",
+                        overlayDarkness: "75",
+                        textAlign: "left",
+                        tag: "SUBASTAS USA"
+                    };
+                    const hasCopart = hSlides.some(s => s && ((s.title && s.title.toLowerCase().includes('copart')) || (s.ctaPrimaryLink && s.ctaPrimaryLink.toLowerCase().includes('copart'))));
+                    if (!hasCopart) {
+                        const rIdx = hSlides.findIndex(s => s && (s.title === '4Runner SR5' || (s.kicker && s.kicker.includes('TOYOTA'))));
+                        if (rIdx !== -1) {
+                            hSlides[rIdx] = copartSlideTpl;
+                        } else if (hSlides.length >= 3) {
+                            hSlides[2] = copartSlideTpl;
+                        } else {
+                            hSlides.push(copartSlideTpl);
+                        }
+                    }
                     renderDynamicHero(hSlides);
                 }
             }
@@ -1069,6 +1103,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const dotsContainer = document.getElementById('heroDots');
         if (!slider) return;
 
+        const copartSlideTpl = {
+            kicker: "SUBASTAS USA EN VIVO · COPART & IAAI",
+            title: "Copart Deals",
+            tagline: "Las mejores oportunidades de subastas en USA a precio mayorista",
+            description: "Acceso directo a lotes verificados de Copart e IAAI. Gestionamos inspección técnica, puja en vivo, seguro marítimo y nacionalización llave en mano con entrega en Venezuela.",
+            stat1Num: "-40% OFF",
+            stat1Label: "Ahorro Promedio Dealer",
+            stat2Num: "100% Legal",
+            stat2Label: "Importación Llave en Mano",
+            disclaimer: "Gestión directa de compra, flete marítimo consolidado y nacionalización en puerto venezolano.",
+            ctaPrimary: "Acceder a Copart Deals",
+            ctaPrimaryLink: "https://COPART.seminuevoautos.com",
+            waText: "Hola, deseo información sobre las oportunidades de subastas Copart e importación directa.",
+            ctaSecondary: "Asesoría Copart",
+            ctaSecondaryLink: "https://wa.me/584248700438?text=Hola%2C%20deseo%20asesor%C3%ADa%20para%20comprar%20un%20veh%C3%ADculo%20en%20Copart",
+            image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1920&q=80",
+            imgPositionY: "center",
+            imgPositionX: "center",
+            imgZoom: "100",
+            overlayDarkness: "75",
+            textAlign: "left",
+            tag: "SUBASTAS USA"
+        };
+        if (Array.isArray(slidesData)) {
+            const hasCopart = slidesData.some(s => s && ((s.title && s.title.toLowerCase().includes('copart')) || (s.ctaPrimaryLink && s.ctaPrimaryLink.toLowerCase().includes('copart'))));
+            if (!hasCopart) {
+                const rIdx = slidesData.findIndex(s => s && (s.title === '4Runner SR5' || (s.kicker && s.kicker.includes('TOYOTA'))));
+                if (rIdx !== -1) {
+                    slidesData[rIdx] = copartSlideTpl;
+                } else if (slidesData.length >= 3) {
+                    slidesData[2] = copartSlideTpl;
+                } else {
+                    slidesData.push(copartSlideTpl);
+                }
+            }
+        }
+
         let html = '';
         slidesData.forEach((s, i) => {
             const isFirst = i === 0;
@@ -1155,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="hero-content ${alignClass}">
                         <span class="hero-nissan-kicker">${cleanKicker}</span>
                         <${isFirst ? 'h1' : 'p'} class="hero-nissan-title">
-                            ${cleanTitle}<sup>®</sup>
+                            ${cleanTitle}${cleanTitle.toLowerCase().includes('copart') ? '' : '<sup>®</sup>'}
                         </${isFirst ? 'h1' : 'p'}>
                         <h2 class="hero-nissan-tagline">${s.tagline || s.subtitle || 'El crossover expresivo y vanguardista'}</h2>
                         <p class="hero-nissan-desc">
@@ -1338,14 +1409,43 @@ document.addEventListener('DOMContentLoaded', () => {
             promos = getActivePromotionsFromStorageOrFallback();
         }
 
+        // Asegurar que la portada interactiva a COPART.seminuevoautos.com esté siempre presente en la regilla de promociones
+        const hasCopartPromo = Array.isArray(promos) && promos.some(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
+        if (!hasCopartPromo && Array.isArray(promos)) {
+            const copartPromoCard = {
+                id: 'copart-vip-portal',
+                title: 'COPART.seminuevoautos.com',
+                subtitle: 'Subastas USA en Vivo · Mayorista',
+                description: 'Explora oportunidades diarias y lotes verificados de subasta en vivo con hasta -40% de ahorro. Puja en vivo, inspección técnica y flete marítimo llave en mano.',
+                badge_text: 'SUBASTAS EN VIVO',
+                discount_text: '-40% OFF',
+                cta_text: 'Acceder a Copart Deals',
+                cta_url: 'https://COPART.seminuevoautos.com',
+                image_url: 'images/hero-slides/hero-3.jpg',
+                bg_color: '#d4a017',
+                is_featured: false,
+                is_copart: true,
+                status: 'active'
+            };
+            if (promos.length >= 2) {
+                promos.splice(1, 0, copartPromoCard);
+            } else {
+                promos.push(copartPromoCard);
+            }
+        }
+
         grid.innerHTML = promos.map((p, idx) => {
             const color = p.bg_color || '#275CEA';
             const isFeatured = p.is_featured && idx === 0;
             const ctaHref = p.cta_url || '#contacto';
             const isWhatsApp = ctaHref.startsWith('wa.me') || ctaHref.includes('whatsapp');
+            const isExternal = ctaHref.startsWith('http://') || ctaHref.startsWith('https://');
+            const isCopart = p.is_copart || (p.cta_url && p.cta_url.toLowerCase().includes('copart')) || (p.title && p.title.toLowerCase().includes('copart'));
             const ctaLink = isWhatsApp
                 ? `https://wa.me/${window.WHATSAPP_NUMBER}?text=${encodeURIComponent(p.cta_url || 'Hola, quiero información sobre esta promoción.')}`
                 : ctaHref;
+            const targetAttr = (isWhatsApp || isExternal) ? 'target="_blank" rel="noopener"' : '';
+            const cardClickAttr = isCopart ? `onclick="window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer')"` : '';
 
             // Expiry badge
             let expiresBadge = '';
@@ -1360,7 +1460,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageHtml = p.image_url
                 ? `<div class="promo-card-image">
                         <img src="${p.image_url}" alt="${p.title}" loading="lazy">
-                        ${p.badge_text ? `<div class="promo-badge" style="background:${color};">${p.badge_text}</div>` : ''}
+                        ${p.badge_text ? `<div class="promo-badge" style="background:${color};">${isCopart ? '<span class="copart-live-pulse" style="padding:2px 6px;margin-right:4px;"><i class="fas fa-circle"></i> EN VIVO</span> ' : ''}${p.badge_text}</div>` : ''}
                         ${p.discount_text ? `<div class="promo-discount">${p.discount_text}</div>` : ''}
                         ${expiresBadge}
                    </div>`
@@ -1372,15 +1472,15 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>`;
 
             return `
-            <article class="promo-card${isFeatured ? ' featured' : ''}" style="--promo-color:${color};" role="article">
+            <article class="promo-card${isFeatured ? ' featured' : ''}${isCopart ? ' copart-portal-promo' : ''}" style="--promo-color:${color}; ${isCopart ? 'cursor:pointer;' : ''}" role="article" ${cardClickAttr}>
                 <div class="promo-card-accent"></div>
                 ${imageHtml}
                 <div class="promo-card-body">
                     ${p.subtitle ? `<div class="promo-card-subtitle">${p.subtitle}</div>` : ''}
                     <h3 class="promo-card-title">${p.title}</h3>
                     ${p.description ? `<p class="promo-card-desc">${p.description}</p>` : ''}
-                    <a href="${ctaLink}" class="promo-card-cta" ${isWhatsApp ? 'target="_blank"' : ''}>
-                        ${isWhatsApp ? '<i class="fab fa-whatsapp"></i>' : '<i class="fas fa-arrow-right"></i>'}
+                    <a href="${ctaLink}" class="promo-card-cta" ${targetAttr} ${isCopart ? 'onclick="event.stopPropagation()"' : ''}>
+                        ${isWhatsApp ? '<i class="fab fa-whatsapp"></i>' : (isExternal ? '<i class="fas fa-arrow-up-right-from-square"></i>' : '<i class="fas fa-arrow-right"></i>')}
                         ${p.cta_text || 'Ver Oferta'}
                     </a>
                 </div>
