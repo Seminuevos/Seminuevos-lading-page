@@ -1300,14 +1300,14 @@ document.addEventListener('DOMContentLoaded', () => {
         {
             id: 'copart-vip-portal',
             title: 'COPART.seminuevoautos.com',
-            subtitle: 'PORTAL OFICIAL DE SUBASTAS USA',
-            description: 'Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.',
-            badge_text: 'SUBASTAS EN VIVO',
-            discount_text: '-40% OFF',
-            cta_text: 'Acceder al Portal Copart',
+            subtitle: 'SUBASTAS USA EN VIVO · LOTES COPART & IAAI',
+            description: 'Acceso directo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Peritaje técnico MasterTech, flete marítimo y entrega llave en mano en Venezuela.',
+            badge_text: 'SUBASTAS COPART',
+            discount_text: '-40% AHORRO',
+            cta_text: 'Acceder a Copart Deals',
             cta_url: 'https://COPART.seminuevoautos.com',
-            image_url: 'images/copart-auction-cover.jpg',
-            bg_color: '#d4a017',
+            image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
+            bg_color: '#0054A6',
             is_featured: false,
             is_copart: true,
             status: 'active'
@@ -1420,14 +1420,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const copartPromoCard = {
             id: 'copart-vip-portal',
             title: 'COPART.seminuevoautos.com',
-            subtitle: 'PORTAL OFICIAL DE SUBASTAS USA',
-            description: 'Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.',
-            badge_text: 'SUBASTAS EN VIVO',
-            discount_text: '-40% OFF',
-            cta_text: 'Acceder al Portal Copart',
+            subtitle: 'SUBASTAS USA EN VIVO · LOTES COPART & IAAI',
+            description: 'Acceso directo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Peritaje técnico MasterTech, flete marítimo y entrega llave en mano en Venezuela.',
+            badge_text: 'SUBASTAS COPART',
+            discount_text: '-40% AHORRO',
+            cta_text: 'Acceder a Copart Deals',
             cta_url: 'https://COPART.seminuevoautos.com',
-            image_url: 'images/copart-auction-cover.jpg',
-            bg_color: '#d4a017',
+            image_url: 'images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg',
+            bg_color: '#0054A6',
             is_featured: false,
             is_copart: true,
             status: 'active'
@@ -1455,35 +1455,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetAttr = (isWhatsApp || isExternal) ? 'target="_blank" rel="noopener"' : '';
             const cardClickAttr = isCopart ? `onclick="window.open('https://COPART.seminuevoautos.com', '_blank', 'noopener,noreferrer')"` : '';
 
-            // Renderizado exclusivo de alta gama para la portada de Copart
-            if (isCopart) {
-                return `
-                <article class="promo-card copart-portal-promo" style="--promo-color:#d4a017; cursor:pointer;" role="article" ${cardClickAttr}>
-                    <div class="promo-card-accent"></div>
-                    <div class="promo-card-image">
-                        <img src="images/copart-auction-cover.jpg" alt="Copart Auction Subastas USA" loading="eager">
-                        <div class="copart-promo-badges-top">
-                            <span class="copart-live-pulse"><i class="fas fa-circle"></i> EN VIVO</span>
-                            <span class="copart-tag-gold"><i class="fas fa-gavel"></i> COPART & IAAI</span>
-                        </div>
-                        <div class="promo-discount copart-discount-badge"><i class="fas fa-arrow-trend-down"></i> HASTA -40% OFF</div>
-                    </div>
-                    <div class="promo-card-body">
-                        <div class="promo-card-subtitle copart-subtitle"><i class="fas fa-bolt"></i> PORTAL OFICIAL DE SUBASTAS USA</div>
-                        <h3 class="promo-card-title copart-title">COPART<span class="copart-domain-dot">.</span><span class="copart-domain-accent">seminuevoautos.com</span></h3>
-                        <div class="copart-card-perks">
-                            <span><i class="fas fa-check-circle"></i> Puja en Vivo</span>
-                            <span><i class="fas fa-check-circle"></i> Peritaje MasterTech</span>
-                            <span><i class="fas fa-check-circle"></i> Puerta a Puerta</span>
-                        </div>
-                        <p class="promo-card-desc copart-desc">Acceso exclusivo a lotes verificados de subasta en USA con tarifas de dealer mayorista. Inspección técnica, flete marítimo y entrega llave en mano en Venezuela.</p>
-                        <a href="${ctaLink}" class="promo-card-cta copart-btn" ${targetAttr} onclick="event.stopPropagation()">
-                            <span>ACCEDER AL PORTAL COPART</span> <i class="fas fa-arrow-up-right-from-square"></i>
-                        </a>
-                    </div>
-                </article>`;
-            }
-
             // Expiry badge
             let expiresBadge = '';
             if (p.expires_at) {
@@ -1509,14 +1480,14 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>`;
 
             return `
-            <article class="promo-card" style="--promo-color:${color};" role="article">
+            <article class="promo-card ${isCopart ? 'copart-portal-promo' : ''}" style="--promo-color:${color}; cursor:pointer;" role="article" ${cardClickAttr}>
                 <div class="promo-card-accent"></div>
                 ${imageHtml}
                 <div class="promo-card-body">
                     ${p.subtitle ? `<div class="promo-card-subtitle">${p.subtitle}</div>` : ''}
                     <h3 class="promo-card-title">${p.title}</h3>
                     ${p.description ? `<p class="promo-card-desc">${p.description}</p>` : ''}
-                    <a href="${ctaLink}" class="promo-card-cta" ${targetAttr}>
+                    <a href="${ctaLink}" class="promo-card-cta" ${targetAttr} onclick="event.stopPropagation()">
                         ${isWhatsApp ? '<i class="fab fa-whatsapp"></i>' : (isExternal ? '<i class="fas fa-arrow-up-right-from-square"></i>' : '<i class="fas fa-arrow-right"></i>')}
                         ${p.cta_text || 'Ver Oferta'}
                     </a>
