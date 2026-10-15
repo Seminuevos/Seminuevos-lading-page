@@ -5089,8 +5089,21 @@ img.mastertech-seal {
 
 .promotions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+    .promotions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .promotions-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* --- Promo Card --- */
@@ -5105,6 +5118,7 @@ img.mastertech-seal {
     display: flex;
     flex-direction: column;
     will-change: transform;
+    height: 100%;
 }
 
 .promo-card:hover {
@@ -5112,18 +5126,10 @@ img.mastertech-seal {
     box-shadow: 0 28px 70px rgba(0,0,0,0.5), 0 0 0 1px var(--ghost-border-gold);
 }
 
-/* Featured card — full width on first row */
-.promo-card.featured {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    min-height: 240px;
-}
-
-@media (max-width: 768px) {
-    .promo-card.featured {
-        flex-direction: column;
-        grid-column: auto;
-    }
+/* All cards in promotions-grid use balanced vertical format */
+.promotions-grid .promo-card {
+    grid-column: auto !important;
+    flex-direction: column !important;
 }
 
 /* Accent strip on the left / top */
@@ -5316,7 +5322,7 @@ img.mastertech-seal {
     text-decoration: none;
     transition: var(--transition);
     align-self: flex-start;
-    margin-top: 8px;
+    margin-top: auto;
     border: 1px solid rgba(255,255,255,0.15);
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);

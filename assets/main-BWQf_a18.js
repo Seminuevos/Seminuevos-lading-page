@@ -1308,7 +1308,22 @@ document.addEventListener('DOMContentLoaded', () => {
             cta_url: '/catalogo',
             image_url: 'images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2',
             bg_color: '#275CEA',
-            is_featured: true,
+            is_featured: false,
+            status: 'active'
+        },
+        {
+            id: 'copart-vip-portal',
+            title: 'COPART.seminuevoautos.com',
+            subtitle: 'Subastas USA en Vivo · Mayorista',
+            description: 'Explora oportunidades diarias y lotes verificados de subasta en vivo con hasta -40% de ahorro. Puja en vivo, inspección técnica y flete marítimo llave en mano.',
+            badge_text: 'SUBASTAS EN VIVO',
+            discount_text: '-40% OFF',
+            cta_text: 'Acceder a Copart Deals',
+            cta_url: 'https://COPART.seminuevoautos.com',
+            image_url: 'images/hero-slides/hero-3.jpg',
+            bg_color: '#d4a017',
+            is_featured: false,
+            is_copart: true,
             status: 'active'
         },
         {
@@ -1324,20 +1339,6 @@ document.addEventListener('DOMContentLoaded', () => {
             bg_color: '#1a45b8',
             is_featured: false,
             status: 'active'
-        },
-        {
-            id: 'default-3',
-            title: 'Revisión Técnica MasterTech',
-            subtitle: 'Soporte y Garantía Oficial',
-            description: 'Revisión completa de 50 puntos para asegurar tu vehículo seminuevo.',
-            badge_text: 'SERVICIO GRATIS',
-            discount_text: 'Valor: $150',
-            cta_text: 'Agendar Cita',
-            cta_url: '#contacto',
-            image_url: 'CERTIFICADO---MASTERTECH.png',
-            bg_color: '#0f3a9e',
-            is_featured: false,
-            status: 'active'
         }
     ];
 
@@ -1346,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const raw = localStorage.getItem('sn_promotions');
             if (raw) {
                 const parsed = JSON.parse(raw);
-                const active = parsed.filter(p => p.status === 'active');
+                const active = parsed.filter(p => p.status === 'active' && !p.title?.toLowerCase().includes('revisión') && !p.title?.toLowerCase().includes('revision'));
                 if (active.length > 0) return active;
             }
         } catch(e) {}
@@ -1365,7 +1366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cta_url: `vehiculo.html?id=${v.id}`,
                 image_url: (v.images && v.images.length > 0) ? v.images[0] : (v.image || ''),
                 bg_color: i === 0 ? '#275CEA' : (i === 1 ? '#1a45b8' : '#0f3a9e'),
-                is_featured: i === 0,
+                is_featured: false,
                 status: 'active'
             }));
         }
@@ -1409,6 +1410,11 @@ document.addEventListener('DOMContentLoaded', () => {
             promos = getActivePromotionsFromStorageOrFallback();
         }
 
+        // Eliminar tarjetas viejas o erróneas de "Revisión Técnica"
+        if (Array.isArray(promos)) {
+            promos = promos.filter(p => !p || (!p.title?.toLowerCase().includes('revisión') && !p.title?.toLowerCase().includes('revision')));
+        }
+
         // Asegurar que la portada interactiva a COPART.seminuevoautos.com esté siempre presente en la regilla de promociones
         const hasCopartPromo = Array.isArray(promos) && promos.some(p => p && ((p.title && p.title.toLowerCase().includes('copart')) || (p.cta_url && p.cta_url.toLowerCase().includes('copart'))));
         if (!hasCopartPromo && Array.isArray(promos)) {
@@ -1434,9 +1440,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Dejar exactamente 3 tarjetas para un diseño perfectamente equilibrado y simétrico de 3 columnas
+        if (Array.isArray(promos) && promos.length > 3) {
+            promos = promos.slice(0, 3);
+        }
+
         grid.innerHTML = promos.map((p, idx) => {
             const color = p.bg_color || '#275CEA';
-            const isFeatured = p.is_featured && idx === 0;
+            const isFeatured = false; // Todas las tarjetas con formato vertical uniforme
             const ctaHref = p.cta_url || '#contacto';
             const isWhatsApp = ctaHref.startsWith('wa.me') || ctaHref.includes('whatsapp');
             const isExternal = ctaHref.startsWith('http://') || ctaHref.startsWith('https://');
@@ -1464,7 +1475,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${p.discount_text ? `<div class="promo-discount">${p.discount_text}</div>` : ''}
                         ${expiresBadge}
                    </div>`
-                : `<div class="promo-card-image-placeholder" style="--promo-color:${color}; ${isFeatured ? 'min-height:240px;' : 'height:185px;'}">
+                : `<div class="promo-card-image-placeholder" style="--promo-color:${color}; height:240px;">
                         <i class="fas fa-tags"></i>
                         ${p.badge_text ? `<div class="promo-badge" style="background:${color}; position:absolute; top:14px; left:14px;">${p.badge_text}</div>` : ''}
                         ${p.discount_text ? `<div class="promo-discount">${p.discount_text}</div>` : ''}
@@ -1472,7 +1483,7 @@ document.addEventListener('DOMContentLoaded', () => {
                    </div>`;
 
             return `
-            <article class="promo-card${isFeatured ? ' featured' : ''}${isCopart ? ' copart-portal-promo' : ''}" style="--promo-color:${color}; ${isCopart ? 'cursor:pointer;' : ''}" role="article" ${cardClickAttr}>
+            <article class="promo-card${isCopart ? ' copart-portal-promo' : ''}" style="--promo-color:${color}; ${isCopart ? 'cursor:pointer;' : ''}" role="article" ${cardClickAttr}>
                 <div class="promo-card-accent"></div>
                 ${imageHtml}
                 <div class="promo-card-body">
