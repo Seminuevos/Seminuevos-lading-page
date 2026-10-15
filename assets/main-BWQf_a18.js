@@ -1457,40 +1457,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (isCopart) {
                 return `
-                <article class="promo-card copart-portal-promo" style="--promo-color:#0054A6; cursor:pointer;" role="article" ${cardClickAttr}>
+                <article class="promo-card copart-portal-promo" style="--promo-color:#2563EB; cursor:pointer;" role="article" ${cardClickAttr}>
                     <div class="promo-card-accent"></div>
-                    <div class="copart-portal-cover">
-                        <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Selección de Subastas" class="copart-portal-cover-bg">
-                        <div class="copart-portal-cover-top">
-                            <span class="copart-badge-pill"><span class="pulse-dot"></span> SELECCIÓN DE ASESORES</span>
-                            <span class="copart-stat-pill"><i class="fas fa-certificate"></i> FILTRO EXPERTO</span>
+                    <div class="promo-curated-cover">
+                        <div class="promo-curated-split">
+                            <img src="images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg" alt="Camioneta de subasta" loading="eager">
                         </div>
-                        <div class="copart-portal-cover-center">
-                            <div class="copart-brand-header">
-                                <div class="copart-brand-name"><i class="fas fa-shield-halved"></i> OPORTUNIDADES<span>VIP</span></div>
-                                <div class="copart-brand-sub">SELECCIÓN ESPECIAL DE SUBASTAS</div>
-                            </div>
+                        <div class="promo-curated-split">
+                            <img src="images/2025-kia-k5-gt-line.jpg" alt="Sedán de subasta" loading="eager">
                         </div>
-                        <div class="copart-portal-cover-bottom">
-                            <span><i class="fas fa-search-dollar"></i> PRECIO / VALOR REAL</span>
-                            <span><i class="fas fa-wrench"></i> REVISIÓN PREVIA</span>
+                        <div class="promo-badge" style="background:#2563EB;">SELECCIÓN DE ASESORES</div>
+                        <div class="promo-discount">HASTA -40%</div>
+                        <div class="promo-curated-footer">
+                            <span><i class="fas fa-layer-group"></i> CATÁLOGO DE OPORTUNIDADES</span>
+                            <span class="domain-hint">copart.seminuevoautos.com ↗</span>
                         </div>
                     </div>
                     <div class="promo-card-body">
-                        <div class="portal-kicker"><i class="fas fa-user-tie"></i> CURADURÍA POR ASESORES PROFESIONALES</div>
-                        <div class="portal-domain-display">
-                            <span class="p-domain-group"><i class="fas fa-globe"></i> <span class="p-sub">COPART</span>.seminuevoautos.com</span>
-                            <i class="fas fa-arrow-up-right-from-square p-ext"></i>
-                        </div>
-                        <h3 class="promo-card-title">Las Mejores Oportunidades de Subasta</h3>
-                        <p class="promo-card-desc">Nuestros asesores expertos analizan a diario los remates en USA y eligen únicamente las oportunidades reales: vehículos con historial limpio, viabilidad mecánica comprobada y el mayor margen de ahorro para traer a Venezuela.</p>
-                        <div class="portal-perks-row">
-                            <span class="portal-perk"><i class="fas fa-check-circle"></i> Filtro Anti-Riesgo</span>
-                            <span class="portal-perk"><i class="fas fa-tags"></i> Alto Margen de Ahorro</span>
-                            <span class="portal-perk"><i class="fas fa-handshake"></i> Asesoría Personalizada</span>
-                        </div>
-                        <a href="https://COPART.seminuevoautos.com" class="portal-cta-btn" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-                            <span>VER OPORTUNIDADES SELECCIONADAS</span> <i class="fas fa-arrow-up-right-from-square"></i>
+                        <div class="promo-card-subtitle" style="color:#2563EB;">SUBDOMINIO · SELECCIÓN ESPECIAL</div>
+                        <h3 class="promo-card-title">Oportunidades de Subasta</h3>
+                        <p class="promo-card-desc">Vehículos en USA evaluados y seleccionados por nuestros asesores por su excelente condición mecánica, historial limpio y máximo margen de ahorro.</p>
+                        <a href="https://COPART.seminuevoautos.com" class="promo-card-cta" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                            <i class="fas fa-arrow-up-right-from-square"></i> Explorar Oportunidades
                         </a>
                     </div>
                 </article>`;
