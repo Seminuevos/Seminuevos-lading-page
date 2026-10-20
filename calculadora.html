@@ -14,11 +14,7 @@
         window.SN_SUPABASE_KEY = SB_KEY;
 
         // Si se abre desde archivo descargado o dentro de un .zip (file://), cargar CSS, imagenes y scripts desde el dominio oficial
-        if (window.location.protocol === 'file:') {
-            var baseEl = document.createElement('base');
-            baseEl.href = PROD_ORIGIN;
-            document.head.appendChild(baseEl);
-        }
+        if (window.location.protocol === 'file:') { document.write('<base href="' + PROD_ORIGIN + '">'); }
 
         if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
             window.supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
