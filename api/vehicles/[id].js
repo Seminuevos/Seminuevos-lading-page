@@ -6,13 +6,32 @@ import { supabase } from '../_lib/supabase-server.js';
 import { handleCors } from '../_middleware/cors.js';
 import { requireAuth } from '../_middleware/auth.js';
 import { sanitizeString } from '../_middleware/validate.js';
+import fs from 'fs';
+import path from 'path';
+
+function getFallbackVehicleById(id) {
+    try {
+        const candidates = [
+            path.join(process.cwd(), 'database', 'data_export.json'),
+            path.join(process.cwd(), 'scripts', 'parsed_vehicles.json')
+        ];
+        for (const p of candidates) {
+            if (fs.existsSync(p)) {
+                const raw = fs.readFileSync(p, 'utf8');
+                const parsed = JSON.parse(raw);
+                const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.vehicles) ? parsed.vehicles : []);
+                const match = list.find(v => String(v.id) === String(id) || String(v.title).toLowerCase().includes(String(id).toLowerCase()));
+                if (match) return match;
+            }
+        }
+    } catch (e) {
+        console.warn('[vehicle id fallback error]:', e.message);
+    }
+    return null;
+}
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
-
-    if (!supabase) {
-        return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
-    }
 
     const { id } = req.query;
 
@@ -23,18 +42,30 @@ export default async function handler(req, res) {
     // GET — ver detalle de un vehículo
     if (req.method === 'GET') {
         try {
-            const { data, error } = await supabase
-                .from('vehicles')
-                .select('*')
-                .eq('id', id)
-                .maybeSingle();
+            if (supabase) {
+                const { data, error } = await supabase
+                    .from('vehicles')
+                    .select('*')
+                    .eq('id', id)
+                    .maybeSingle();
 
-            if (error || !data) {
-                return res.status(404).json({ error: 'Vehículo no encontrado' });
+                if (!error && data) {
+                    return res.status(200).json({ data });
+                }
             }
 
-            return res.status(200).json({ data });
+            // Fallback a los datos sincronizados en GitHub
+            const fallbackItem = getFallbackVehicleById(id);
+            if (fallbackItem) {
+                return res.status(200).json({ data: fallbackItem });
+            }
+
+            return res.status(404).json({ error: 'Vehículo no encontrado' });
         } catch (err) {
+            const fallbackItem = getFallbackVehicleById(id);
+            if (fallbackItem) {
+                return res.status(200).json({ data: fallbackItem });
+            }
             return res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -46,7 +77,6 @@ export default async function handler(req, res) {
 
         const body = req.body || {};
 
-        // Construir payload solo con campos que vengan en el body
         const payload = {};
         if (body.title !== undefined)        payload.title        = sanitizeString(body.title, 200);
         if (body.price !== undefined)        payload.price        = sanitizeString(body.price, 100);
@@ -66,6 +96,10 @@ export default async function handler(req, res) {
         payload.updated_at = new Date().toISOString();
 
         try {
+            if (!supabase) {
+                return res.status(503).json({ error: 'Servicio de base de datos no configurado' });
+            }
+
             const { data, error } = await supabase
                 .from('vehicles')
                 .update(payload)
@@ -102,9 +136,12 @@ export default async function handler(req, res) {
         const { title } = req.query;
 
         try {
+            if (!supabase) {
+                return res.status(503).json({ error: 'Servicio de base de datos no configurado' });
+            }
+
             const numericId = parseInt(id, 10);
             
-            // 1. Borrar por ID numérico en Supabase si es válido
             if (!isNaN(numericId)) {
                 await supabase
                     .from('vehicles')
@@ -112,7 +149,6 @@ export default async function handler(req, res) {
                     .eq('id', numericId);
             }
 
-            // 2. Borrar por ID como string/UUID
             const { error: delErr } = await supabase
                 .from('vehicles')
                 .delete()
@@ -123,7 +159,6 @@ export default async function handler(req, res) {
                 return res.status(500).json({ error: 'Error al eliminar vehículo de la base de datos: ' + delErr.message });
             }
 
-            // 3. Si se proporciona título, borrar también por coincidencia de título para asegurar borrado absoluto
             if (title && String(title).trim()) {
                 await supabase
                     .from('vehicles')

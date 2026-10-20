@@ -6,13 +6,31 @@ import { supabase } from '../_lib/supabase-server.js';
 import { handleCors } from '../_middleware/cors.js';
 import { requireAuth } from '../_middleware/auth.js';
 import { sanitizeString, validateRequired } from '../_middleware/validate.js';
+import fs from 'fs';
+import path from 'path';
+
+function getFallbackVehicles() {
+    try {
+        const candidates = [
+            path.join(process.cwd(), 'database', 'data_export.json'),
+            path.join(process.cwd(), 'scripts', 'parsed_vehicles.json')
+        ];
+        for (const p of candidates) {
+            if (fs.existsSync(p)) {
+                const raw = fs.readFileSync(p, 'utf8');
+                const parsed = JSON.parse(raw);
+                const list = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.vehicles) ? parsed.vehicles : []);
+                if (list.length > 0) return list;
+            }
+        }
+    } catch (e) {
+        console.warn('[vehicles fallback error]:', e.message);
+    }
+    return [];
+}
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
-
-    if (!supabase) {
-        return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
-    }
 
     // GET — listar vehículos (público: solo activos; admin con token: todos)
     if (req.method === 'GET') {
@@ -24,22 +42,27 @@ export default async function handler(req, res) {
         const isAdmin = authHeader && !authHeader.includes('null') && !authHeader.includes('undefined');
 
         try {
-            let query = supabase.from('vehicles').select('*').order('created_at', { ascending: false });
-            if (!isAdmin) {
-                query = query.eq('status', 'active');
+            if (supabase) {
+                let query = supabase.from('vehicles').select('*').order('created_at', { ascending: false });
+                if (!isAdmin) {
+                    query = query.eq('status', 'active');
+                }
+
+                const { data, error } = await query;
+                if (!error && Array.isArray(data) && data.length > 0) {
+                    return res.status(200).json({ data });
+                }
             }
 
-            const { data, error } = await query;
-            if (error) {
-                console.error('[GET /api/vehicles]', error);
-                return res.status(500).json({ error: 'Error al obtener inventario' });
-            }
-
-            return res.status(200).json({ data });
+            // Fallback directo a la base de datos oficial sincronizada en GitHub
+            const fallbackList = getFallbackVehicles();
+            const result = isAdmin ? fallbackList : fallbackList.filter(v => (v.status || 'active') === 'active');
+            return res.status(200).json({ data: result });
 
         } catch (err) {
             console.error('[GET /api/vehicles] catch:', err);
-            return res.status(500).json({ error: 'Error interno del servidor' });
+            const fallbackList = getFallbackVehicles();
+            return res.status(200).json({ data: fallbackList });
         }
     }
 
@@ -72,6 +95,10 @@ export default async function handler(req, res) {
         };
 
         try {
+            if (!supabase) {
+                return res.status(503).json({ error: 'Servicio de base de datos no configurado en el servidor' });
+            }
+
             const { data, error } = await supabase
                 .from('vehicles')
                 .insert([payload])
