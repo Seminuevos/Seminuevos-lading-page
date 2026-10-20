@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const carId = urlParams.get('id');
 
     if (!carId) {
-        document.getElementById('carDetailContainer').innerHTML = '<h2 style="color:white; text-align:center;">Vehículo no encontrado</h2>';
+        document.getElementById('carDetailContainer').innerHTML = '<div style="padding:60px 20px; text-align:center; background:#ffffff; border-radius:16px; border:1px solid #e2e8f0;"><h2 style="color:#0f172a;">Vehículo no seleccionado</h2><p style="color:#64748b; margin-top:10px;">Regresa al <a href="catalogo" style="color:#2563eb; font-weight:700;">catálogo de vehículos</a>.</p></div>';
         return;
     }
 
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <i class="fas fa-car" style="font-size: 3rem; color: #94a3b8; margin-bottom: 16px; display: block;"></i>
                 <h2 style="color: #0f172a; font-family: var(--font-display, sans-serif); font-size: 1.5rem; margin-bottom: 12px;">Vehículo No Disponible</h2>
                 <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">Este vehículo ha sido vendido o retirado de nuestro inventario oficial.</p>
-                <a href="/catalogo" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; text-decoration: none;">
+                <a href="/catalogo" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; text-decoration: none; background:#2563eb; color:#ffffff; font-weight:700;">
                     <i class="fas fa-arrow-left"></i> Explorar Catálogo Disponible
                 </a>
             </div>
@@ -77,12 +77,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (car.images && car.images.length > 0) {
         imagesHtml = `
             <div class="vehicle-page-gallery">
-                <div id="mainVehicleImageContainer" class="main-vehicle-stage" style="position:relative; width:100%; height:480px; max-height:480px; overflow:hidden; border-radius:20px; display:flex; align-items:center; justify-content:center; background:#030712;" onclick="openVehicleLightbox(window.currentImageIndex)">
-                    <div id="mainVehicleBgBlur" class="stage-bg-blur" style="background-image: url('${car.images[0]}'); position:absolute; inset:0; background-size:cover; background-position:center; filter:blur(45px) brightness(0.25); transform:scale(1.15); opacity:0.9; pointer-events:none;"></div>
-                    <img id="mainVehicleImage" class="stage-main-img" src="${car.images[0]}" alt="${car.title}" style="position:relative; z-index:2; max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain;">
-                    <img src="images/logo-mastertech.png" class="badge-stage-seal" alt="MasterTech Verified" onerror="this.style.display='none'">
+                <div id="mainVehicleImageContainer" class="main-vehicle-stage" onclick="openVehicleLightbox(window.currentImageIndex)">
+                    <div id="mainVehicleBgBlur" class="stage-bg-blur"></div>
+                    <img id="mainVehicleImage" class="stage-main-img" src="${car.images[0]}" alt="${car.title}">
+                    <img src="images/CERTIFICADO---MASTERTECH.png" class="badge-stage-seal" alt="MasterTech Verified" onerror="this.style.display='none'">
                     <div class="badge-stage-fullscreen">
-                        <i class="fas fa-expand-alt" style="color: #38bdf8;"></i> Pantalla Completa
+                        <i class="fas fa-expand-alt" style="color: #60A5FA;"></i> Pantalla Completa
                     </div>
                 </div>
                 ${car.images.length > 1 ? `
@@ -122,9 +122,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <i class="fas fa-arrow-left"></i> Volver al Catálogo
             </a>
             <div class="breadcrumb-trail">
-                <a href="/" style="color:#64748b; text-decoration:none;">Inicio</a>
+                <a href="/">Inicio</a>
                 <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i>
-                <a href="catalogo" style="color:#64748b; text-decoration:none;">Inventario</a>
+                <a href="catalogo">Inventario</a>
                 <i class="fas fa-chevron-right" style="font-size:0.65rem;"></i>
                 <span class="active-crumb">${car.title}</span>
             </div>
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="price-sub-note">Impuestos y gastos de gestión incluidos • Transacción 100% transparente</div>
 
                     <div class="financing-hook-box">
-                        <span><i class="fas fa-calculator" style="color: #60a5fa; margin-right: 6px;"></i> Plan de Financiamiento desde <strong>30% inicial</strong></span>
+                        <span><i class="fas fa-calculator" style="color: #2563EB; margin-right: 6px;"></i> Plan de Financiamiento desde <strong>30% inicial</strong></span>
                         <a href="calculadora" class="btn-calc-mini">Simular Cuota</a>
                     </div>
 
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <i class="fas fa-barcode"></i> Serial / VIN Verificado
                             </div>
                             <div class="vin-mono-code">${displayVin}</div>
-                            <span style="font-size: 0.72rem; color: #34d399; font-weight: 700; background: rgba(16, 185, 129, 0.15); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <span style="font-size: 0.72rem; color: #166534; font-weight: 700; background: #DCFCE7; padding: 3px 8px; border-radius: 4px; border: 1px solid #86EFAC;">
                                 <i class="fas fa-check-circle"></i> Certificado
                             </span>
                         </div>` : ''}
@@ -261,16 +261,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.changeMainVehicleImage = function(src, index, thumbElement) {
     window.currentImageIndex = index;
     const mainImg = document.getElementById('mainVehicleImage');
-    const mainBg = document.getElementById('mainVehicleBgBlur');
     if (mainImg) {
         mainImg.style.opacity = '0.3';
         mainImg.onload = function() {
             mainImg.style.opacity = '1';
         };
         mainImg.src = src;
-    }
-    if (mainBg) {
-        mainBg.style.backgroundImage = `url('${src}')`;
     }
     
     document.querySelectorAll('.v-thumb-img').forEach((t, idx) => {
