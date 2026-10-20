@@ -1,0 +1,7 @@
+id,nombre_completo,email,telefono,rol,sucursal,estado,notas
+"1","Administrador Master","jvaask16@gmail.com","+58 424 8700438","admin","Porlamar (Sede Principal)","active","Acceso Directivo Principal y Supervisor General de Seminuevos"
+"2","Jvicente","jvicente@seminuevos.com","+58 424 8700438","admin","Porlamar (Sede Principal)","active","Director General de Operaciones Seminuevos"
+"3","Matteo Lariccia","matteo@seminuevos.com","","sales","Porlamar (Sede Principal)","active","Asesor Comercial"
+"4","Carlos Mendoza","carlos.ventas@seminuevos.com","+58 424 8700438","sales","Porlamar (Sede Principal)","active","Asesor Comercial Senior"
+"5","María González","credito@seminuevos.com","+58 412 1234567","credit","Porlamar (Sede Principal)","active","Analista de Mesa de Crédito"
+"6","Taller MasterTech (Perito)","taller@mastertech.com","+58 424 9876543","mechanic","Taller MasterTech","active","Inspección Mecánica y Avalúo Certificado"

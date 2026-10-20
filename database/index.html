@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificador y Base de Datos | Seminuevos Autos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #070d18;
+      --card-bg: #0e1726;
+      --card-sub: #162238;
+      --border: #1e293b;
+      --border-accent: #2563eb;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gold: #f59e0b;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+    .top-banner {
+      background: linear-gradient(90deg, #0b1f44 0%, #081329 100%);
+      border-bottom: 1px solid #1d4ed8;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .top-banner .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .top-banner .brand i { color: #38bdf8; }
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .btn-green { background: #10b981; color: #022c22; }
+    .btn-green:hover { background: #059669; color: #fff; }
+    .btn-blue { background: #2563eb; color: #fff; border-color: #3b82f6; }
+    .btn-blue:hover { background: #1d4ed8; }
+    .btn-dark { background: #1e293b; color: #cbd5e1; border-color: #334155; }
+    .btn-dark:hover { background: #334155; color: #fff; }
+
+    header {
+      background: linear-gradient(180deg, #0b1528 0%, #070d18 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: #38bdf8; }
+    header p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      max-width: 800px;
+      margin: 0 auto 16px auto;
+    }
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: #3b82f6;
+    }
+    .stat-card .label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+    }
+    .stat-card .val {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 4px 0;
+    }
+    .stat-card .sub {
+      font-size: 0.75rem;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: #fff; background: var(--card-sub); }
+    .tab-btn.active {
+      color: #fff;
+      background: #1e3a8a;
+      border: 1px solid #3b82f6;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Barra de busqueda */
+    .search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 260px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .search-input:focus { outline: none; border-color: #3b82f6; }
+    .filter-select {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+    }
+
+    /* Grid de Vehiculos */
+    .vehicles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .veh-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .veh-card:hover {
+      transform: translateY(-4px);
+      border-color: #3b82f6;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+    .veh-img-box {
+      height: 200px;
+      background: #020617;
+      position: relative;
+      overflow: hidden;
+    }
+    .veh-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .veh-card:hover .veh-img-box img { transform: scale(1.05); }
+    .veh-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .veh-avail {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #38bdf8;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+    .veh-body {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+    .veh-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .veh-price {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #34d399;
+    }
+    .veh-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 4px 0;
+    }
+    .veh-specs span {
+      background: var(--card-sub);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .veh-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-top: auto;
+    }
+
+    /* Tablas interactivas */
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      text-align: left;
+    }
+    th {
+      background: #111e36;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #cbd5e1;
+    }
+    tr:hover td { background: rgba(37, 99, 235, 0.05); }
+
+    /* Code block */
+    .code-box {
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #93c5fd;
+      max-height: 550px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-banner">
+    <div class="brand">
+      <i class="fas fa-car-side"></i>
+      <span>Seminuevos Autos — Base de Datos &amp; Verificador Local</span>
+    </div>
+    <div class="top-actions">
+      <a href="http://localhost:5050/" target="_blank" class="btn btn-green"><i class="fas fa-play"></i> Servidor Local (5050)</a>
+      <a href="https://seminuevos-lading-page.vercel.app" target="_blank" class="btn btn-blue"><i class="fas fa-globe"></i> Web en Vivo (Vercel)</a>
+      <button onclick="copyDataExport()" class="btn btn-dark"><i class="fas fa-copy"></i> Copiar JSON</button>
+    </div>
+  </div>
+
+  <header>
+    <div class="badge-live"><span class="pulse-dot"></span> Sincronización Triple Activa: Nube + PC Local + GitHub</div>
+    <h1 style="margin-top: 14px;">Catálogo Maestro &amp; Base de Datos <span>Seminuevos</span></h1>
+    <p>Espacio de trabajo único y verificador local. Reemplazo completo de base de datos con inventario real, tarifas aduanales, peritaje MasterTech y trazabilidad total.</p>
+  </header>
+
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Total Vehículos</div>
+        <div class="val" id="statTotalVeh">46</div>
+        <div class="sub"><i class="fas fa-check-circle"></i> Catálogo Completo</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Entrega Inmediata</div>
+        <div class="val">6</div>
+        <div class="sub"><i class="fas fa-location-dot"></i> Stock Físico Margarita</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Por Pedido / Subasta USA</div>
+        <div class="val">40</div>
+        <div class="sub"><i class="fas fa-ship"></i> Importación Llave en Mano</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Configuraciones</div>
+        <div class="val">16</div>
+        <div class="sub"><i class="fas fa-sliders"></i> Parámetros Globales</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Usuarios Staff</div>
+        <div class="val">6</div>
+        <div class="sub"><i class="fas fa-users-gear"></i> Acceso Comercial</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Promociones Activas</div>
+        <div class="val">4</div>
+        <div class="sub"><i class="fas fa-tag"></i> Ofertas Especiales</div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-vehicles')"><i class="fas fa-car"></i> Catálogo de Vehículos (46)</button>
+      <button class="tab-btn" onclick="switchTab('tab-settings')"><i class="fas fa-gears"></i> Configuraciones (16)</button>
+      <button class="tab-btn" onclick="switchTab('tab-users')"><i class="fas fa-user-shield"></i> Usuarios Staff (6)</button>
+      <button class="tab-btn" onclick="switchTab('tab-promos')"><i class="fas fa-tags"></i> Promociones (4)</button>
+      <button class="tab-btn" onclick="switchTab('tab-json')"><i class="fas fa-code"></i> data_export.json</button>
+      <button class="tab-btn" onclick="switchTab('tab-sql')"><i class="fas fa-database"></i> Consultas SQL</button>
+    </div>
+
+    <!-- TAB 1: VEHICULOS -->
+    <div id="tab-vehicles" class="tab-content active">
+      <div class="search-bar">
+        <input type="text" id="vehSearch" class="search-input" placeholder="Buscar por marca, modelo, motor o año (ej. 4Runner, Silverado, HR-V, 2025)..." onkeyup="filterVehicles()">
+        <select id="availFilter" class="filter-select" onchange="filterVehicles()">
+          <option value="all">Todas las disponibilidades</option>
+          <option value="entrega_inmediata">Entrega Inmediata (Stock)</option>
+          <option value="por_pedido">Por Pedido (USA)</option>
+        </select>
+        <select id="bodyFilter" class="filter-select" onchange="filterVehicles()">
+          <option value="all">Todas las carrocerías</option>
+          <option value="suv">SUV</option>
+          <option value="pickup">Pickup</option>
+          <option value="sedan">Sedán</option>
+        </select>
+      </div>
+      <div class="vehicles-grid" id="vehiclesContainer"></div>
+    </div>
+
+    <!-- TAB 2: SETTINGS -->
+    <div id="tab-settings" class="tab-content">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Clave (Key)</th>
+              <th>Valor (Value)</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">company_name</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">SemiNuevo</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">company_slogan</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">Compra, Consigue, Accede</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">company_address</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">Porlamar, Isla de Margarita</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">company_hours</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">Lun - Sáb: 9:00 AM - 6:00 PM</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">whatsapp_number</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">584248700438</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">social_facebook</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">https://www.facebook.com</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">social_instagram</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">https://www.instagram.com</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">social_tiktok</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">https://www.tiktok.com</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">social_youtube</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">https://www.youtube.com</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">calc_flete</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">3500</td>
+                <td style="color:#94a3b8;">Flete maritimo base importacion</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">calc_aduana</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">3500</td>
+                <td style="color:#94a3b8;">Tarifa aduanal e impuestos</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">calc_doc_vzla</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">1000</td>
+                <td style="color:#94a3b8;">Documentacion y placas Venezuela</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">calc_service_fee</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">900</td>
+                <td style="color:#94a3b8;">Honorarios de gestion y peritaje</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">hero_slides</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">[{"kicker":"4 RUNNER","title":"Tucson","tagline":"El crossover expresivo y vanguardista","description":"Ingeniería de última generación, bajo consumo y confort de primer nivel. Disponible para entrega inmediata con placa nacional.","stat1Num":"$37,990","stat1Label":"Precio Especial","stat2Num":"0 KM","stat2Label":"Condición a Estrenar","disclaimer":"Inspección de 150 puntos respaldada por Taller MasterTech.","ctaPrimary":"Asegurar esta oferta","waText":"Hola, me interesa el Hyundai Tucson 2023 en stock local.","ctaSecondary":"Ver en catálogo","ctaSecondaryLink":"catalogo","image":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-poster-1791842195498-0.webp","video":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842195903-0.mp4","imgPositionY":"center","imgPositionX":"center","imgZoom":"100","overlayDarkness":"70","textAlign":"left","tag":"4 RUNNER"},{"kicker":"HONDA · 2025","title":"HR-V Sport","tagline":"Dinámica inteligente, espacio versátil y tracción AWD","description":"SUV compacta con tracción AWD inteligente y certificación mecánica de 150 puntos respaldada por MasterTech.","stat1Num":"$36,000","stat1Label":"Precio Especial","stat2Num":"17,000 KM","stat2Label":"Kilometraje Real","disclaimer":"2 años de revisiones mecánicas gratuitas en Taller MasterTech Margarita.","ctaPrimary":"Asegurar esta oferta","waText":"Hola, me interesa el Honda HR-V Sport 2025 4x4.","ctaSecondary":"Ver en catálogo","ctaSecondaryLink":"catalogo","image":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-poster-1791842204675-1.webp","video":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842205032-1.mp4","imgPositionY":"center","imgPositionX":"center","imgZoom":"100","overlayDarkness":"70","textAlign":"left"},{"kicker":"TOYOTA · 2021","title":"4Runner SR5","tagline":"Auténtico todoterreno japonés 4x4 de leyenda","description":"Chasis sobre largueros de máxima resistencia, legendario motor V6 4.0L y entrega garantizada llave en mano.","stat1Num":"Consultar","stat1Label":"Precio & Stock","stat2Num":"4.0L V6","stat2Label":"Motorización","disclaimer":"Estatus legal nacional con libre tránsito por toda Venezuela.","ctaPrimary":"Solicitar cotización","waText":"Hola, me interesa el Toyota 4Runner SR5 4x4.","ctaSecondary":"Ver en catálogo","ctaSecondaryLink":"catalogo","image":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-1791842239783-2.webp","video":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842210242-2.mp4","imgPositionY":"center","imgPositionX":"center","imgZoom":"100","overlayDarkness":"70","textAlign":"left"}]</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">showroom_image</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/showroom-1791910020897.webp</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#38bdf8; font-weight:700;">showroom_badge_text</td>
+                <td style="font-family:monospace; color:#34d399; max-width:400px; word-break:break-all;">Showroom Porlamar, Isla de Margarita</td>
+                <td style="color:#94a3b8;">Configuracion sincronizada de Supabase Cloud</td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: USUARIOS STAFF -->
+    <div id="tab-users" class="tab-content">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre Completo</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Rol</th>
+              <th>Sucursal</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>#1</td>
+                <td style="font-weight:700; color:#fff;">Administrador Master</td>
+                <td style="font-family:monospace; color:#93c5fd;">jvaask16@gmail.com</td>
+                <td>+58 424 8700438</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">admin</span></td>
+                <td>Porlamar (Sede Principal)</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td>#2</td>
+                <td style="font-weight:700; color:#fff;">Jvicente</td>
+                <td style="font-family:monospace; color:#93c5fd;">jvicente@seminuevos.com</td>
+                <td>+58 424 8700438</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">admin</span></td>
+                <td>Porlamar (Sede Principal)</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td>#3</td>
+                <td style="font-weight:700; color:#fff;">Matteo Lariccia</td>
+                <td style="font-family:monospace; color:#93c5fd;">matteo@seminuevos.com</td>
+                <td>-</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">sales</span></td>
+                <td>Porlamar (Sede Principal)</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td>#4</td>
+                <td style="font-weight:700; color:#fff;">Carlos Mendoza</td>
+                <td style="font-family:monospace; color:#93c5fd;">carlos.ventas@seminuevos.com</td>
+                <td>+58 424 8700438</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">sales</span></td>
+                <td>Porlamar (Sede Principal)</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td>#5</td>
+                <td style="font-weight:700; color:#fff;">María González</td>
+                <td style="font-family:monospace; color:#93c5fd;">credito@seminuevos.com</td>
+                <td>+58 412 1234567</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">credit</span></td>
+                <td>Porlamar (Sede Principal)</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td>#6</td>
+                <td style="font-weight:700; color:#fff;">Taller MasterTech (Perito)</td>
+                <td style="font-family:monospace; color:#93c5fd;">taller@mastertech.com</td>
+                <td>+58 424 9876543</td>
+                <td><span style="background:#1e3a8a; color:#bfdbfe; padding:3px 8px; border-radius:4px; font-size:0.75rem; text-transform:uppercase;">mechanic</span></td>
+                <td>Taller MasterTech</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: PROMOCIONES -->
+    <div id="tab-promos" class="tab-content">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Subtítulo</th>
+              <th>Descuento / Badge</th>
+              <th>Destino (URL)</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td style="font-family:monospace; color:#94a3b8;">promo-wide-copart</td>
+                <td style="font-weight:700; color:#fff;">Oportunidades de Subasta USA</td>
+                <td>SELECCIÓN DE ASESORES · HASTA -40%</td>
+                <td><span style="background:#064e3b; color:#a7f3d0; padding:3px 8px; border-radius:4px; font-weight:700;">HASTA -40%</span></td>
+                <td style="font-family:monospace; color:#38bdf8;">https://COPART.seminuevoautos.com</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#94a3b8;">default-0</td>
+                <td style="font-weight:700; color:#fff;">Chevrolet Silverado 1500 Custom</td>
+                <td>2025 · $44,500 · 4WD Trail Boss</td>
+                <td><span style="background:#064e3b; color:#a7f3d0; padding:3px 8px; border-radius:4px; font-weight:700;">$3,000 OFF</span></td>
+                <td style="font-family:monospace; color:#38bdf8;">catalogo</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#94a3b8;">default-1</td>
+                <td style="font-weight:700; color:#fff;">Toyota 4Runner 2021 SR5</td>
+                <td>2021 · $38,990 · Motor 4.0L V6</td>
+                <td><span style="background:#064e3b; color:#a7f3d0; padding:3px 8px; border-radius:4px; font-weight:700;">$2,000 OFF</span></td>
+                <td style="font-family:monospace; color:#38bdf8;">catalogo</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+              <tr>
+                <td style="font-family:monospace; color:#94a3b8;">default-2</td>
+                <td style="font-weight:700; color:#fff;">Honda HR-V 2024 Sport</td>
+                <td>2024 · $23,100 · 0 KM</td>
+                <td><span style="background:#064e3b; color:#a7f3d0; padding:3px 8px; border-radius:4px; font-weight:700;">Bono $1,000</span></td>
+                <td style="font-family:monospace; color:#38bdf8;">contacto</td>
+                <td><span style="color:#34d399; font-weight:700;">active</span></td>
+              </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 5: JSON -->
+    <div id="tab-json" class="tab-content">
+      <div style="margin-bottom:12px; display:flex; gap:10px;">
+        <button onclick="copyDataExport()" class="btn btn-blue"><i class="fas fa-copy"></i> Copiar Todo el JSON</button>
+        <a href="data_export.json" download class="btn btn-dark"><i class="fas fa-download"></i> Descargar Archivo data_export.json</a>
+      </div>
+      <div class="code-box" id="jsonViewer"></div>
+    </div>
+
+    <!-- TAB 6: SQL -->
+    <div id="tab-sql" class="tab-content">
+      <div class="code-box">-- 1. Consultar todos los vehiculos de Entrega Inmediata en Porlamar
+SELECT id, title, price, year, km, engine, badge 
+FROM vehicles 
+WHERE availability = 'entrega_inmediata' AND status = 'active'
+ORDER BY year DESC;
+
+-- 2. Consultar vehiculos por pedido con margen de ahorro en subastas USA
+SELECT id, title, price, year, engine, body_type 
+FROM vehicles 
+WHERE availability = 'por_pedido' AND status = 'active'
+ORDER BY id ASC;
+
+-- 3. Resumen de stock agrupado por tipo de carroceria
+SELECT body_type, COUNT(*) as total_unidades
+FROM vehicles
+GROUP BY body_type
+ORDER BY total_unidades DESC;
+
+-- 4. Consultar parametros globales y tarifas de calculadora
+SELECT key, value, descripcion 
+FROM site_settings 
+ORDER BY key ASC;</div>
+    </div>
+
+  </div>
+
+  <script>
+    const EXPORT_DATA = {"metadata":{"fuente":"Sincronizacion Triple Seminuevos Autos","timestamp":"2026-10-20T00:08:35.828Z","total_vehiculos":46,"total_configuraciones":16,"total_usuarios_staff":6,"total_promociones":4},"site_settings":[{"key":"company_name","value":"SemiNuevo","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"company_slogan","value":"Compra, Consigue, Accede","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"company_address","value":"Porlamar, Isla de Margarita","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"company_hours","value":"Lun - Sáb: 9:00 AM - 6:00 PM","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"whatsapp_number","value":"584248700438","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"social_facebook","value":"https://www.facebook.com","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"social_instagram","value":"https://www.instagram.com","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"social_tiktok","value":"https://www.tiktok.com","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"social_youtube","value":"https://www.youtube.com","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"calc_flete","value":"3500","descripcion":"Flete maritimo base importacion"},{"key":"calc_aduana","value":"3500","descripcion":"Tarifa aduanal e impuestos"},{"key":"calc_doc_vzla","value":"1000","descripcion":"Documentacion y placas Venezuela"},{"key":"calc_service_fee","value":"900","descripcion":"Honorarios de gestion y peritaje"},{"key":"hero_slides","value":"[{\"kicker\":\"4 RUNNER\",\"title\":\"Tucson\",\"tagline\":\"El crossover expresivo y vanguardista\",\"description\":\"Ingeniería de última generación, bajo consumo y confort de primer nivel. Disponible para entrega inmediata con placa nacional.\",\"stat1Num\":\"$37,990\",\"stat1Label\":\"Precio Especial\",\"stat2Num\":\"0 KM\",\"stat2Label\":\"Condición a Estrenar\",\"disclaimer\":\"Inspección de 150 puntos respaldada por Taller MasterTech.\",\"ctaPrimary\":\"Asegurar esta oferta\",\"waText\":\"Hola, me interesa el Hyundai Tucson 2023 en stock local.\",\"ctaSecondary\":\"Ver en catálogo\",\"ctaSecondaryLink\":\"catalogo\",\"image\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-poster-1791842195498-0.webp\",\"video\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842195903-0.mp4\",\"imgPositionY\":\"center\",\"imgPositionX\":\"center\",\"imgZoom\":\"100\",\"overlayDarkness\":\"70\",\"textAlign\":\"left\",\"tag\":\"4 RUNNER\"},{\"kicker\":\"HONDA · 2025\",\"title\":\"HR-V Sport\",\"tagline\":\"Dinámica inteligente, espacio versátil y tracción AWD\",\"description\":\"SUV compacta con tracción AWD inteligente y certificación mecánica de 150 puntos respaldada por MasterTech.\",\"stat1Num\":\"$36,000\",\"stat1Label\":\"Precio Especial\",\"stat2Num\":\"17,000 KM\",\"stat2Label\":\"Kilometraje Real\",\"disclaimer\":\"2 años de revisiones mecánicas gratuitas en Taller MasterTech Margarita.\",\"ctaPrimary\":\"Asegurar esta oferta\",\"waText\":\"Hola, me interesa el Honda HR-V Sport 2025 4x4.\",\"ctaSecondary\":\"Ver en catálogo\",\"ctaSecondaryLink\":\"catalogo\",\"image\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-poster-1791842204675-1.webp\",\"video\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842205032-1.mp4\",\"imgPositionY\":\"center\",\"imgPositionX\":\"center\",\"imgZoom\":\"100\",\"overlayDarkness\":\"70\",\"textAlign\":\"left\"},{\"kicker\":\"TOYOTA · 2021\",\"title\":\"4Runner SR5\",\"tagline\":\"Auténtico todoterreno japonés 4x4 de leyenda\",\"description\":\"Chasis sobre largueros de máxima resistencia, legendario motor V6 4.0L y entrega garantizada llave en mano.\",\"stat1Num\":\"Consultar\",\"stat1Label\":\"Precio & Stock\",\"stat2Num\":\"4.0L V6\",\"stat2Label\":\"Motorización\",\"disclaimer\":\"Estatus legal nacional con libre tránsito por toda Venezuela.\",\"ctaPrimary\":\"Solicitar cotización\",\"waText\":\"Hola, me interesa el Toyota 4Runner SR5 4x4.\",\"ctaSecondary\":\"Ver en catálogo\",\"ctaSecondaryLink\":\"catalogo\",\"image\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-1791842239783-2.webp\",\"video\":\"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/hero-video-1791842210242-2.mp4\",\"imgPositionY\":\"center\",\"imgPositionX\":\"center\",\"imgZoom\":\"100\",\"overlayDarkness\":\"70\",\"textAlign\":\"left\"}]","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"showroom_image","value":"https://hknprlgyuwzolgnkwsmx.supabase.co/storage/v1/object/public/vehicle-images/showroom-1791910020897.webp","descripcion":"Configuracion sincronizada de Supabase Cloud"},{"key":"showroom_badge_text","value":"Showroom Porlamar, Isla de Margarita","descripcion":"Configuracion sincronizada de Supabase Cloud"}],"vehicles":[{"id":1,"title":"Honda HR-V Sport 2025 4x4 AWD","price":"$36,000","year":2025,"km":"15,000 KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"ENTREGA INMEDIATA","description":"Honda HR-V Sport 2025 con tracciÃ³n 4x4 AWD. Motor 2.0L, transmisiÃ³n automÃ¡tica. UbicaciÃ³n Porlamar. Nivel de daÃ±o leve: golpe en puerta trasera piloto. 15,000 km recorridos. Entrega inmediata.","images":["images/gallery/honda-hrv-sport-2025-4x4-awd/1.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/2.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/3.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/4.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/5.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/6.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/7.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/8.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/9.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/10.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/11.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/12.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/13.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/14.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/15.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/16.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/17.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/18.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/19.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/20.jpg","images/gallery/honda-hrv-sport-2025-4x4-awd/21.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.990Z"},{"id":2,"title":"Honda HR-V 2024 Sport","price":"$33,000","year":2024,"km":"25,000 KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"PUERTO LIBRE","description":"Honda HR-V 2024 Sport. Motor 2.0L, automÃ¡tica. UbicaciÃ³n Porlamar, Puerto Libre. VehÃ­culo tuvo daÃ±o leve en esquina trasera izquierda. Entrega inmediata llave en mano. 25,000 km.","images":["images/gallery/honda-hrv-2024-sport/1.jpg","images/gallery/honda-hrv-2024-sport/2.jpg","images/gallery/honda-hrv-2024-sport/3.jpg","images/gallery/honda-hrv-2024-sport/4.jpg","images/gallery/honda-hrv-2024-sport/5.jpg","images/gallery/honda-hrv-2024-sport/6.jpg","images/gallery/honda-hrv-2024-sport/7.jpg","images/gallery/honda-hrv-2024-sport/8.jpg","images/gallery/honda-hrv-2024-sport/9.jpg","images/gallery/honda-hrv-2024-sport/10.jpg","images/gallery/honda-hrv-2024-sport/11.jpg","images/gallery/honda-hrv-2024-sport/12.jpg","images/gallery/honda-hrv-2024-sport/13.jpg","images/gallery/honda-hrv-2024-sport/14.jpg","images/gallery/honda-hrv-2024-sport/15.jpg","images/gallery/honda-hrv-2024-sport/16.jpg","images/gallery/honda-hrv-2024-sport/17.jpg","images/gallery/honda-hrv-2024-sport/18.jpg","images/gallery/honda-hrv-2024-sport/19.jpg","images/gallery/honda-hrv-2024-sport/20.jpg","images/gallery/honda-hrv-2024-sport/21.jpg","images/gallery/honda-hrv-2024-sport/22.jpg","images/gallery/honda-hrv-2024-sport/23.jpg","images/gallery/honda-hrv-2024-sport/24.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":3,"title":"Nissan Sentra SV 2025","price":"$26,000","year":2025,"km":"12,000 KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"PUERTO LIBRE","description":"Nissan Sentra SV 2025. Motor 2.0L, automÃ¡tico. UbicaciÃ³n Porlamar, Puerto Libre. 12,000 km. Nivel de daÃ±o leve por granizo. Entrega inmediata.","images":["images/gallery/nissan-sentra-sv-2025/1.jpg","images/gallery/nissan-sentra-sv-2025/2.jpg","images/gallery/nissan-sentra-sv-2025/3.jpg","images/gallery/nissan-sentra-sv-2025/4.jpg","images/gallery/nissan-sentra-sv-2025/5.jpg","images/gallery/nissan-sentra-sv-2025/6.jpg","images/gallery/nissan-sentra-sv-2025/7.jpg","images/gallery/nissan-sentra-sv-2025/8.jpg","images/gallery/nissan-sentra-sv-2025/9.jpg","images/gallery/nissan-sentra-sv-2025/10.jpg","images/gallery/nissan-sentra-sv-2025/11.jpg","images/gallery/nissan-sentra-sv-2025/12.jpg","images/gallery/nissan-sentra-sv-2025/13.jpg","images/gallery/nissan-sentra-sv-2025/14.jpg","images/gallery/nissan-sentra-sv-2025/15.jpg","images/gallery/nissan-sentra-sv-2025/16.jpg","images/gallery/nissan-sentra-sv-2025/17.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":4,"title":"Nissan Rogue Sport 2019","price":"$22,000","year":2019,"km":"50,000 KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"SIN GOLPES","description":"Nissan Rogue Sport 2019. Motor 2.0L, automÃ¡tica. 50,000 km. UbicaciÃ³n Porlamar, Puerto Libre (lista para nacionalizar). Mantenimiento al dÃ­a. Ãšnico dueÃ±o de concesionario, sin golpes.","images":["images/gallery/rogue-sport-2019/1.jpg","images/gallery/rogue-sport-2019/2.jpg","images/gallery/rogue-sport-2019/3.jpg","images/gallery/rogue-sport-2019/4.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":5,"title":"Toyota 4Runner 2021 SR5","price":"$39,990","year":2021,"km":"81,000 KM","engine":"4.0L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"4x2","description":"Toyota 4Runner 2021 SR5. Motor 4.0L V6, automÃ¡tica, 4x2. 81,000 km. UbicaciÃ³n Porlamar, Puerto Libre. Entrega inmediata. Nivel de daÃ±o medio: detalles estÃ©ticos, tuvo golpe en esquina trasera derecha.","images":["images/gallery/toyota-4runner-2021-sr5/1.jpg","images/gallery/toyota-4runner-2021-sr5/2.jpg","images/gallery/toyota-4runner-2021-sr5/3.jpg","images/gallery/toyota-4runner-2021-sr5/4.jpg","images/gallery/toyota-4runner-2021-sr5/5.jpg","images/gallery/toyota-4runner-2021-sr5/6.jpg","images/gallery/toyota-4runner-2021-sr5/7.jpg","images/gallery/toyota-4runner-2021-sr5/8.jpg","images/gallery/toyota-4runner-2021-sr5/9.jpg","images/gallery/toyota-4runner-2021-sr5/10.jpg","images/gallery/toyota-4runner-2021-sr5/11.jpg","images/gallery/toyota-4runner-2021-sr5/12.jpg","images/gallery/toyota-4runner-2021-sr5/13.jpg","images/gallery/toyota-4runner-2021-sr5/14.jpg","images/gallery/toyota-4runner-2021-sr5/15.jpg","images/gallery/toyota-4runner-2021-sr5/16.jpg","images/gallery/toyota-4runner-2021-sr5/17.jpg","images/gallery/toyota-4runner-2021-sr5/18.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":6,"title":"Toyota Corolla Cross LE 4x4 AWD 2022","price":"$31,990","year":2022,"km":"21,000 KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"entrega_inmediata","origin":"nacional","badge":"PLACA NACIONAL","description":"Toyota Corolla Cross LE 4x4 AWD 2022. Motor 2.0L, automÃ¡tico. Placa nacional. 21,000 km. UbicaciÃ³n Porlamar. Nivel de daÃ±o medio frontal derecho. VÃ¡lvula EGR ya eliminada. Entrega inmediata.","images":["images/gallery/toyota-corolla-cross-le-4x4-awd-2022/1.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/2.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/3.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/4.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/5.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/6.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/7.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/8.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/9.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/10.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/11.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/12.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/13.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/14.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/15.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/16.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/17.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/18.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/19.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/20.jpg","images/gallery/toyota-corolla-cross-le-4x4-awd-2022/21.jpg"],"catalog":"seminuevos","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":7,"title":"GMC Sierra 1500 AT4 4WD","price":"Consultar","year":2026,"km":"0 KM","engine":"Motor V8","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"0km","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ POR PEDIDO","description":"GMC Sierra 1500 AT4 4WD, Short Bed. Pickup premium con tracciÃ³n 4x4. ImportaciÃ³n directa desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/1.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/2.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/3.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/4.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/5.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/6.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/7.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/8.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/9.jpeg","images/gallery/026-gmc-sierra-1500-short-bed-at4-4wd/10.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":8,"title":"Jeep Wrangler Unlimited Sport S 4x4 2022","price":"Consultar","year":2022,"km":"Bajo KM","engine":"3.6L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Jeep Wrangler Unlimited Sport S 2022, 4 puertas, 4x4. Motor 3.6L V6, automÃ¡tico. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/1.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/2.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/3.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/4.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/5.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/6.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/7.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/8.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/9.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/10.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/11.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/12.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/13.jpeg","images/gallery/2022-jeep-wrangler-unlimited-sport-s-4x4/14.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":9,"title":"Lexus UX 200 2022","price":"Consultar","year":2022,"km":"Bajo KM","engine":"2.0L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"PREMIUM","description":"Lexus UX 200 2022. SUV premium compacto con motor 2.0L, transmisiÃ³n automÃ¡tica. ImportaciÃ³n directa desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2022-lexus-ux-200/1.jpeg","images/gallery/2022-lexus-ux-200/2.jpeg","images/gallery/2022-lexus-ux-200/3.jpeg","images/gallery/2022-lexus-ux-200/4.jpeg","images/gallery/2022-lexus-ux-200/5.jpeg","images/gallery/2022-lexus-ux-200/6.jpeg","images/gallery/2022-lexus-ux-200/7.jpeg","images/gallery/2022-lexus-ux-200/8.jpeg","images/gallery/2022-lexus-ux-200/9.jpeg","images/gallery/2022-lexus-ux-200/10.jpeg","images/gallery/2022-lexus-ux-200/11.jpeg","images/gallery/2022-lexus-ux-200/12.jpeg","images/gallery/2022-lexus-ux-200/13.jpeg","images/gallery/2022-lexus-ux-200/14.jpeg","images/gallery/2022-lexus-ux-200/15.jpeg","images/gallery/2022-lexus-ux-200/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":10,"title":"Hyundai Sonata SE 2023","price":"Consultar","year":2023,"km":"Bajo KM","engine":"2.5L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Sonata SE 2023. SedÃ¡n elegante con motor 2.5L, automÃ¡tico. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2023-hyundai-sonata-se/1.jpeg","images/gallery/2023-hyundai-sonata-se/2.jpeg","images/gallery/2023-hyundai-sonata-se/3.jpeg","images/gallery/2023-hyundai-sonata-se/4.jpeg","images/gallery/2023-hyundai-sonata-se/5.jpeg","images/gallery/2023-hyundai-sonata-se/6.jpeg","images/gallery/2023-hyundai-sonata-se/7.jpeg","images/gallery/2023-hyundai-sonata-se/8.jpeg","images/gallery/2023-hyundai-sonata-se/9.jpeg","images/gallery/2023-hyundai-sonata-se/10.jpeg","images/gallery/2023-hyundai-sonata-se/11.jpeg","images/gallery/2023-hyundai-sonata-se/12.jpeg","images/gallery/2023-hyundai-sonata-se/13.jpeg","images/gallery/2023-hyundai-sonata-se/14.jpeg","images/gallery/2023-hyundai-sonata-se/15.jpeg","images/gallery/2023-hyundai-sonata-se/16.jpeg","images/gallery/2023-hyundai-sonata-se/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":11,"title":"Hyundai Tucson SEL 2023","price":"Consultar","year":2023,"km":"Bajo KM","engine":"2.5L I-4 187HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Tucson SEL 2023. SUV con motor 2.5L de 187HP, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2023-hyundai-tucson-sel/1.jpeg","images/gallery/2023-hyundai-tucson-sel/2.jpeg","images/gallery/2023-hyundai-tucson-sel/3.jpeg","images/gallery/2023-hyundai-tucson-sel/4.jpeg","images/gallery/2023-hyundai-tucson-sel/5.jpeg","images/gallery/2023-hyundai-tucson-sel/6.jpeg","images/gallery/2023-hyundai-tucson-sel/7.jpeg","images/gallery/2023-hyundai-tucson-sel/8.jpeg","images/gallery/2023-hyundai-tucson-sel/9.jpeg","images/gallery/2023-hyundai-tucson-sel/10.jpeg","images/gallery/2023-hyundai-tucson-sel/11.jpeg","images/gallery/2023-hyundai-tucson-sel/12.jpeg","images/gallery/2023-hyundai-tucson-sel/13.jpeg","images/gallery/2023-hyundai-tucson-sel/14.jpeg","images/gallery/2023-hyundai-tucson-sel/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":12,"title":"Isuzu NPR HD 2023","price":"Consultar","year":2023,"km":"Bajo KM","engine":"DiÃ©sel","transmission":"AutomÃ¡tico","fuel":"DiÃ©sel","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"COMERCIAL","description":"Isuzu NPR HD 2023. CamiÃ³n comercial diÃ©sel, ideal para trabajo pesado. ImportaciÃ³n directa desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2023-isuzu-npr-hd/1.jpeg","images/gallery/2023-isuzu-npr-hd/2.jpeg","images/gallery/2023-isuzu-npr-hd/3.jpeg","images/gallery/2023-isuzu-npr-hd/4.jpeg","images/gallery/2023-isuzu-npr-hd/5.jpeg","images/gallery/2023-isuzu-npr-hd/6.jpeg","images/gallery/2023-isuzu-npr-hd/7.jpeg","images/gallery/2023-isuzu-npr-hd/8.jpeg","images/gallery/2023-isuzu-npr-hd/9.jpeg","images/gallery/2023-isuzu-npr-hd/10.jpeg","images/gallery/2023-isuzu-npr-hd/11.jpeg","images/gallery/2023-isuzu-npr-hd/12.jpeg","images/gallery/2023-isuzu-npr-hd/13.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":13,"title":"Jeep Wrangler Willys Sport 4x4 2023","price":"Consultar","year":2023,"km":"Bajo KM","engine":"3.6L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"2 PUERTAS","description":"Jeep Wrangler Willys Sport 2023, 2 puertas, 4x4. Motor 3.6L V6. El clÃ¡sico todoterreno. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/1.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/2.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/3.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/4.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/5.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/6.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/7.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/8.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/9.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/10.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/11.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/12.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/13.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/14.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/15.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/16.jpeg","images/gallery/2023-jeep-wrangler-2-door-willys-sport-4x4/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":14,"title":"Range Rover Evoque R-Dynamic S 2023","price":"Consultar","year":2023,"km":"Bajo KM","engine":"2.0L Turbo","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ PREMIUM","description":"Land Rover Range Rover Evoque R-Dynamic S 2023. SUV de lujo con motor 2.0L Turbo, automÃ¡tico. ImportaciÃ³n directa desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/1.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/2.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/3.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/4.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/5.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/6.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/7.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/8.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/9.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/10.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/11.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/12.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/13.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/14.jpeg","images/gallery/2023-land-rover-range-rover-evoque-r-dynamic-s/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":15,"title":"Chevrolet Silverado 1500 LT 2024","price":"Consultar","year":2024,"km":"Bajo KM","engine":"V8","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Chevrolet Silverado 1500 LT 2024, 2WD, Standard Bed. Pickup full size, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/1.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/2.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/3.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/4.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/5.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/6.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/7.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/8.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/9.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/10.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/11.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/12.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/13.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/14.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/15.jpeg","images/gallery/2024-chevrolet-silverado-1500-2wd-standard-bed-lt/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":16,"title":"Ford F-150 XL 2024","price":"Consultar","year":2024,"km":"Bajo KM","engine":"V6/V8","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Ford F-150 XL 2024. La pickup mÃ¡s vendida de AmÃ©rica. AutomÃ¡tica. ImportaciÃ³n directa desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2024-ford-f-150-xl/1.jpeg","images/gallery/2024-ford-f-150-xl/2.jpeg","images/gallery/2024-ford-f-150-xl/3.jpeg","images/gallery/2024-ford-f-150-xl/4.jpeg","images/gallery/2024-ford-f-150-xl/5.jpeg","images/gallery/2024-ford-f-150-xl/6.jpeg","images/gallery/2024-ford-f-150-xl/7.jpeg","images/gallery/2024-ford-f-150-xl/8.jpeg","images/gallery/2024-ford-f-150-xl/9.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":17,"title":"Hyundai Santa Cruz SEL 2024","price":"Consultar","year":2024,"km":"Bajo KM","engine":"2.5L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Santa Cruz SEL 2024. Pickup-SUV moderna con motor 2.5L, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2024-hyundai-santa-cruz-sel/1.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/2.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/3.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/4.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/5.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/6.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/7.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/8.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/9.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/10.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/11.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/12.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/13.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/14.jpeg","images/gallery/2024-hyundai-santa-cruz-sel/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":18,"title":"Hyundai Sonata SEL 2024","price":"Consultar","year":2024,"km":"Bajo KM","engine":"2.5L","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Sonata SEL 2024. SedÃ¡n premium con motor 2.5L, automÃ¡tico. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2024-hyundai-sonata-sel/1.jpeg","images/gallery/2024-hyundai-sonata-sel/2.jpeg","images/gallery/2024-hyundai-sonata-sel/3.jpeg","images/gallery/2024-hyundai-sonata-sel/4.jpeg","images/gallery/2024-hyundai-sonata-sel/5.jpeg","images/gallery/2024-hyundai-sonata-sel/6.jpeg","images/gallery/2024-hyundai-sonata-sel/7.jpeg","images/gallery/2024-hyundai-sonata-sel/8.jpeg","images/gallery/2024-hyundai-sonata-sel/9.jpeg","images/gallery/2024-hyundai-sonata-sel/10.jpeg","images/gallery/2024-hyundai-sonata-sel/11.jpeg","images/gallery/2024-hyundai-sonata-sel/12.jpeg","images/gallery/2024-hyundai-sonata-sel/13.jpeg","images/gallery/2024-hyundai-sonata-sel/14.jpeg","images/gallery/2024-hyundai-sonata-sel/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":19,"title":"Chevrolet Silverado 1500 Trail Boss 4WD 2025","price":"Consultar","year":2025,"km":"Bajo KM","engine":"V8","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ TRAIL BOSS","description":"Chevrolet Silverado 1500 Custom Trail Boss 2025, 4WD, Short Bed. Pickup todoterreno V8, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana e impuestos.","images":["images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/1.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/2.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/3.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/4.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/5.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/6.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/7.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/8.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/9.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/10.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/11.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/12.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/13.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/14.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/15.jpeg","images/gallery/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":20,"title":"Chevrolet Trax FWD 1RS 2025","price":"Consultar","year":2025,"km":"Bajo KM","engine":"1.2L Turbo","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Chevrolet Trax 1RS 2025. SUV compacto con motor 1.2L Turbo, automÃ¡tico. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana, impuestos y documentaciÃ³n.","images":["images/gallery/2025-chevrolet-trax-fwd-1rs/1.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/2.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/3.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/4.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/5.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/6.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/7.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/8.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/9.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/10.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/11.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/12.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/13.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/14.jpeg","images/gallery/2025-chevrolet-trax-fwd-1rs/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":21,"title":"Ford Maverick Tremor 2025","price":"Consultar","year":2025,"km":"Bajo KM","engine":"2.0L Turbo","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ TREMOR","description":"Ford Maverick Tremor 2025. Pickup compacta con paquete off-road Tremor, motor 2.0L Turbo, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana e impuestos.","images":["images/gallery/2025-ford-maverick-tremor/1.jpeg","images/gallery/2025-ford-maverick-tremor/2.jpeg","images/gallery/2025-ford-maverick-tremor/3.jpeg","images/gallery/2025-ford-maverick-tremor/4.jpeg","images/gallery/2025-ford-maverick-tremor/5.jpeg","images/gallery/2025-ford-maverick-tremor/6.jpeg","images/gallery/2025-ford-maverick-tremor/7.jpeg","images/gallery/2025-ford-maverick-tremor/8.jpeg","images/gallery/2025-ford-maverick-tremor/9.jpeg","images/gallery/2025-ford-maverick-tremor/10.jpeg","images/gallery/2025-ford-maverick-tremor/11.jpeg","images/gallery/2025-ford-maverick-tremor/12.jpeg","images/gallery/2025-ford-maverick-tremor/13.jpeg","images/gallery/2025-ford-maverick-tremor/14.jpeg","images/gallery/2025-ford-maverick-tremor/15.jpeg","images/gallery/2025-ford-maverick-tremor/16.jpeg","images/gallery/2025-ford-maverick-tremor/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":22,"title":"Ford Transit-150 2025","price":"Consultar","year":2025,"km":"Bajo KM","engine":"3.5L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"COMERCIAL","description":"Ford Transit-150 2025. Van comercial ideal para carga o pasajeros. Motor 3.5L V6, automÃ¡tica. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana e impuestos.","images":["images/gallery/2025-ford-transit-150/1.jpeg","images/gallery/2025-ford-transit-150/2.jpeg","images/gallery/2025-ford-transit-150/3.jpeg","images/gallery/2025-ford-transit-150/4.jpeg","images/gallery/2025-ford-transit-150/5.jpeg","images/gallery/2025-ford-transit-150/6.jpeg","images/gallery/2025-ford-transit-150/7.jpeg","images/gallery/2025-ford-transit-150/8.jpeg","images/gallery/2025-ford-transit-150/9.jpeg","images/gallery/2025-ford-transit-150/10.jpeg","images/gallery/2025-ford-transit-150/11.jpeg","images/gallery/2025-ford-transit-150/12.jpeg","images/gallery/2025-ford-transit-150/13.jpeg","images/gallery/2025-ford-transit-150/14.jpeg","images/gallery/2025-ford-transit-150/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":23,"title":"Honda Odyssey EX-L 2025","price":"Consultar","year":2025,"km":"Bajo KM","engine":"3.5L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"FAMILIAR","description":"Honda Odyssey EX-L 2025. Minivan premium con motor 3.5L V6, automÃ¡tica. Interior en cuero. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana e impuestos.","images":["images/gallery/2025-honda-odyssey-ex-l/1.jpeg","images/gallery/2025-honda-odyssey-ex-l/2.jpeg","images/gallery/2025-honda-odyssey-ex-l/3.jpeg","images/gallery/2025-honda-odyssey-ex-l/4.jpeg","images/gallery/2025-honda-odyssey-ex-l/5.jpeg","images/gallery/2025-honda-odyssey-ex-l/6.jpeg","images/gallery/2025-honda-odyssey-ex-l/7.jpeg","images/gallery/2025-honda-odyssey-ex-l/8.jpeg","images/gallery/2025-honda-odyssey-ex-l/9.jpeg","images/gallery/2025-honda-odyssey-ex-l/10.jpeg","images/gallery/2025-honda-odyssey-ex-l/11.jpeg","images/gallery/2025-honda-odyssey-ex-l/12.jpeg","images/gallery/2025-honda-odyssey-ex-l/13.jpeg","images/gallery/2025-honda-odyssey-ex-l/14.jpeg","images/gallery/2025-honda-odyssey-ex-l/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":24,"title":"Honda Odyssey EX-L 2025 (Negra)","price":"Consultar","year":2025,"km":"Bajo KM","engine":"3.5L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"FAMILIAR","description":"Honda Odyssey EX-L 2025 color negro. Minivan premium con motor 3.5L V6, automÃ¡tica. Interior en cuero. ImportaciÃ³n desde USA. Precio + movilizaciÃ³n, gastos de envÃ­o, aduana e impuestos.","images":["images/gallery/2025-honda-odyssey-ex-l-negr/1.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/2.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/3.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/4.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/5.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/6.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/7.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/8.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/9.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/10.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/11.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/12.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/13.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/14.jpeg","images/gallery/2025-honda-odyssey-ex-l-negr/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":25,"title":"Hyundai Elantra Hybrid Blue 2025","price":"$15,280+","year":2025,"km":"29,400 KM","engine":"1.6L I-4 104HP","transmission":"AutomÃ¡tico","fuel":"HÃ­brido","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"âš¡ HÃBRIDO","description":"Hyundai Elantra Hybrid Blue 2025. Motor 1.6L I-4 de 104HP, automÃ¡tico. DaÃ±o izquierdo frontal. Airbags intactos. 29,400 km. Precio $15,280 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-hyundai-elantra-hybrid-blue/1.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/2.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/3.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/4.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/5.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/6.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/7.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/8.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/9.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/10.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/11.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/12.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/13.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/14.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/15.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/16.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/17.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/18.jpeg","images/gallery/2025-hyundai-elantra-hybrid-blue/19.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":26,"title":"Hyundai Elantra N 2025","price":"$15,400+","year":2025,"km":"49,400 KM","engine":"2.0L Turbo 276HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ 276HP","description":"Hyundai Elantra N 2025. Motor 2.0L Turbo de 276HP, automÃ¡tico. DaÃ±o frontal y trasero. Falta convertidor catalÃ­tico. Airbags intactos. 49,400 km. Precio $15,400 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-hyundai-elantra-n/1.jpeg","images/gallery/2025-hyundai-elantra-n/2.jpeg","images/gallery/2025-hyundai-elantra-n/3.jpeg","images/gallery/2025-hyundai-elantra-n/4.jpeg","images/gallery/2025-hyundai-elantra-n/5.jpeg","images/gallery/2025-hyundai-elantra-n/6.jpeg","images/gallery/2025-hyundai-elantra-n/7.jpeg","images/gallery/2025-hyundai-elantra-n/8.jpeg","images/gallery/2025-hyundai-elantra-n/9.jpeg","images/gallery/2025-hyundai-elantra-n/10.jpeg","images/gallery/2025-hyundai-elantra-n/11.jpeg","images/gallery/2025-hyundai-elantra-n/12.jpeg","images/gallery/2025-hyundai-elantra-n/13.jpeg","images/gallery/2025-hyundai-elantra-n/14.jpeg","images/gallery/2025-hyundai-elantra-n/15.jpeg","images/gallery/2025-hyundai-elantra-n/16.jpeg","images/gallery/2025-hyundai-elantra-n/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":27,"title":"Hyundai Kona SEL 2025","price":"$12,100+","year":2025,"km":"43,100 KM","engine":"2.0L I-4 147HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Kona SEL 2025. Motor 2.0L I-4 de 147HP, automÃ¡tica. DaÃ±o leve lado derecho. Airbags explotados. 43,100 km. Precio $12,100 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-hyundai-kona-sel/1.jpeg","images/gallery/2025-hyundai-kona-sel/2.jpeg","images/gallery/2025-hyundai-kona-sel/3.jpeg","images/gallery/2025-hyundai-kona-sel/4.jpeg","images/gallery/2025-hyundai-kona-sel/5.jpeg","images/gallery/2025-hyundai-kona-sel/6.jpeg","images/gallery/2025-hyundai-kona-sel/7.jpeg","images/gallery/2025-hyundai-kona-sel/8.jpeg","images/gallery/2025-hyundai-kona-sel/9.jpeg","images/gallery/2025-hyundai-kona-sel/10.jpeg","images/gallery/2025-hyundai-kona-sel/11.jpeg","images/gallery/2025-hyundai-kona-sel/12.jpeg","images/gallery/2025-hyundai-kona-sel/13.jpeg","images/gallery/2025-hyundai-kona-sel/14.jpeg","images/gallery/2025-hyundai-kona-sel/15.jpeg","images/gallery/2025-hyundai-kona-sel/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":28,"title":"Hyundai Tucson SEL 2025","price":"$14,860+","year":2025,"km":"52,200 KM","engine":"2.5L I-4 187HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Tucson SEL 2025. Motor 2.5L I-4 de 187HP, automÃ¡tica. DaÃ±o trasero. Airbags intactos. 52,200 km. Precio $14,860 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-hyundai-tucson-sel/1.jpeg","images/gallery/2025-hyundai-tucson-sel/2.jpeg","images/gallery/2025-hyundai-tucson-sel/3.jpeg","images/gallery/2025-hyundai-tucson-sel/4.jpeg","images/gallery/2025-hyundai-tucson-sel/5.jpeg","images/gallery/2025-hyundai-tucson-sel/6.jpeg","images/gallery/2025-hyundai-tucson-sel/7.jpeg","images/gallery/2025-hyundai-tucson-sel/8.jpeg","images/gallery/2025-hyundai-tucson-sel/9.jpeg","images/gallery/2025-hyundai-tucson-sel/10.jpeg","images/gallery/2025-hyundai-tucson-sel/11.jpeg","images/gallery/2025-hyundai-tucson-sel/12.jpeg","images/gallery/2025-hyundai-tucson-sel/13.jpeg","images/gallery/2025-hyundai-tucson-sel/14.jpeg","images/gallery/2025-hyundai-tucson-sel/15.jpeg","images/gallery/2025-hyundai-tucson-sel/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":29,"title":"Hyundai Tucson SEL Convenience 2025","price":"$11,950+","year":2025,"km":"68,500 KM","engine":"2.5L I-4 187HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Hyundai Tucson SEL Convenience 2025. Motor 2.5L I-4 de 187HP, automÃ¡tico. DaÃ±o frontal. Airbags explotados. 68,500 km. Precio $11,950 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-hyundai-tucson-sel-convenience/1.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/2.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/3.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/4.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/5.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/6.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/7.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/8.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/9.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/10.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/11.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/12.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/13.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/14.jpeg","images/gallery/2025-hyundai-tucson-sel-convenience/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":30,"title":"Kia K5 GT-Line 2025","price":"$16,360+","year":2025,"km":"32,200 KM","engine":"2.5L I-4 191HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"GT-LINE","description":"Kia K5 GT-Line 2025. Motor 2.5L I-4 de 191HP, automÃ¡tico. DaÃ±o trasero. Airbags intactos. 32,200 km. Precio $16,360 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-kia-k5-gt-line/1.jpeg","images/gallery/2025-kia-k5-gt-line/2.jpeg","images/gallery/2025-kia-k5-gt-line/3.jpeg","images/gallery/2025-kia-k5-gt-line/4.jpeg","images/gallery/2025-kia-k5-gt-line/5.jpeg","images/gallery/2025-kia-k5-gt-line/6.jpeg","images/gallery/2025-kia-k5-gt-line/7.jpeg","images/gallery/2025-kia-k5-gt-line/8.jpeg","images/gallery/2025-kia-k5-gt-line/9.jpeg","images/gallery/2025-kia-k5-gt-line/10.jpeg","images/gallery/2025-kia-k5-gt-line/11.jpeg","images/gallery/2025-kia-k5-gt-line/12.jpeg","images/gallery/2025-kia-k5-gt-line/13.jpeg","images/gallery/2025-kia-k5-gt-line/14.jpeg","images/gallery/2025-kia-k5-gt-line/15.jpeg","images/gallery/2025-kia-k5-gt-line/16.jpeg","images/gallery/2025-kia-k5-gt-line/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":31,"title":"Lexus GX 550 Overtrail+ 2025","price":"$79,940+","year":2025,"km":"10,400 KM","engine":"3.4L V6 Turbo 349HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ EXCLUSIVO","description":"Lexus GX 550 Overtrail+ 2025. Motor 3.4L V6 Turbo de 349HP, automÃ¡tica, 4x4. DaÃ±o lateral derecho. Airbags explotados. 10,400 km. Precio $79,940 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-lexus-gx-550-overtrail/1.jpeg","images/gallery/2025-lexus-gx-550-overtrail/2.jpeg","images/gallery/2025-lexus-gx-550-overtrail/3.jpeg","images/gallery/2025-lexus-gx-550-overtrail/4.jpeg","images/gallery/2025-lexus-gx-550-overtrail/5.jpeg","images/gallery/2025-lexus-gx-550-overtrail/6.jpeg","images/gallery/2025-lexus-gx-550-overtrail/7.jpeg","images/gallery/2025-lexus-gx-550-overtrail/8.jpeg","images/gallery/2025-lexus-gx-550-overtrail/9.jpeg","images/gallery/2025-lexus-gx-550-overtrail/10.jpeg","images/gallery/2025-lexus-gx-550-overtrail/11.jpeg","images/gallery/2025-lexus-gx-550-overtrail/12.jpeg","images/gallery/2025-lexus-gx-550-overtrail/13.jpeg","images/gallery/2025-lexus-gx-550-overtrail/14.jpeg","images/gallery/2025-lexus-gx-550-overtrail/15.jpeg","images/gallery/2025-lexus-gx-550-overtrail/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":32,"title":"Lexus RC 350 F Sport 2025","price":"$23,800+","year":2025,"km":"4,300 KM","engine":"3.5L V6 311HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"coupe","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ JUGUETE","description":"Lexus RC 350 F Sport 2025. Â¡JUGUETE! Motor 3.5L V6 de 311HP, automÃ¡tico, tracciÃ³n trasera. DaÃ±o frontal. Airbags explotados. Solo 4,300 km. Precio $23,800 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-lexus-rc-350-f-sport/1.jpeg","images/gallery/2025-lexus-rc-350-f-sport/2.jpeg","images/gallery/2025-lexus-rc-350-f-sport/3.jpeg","images/gallery/2025-lexus-rc-350-f-sport/4.jpeg","images/gallery/2025-lexus-rc-350-f-sport/5.jpeg","images/gallery/2025-lexus-rc-350-f-sport/6.jpeg","images/gallery/2025-lexus-rc-350-f-sport/7.jpeg","images/gallery/2025-lexus-rc-350-f-sport/8.jpeg","images/gallery/2025-lexus-rc-350-f-sport/9.jpeg","images/gallery/2025-lexus-rc-350-f-sport/10.jpeg","images/gallery/2025-lexus-rc-350-f-sport/11.jpeg","images/gallery/2025-lexus-rc-350-f-sport/12.jpeg","images/gallery/2025-lexus-rc-350-f-sport/13.jpeg","images/gallery/2025-lexus-rc-350-f-sport/14.jpeg","images/gallery/2025-lexus-rc-350-f-sport/15.jpeg","images/gallery/2025-lexus-rc-350-f-sport/16.jpeg","images/gallery/2025-lexus-rc-350-f-sport/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":33,"title":"Lexus TX 350 Premium 2025","price":"$40,440+","year":2025,"km":"18,100 KM","engine":"2.4L Turbo 275HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"PREMIUM","description":"Lexus TX 350 Premium 2025. Motor 2.4L Turbo de 275HP, automÃ¡tica, 4x4. DaÃ±o lateral derecho. Airbags explotados. 18,100 km. Precio $40,440 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-lexus-tx-350-premium/1.jpeg","images/gallery/2025-lexus-tx-350-premium/2.jpeg","images/gallery/2025-lexus-tx-350-premium/3.jpeg","images/gallery/2025-lexus-tx-350-premium/4.jpeg","images/gallery/2025-lexus-tx-350-premium/5.jpeg","images/gallery/2025-lexus-tx-350-premium/6.jpeg","images/gallery/2025-lexus-tx-350-premium/7.jpeg","images/gallery/2025-lexus-tx-350-premium/8.jpeg","images/gallery/2025-lexus-tx-350-premium/9.jpeg","images/gallery/2025-lexus-tx-350-premium/10.jpeg","images/gallery/2025-lexus-tx-350-premium/11.jpeg","images/gallery/2025-lexus-tx-350-premium/12.jpeg","images/gallery/2025-lexus-tx-350-premium/13.jpeg","images/gallery/2025-lexus-tx-350-premium/14.jpeg","images/gallery/2025-lexus-tx-350-premium/15.jpeg","images/gallery/2025-lexus-tx-350-premium/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":34,"title":"Mitsubishi Outlander Sport AWC 2025","price":"$19,000+","year":2025,"km":"41,400 KM","engine":"2.0L I-4 148HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"4x4 AWC","description":"Mitsubishi Outlander Sport 2025 AWC. Motor 2.0L I-4 de 148HP, automÃ¡tica, tracciÃ³n 4x4. DaÃ±o leve trasero derecho. Airbags intactos. 41,400 km. Precio $19,000 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/1.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/2.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/3.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/4.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/5.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/6.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/7.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/8.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/9.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/10.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/11.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/12.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/13.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/14.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/15.jpeg","images/gallery/2025-mitsubishi-outlander-sport-2-0-es-awc2-0-le-awc2-0-s-awc2-0-se-awc2-0-trail-edition-awc/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":35,"title":"Nissan Altima SR FWD 2025","price":"$12,280+","year":2025,"km":"44,900 KM","engine":"2.5L I-4 188HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"sedan","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"POR PEDIDO","description":"Nissan Altima SR FWD 2025. Motor 2.5L I-4 de 188HP, automÃ¡tica. DaÃ±o frontal, parabrisas y techo. Airbags intactos. 44,900 km. Precio $12,280 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-altima-sr-fwd/1.jpeg","images/gallery/2025-nissan-altima-sr-fwd/2.jpeg","images/gallery/2025-nissan-altima-sr-fwd/3.jpeg","images/gallery/2025-nissan-altima-sr-fwd/4.jpeg","images/gallery/2025-nissan-altima-sr-fwd/5.jpeg","images/gallery/2025-nissan-altima-sr-fwd/6.jpeg","images/gallery/2025-nissan-altima-sr-fwd/7.jpeg","images/gallery/2025-nissan-altima-sr-fwd/8.jpeg","images/gallery/2025-nissan-altima-sr-fwd/9.jpeg","images/gallery/2025-nissan-altima-sr-fwd/10.jpeg","images/gallery/2025-nissan-altima-sr-fwd/11.jpeg","images/gallery/2025-nissan-altima-sr-fwd/12.jpeg","images/gallery/2025-nissan-altima-sr-fwd/13.jpeg","images/gallery/2025-nissan-altima-sr-fwd/14.jpeg","images/gallery/2025-nissan-altima-sr-fwd/15.jpeg","images/gallery/2025-nissan-altima-sr-fwd/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":36,"title":"Nissan Ariya Engage 2025","price":"$15,400+","year":2025,"km":"17,100 KM","engine":"ElÃ©ctrico","transmission":"AutomÃ¡tico","fuel":"ElÃ©ctrico","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"âš¡ ELÃ‰CTRICO","description":"Nissan Ariya Engage 2025. SUV 100% elÃ©ctrico, automÃ¡tico. DaÃ±o trasero izquierdo. Airbags intactos. 17,100 km. Precio $15,400 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-ariya-engage/1.jpeg","images/gallery/2025-nissan-ariya-engage/2.jpeg","images/gallery/2025-nissan-ariya-engage/3.jpeg","images/gallery/2025-nissan-ariya-engage/4.jpeg","images/gallery/2025-nissan-ariya-engage/5.jpeg","images/gallery/2025-nissan-ariya-engage/6.jpeg","images/gallery/2025-nissan-ariya-engage/7.jpeg","images/gallery/2025-nissan-ariya-engage/8.jpeg","images/gallery/2025-nissan-ariya-engage/9.jpeg","images/gallery/2025-nissan-ariya-engage/10.jpeg","images/gallery/2025-nissan-ariya-engage/11.jpeg","images/gallery/2025-nissan-ariya-engage/12.jpeg","images/gallery/2025-nissan-ariya-engage/13.jpeg","images/gallery/2025-nissan-ariya-engage/14.jpeg","images/gallery/2025-nissan-ariya-engage/15.jpeg","images/gallery/2025-nissan-ariya-engage/16.jpeg","images/gallery/2025-nissan-ariya-engage/17.jpeg","images/gallery/2025-nissan-ariya-engage/18.jpeg","images/gallery/2025-nissan-ariya-engage/19.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":37,"title":"Nissan Frontier Pro-4X 4x4 2025","price":"$26,290+","year":2025,"km":"21,700 KM","engine":"3.8L V6 310HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ PRO-4X","description":"Nissan Frontier Pro-4X 2025, 4x4, doble cabina. Motor 3.8L V6 de 310HP, automÃ¡tica. DaÃ±o frontal y trasero. Airbags intactos. 21,700 km. Precio $26,290 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-frontier-pro-4x-4x4/1.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/2.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/3.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/4.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/5.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/6.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/7.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/8.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/9.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/10.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/11.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/12.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/13.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/14.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/15.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/16.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/17.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/18.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/19.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/20.jpeg","images/gallery/2025-nissan-frontier-pro-4x-4x4/21.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":38,"title":"Nissan Kicks Play S 2025","price":"$5,320+","year":2025,"km":"17,000 KM","engine":"1.6L I-4 122HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ LOMITO","description":"Nissan Kicks Play S 2025. Â¡LOMITO! Motor 1.6L I-4 de 122HP, automÃ¡tico. DaÃ±o leve frontal izquierdo. Airbags explotados. 17,000 km. Precio $5,320 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-kicks-play-s-lomitoooo/1.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/2.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/3.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/4.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/5.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/6.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/7.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/8.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/9.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/10.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/11.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/12.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/13.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/14.jpeg","images/gallery/2025-nissan-kicks-play-s-lomitoooo/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.991Z"},{"id":39,"title":"Nissan Kicks SV 2025","price":"$10,300+","year":2025,"km":"2,600 KM","engine":"2.0L I-4 141HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"CASI NUEVO","description":"Nissan Kicks SV 2025. Motor 2.0L I-4 de 141HP, automÃ¡tico. DaÃ±o leve, golpe en trasero izquierdo. Airbags intactos. Solo 2,600 km. Precio $10,300 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-kicks-sv/1.jpeg","images/gallery/2025-nissan-kicks-sv/2.jpeg","images/gallery/2025-nissan-kicks-sv/3.jpeg","images/gallery/2025-nissan-kicks-sv/4.jpeg","images/gallery/2025-nissan-kicks-sv/5.jpeg","images/gallery/2025-nissan-kicks-sv/6.jpeg","images/gallery/2025-nissan-kicks-sv/7.jpeg","images/gallery/2025-nissan-kicks-sv/8.jpeg","images/gallery/2025-nissan-kicks-sv/9.jpeg","images/gallery/2025-nissan-kicks-sv/10.jpeg","images/gallery/2025-nissan-kicks-sv/11.jpeg","images/gallery/2025-nissan-kicks-sv/12.jpeg","images/gallery/2025-nissan-kicks-sv/13.jpeg","images/gallery/2025-nissan-kicks-sv/14.jpeg","images/gallery/2025-nissan-kicks-sv/15.jpeg","images/gallery/2025-nissan-kicks-sv/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":40,"title":"Nissan Kicks SV AWD 4x4 2025","price":"$12,370+","year":2025,"km":"2,000 KM","engine":"2.0L I-4 141HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"4x4 AWD","description":"Nissan Kicks SV Intelligent 4x4 AWD 2025. Motor 2.0L I-4 de 141HP, automÃ¡tica, tracciÃ³n 4x4. DaÃ±o frontal izquierdo. Airbags intactos. Solo 2,000 km. Precio $12,370 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/1.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/2.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/3.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/4.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/5.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/6.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/7.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/8.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/9.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/10.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/11.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/12.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/13.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/14.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/15.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/16.jpeg","images/gallery/2025-nissan-kicks-sv-intelligent-4x4-awd/17.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":41,"title":"RAM 1500 Rebel 4x4 2025","price":"$32,800+","year":2025,"km":"94,200 KM","engine":"3.0L I-6 Turbo 420HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"ðŸ”¥ REBEL 420HP","description":"RAM 1500 Rebel 2025, 4x4, caja 5'7. Motor 3.0L I-6 Turbo de 420HP, automÃ¡tica. DaÃ±o frontal. Airbags explotados. 94,200 km. Precio $32,800 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-ram-1500-rebel-4x4-57-box/1.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/2.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/3.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/4.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/5.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/6.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/7.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/8.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/9.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/10.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/11.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/12.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/13.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/14.jpeg","images/gallery/2025-ram-1500-rebel-4x4-57-box/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":42,"title":"Toyota Tacoma SR5 2025","price":"$29,980+","year":2025,"km":"7,500 KM","engine":"2.4L Turbo 278HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"pickup","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"4x4","description":"Toyota Tacoma SR5 2025, doble cabina, 4x4. Motor 2.4L Turbo de 278HP, automÃ¡tica. DaÃ±o por inundaciÃ³n. Solo 7,500 km. Precio $29,980 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2025-toyota-tacoma-sr5/1.jpeg","images/gallery/2025-toyota-tacoma-sr5/2.jpeg","images/gallery/2025-toyota-tacoma-sr5/3.jpeg","images/gallery/2025-toyota-tacoma-sr5/4.jpeg","images/gallery/2025-toyota-tacoma-sr5/5.jpeg","images/gallery/2025-toyota-tacoma-sr5/6.jpeg","images/gallery/2025-toyota-tacoma-sr5/7.jpeg","images/gallery/2025-toyota-tacoma-sr5/8.jpeg","images/gallery/2025-toyota-tacoma-sr5/9.jpeg","images/gallery/2025-toyota-tacoma-sr5/10.jpeg","images/gallery/2025-toyota-tacoma-sr5/11.jpeg","images/gallery/2025-toyota-tacoma-sr5/12.jpeg","images/gallery/2025-toyota-tacoma-sr5/13.jpeg","images/gallery/2025-toyota-tacoma-sr5/14.jpeg","images/gallery/2025-toyota-tacoma-sr5/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":43,"title":"Honda CR-V EX AWD 2026","price":"$24,130+","year":2026,"km":"14,900 KM","engine":"1.5L Turbo 190HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"2026","description":"Honda CR-V EX AWD 2026. Motor 1.5L Turbo de 190HP, automÃ¡tica, 4x4 AWD. DaÃ±o leve trasero izquierdo. Airbags explotados. 14,900 km. Precio $24,130 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2026-honda-cr-v-ex-awd/1.jpeg","images/gallery/2026-honda-cr-v-ex-awd/2.jpeg","images/gallery/2026-honda-cr-v-ex-awd/3.jpeg","images/gallery/2026-honda-cr-v-ex-awd/4.jpeg","images/gallery/2026-honda-cr-v-ex-awd/5.jpeg","images/gallery/2026-honda-cr-v-ex-awd/6.jpeg","images/gallery/2026-honda-cr-v-ex-awd/7.jpeg","images/gallery/2026-honda-cr-v-ex-awd/8.jpeg","images/gallery/2026-honda-cr-v-ex-awd/9.jpeg","images/gallery/2026-honda-cr-v-ex-awd/10.jpeg","images/gallery/2026-honda-cr-v-ex-awd/11.jpeg","images/gallery/2026-honda-cr-v-ex-awd/12.jpeg","images/gallery/2026-honda-cr-v-ex-awd/13.jpeg","images/gallery/2026-honda-cr-v-ex-awd/14.jpeg","images/gallery/2026-honda-cr-v-ex-awd/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":44,"title":"Honda HR-V 2WD Sport 2026","price":"$22,000+","year":2026,"km":"11,600 KM","engine":"2.0L I-4 158HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"2026","description":"Honda HR-V 2WD Sport 2026. Motor 2.0L I-4 de 158HP, automÃ¡tica. Airbags intactos. 11,600 km. Precio $22,000 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2026-honda-hr-v-2wd-sport/1.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/2.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/3.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/4.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/5.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/6.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/7.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/8.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/9.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/10.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/11.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/12.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/13.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/14.jpeg","images/gallery/2026-honda-hr-v-2wd-sport/15.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":45,"title":"Kia Sportage LX 2026","price":"$16,720+","year":2026,"km":"2,800 KM","engine":"2.5L I-4 187HP","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"CASI NUEVO","description":"Kia Sportage LX 2026. Motor 2.5L I-4 de 187HP, automÃ¡tico. DaÃ±o lateral derecho. Airbags explotados. Solo 2,800 km. Precio $16,720 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/2026-kia-sportage-lx/1.jpeg","images/gallery/2026-kia-sportage-lx/2.jpeg","images/gallery/2026-kia-sportage-lx/3.jpeg","images/gallery/2026-kia-sportage-lx/4.jpeg","images/gallery/2026-kia-sportage-lx/5.jpeg","images/gallery/2026-kia-sportage-lx/6.jpeg","images/gallery/2026-kia-sportage-lx/7.jpeg","images/gallery/2026-kia-sportage-lx/8.jpeg","images/gallery/2026-kia-sportage-lx/9.jpeg","images/gallery/2026-kia-sportage-lx/10.jpeg","images/gallery/2026-kia-sportage-lx/11.jpeg","images/gallery/2026-kia-sportage-lx/12.jpeg","images/gallery/2026-kia-sportage-lx/13.jpeg","images/gallery/2026-kia-sportage-lx/14.jpeg","images/gallery/2026-kia-sportage-lx/15.jpeg","images/gallery/2026-kia-sportage-lx/16.jpeg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"},{"id":46,"title":"Jeep Wrangler Sport S 2 Puertas 4x4","price":"$21,700+","year":2023,"km":"64,000 KM","engine":"3.6L V6","transmission":"AutomÃ¡tico","fuel":"Gasolina","body_type":"suv","condition":"seminuevo","availability":"por_pedido","origin":"importado","badge":"2 PUERTAS","description":"Jeep Wrangler Sport S 2 puertas, 4x4. Motor 3.6L V6, automÃ¡tico. 64,000 km. UbicaciÃ³n USA. Nivel de daÃ±o leve. Airbags sin daÃ±o. Bajo pedido (promedio 2 meses Puerto Libre o nacional). Precio $21,700 + movilizaciÃ³n, envÃ­o, aduana e impuestos.","images":["images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/1.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/2.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/3.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/4.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/5.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/6.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/7.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/8.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/9.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/10.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/11.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/12.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/13.jpg","images/gallery/jeep-wrangler-sport-s-2-puertas-4x4/14.jpg"],"catalog":"0km","status":"active","mastertech":false,"created_at":"2026-10-19T23:53:19.992Z"}],"agency_users":[{"id":1,"full_name":"Administrador Master","email":"jvaask16@gmail.com","phone":"+58 424 8700438","role":"admin","branch":"Porlamar (Sede Principal)","status":"active","notes":"Acceso Directivo Principal y Supervisor General de Seminuevos"},{"id":2,"full_name":"Jvicente","email":"jvicente@seminuevos.com","phone":"+58 424 8700438","role":"admin","branch":"Porlamar (Sede Principal)","status":"active","notes":"Director General de Operaciones Seminuevos"},{"id":3,"full_name":"Matteo Lariccia","email":"matteo@seminuevos.com","phone":"","role":"sales","branch":"Porlamar (Sede Principal)","status":"active","notes":"Asesor Comercial"},{"id":4,"full_name":"Carlos Mendoza","email":"carlos.ventas@seminuevos.com","phone":"+58 424 8700438","role":"sales","branch":"Porlamar (Sede Principal)","status":"active","notes":"Asesor Comercial Senior"},{"id":5,"full_name":"María González","email":"credito@seminuevos.com","phone":"+58 412 1234567","role":"credit","branch":"Porlamar (Sede Principal)","status":"active","notes":"Analista de Mesa de Crédito"},{"id":6,"full_name":"Taller MasterTech (Perito)","email":"taller@mastertech.com","phone":"+58 424 9876543","role":"mechanic","branch":"Taller MasterTech","status":"active","notes":"Inspección Mecánica y Avalúo Certificado"}],"promotions":[{"id":"promo-wide-copart","title":"Oportunidades de Subasta USA","subtitle":"SELECCIÓN DE ASESORES · HASTA -40%","description":"Portal de selección especial donde nuestros asesores profesionales evalúan y filtran a diario las mejores oportunidades de compra en remates de USA, garantizando excelente condición mecánica, historial verificado y máximo margen de ahorro.","badge_text":"SELECCIÓN DE ASESORES","discount_text":"HASTA -40%","cta_text":"Explorar Oportunidades","cta_url":"https://COPART.seminuevoautos.com","image_url":"","bg_color":"#2563EB","is_featured":1,"status":"active"},{"id":"default-0","title":"Chevrolet Silverado 1500 Custom","subtitle":"2025 · $44,500 · 4WD Trail Boss","description":"Camioneta doble cabina equipada con paquete todoterreno, suspensión elevada y entrega inmediata.","badge_text":"OFERTA ESPECIAL","discount_text":"$3,000 OFF","cta_text":"Ver Oferta","cta_url":"catalogo","image_url":"images/2025-chevrolet-silverado-1500-4wd-short-bed-custom-trail-boss.jpg","bg_color":"#2563EB","is_featured":0,"status":"active"},{"id":"default-1","title":"Toyota 4Runner 2021 SR5","subtitle":"2021 · $38,990 · Motor 4.0L V6","description":"Vehículo en excelentes condiciones. Financiamiento exclusivo disponible en Margarita.","badge_text":"OFERTA DESTACADA","discount_text":"$2,000 OFF","cta_text":"Ver Oferta","cta_url":"catalogo","image_url":"images/gallery/toyota-4runner-2021-sr5/1.jpg?v=2","bg_color":"#275CEA","is_featured":0,"status":"active"},{"id":"default-2","title":"Honda HR-V 2024 Sport","subtitle":"2024 · $23,100 · 0 KM","description":"Trae tu vehículo importado directamente con entrega en 45 días y garantía MasterTech.","badge_text":"ENTREGA RÁPIDA","discount_text":"Bono $1,000","cta_text":"Cotizar Ahora","cta_url":"contacto","image_url":"images/gallery/honda-hrv-2024-sport/1.jpg","bg_color":"#1a45b8","is_featured":0,"status":"active"}]};
+    const vehicles = EXPORT_DATA.vehicles || [];
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+
+      if (tabId === 'tab-json' && !document.getElementById('jsonViewer').textContent) {
+        document.getElementById('jsonViewer').textContent = JSON.stringify(EXPORT_DATA, null, 2);
+      }
+    }
+
+    function renderVehicles(list) {
+      const container = document.getElementById('vehiclesContainer');
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#94a3b8;">No se encontraron vehículos con los filtros seleccionados.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(v => {
+        const img = (v.images && v.images.length > 0) ? v.images[0] : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80';
+        const isStock = v.availability === 'entrega_inmediata';
+        const availLabel = isStock ? '📍 Entrega Inmediata' : '🚢 Por Pedido USA';
+        
+        return `
+          <div class="veh-card">
+            <div class="veh-img-box">
+              <img src="${img}" alt="${v.title}" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80'">
+              ${v.badge ? `<span class="veh-badge">${v.badge}</span>` : ''}
+              <span class="veh-avail">${availLabel}</span>
+            </div>
+            <div class="veh-body">
+              <div class="veh-title">${v.title}</div>
+              <div class="veh-price">${v.price}</div>
+              <div class="veh-specs">
+                <span><i class="fas fa-calendar"></i> ${v.year}</span>
+                <span><i class="fas fa-gauge"></i> ${v.km}</span>
+                ${v.engine ? `<span><i class="fas fa-gears"></i> ${v.engine}</span>` : ''}
+                <span><i class="fas fa-car-side"></i> ${v.body_type.toUpperCase()}</span>
+              </div>
+              <p class="veh-desc">${v.description || 'Vehículo certificado por Seminuevos Autos.'}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterVehicles() {
+      const q = (document.getElementById('vehSearch').value || '').toLowerCase();
+      const avail = document.getElementById('availFilter').value;
+      const body = document.getElementById('bodyFilter').value;
+
+      const filtered = vehicles.filter(v => {
+        const matchesQ = !q || (v.title && v.title.toLowerCase().includes(q)) || (v.engine && v.engine.toLowerCase().includes(q)) || String(v.year).includes(q);
+        const matchesAvail = avail === 'all' || v.availability === avail;
+        const matchesBody = body === 'all' || v.body_type === body;
+        return matchesQ && matchesAvail && matchesBody;
+      });
+
+      renderVehicles(filtered);
+    }
+
+    function copyDataExport() {
+      navigator.clipboard.writeText(JSON.stringify(EXPORT_DATA, null, 2)).then(() => {
+        alert('data_export.json copiado al portapapeles con éxito.');
+      });
+    }
+
+    // Render inicial
+    renderVehicles(vehicles);
+  </script>
+</body>
+</html>

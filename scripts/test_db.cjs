@@ -1,0 +1,13 @@
+const db = require('C:/Users/maste/OneDrive/Documents/SEMINUEVOS/db.js');
+const stats = db.getSystemStats();
+console.log('System Stats:', stats);
+const vehicles = db.getAllVehicles();
+console.log('Total vehicles retrieved:', vehicles.length);
+console.log('First vehicle:', vehicles[0].title, '| Price:', vehicles[0].price);
+console.log('Last vehicle:', vehicles[vehicles.length - 1].title, '| Price:', vehicles[vehicles.length - 1].price);
+const settings = db.getSettings();
+console.log('Total settings keys:', Object.keys(settings).length);
+const users = db.getStaffUsers();
+console.log('Staff users count:', users.length);
+const promos = db.getPromotions();
+console.log('Promotions count:', promos.length);
