@@ -486,8 +486,10 @@ CREATE POLICY "Admin full access agency_users" ON agency_users FOR ALL TO authen
     const psScript = path.join(REPO_DIR, 'scripts', 'get_github_token.ps1');
     const token = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, { encoding: 'utf-8' }).trim();
     if (token) {
-      const pushUrl = `https://x-access-token:${token}@github.com/Seminuevos/Seminuevos-lading-page.git`;
-      execSync(`"${GIT_EXEC}" push "${pushUrl}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
+      const pushUrl1 = `https://x-access-token:${token}@github.com/Seminuevos/Seminuevos-lading-page.git`;
+      const pushUrl2 = `https://x-access-token:${token}@github.com/tallermastertech-dev/Seminuevos.git`;
+      execSync(`"${GIT_EXEC}" push "${pushUrl1}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
+      execSync(`"${GIT_EXEC}" push --force "${pushUrl2}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
       execSync(`"${GIT_EXEC}" update-ref refs/remotes/origin/main HEAD`, { cwd: REPO_DIR, stdio: 'ignore' });
       console.log('✓ GitHub sincronizado y actualizado exitosamente al 100%.');
     }

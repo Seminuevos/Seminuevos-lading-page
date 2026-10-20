@@ -1057,8 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!sData.hero_slides || !vData || vData.length === 0) {
                 try {
                     const sbHeaders = {
-                        'apikey': 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z',
-                        'Authorization': 'Bearer sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z'
+                        'apikey': 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z'
                     };
                     const [sbSettingsRes, sbVehRes] = await Promise.allSettled([
                         fetch('https://hknprlgyuwzolgnkwsmx.supabase.co/rest/v1/site_settings?select=*', { headers: sbHeaders }),

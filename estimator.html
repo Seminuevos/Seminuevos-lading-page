@@ -3,6 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ===== SUPABASE CLOUD & UNIVERSAL LOCAL/ZIP BOOTSTRAP ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script id="sn-universal-supabase-boot">
+    (function() {
+        var PROD_ORIGIN = 'https://seminuevos-lading-page.vercel.app/';
+        var SB_URL = 'https://hknprlgyuwzolgnkwsmx.supabase.co';
+        var SB_KEY = 'sb_publishable_NXflNbXrjqQabsIGe0PHPQ_4CID6A9z';
+        window.SN_SUPABASE_URL = SB_URL;
+        window.SN_SUPABASE_KEY = SB_KEY;
+
+        // Si se abre desde archivo descargado o dentro de un .zip (file://), cargar CSS, imagenes y scripts desde el dominio oficial
+        if (window.location.protocol === 'file:') {
+            var baseEl = document.createElement('base');
+            baseEl.href = PROD_ORIGIN;
+            document.head.appendChild(baseEl);
+        }
+
+        if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+            window.supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
+        }
+
+        // Interceptor universal para que /api/vehicles, /api/settings y /api/inquiries consulten directo a Supabase Cloud cuando se abre localmente
+        var origFetch = window.fetch.bind(window);
+        window.fetch = async function(input, init) {
+            var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+            var isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            var sbHeaders = { 'apikey': SB_KEY, 'Content-Type': 'application/json' };
+
+            if (isLocal && (url.indexOf('/api/vehicles') !== -1 || url.indexOf('api/vehicles') === 0)) {
+                try {
+                    var idMatch = url.match(/\/api\/vehicles\/([^/?#]+)/);
+                    if (idMatch && idMatch[1]) {
+                        var rSingle = await origFetch(SB_URL + '/rest/v1/vehicles?select=*&id=eq.' + encodeURIComponent(idMatch[1]), { headers: sbHeaders });
+                        if (rSingle.ok) {
+                            var arrSingle = await rSingle.json();
+                            return new Response(JSON.stringify({ data: arrSingle[0] || null }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                        }
+                    } else {
+                        var rList = await origFetch(SB_URL + '/rest/v1/vehicles?select=*&status=eq.active&order=created_at.desc', { headers: sbHeaders });
+                        if (rList.ok) {
+                            var arrList = await rList.json();
+                            return new Response(JSON.stringify({ data: arrList }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            if (isLocal && (url.indexOf('/api/settings') !== -1 || url.indexOf('api/settings') === 0)) {
+                try {
+                    var rSet = await origFetch(SB_URL + '/rest/v1/site_settings?select=*', { headers: sbHeaders });
+                    if (rSet.ok) {
+                        var rows = await rSet.json();
+                        var map = {};
+                        (rows || []).forEach(function(row) {
+                            var val = row.value;
+                            if (typeof val === 'string') { try { val = JSON.parse(val); } catch(ex) {} }
+                            map[row.key] = val;
+                        });
+                        return new Response(JSON.stringify({ data: map }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                    }
+                } catch (e) {}
+            }
+
+            return origFetch(input, init);
+        };
+    })();
+    var supabaseClient = window.supabaseClient;
+    </script>
     <title>Estimador de Pago y Poder de Compra | Seminuevos Agency</title>
     <meta name="description" content="Simula tu cuota mensual o descubre tu poder de compra de autos seminuevos y 0KM en Margarita y Venezuela. Transparencia total estilo Toyota Financial.">
     <meta name="robots" content="noindex, nofollow">
