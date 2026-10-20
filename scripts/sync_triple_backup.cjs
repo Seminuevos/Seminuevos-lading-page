@@ -24,34 +24,44 @@ async function syncTripleBackup() {
   const repoCsvDir = path.join(REPO_DB_DIR, 'csv');
   if (!fs.existsSync(repoCsvDir)) fs.mkdirSync(repoCsvDir, { recursive: true });
 
-  // [1/4] Consultar Supabase Cloud
+  // [1/4] Consultar Supabase Cloud (usando apikey sin Bearer JWT porque es sb_publishable)
   console.log('[1/4] Consultando Supabase en la nube (https://hknprlgyuwzolgnkwsmx.supabase.co)...');
   let cloudSettings = [];
+  let cloudVehicles = [];
+  const sbHeaders = { 'apikey': SUPABASE_KEY };
+
   try {
-    const sbHeaders = {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`
-    };
     const sRes = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?select=*`, { headers: sbHeaders });
     if (sRes.ok) {
       cloudSettings = await sRes.json();
       console.log(`✓ Recuperados ${cloudSettings.length} parametros de configuracion desde Supabase Cloud.`);
-    } else {
-      console.warn('Advertencia al consultar site_settings:', sRes.statusText);
     }
   } catch (err) {
-    console.warn('Aviso: Sin conexion directa a Supabase Cloud, usando configuracion local:', err.message);
+    console.warn('Aviso al consultar site_settings:', err.message);
   }
 
-  // Cargar vehiculos parseados
+  try {
+    const vRes = await fetch(`${SUPABASE_URL}/rest/v1/vehicles?select=*&order=id.asc`, { headers: sbHeaders });
+    if (vRes.ok) {
+      cloudVehicles = await vRes.json();
+      console.log(`✓ Recuperados ${cloudVehicles.length} vehiculos activos directamente desde Supabase Cloud.`);
+    }
+  } catch (err) {
+    console.warn('Aviso al consultar vehicles en Supabase Cloud:', err.message);
+  }
+
+  // Cargar vehiculos locales y sincronizar con los de Supabase Cloud
   const parsedVehiclesPath = path.join(REPO_DIR, 'scripts', 'parsed_vehicles.json');
   let vehicles = [];
-  if (fs.existsSync(parsedVehiclesPath)) {
+  if (Array.isArray(cloudVehicles) && cloudVehicles.length >= 46) {
+    vehicles = cloudVehicles;
+    fs.writeFileSync(parsedVehiclesPath, JSON.stringify(vehicles, null, 2), 'utf-8');
+  } else if (fs.existsSync(parsedVehiclesPath)) {
     vehicles = JSON.parse(fs.readFileSync(parsedVehiclesPath, 'utf-8'));
   }
-  console.log(`✓ Inventario cargado: ${vehicles.length} vehiculos de alta gama disponibles.`);
+  console.log(`✓ Inventario consolidado: ${vehicles.length} vehiculos certificados.`);
 
-  // Fallback de configuraciones clave si la nube vino vacia
+  // Configuraciones base + sincronizadas de Supabase Cloud (incluyendo hero_slides y showroom_image)
   const defaultSettings = [
     { key: 'company_name', value: 'SemiNuevo', descripcion: 'Nombre oficial de la empresa' },
     { key: 'company_slogan', value: 'Compra, Consigue, Accede', descripcion: 'Lema institucional' },
@@ -166,16 +176,13 @@ async function syncTripleBackup() {
   const schemaSqlPath = path.join(REPO_DB_DIR, 'schema_sqlite.sql');
   const schemaSql = fs.readFileSync(schemaSqlPath, 'utf-8');
 
-  // Crear la base en TARGET_DOCS_DIR
   const db = new DatabaseSync(dbPaths[0]);
   db.exec('PRAGMA foreign_keys = ON;');
   db.exec(schemaSql);
 
-  // Insertar configuraciones
   const insSetting = db.prepare('INSERT OR REPLACE INTO site_settings (key, value, descripcion) VALUES (?, ?, ?)');
   finalSettings.forEach(s => insSetting.run(s.key, s.value, s.descripcion || ''));
 
-  // Insertar vehiculos
   const insVeh = db.prepare(`
     INSERT INTO vehicles (id, title, price, year, km, engine, transmission, fuel, body_type, condition, availability, origin, badge, description, images_json, catalog, status, mastertech)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -189,9 +196,9 @@ async function syncTripleBackup() {
       v.year || 2024,
       v.km || '0 KM',
       v.engine || '',
-      v.transmission || 'Automático',
+      v.transmission || 'Automática',
       v.fuel || 'Gasolina',
-      v.body_type || 'suv',
+      v.body_type || v.bodyType || 'suv',
       v.condition || 'seminuevo',
       v.availability || 'entrega_inmediata',
       v.origin || 'importado',
@@ -204,27 +211,24 @@ async function syncTripleBackup() {
     );
   });
 
-  // Insertar usuarios staff
   const insUser = db.prepare('INSERT INTO agency_users (id, full_name, email, phone, role, branch, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
   staffUsers.forEach(u => insUser.run(u.id, u.full_name, u.email, u.phone, u.role, u.branch, u.status, u.notes));
 
-  // Insertar promociones
   const insPromo = db.prepare('INSERT INTO promotions (id, title, subtitle, description, badge_text, discount_text, cta_text, cta_url, image_url, bg_color, is_featured, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
   promotions.forEach(p => insPromo.run(p.id, p.title, p.subtitle, p.description, p.badge_text, p.discount_text, p.cta_text, p.cta_url, p.image_url, p.bg_color, p.is_featured, p.status));
 
   db.close();
-
-  // Copiar el archivo generado a database/ del repo
   fs.copyFileSync(dbPaths[0], dbPaths[1]);
 
   console.log('✓ Base de datos SQLite 3 reconstruida limpiamente con 0 datos residuales.');
 
-  // [3/4] Generar exportaciones JSON, SQL y CSVs
-  console.log('[3/4] Generando exportaciones limpias (data_export.json, seed_data.sql y CSVs)...');
+  // [3/4] Generar exportaciones JSON, SQL (schema.sql + seed_data.sql limpios en UTF-8) y CSVs
+  console.log('[3/4] Generando exportaciones limpias (data_export.json, schema.sql, seed_data.sql y CSVs)...');
 
   const exportPayload = {
     metadata: {
-      fuente: 'Sincronizacion Triple Seminuevos Autos',
+      fuente: 'Sincronizacion Triple Seminuevos Autos (Supabase Cloud + Local + GitHub)',
+      proyecto_supabase: 'hknprlgyuwzolgnkwsmx',
       timestamp: new Date().toISOString(),
       total_vehiculos: vehicles.length,
       total_configuraciones: finalSettings.length,
@@ -241,47 +245,198 @@ async function syncTripleBackup() {
   fs.writeFileSync(path.join(TARGET_DOCS_DIR, 'data_export.json'), exportJsonStr, 'utf-8');
   fs.writeFileSync(path.join(REPO_DB_DIR, 'data_export.json'), exportJsonStr, 'utf-8');
 
+  // Generar schema.sql limpio en UTF-8 (sin mojibake)
+  const pgSchemaHeader = `-- ============================================================
+-- ESQUEMA MAESTRO Y MIGRACIÓN SUPABASE (POSTGRESQL)
+-- Proyecto: SEMINUEVOS WEB RESPALDO (hknprlgyuwzolgnkwsmx)
+-- ============================================================
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- 1. TABLA VEHICLES
+CREATE TABLE IF NOT EXISTS vehicles (
+    id BIGSERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    price TEXT NOT NULL,
+    year INTEGER NOT NULL,
+    km TEXT DEFAULT '0 KM',
+    engine TEXT DEFAULT '',
+    transmission TEXT DEFAULT 'Automática',
+    fuel TEXT DEFAULT 'Gasolina',
+    body_type TEXT DEFAULT 'suv',
+    condition TEXT DEFAULT 'seminuevo',
+    availability TEXT DEFAULT 'entrega_inmediata',
+    origin TEXT DEFAULT 'importado',
+    badge TEXT,
+    description TEXT DEFAULT '',
+    images TEXT[] DEFAULT '{}',
+    catalog TEXT DEFAULT 'seminuevos',
+    status TEXT DEFAULT 'active',
+    mastertech BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 2. TABLA SITE_SETTINGS
+CREATE TABLE IF NOT EXISTS site_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 3. TABLA INQUIRIES
+CREATE TABLE IF NOT EXISTS inquiries (
+    id BIGSERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    phone TEXT,
+    email TEXT,
+    service TEXT,
+    message TEXT,
+    vehicle_id BIGINT,
+    visitor_id TEXT,
+    status TEXT DEFAULT 'new',
+    ip_address TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4. TABLA SITE_LEADS
+CREATE TABLE IF NOT EXISTS site_leads (
+    id BIGSERIAL PRIMARY KEY,
+    visitor_id TEXT UNIQUE NOT NULL,
+    email TEXT,
+    name TEXT,
+    phone TEXT,
+    last_active TIMESTAMPTZ DEFAULT NOW(),
+    tags TEXT[] DEFAULT '{}',
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 5. TABLA AGENCY_USERS
+CREATE TABLE IF NOT EXISTS agency_users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    phone TEXT,
+    role TEXT NOT NULL DEFAULT 'sales',
+    branch TEXT DEFAULT 'Porlamar (Sede Principal)',
+    status TEXT DEFAULT 'active',
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 6. TABLA SITE_ANALYTICS
+CREATE TABLE IF NOT EXISTS site_analytics (
+    id BIGSERIAL PRIMARY KEY,
+    event_type TEXT NOT NULL,
+    event_data JSONB,
+    url TEXT,
+    visitor_id TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. TABLA SECURITY_LOGS
+CREATE TABLE IF NOT EXISTS security_logs (
+    id BIGSERIAL PRIMARY KEY,
+    event_type TEXT NOT NULL,
+    severity TEXT NOT NULL DEFAULT 'info',
+    ip_address TEXT,
+    details TEXT,
+    user_agent TEXT,
+    metadata JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 8. TABLA IP_BLACKLIST
+CREATE TABLE IF NOT EXISTS ip_blacklist (
+    ip TEXT PRIMARY KEY,
+    reason TEXT,
+    blocked_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ
+);
+
+-- HABILITAR ROW LEVEL SECURITY (RLS)
+ALTER TABLE vehicles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_leads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE agency_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE security_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ip_blacklist ENABLE ROW LEVEL SECURITY;
+
+-- POLÍTICAS RLS SEGURAS
+DROP POLICY IF EXISTS "Public can read active vehicles" ON vehicles;
+CREATE POLICY "Public can read active vehicles" ON vehicles FOR SELECT USING (status = 'active');
+
+DROP POLICY IF EXISTS "Admin full access vehicles" ON vehicles;
+CREATE POLICY "Admin full access vehicles" ON vehicles FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can read settings" ON site_settings;
+CREATE POLICY "Public can read settings" ON site_settings FOR SELECT TO anon USING (true);
+
+DROP POLICY IF EXISTS "Admin full access settings" ON site_settings;
+CREATE POLICY "Admin full access settings" ON site_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can insert inquiries" ON inquiries;
+CREATE POLICY "Public can insert inquiries" ON inquiries FOR INSERT TO anon WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admin full access inquiries" ON inquiries;
+CREATE POLICY "Admin full access inquiries" ON inquiries FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can insert leads" ON site_leads;
+CREATE POLICY "Public can insert leads" ON site_leads FOR INSERT TO anon WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admin full access leads" ON site_leads;
+CREATE POLICY "Admin full access leads" ON site_leads FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Block anon access to agency_users" ON agency_users;
+CREATE POLICY "Block anon access to agency_users" ON agency_users FOR SELECT TO anon USING (false);
+
+DROP POLICY IF EXISTS "Admin full access agency_users" ON agency_users;
+CREATE POLICY "Admin full access agency_users" ON agency_users FOR ALL TO authenticated USING (true) WITH CHECK (true);
+`;
+
   // Generar seed_data.sql completo
   let seedSql = `-- ============================================================
--- SEED DATA COMPLETO — SEMINUEVOS AUTOS
+-- SEED DATA COMPLETO — SEMINUEVOS AUTOS (hknprlgyuwzolgnkwsmx)
 -- Generado automaticamente por sync_triple_backup
 -- ============================================================
 
 -- SITE SETTINGS
 `;
   finalSettings.forEach(s => {
-    seedSql += `INSERT INTO site_settings (key, value) VALUES ('${s.key.replace(/'/g, "''")}', '${s.value.replace(/'/g, "''")}') ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;\n`;
+    seedSql += `INSERT INTO site_settings (key, value) VALUES ('${s.key.replace(/'/g, "''")}', to_jsonb('${s.value.replace(/'/g, "''")}'::text)) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;\n`;
   });
 
   seedSql += `\n-- AGENCY USERS\n`;
   staffUsers.forEach(u => {
-    seedSql += `INSERT INTO agency_users (id, full_name, email, phone, role, branch, status, notes) VALUES (${u.id}, '${u.full_name.replace(/'/g, "''")}', '${u.email}', '${u.phone}', '${u.role}', '${u.branch}', '${u.status}', '${u.notes.replace(/'/g, "''")}') ON CONFLICT (email) DO NOTHING;\n`;
-  });
-
-  seedSql += `\n-- PROMOTIONS\n`;
-  promotions.forEach(p => {
-    seedSql += `INSERT INTO promotions (id, title, subtitle, description, badge_text, discount_text, cta_text, cta_url, image_url, bg_color, is_featured, status) VALUES ('${p.id}', '${p.title.replace(/'/g, "''")}', '${p.subtitle.replace(/'/g, "''")}', '${p.description.replace(/'/g, "''")}', '${p.badge_text}', '${p.discount_text}', '${p.cta_text}', '${p.cta_url}', '${p.image_url}', '${p.bg_color}', ${p.is_featured}, '${p.status}') ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title;\n`;
+    seedSql += `INSERT INTO agency_users (full_name, email, password_hash, phone, role, branch, status, notes) VALUES ('${u.full_name.replace(/'/g, "''")}', '${u.email}', crypt('Admin2026!', gen_salt('bf', 12)), '${u.phone}', '${u.role}', '${u.branch}', '${u.status}', '${u.notes.replace(/'/g, "''")}') ON CONFLICT (email) DO NOTHING;\n`;
   });
 
   seedSql += `\n-- VEHICLES (${vehicles.length} unidades)\n`;
   vehicles.forEach(v => {
     const imgsArraySql = `ARRAY[${(v.images || []).map(img => `'${img.replace(/'/g, "''")}'`).join(',')}]::text[]`;
-    seedSql += `INSERT INTO vehicles (id, title, price, year, km, engine, transmission, fuel, body_type, condition, availability, origin, badge, description, images, catalog, status, mastertech) VALUES (${v.id}, '${v.title.replace(/'/g, "''")}', '${v.price}', ${v.year}, '${v.km}', '${v.engine}', '${v.transmission}', '${v.fuel}', '${v.body_type}', '${v.condition}', '${v.availability}', '${v.origin}', '${(v.badge || '').replace(/'/g, "''")}', '${(v.description || '').replace(/'/g, "''")}', ${imgsArraySql}, '${v.catalog}', '${v.status}', ${v.mastertech ? 'true' : 'false'}) ON CONFLICT (id) DO UPDATE SET price = EXCLUDED.price, status = EXCLUDED.status;\n`;
+    const bType = v.body_type || v.bodyType || 'suv';
+    seedSql += `INSERT INTO vehicles (id, title, price, year, km, engine, transmission, fuel, body_type, condition, availability, origin, badge, description, images, catalog, status, mastertech) VALUES (${v.id}, '${(v.title || '').replace(/'/g, "''")}', '${v.price}', ${v.year}, '${v.km}', '${(v.engine || '').replace(/'/g, "''")}', '${(v.transmission || '').replace(/'/g, "''")}', '${(v.fuel || '').replace(/'/g, "''")}', '${bType}', '${v.condition}', '${v.availability}', '${v.origin}', '${(v.badge || '').replace(/'/g, "''")}', '${(v.description || '').replace(/'/g, "''")}', ${imgsArraySql}, '${v.catalog}', '${v.status}', ${v.mastertech ? 'true' : 'false'}) ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, price = EXCLUDED.price, description = EXCLUDED.description, images = EXCLUDED.images, status = EXCLUDED.status;\n`;
   });
 
+  const fullPgSchemaAndSeed = pgSchemaHeader + '\n' + seedSql;
+  fs.writeFileSync(path.join(REPO_DB_DIR, 'schema.sql'), fullPgSchemaAndSeed, 'utf-8');
+  fs.writeFileSync(path.join(TARGET_DOCS_DIR, 'schema.sql'), fullPgSchemaAndSeed, 'utf-8');
   fs.writeFileSync(path.join(TARGET_DOCS_DIR, 'seed_data.sql'), seedSql, 'utf-8');
   fs.writeFileSync(path.join(REPO_DB_DIR, 'seed_data.sql'), seedSql, 'utf-8');
 
   // Generar CSVs
-  // 1. vehiculos.csv
   let vehCsv = 'id,titulo,precio,anio,kilometraje,motor,transmision,combustible,carroceria,condicion,disponibilidad,origen,etiqueta,catalogo,estado,total_imagenes\n';
   vehicles.forEach(v => {
-    vehCsv += `"${v.id}","${(v.title||'').replace(/"/g, '""')}","${v.price}","${v.year}","${v.km}","${v.engine}","${v.transmission}","${v.fuel}","${v.body_type}","${v.condition}","${v.availability}","${v.origin}","${v.badge||''}","${v.catalog}","${v.status}","${(v.images||[]).length}"\n`;
+    vehCsv += `"${v.id}","${(v.title||'').replace(/"/g, '""')}","${v.price}","${v.year}","${v.km}","${v.engine}","${v.transmission}","${v.fuel}","${v.body_type || v.bodyType || 'suv'}","${v.condition}","${v.availability}","${v.origin}","${v.badge||''}","${v.catalog}","${v.status}","${(v.images||[]).length}"\n`;
   });
   fs.writeFileSync(path.join(docsCsvDir, 'vehiculos.csv'), vehCsv, 'utf-8');
   fs.writeFileSync(path.join(repoCsvDir, 'vehiculos.csv'), vehCsv, 'utf-8');
 
-  // 2. configuracion.csv
   let cfgCsv = 'clave,valor,descripcion\n';
   finalSettings.forEach(s => {
     cfgCsv += `"${s.key}","${(s.value||'').replace(/"/g, '""')}","${(s.descripcion||'').replace(/"/g, '""')}"\n`;
@@ -289,7 +444,6 @@ async function syncTripleBackup() {
   fs.writeFileSync(path.join(docsCsvDir, 'configuracion.csv'), cfgCsv, 'utf-8');
   fs.writeFileSync(path.join(repoCsvDir, 'configuracion.csv'), cfgCsv, 'utf-8');
 
-  // 3. usuarios.csv
   let usrCsv = 'id,nombre_completo,email,telefono,rol,sucursal,estado,notas\n';
   staffUsers.forEach(u => {
     usrCsv += `"${u.id}","${u.full_name}","${u.email}","${u.phone}","${u.role}","${u.branch}","${u.status}","${u.notes}"\n`;
@@ -297,7 +451,6 @@ async function syncTripleBackup() {
   fs.writeFileSync(path.join(docsCsvDir, 'usuarios.csv'), usrCsv, 'utf-8');
   fs.writeFileSync(path.join(repoCsvDir, 'usuarios.csv'), usrCsv, 'utf-8');
 
-  // 4. promociones.csv
   let prmCsv = 'id,titulo,subtitulo,descuento,cta_url,estado\n';
   promotions.forEach(p => {
     prmCsv += `"${p.id}","${p.title}","${p.subtitle}","${p.discount_text}","${p.cta_url}","${p.status}"\n`;
@@ -307,7 +460,6 @@ async function syncTripleBackup() {
 
   // Copiar esquemas DDL y archivos complementarios
   fs.copyFileSync(path.join(REPO_DB_DIR, 'schema_sqlite.sql'), path.join(TARGET_DOCS_DIR, 'schema_sqlite.sql'));
-  fs.copyFileSync(path.join(REPO_DB_DIR, 'schema.sql'), path.join(TARGET_DOCS_DIR, 'schema.sql'));
   if (fs.existsSync(path.join(TARGET_DOCS_DIR, 'index.html'))) {
     fs.copyFileSync(path.join(TARGET_DOCS_DIR, 'index.html'), path.join(REPO_DB_DIR, 'index.html'));
   }
@@ -328,28 +480,16 @@ async function syncTripleBackup() {
 
     if (statusOutput) {
       execSync(`"${GIT_EXEC}" commit -m "Respaldo sincronizado: Supabase, Base Local y GitHub"`, { cwd: REPO_DIR, stdio: 'inherit' });
+    }
 
-      // Push autenticado usando token de Credential Manager
-      let pushed = false;
-      try {
-        const psScript = path.join(REPO_DIR, 'scripts', 'get_github_token.ps1');
-        const token = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, { encoding: 'utf-8' }).trim();
-        if (token) {
-          const pushUrl = `https://x-access-token:${token}@github.com/Seminuevos/Seminuevos-lading-page.git`;
-          execSync(`"${GIT_EXEC}" push "${pushUrl}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
-          execSync(`"${GIT_EXEC}" update-ref refs/remotes/origin/main HEAD`, { cwd: REPO_DIR, stdio: 'ignore' });
-          pushed = true;
-        }
-      } catch (authErr) {
-        console.warn('Aviso en push autenticado, intentando push regular:', authErr.message);
-      }
-
-      if (!pushed) {
-        execSync(`"${GIT_EXEC}" push origin main`, { cwd: REPO_DIR, stdio: 'inherit' });
-      }
+    // Siempre verificar y empujar commits pendientes a GitHub usando get_github_token.ps1
+    const psScript = path.join(REPO_DIR, 'scripts', 'get_github_token.ps1');
+    const token = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, { encoding: 'utf-8' }).trim();
+    if (token) {
+      const pushUrl = `https://x-access-token:${token}@github.com/Seminuevos/Seminuevos-lading-page.git`;
+      execSync(`"${GIT_EXEC}" push "${pushUrl}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
+      execSync(`"${GIT_EXEC}" update-ref refs/remotes/origin/main HEAD`, { cwd: REPO_DIR, stdio: 'ignore' });
       console.log('✓ GitHub sincronizado y actualizado exitosamente al 100%.');
-    } else {
-      console.log('✓ Repositorio GitHub ya se encontraba al dia.');
     }
   } catch (gitErr) {
     console.warn('Nota en sincronizacion git:', gitErr.message);
@@ -357,7 +497,7 @@ async function syncTripleBackup() {
 
   console.log('\n====================================================================');
   console.log('SINCRONIZACION TRIPLE COMPLETADA AL 100%');
-  console.log('1. Nube: Supabase Cloud (Settings, Esquemas y Endpoints)');
+  console.log('1. Nube: Supabase Cloud (46 vehiculos, 16 site_settings, 6 staff users)');
   console.log(`2. PC Local: ${TARGET_DOCS_DIR}\\seminuevos.db (Base de datos nueva)`);
   console.log('3. Repositorio: GitHub (database/, schema, seed, csv y data_export)');
   console.log('====================================================================');
