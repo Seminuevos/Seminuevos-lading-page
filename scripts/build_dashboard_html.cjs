@@ -602,16 +602,23 @@ ORDER BY key ASC;</div>
       }
 
       container.innerHTML = list.map(v => {
-        const img = (v.images && v.images.length > 0) ? v.images[0] : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80';
+        const rawImg = (v.images && v.images.length > 0) ? v.images[0] : '';
+        const cdnFallback = rawImg ? (rawImg.startsWith('http') ? rawImg : 'https://seminuevos-lading-page.vercel.app/' + rawImg) : '';
+        const totalImgs = (v.images && Array.isArray(v.images)) ? v.images.length : 0;
         const isStock = v.availability === 'entrega_inmediata';
         const availLabel = isStock ? '📍 Entrega Inmediata' : '🚢 Por Pedido USA';
         
         return \`
           <div class="veh-card">
             <div class="veh-img-box">
-              <img src="\${img}" alt="\${v.title}" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80'">
+              \${rawImg ? \`
+                <img src="\${rawImg}" alt="\${v.title}" loading="lazy" onerror="if (this.src !== '\${cdnFallback}') { this.src = '\${cdnFallback}'; } else { this.parentElement.innerHTML = '<div style=\\\\"display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;font-size:0.9rem;background:#0f172a;\\\\"><i class=\\\\"fas fa-car\\\\"></i>&nbsp;Foto en Proceso</div>'; }">
+              \` : \`
+                <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748b;font-size:0.9rem;background:#0f172a;"><i class="fas fa-car"></i>&nbsp;Sin Imagen</div>
+              \`}
               \${v.badge ? \`<span class="veh-badge">\${v.badge}</span>\` : ''}
               <span class="veh-avail">\${availLabel}</span>
+              \${totalImgs > 1 ? \`<span style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.75);color:#fff;font-size:0.75rem;padding:3px 8px;border-radius:4px;font-weight:600;"><i class="fas fa-images"></i> \${totalImgs} fotos</span>\` : ''}
             </div>
             <div class="veh-body">
               <div class="veh-title">\${v.title}</div>
@@ -620,7 +627,7 @@ ORDER BY key ASC;</div>
                 <span><i class="fas fa-calendar"></i> \${v.year}</span>
                 <span><i class="fas fa-gauge"></i> \${v.km}</span>
                 \${v.engine ? \`<span><i class="fas fa-gears"></i> \${v.engine}</span>\` : ''}
-                <span><i class="fas fa-car-side"></i> \${v.body_type.toUpperCase()}</span>
+                <span><i class="fas fa-car-side"></i> \${(v.body_type || 'SUV').toUpperCase()}</span>
               </div>
               <p class="veh-desc">\${v.description || 'Vehículo certificado por Seminuevos Autos.'}</p>
             </div>
