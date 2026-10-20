@@ -305,9 +305,18 @@ async function syncTripleBackup() {
   fs.writeFileSync(path.join(docsCsvDir, 'promociones.csv'), prmCsv, 'utf-8');
   fs.writeFileSync(path.join(repoCsvDir, 'promociones.csv'), prmCsv, 'utf-8');
 
-  // Copiar esquemas DDL
+  // Copiar esquemas DDL y archivos complementarios
   fs.copyFileSync(path.join(REPO_DB_DIR, 'schema_sqlite.sql'), path.join(TARGET_DOCS_DIR, 'schema_sqlite.sql'));
   fs.copyFileSync(path.join(REPO_DB_DIR, 'schema.sql'), path.join(TARGET_DOCS_DIR, 'schema.sql'));
+  if (fs.existsSync(path.join(TARGET_DOCS_DIR, 'index.html'))) {
+    fs.copyFileSync(path.join(TARGET_DOCS_DIR, 'index.html'), path.join(REPO_DB_DIR, 'index.html'));
+  }
+  if (fs.existsSync(path.join(TARGET_DOCS_DIR, 'DICCIONARIO_DATOS.md'))) {
+    fs.copyFileSync(path.join(TARGET_DOCS_DIR, 'DICCIONARIO_DATOS.md'), path.join(REPO_DB_DIR, 'DICCIONARIO_DATOS.md'));
+  }
+  if (fs.existsSync(path.join(TARGET_DOCS_DIR, 'README.md'))) {
+    fs.copyFileSync(path.join(TARGET_DOCS_DIR, 'README.md'), path.join(REPO_DB_DIR, 'README.md'));
+  }
 
   console.log('✓ Archivos de respaldo sincronizados en Documentos y en database/ del proyecto.');
 
@@ -323,53 +332,14 @@ async function syncTripleBackup() {
       // Push autenticado usando token de Credential Manager
       let pushed = false;
       try {
-        const psPushScript = `
-          $sig = @'
-          using System;
-          using System.Runtime.InteropServices;
-          public class CredReader {
-              [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-              public static extern bool CredReadW(string target, int type, int reservedFlag, out IntPtr credentialPtr);
-              [DllImport("advapi32.dll", SetLastError = true)]
-              public static extern void CredFree(IntPtr credentialPtr);
-              [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-              public struct CREDENTIAL {
-                  public int Flags;
-                  public int Type;
-                  public string TargetName;
-                  public string Comment;
-                  public System.Runtime.InteropServices.ComTypes.FILETIME LastWritten;
-                  public int CredentialBlobSize;
-                  public IntPtr CredentialBlob;
-                  public int Persist;
-                  public int AttributeCount;
-                  public IntPtr Attributes;
-                  public string TargetAlias;
-                  public string UserName;
-              }
-          }
-          '@
-          Add-Type -TypeDefinition $sig
-          $ptr = [IntPtr]::Zero
-          $success = [CredReader]::CredReadW('GitHub - https://api.github.com/tallermastertech-dev', 1, 0, [ref]$ptr)
-          if ($success) {
-              $cred = [System.Runtime.InteropServices.Marshal]::PtrToStructure($ptr, [Type][CredReader+CREDENTIAL])
-              $bytes = New-Object byte[] $cred.CredentialBlobSize
-              [System.Runtime.InteropServices.Marshal]::Copy($cred.CredentialBlob, $bytes, 0, $cred.CredentialBlobSize)
-              $token = [System.Text.Encoding]::UTF8.GetString($bytes)
-              [CredReader]::CredFree($ptr)
-              $cleanToken = $token.Trim()
-              $remoteUrl = "https://x-access-token:$cleanToken@github.com/Seminuevos/Seminuevos-lading-page.git"
-              & "${GIT_EXEC}" push $remoteUrl main
-          } else {
-              & "${GIT_EXEC}" push origin main
-          }
-        `;
-        const tempPs = path.join(REPO_DIR, 'scripts', 'temp_push.ps1');
-        fs.writeFileSync(tempPs, psPushScript, 'utf-8');
-        execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${tempPs}"`, { cwd: REPO_DIR, stdio: 'inherit' });
-        try { fs.unlinkSync(tempPs); } catch(e) {}
-        pushed = true;
+        const psScript = path.join(REPO_DIR, 'scripts', 'get_github_token.ps1');
+        const token = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -File "${psScript}"`, { encoding: 'utf-8' }).trim();
+        if (token) {
+          const pushUrl = `https://x-access-token:${token}@github.com/Seminuevos/Seminuevos-lading-page.git`;
+          execSync(`"${GIT_EXEC}" push "${pushUrl}" main:main`, { cwd: REPO_DIR, stdio: 'inherit' });
+          execSync(`"${GIT_EXEC}" update-ref refs/remotes/origin/main HEAD`, { cwd: REPO_DIR, stdio: 'ignore' });
+          pushed = true;
+        }
       } catch (authErr) {
         console.warn('Aviso en push autenticado, intentando push regular:', authErr.message);
       }
